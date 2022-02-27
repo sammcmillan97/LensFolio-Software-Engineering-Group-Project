@@ -1,0 +1,120 @@
+stages:
+  - tagChecking
+  - publishProtosToLocalMavenRepo
+  - build
+  - test
+  - sonarqube
+  - deploy
+
+tag-checker:
+  stage: tagChecking
+  script:
+    - python3 tag_checker.py $CI_COMMIT_TAG
+  only:
+    - tags
+
+# junit-porfolio:
+#   stage: test
+#   script:
+#     - cd portfolio
+#     - ./gradlew test
+
+# junit-identityprovider:
+#   stage: test
+#   script:
+#     - cd identityprovider
+#     - ./gradlew test
+
+publish-protos-to-maven-local:
+  stage: publishProtosToLocalMavenRepo
+  script:
+    - cd shared
+    - ./gradlew clean
+    - ./gradlew publishToMavenLocal
+
+# builds all branches, except dev and master
+branch-build:
+  stage: build
+  script:
+    - cd identityprovider
+    - ./gradlew bootJar
+    - cd ../portfolio
+    - ./gradlew bootJar
+  artifacts:
+    paths:
+      - identityprovider/build/libs
+      - portfolio/build/libs
+  except:
+    - tags
+    - master
+    - dev
+
+deploy-staging-identityprovider:
+  stage: deploy
+  script:
+    - cd identityprovider
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/staging-identityprovider/ || true
+    - mkdir /home/gitlab-runner/staging-identityprovider/
+    - cp -r ./build/libs /home/gitlab-runner/staging-identityprovider
+    - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
+    - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
+    - sudo systemctl restart staging-identityprovider
+  artifacts:
+    paths:
+      - identityprovider/build/libs
+  only:
+    - dev
+
+deploy-staging-portfolio:
+  stage: deploy
+  script:
+    - cd portfolio
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/staging-portfolio/ || true
+    - mkdir /home/gitlab-runner/staging-portfolio/
+    - cp -r ./build/libs /home/gitlab-runner/staging-portfolio
+    - cp ../runner/staging-portfolio.sh /home/gitlab-runner/staging-portfolio.sh
+    - chmod u+x /home/gitlab-runner/staging-portfolio.sh
+    - sudo systemctl restart staging-portfolio
+  artifacts:
+    paths:
+      - portfolio/build/libs
+  only:
+    - dev
+
+deploy-production-identityprovider:
+  stage: deploy
+  script:
+    - cd identityprovider
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/production-identityprovider/ || true
+    - mkdir /home/gitlab-runner/production-identityprovider/
+    - cp -r ./build/libs /home/gitlab-runner/production-identityprovider
+    - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
+    - chmod u+x /home/gitlab-runner/production-identityprovider.sh
+    - sudo systemctl restart production-identityprovider
+  artifacts:
+    paths:
+      - identityprovider/build/libs
+  only:
+    - tags
+    - master
+
+deploy-production-portfolio:
+  stage: deploy
+  script:
+    - cd portfolio
+    - ./gradlew bootJar
+    - rm -rf /home/gitlab-runner/production-portfolio/ || true
+    - mkdir /home/gitlab-runner/production-portfolio/
+    - cp -r ./build/libs /home/gitlab-runner/production-portfolio
+    - cp ../runner/production-portfolio.sh /home/gitlab-runner/production-portfolio.sh
+    - chmod u+x /home/gitlab-runner/production-portfolio.sh
+    - sudo systemctl restart production-portfolio
+  artifacts:
+    paths:
+      - portfolio/build/libs
+  only:
+    - tags
+    - master

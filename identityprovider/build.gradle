@@ -1,0 +1,40 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'nz.ac.canterbury.seng302'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+wrapper {
+    gradleVersion = '7.4'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework:spring-web'
+
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.0'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.0'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.0'
+
+    implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE' // GRPC server / client dependencies
+    implementation 'nz.ac.canterbury.seng302:shared:1.0' // Local package containing .proto files
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

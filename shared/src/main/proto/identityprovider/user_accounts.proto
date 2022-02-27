@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package nz.ac.canterbury.seng302;
+
+import "google/protobuf/timestamp.proto";
+import "util/validation_error.proto";
+import "util/file_upload.proto";
+
+option java_multiple_files = true;
+option java_package = "nz.ac.canterbury.seng302.shared.identityprovider";
+option java_outer_classname = "UserAccountsProto";
+
+message ChangePasswordRequest {
+   int32 UserId = 1;
+   string CurrentPassword = 2;
+   string NewPassword = 3;
+}
+message ChangePasswordResponse {
+   bool IsSuccess = 1;
+   string Message = 2;
+   repeated ValidationError ValidationErrors = 3;
+}
+message EditUserRequest {
+   int32 UserId = 1;
+   string FirstName = 2;
+   string MiddleName = 3;
+   string LastName = 4;
+   string Nickname = 5;
+   string Bio = 6;
+   string PersonalPronouns = 7;
+   string Email = 8;
+}
+message EditUserResponse {
+   bool IsSuccess = 1;
+   string Message = 2;
+   repeated ValidationError ValidationErrors = 3;
+}
+message GetUserByIdRequest {
+   int32 Id = 1;
+}
+message UserRegisterRequest {
+   string Username = 1;
+   string Password = 2;
+   string FirstName = 3;
+   string MiddleName = 4;
+   string LastName = 5;
+   string Nickname = 6;
+   string Bio = 7;
+   string PersonalPronouns = 8;
+   string Email = 9;
+}
+message UserRegisterResponse {
+   bool IsSuccess = 1;
+   int32 NewUserId = 2;
+   string Message = 3;
+   repeated ValidationError ValidationErrors = 4;
+}
+message UserResponse {
+   string Username = 1;
+   string FirstName = 2;
+   string MiddleName = 3;
+   string LastName = 4;
+   string Nickname = 5;
+   string Bio = 6;
+   string PersonalPronouns = 7;
+   string Email = 8;
+   .google.protobuf.Timestamp Created = 9;
+   string ProfileImagePath = 10;
+   repeated UserRole Roles = 11;
+}
+enum UserRole {
+   STUDENT = 0;
+   TEACHER = 1;
+   COURSE_ADMINISTRATOR = 2;
+}
+
+// When uploading potentially large files, we break the file into multiple chunks. Each of these chunks is then
+// uploaded separately as part of a stream. As we are uploading, we return some status information to the client about
+// the upload. To help with your searching, the approach where we send many chunks and receive many responses
+// (though not necessarily at a 1 to 1 ratio) is known as "bidirectional streaming". If we weren't returning status
+// updates along the way but just one at the end, then it would be "grpc client streaming".
+message ProfilePhotoUploadMetadata {
+   int32 UserId = 1;
+   string FileType = 2;
+}
+message UploadUserProfilePhotoRequest { 
+   oneof UploadData {
+      ProfilePhotoUploadMetadata MetaData = 1;
+      bytes FileContent = 2;
+   };
+}
+
+message DeleteUserProfilePhotoRequest {
+   int32 UserId = 1;
+}
+
+message DeleteUserProfilePhotoResponse {
+   bool IsSuccess = 1;
+   bool Message = 2;
+}
+
+message GetPaginatedUsersRequest {
+   int32 Offset = 1; // How many results to skip (offset of 0 means start at beginning, i.e page 1)
+   int32 Limit = 2; // Max results to get - "results per page"
+   string OrderBy = 3; // When paginating, we must sort on the server, not the frontend (why is this?)
+}
+message PaginatedUsersResponse {
+   repeated UserResponse Users = 1;
+   int32 ResultSetSize = 2; // How many possible results there are (so we can say how many 'pages' are needed)
+}
+
+message ModifyRoleOfUserRequest {
+   int32 UserId = 1;
+   UserRole Role = 2;
+}
+message UserRoleChangeResponse {
+   bool IsSuccess = 1;
+   bool Message = 2;
+}
+
+
+service UserAccountService {
+   rpc ChangeUserPassword (ChangePasswordRequest) returns (ChangePasswordResponse);
+   rpc EditUser (EditUserRequest) returns (EditUserResponse);
+   rpc GetUserAccountById (GetUserByIdRequest) returns (UserResponse);
+   rpc Register (UserRegisterRequest) returns (UserRegisterResponse);
+   rpc UploadUserProfilePhoto (stream UploadUserProfilePhotoRequest) returns (stream FileUploadStatusResponse);
+   rpc DeleteUserProfilePhoto (DeleteUserProfilePhotoRequest) returns (DeleteUserProfilePhotoResponse);
+   rpc GetPaginatedUsers(GetPaginatedUsersRequest) returns (PaginatedUsersResponse);
+   rpc AddRoleToUser(ModifyRoleOfUserRequest) returns (UserRoleChangeResponse);
+   rpc RemoveRoleFromUser(ModifyRoleOfUserRequest) returns (UserRoleChangeResponse);
+}
