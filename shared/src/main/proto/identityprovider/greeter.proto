@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "nz.ac.canterbury.seng302.shared.identityprovider";
+option java_outer_classname = "GreeterProto";
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting in a random language
+  rpc SayHello (HelloRequest) returns (HelloResponse) {
+  }
+}
+
+// What we say to the server
+message HelloRequest {
+  string favouriteColour = 1;
+}
+
+// What the server responds to us with
+message HelloResponse {
+  string message = 1;
+}
