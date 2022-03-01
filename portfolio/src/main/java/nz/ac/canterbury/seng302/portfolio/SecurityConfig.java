@@ -41,6 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         security
             .httpBasic().disable()
             .formLogin().disable();
+
+
+        security.headers().frameOptions().disable();
     }
 
     @Override
