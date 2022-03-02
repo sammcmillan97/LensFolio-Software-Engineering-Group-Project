@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SpringBootApplication
 public class IdentityProviderApplication {
@@ -24,11 +23,11 @@ public class IdentityProviderApplication {
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
             // save a few users
-            repository.save(new User("Jack", "Bauer"));
-            repository.save(new User("Chloe", "O'Brian"));
-            repository.save(new User("Kim", "Bauer"));
-            repository.save(new User("David", "Palmer"));
-            repository.save(new User("Michelle", "Dessler"));
+            repository.save(new User("bauerjac","Jack", "Bauer","Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password"));
+            repository.save(new User("obrianchl","Chloe", "OBrian", "Coco", "hello", "SHE/HER", "coco@gmail.com", "password"));
+            repository.save(new User("bauerkim","Kim", "Bauer", "Kiki", "heyy", "SHE/HER", "kiki@gmail.com", "password"));
+            repository.save(new User("palmerdav","David", "Palmer", "Davo", "gidday", "THEY/THEM", "davo@gmail.com", "password"));
+            repository.save(new User("desslermic","Michelle", "Dessler", "Shelly", "hi", "HE/HIM", "shelly@gmail.com", "password"));
 
             // fetch all users
             log.info("Users found with findAll():");
@@ -46,9 +45,9 @@ public class IdentityProviderApplication {
             log.info("");
 
             // fetch customers by last name
-            log.info("User found with findByUsername('Jack'):");
+            log.info("User found with findByUsername('palmerdav'):");
             log.info("--------------------------------------------");
-            repository.findByUsername("Jack").toString();
+            repository.findByUsername("palmerdav").toString();
 
             log.info("");
         };

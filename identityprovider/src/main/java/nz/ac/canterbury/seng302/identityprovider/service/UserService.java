@@ -13,7 +13,7 @@ public class UserService {
 
     public Long registerUser(User user) {
         //validation and functionality required
-        userRepository.save(user);
+        //userRepository.save(user);
         return user.getUserId();
     }
 
