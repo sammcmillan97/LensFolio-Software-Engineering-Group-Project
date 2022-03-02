@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
@@ -88,6 +87,30 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getBio(){
+        return bio;
+    }
+
+    public String getPreferredPronouns(){
+        return preferredPronouns;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword(){
