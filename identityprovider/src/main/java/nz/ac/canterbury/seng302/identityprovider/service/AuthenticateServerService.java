@@ -6,13 +6,21 @@ import net.devh.boot.grpc.server.service.GrpcService;
 
 import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.authentication.JwtTokenUtil;
+import nz.ac.canterbury.seng302.identityprovider.entity.User;
+import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc.AuthenticationServiceImplBase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 
 @GrpcService
 public class AuthenticateServerService extends AuthenticationServiceImplBase{
+
+    @Autowired
+    private UserRepository repository;
 
     private final int VALID_USER_ID = 1;
     private final String VALID_USER = "abc123";
@@ -29,20 +37,25 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
      */
     @Override
     public void authenticate(AuthenticateRequest request, StreamObserver<AuthenticateResponse> responseObserver) {
+        System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEYYYYYYYYY");
+        User user = repository.findByUsername(request.getUsername());
+
+        System.out.println(user);
+
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
         
-        if (request.getUsername().equals(VALID_USER) && request.getPassword().equals(VALID_PASSWORD)) {
+        if (user != null && request.getPassword().equals(user.getPassword())) {
 
-            String token = jwtTokenService.generateTokenForUser(VALID_USER, VALID_USER_ID, FULL_NAME_OF_USER, ROLE_OF_USER);
+            String token = jwtTokenService.generateTokenForUser(user.getUsername(), VALID_USER_ID, FULL_NAME_OF_USER, ROLE_OF_USER);
             reply
                 .setEmail("validuser@email.com")
-                .setFirstName(FIRST_NAME_OF_USER)
-                .setLastName(LAST_NAME_OF_USER)
+                .setFirstName("VALID")
+                .setLastName("USER")
                 .setMessage("Logged in successfully!")
                 .setSuccess(true)
                 .setToken(token)
                 .setUserId(1)
-                .setUsername(VALID_USER);
+                .setUsername(user.getUsername());
         } else {
             reply
             .setMessage("Log in attempt failed: username or password incorrect")
