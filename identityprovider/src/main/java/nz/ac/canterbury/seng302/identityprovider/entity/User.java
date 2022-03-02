@@ -5,8 +5,8 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name="CLIENT")
-public class Client {
+@Table(name="USERS")
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -18,15 +18,15 @@ public class Client {
     @Column
     private String password;
 
-    protected Client() {}
+    protected User() {}
 
-    public Client(Long userId, String username, String password){
+    public User(Long userId, String username, String password){
         this.userId = userId;
         this.username = username;
         this.password = password;
     }
 
-    public Client(String username, String password) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
