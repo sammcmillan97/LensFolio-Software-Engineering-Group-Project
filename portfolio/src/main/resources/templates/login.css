@@ -1,25 +1,20 @@
-@charset "ISO-8859-1";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
+@charset "UTF-8";
 h2{
     color: aqua;
     font-weight: bold;
     font-variant: inherit;
 }
 body{
-    background-color: #FFDE03;
+    background-color: black;
 }
 
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins',sans-serif;
+    font-family: 'Bookman Old Style', cursive;
 }
 
-/* ::selection{
-  background: rgba(26,188,156,0.3);
-} */
 .container{
     max-width: 440px;
     padding: 0 20px;
@@ -29,11 +24,11 @@ body{
     width: 100%;
     background: #fff;
     border-radius: 5px;
-    box-shadow: 0px 4px 10px 1px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px 1px rgba(0,0,0,0.1);
 }
 .wrapper .title{
     height: 90px;
-    background: green;
+    background: navy;
     border-radius: 5px 5px 0 0;
     color: #fff;
     font-size: 30px;
@@ -54,7 +49,7 @@ body{
     height: 100%;
     width: 100%;
     outline: none;
-    padding-left: 60px;
+    padding-left: 10px;
     border-radius: 5px;
     border: 1px solid lightgrey;
     font-size: 16px;
@@ -62,7 +57,7 @@ body{
 }
 form .row input:focus{
     border-color: black;
-    box-shadow: inset 0px 0px 2px 2px rgba(26,188,156,0.25);
+    box-shadow: inset 0 0 2px 2px rgba(26,188,156,0.25);
 }
 form .row input::placeholder{
     color: #999;
@@ -95,24 +90,12 @@ form .row input::placeholder{
     color: #fff;
     font-size: 20px;
     font-weight: 500;
-    padding-left: 0px;
-    background: green;
+    padding-left: 0;
+    background: navy;
     border: 1px solid #16a085;
     cursor: pointer;
 }
 
-.wrapper form .signup-link{
-    text-align: center;
-    margin-top: 20px;
-    font-size: 17px;
-}
-.wrapper form .signup-link a{
-    color: green;
-    text-decoration: none;
-}
-form .signup-link a:hover{
-    text-decoration: underline;
-}
 p{
     color: red;
 }

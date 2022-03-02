@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
@@ -24,20 +24,20 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li th:classappend="${module == 'home' ? 'active' : ''}">
-                    <a href="#" th:href="@{/}">Home</a>
+                    <a href="menu.html" th:href="@{/}">Home</a>
                 </li>
                 <li th:classappend="${module == 'tasks' ? 'active' : ''}">
-                    <a href="#" th:href="@{/task}">Profile</a>
+                    <a href="profile.html" th:href="@{/task}">Profile</a>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li th:if="${#authorization.expression('isAuthenticated()')}">
-                    <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">
-                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
-                    </a>
-                    <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>
-                </li>
-            </ul>
+<!--            <ul class="nav navbar-nav navbar-right">-->
+<!--                <li th:if="${#authorization.expression('isAuthenticated()')}">-->
+<!--                    <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">-->
+<!--                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout-->
+<!--                    </a>-->
+<!--                    <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>-->
+<!--                </li>-->
+<!--            </ul>-->
         </div>
     </div>
 </div>
