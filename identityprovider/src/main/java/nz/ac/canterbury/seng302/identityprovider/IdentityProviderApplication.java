@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.identityprovider;
 
-import nz.ac.canterbury.seng302.identityprovider.entity.User;
-import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
+import nz.ac.canterbury.seng302.identityprovider.entity.Client;
+import nz.ac.canterbury.seng302.identityprovider.repository.ClientRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,25 +21,25 @@ public class IdentityProviderApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(UserRepository repository) {
+    public CommandLineRunner demo(ClientRepository repository) {
         return (args) -> {
             // save a few users
-            repository.save(new User("Jack", "Bauer"));
-            repository.save(new User("Chloe", "O'Brian"));
-            repository.save(new User("Kim", "Bauer"));
-            repository.save(new User("David", "Palmer"));
-            repository.save(new User("Michelle", "Dessler"));
+            repository.save(new Client("Jack", "Bauer"));
+            repository.save(new Client("Chloe", "O'Brian"));
+            repository.save(new Client("Kim", "Bauer"));
+            repository.save(new Client("David", "Palmer"));
+            repository.save(new Client("Michelle", "Dessler"));
 
             // fetch all users
             log.info("Users found with findAll():");
             log.info("-------------------------------");
-            for (User user : repository.findAll()) {
+            for (Client user : repository.findAll()) {
                 log.info(user.toString());
             }
             log.info("");
 
             // fetch an individual customer by ID
-            User user = repository.findByUserId(1L);
+            Client user = repository.findByUserId(1L);
             log.info("user found with findById(1L):");
             log.info("--------------------------------");
             log.info(user.toString());
