@@ -37,7 +37,6 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
      */
     @Override
     public void authenticate(AuthenticateRequest request, StreamObserver<AuthenticateResponse> responseObserver) {
-        System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEYYYYYYYYY");
         User user = repository.findByUsername(request.getUsername());
 
         System.out.println(user);
