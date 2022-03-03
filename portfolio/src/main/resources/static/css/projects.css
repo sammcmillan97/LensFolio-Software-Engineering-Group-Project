@@ -1,0 +1,22 @@
+#project-wrapper {
+
+}
+
+.project {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 10px 30px 10px 20px;
+    margin-bottom: 1rem;
+}
+
+.project__name {
+
+}
+
+.project__date {
+
+}
+
+.project__description {
+
+}
