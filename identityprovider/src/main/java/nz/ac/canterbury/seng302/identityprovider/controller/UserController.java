@@ -19,14 +19,14 @@ public class UserController {
 
     @PostMapping("/some/api/path")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long register(@RequestBody User user) {
+    public int register(@RequestBody User user) {
         //validation and functionality required
         return userService.registerUser(user);
     }
 
     @PostMapping ("/some/api/path2")
     @ResponseStatus(HttpStatus.OK)
-    public Long login(@RequestBody User user) {
+    public int login(@RequestBody User user) {
         //validation and functionality required
         return userService.login(user);
     }

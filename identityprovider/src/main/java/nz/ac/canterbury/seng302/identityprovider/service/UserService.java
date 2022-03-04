@@ -11,13 +11,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Long registerUser(User user) {
+    public int registerUser(User user) {
         //validation and functionality required
         //userRepository.save(user);
         return user.getUserId();
     }
 
-    public Long login(User user) {
+    public int login(User user) {
         //validation and functionality required
         return user.getUserId();
     }

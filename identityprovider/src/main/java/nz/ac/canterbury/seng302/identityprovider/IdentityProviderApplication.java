@@ -37,13 +37,6 @@ public class IdentityProviderApplication {
             }
             log.info("");
 
-            // fetch an individual customer by ID
-            User user = repository.findByUserId(1L);
-            log.info("user found with findById(1L):");
-            log.info("--------------------------------");
-            log.info(user.toString());
-            log.info("");
-
             // fetch customers by last name
             log.info("User found with findByUsername('palmerdav'):");
             log.info("--------------------------------------------");

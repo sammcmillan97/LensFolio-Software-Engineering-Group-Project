@@ -21,8 +21,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         ChangePasswordResponse.Builder reply = ChangePasswordResponse.newBuilder();
 
-        if (repository.existsById((long) request.getUserId())) {
-            User user = repository.findByUserId((long) request.getUserId());
+        if (repository.existsById(request.getUserId())) {
+            User user = repository.findByUserId(request.getUserId());
             if (Objects.equals(user.getPassword(), request.getCurrentPassword())) {
                 user.setPassword(request.getNewPassword());
                 reply.setIsSuccess(true).setMessage("Successfully changed password");
@@ -39,26 +39,48 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
-        System.out.println("You tried to edit the user!");
 
         EditUserResponse.Builder reply = EditUserResponse.newBuilder();
 
-        reply.setIsSuccess(false).setMessage("Not yet implemented");
+        if (repository.existsById(request.getUserId())) {
+            User user = repository.findByUserId(request.getUserId());
+            user.setFirstName(request.getFirstName());
+            user.setMiddleName(request.getMiddleName());
+            user.setLastName(request.getLastName());
+            user.setNickname(request.getNickname());
+            user.setBio(request.getBio());
+            user.setPreferredPronouns(request.getPersonalPronouns());
+            user.setEmail(request.getEmail());
+            reply.setIsSuccess(true).setMessage("Edit user succeeded");
+        } else {
+            reply.setIsSuccess(false).setMessage("Edit user failed: user does not exist");
+        }
 
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();
+
     }
 
     @Override
     public void getUserAccountById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
-        System.out.println("You tried to get a user's information by their ID!");
 
         UserResponse.Builder reply = UserResponse.newBuilder();
 
-        reply.setUsername("Not yet implemented");
+        if (repository.existsById(request.getId())) {
+            User user = repository.findByUserId(request.getId());
+            reply.setUsername(user.getUsername())
+                    .setFirstName(user.getFirstName())
+                    .setMiddleName(user.getMiddleName())
+                    .setLastName(user.getLastName())
+                    .setNickname(user.getNickname())
+                    .setBio(user.getBio())
+                    .setPersonalPronouns(user.getPreferredPronouns())
+                    .setEmail(user.getEmail());
+        }
 
         responseObserver.onNext(reply.build());
         responseObserver.onCompleted();
+
     }
 
     @Override
@@ -77,7 +99,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     request.getPersonalPronouns(),
                     request.getEmail(),
                     request.getPassword()));
-            reply.setIsSuccess(true).setMessage("Register attempt succeeded");
+            reply
+                    .setIsSuccess(true)
+                    .setNewUserId(repository.findByUsername(request.getUsername()).getUserId())
+                    .setMessage("Register attempt succeeded");
         } else {
             reply.setIsSuccess(false).setMessage("Register attempt failed: Username already taken");
         }

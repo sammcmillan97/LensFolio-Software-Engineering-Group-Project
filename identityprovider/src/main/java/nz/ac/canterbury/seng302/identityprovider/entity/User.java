@@ -15,7 +15,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long userId;
+    private int userId;
 
     @NotBlank(message="Username is required")
     @Size(max=50, message="Username must be less than 50 characters")
@@ -54,7 +54,7 @@ public class User {
     protected User() {}
 
     //with userId as well
-    public User(Long userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -87,7 +87,7 @@ public class User {
                 userId, username, firstName, middleName, lastName, nickname, bio, preferredPronouns, email, password);
     }
 
-    public Long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
