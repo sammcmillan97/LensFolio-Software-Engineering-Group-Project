@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link href="login.css" rel="stylesheet" />
+    <link th:href="@{/css/loginCSS.css}" rel="stylesheet" />
 </head>
 <body>
 <!--<p th:text="${loginMessage}" />-->
@@ -27,6 +27,11 @@
             </div>
             <div class="row button">
                 <input type="submit" value="Login">
+            </div>
+            <div class="row button">
+                <label>
+                    <input type="submit" value="Signup">
+                </label>
             </div>
         </form>
     </div>
