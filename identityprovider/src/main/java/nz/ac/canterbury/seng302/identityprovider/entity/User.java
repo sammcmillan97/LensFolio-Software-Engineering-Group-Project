@@ -39,8 +39,8 @@ public class User {
     @Size(max=255, message="Bio must be less than 255 characters")
     private String bio;
 
-    //could,should probably use enum
-    private String preferredPronouns;
+    @Enumerated(EnumType.STRING)
+    private Pronouns preferredPronouns;
 
     //probably needs more validation
     @Size(max=255, message="Email can be at most 255 characters")
@@ -54,7 +54,7 @@ public class User {
     protected User() {}
 
     //with userId as well
-    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, Pronouns preferredPronouns, String email, String password){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -68,7 +68,7 @@ public class User {
     }
 
     //without userId
-    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
+    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, Pronouns preferredPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -135,11 +135,11 @@ public class User {
         this.bio = bio;
     }
 
-    public String getPreferredPronouns(){
+    public Pronouns getPreferredPronouns(){
         return preferredPronouns;
     }
 
-    public void setPreferredPronouns(String preferredPronouns) {
+    public void setPreferredPronouns(Pronouns preferredPronouns) {
         this.preferredPronouns = preferredPronouns;
     }
 
