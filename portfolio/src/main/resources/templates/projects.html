@@ -35,17 +35,17 @@
         <div id="project-wrapper" class="flex-column">
             <!-- NOTE: Remove the following example projects from source when populating with real projects. -->
             <div class="project">
-                <h2 class="project__name">Project 1</h2>
-                <h4 class="project__date">Start Date: </h4>
-                <h4 class="project__date">End Date: </h4>
-                <p class="project__description">Project description should go here.</p>
+                <h2 class="project__name"><p th:text="${project1Name}"/></h2>
+                <h4 class="project__date"><p th:text="${project1Start}"/></h4>
+                <h4 class="project__date"><p th:text="${project1End}"/></h4>
+                <p class="project__description"><p th:text="${project1Description}"/></p>
             </div>
 
             <div class="project">
-                <h2 class="project__name">Project 2</h2>
-                <h4 class="project__date">Start Date: </h4>
-                <h4 class="project__date">End Date: </h4>
-                <p class="project__description">Project description should go here.</p>
+                <h2 class="project__name"><p th:text="${project2Name}"/></h2>
+                <h4 class="project__date"><p th:text="${project2Start}"/></h4>
+                <h4 class="project__date"><p th:text="${project2End}"/></h4>
+                <p class="project__description"><p th:text="${project2Description}"/></p>
             </div>
         </div>
 

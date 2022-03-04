@@ -1,0 +1,2 @@
+INSERT INTO PROJECT (project_id, description, end_date, project_name, start_date) VALUES ('1', 'Dummy first entry to test project', '2022-04-02', 'Dummy Project 1', '2022-03-02');
+INSERT INTO PROJECT (project_id, description, end_date, project_name, start_date) VALUES ('2', 'Dummy second entry to test project', '2022-05-16', 'Dummy Project 2', '2022-06-16');
