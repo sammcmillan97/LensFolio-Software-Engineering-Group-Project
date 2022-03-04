@@ -39,7 +39,7 @@ public class User {
     @Size(max=255, message="Bio must be less than 255 characters")
     private String bio;
 
-    @Enumerated(EnumType.STRING)
+    @Size(max=16, message="Personal Pronouns must be less than 16 characters")
     private String personalPronouns;
 
     //probably needs more validation
