@@ -51,6 +51,22 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     private String password;
 
+    public static Pronouns StringToPronouns(String string) {
+        return switch (string) {
+            case "He/Him" -> Pronouns.HE_HIM;
+            case "She/Her" -> Pronouns.SHE_HER;
+            default -> Pronouns.THEY_THEM; //Default to They/Them to not presume anything
+        };
+    }
+
+    public static String PronounsToString(Pronouns pronouns) {
+        return switch (pronouns) {
+            case HE_HIM -> "He/Him";
+            case SHE_HER -> "She/Her";
+            case THEY_THEM -> "They/Them";
+        };
+    }
+
     protected User() {}
 
     //with userId as well

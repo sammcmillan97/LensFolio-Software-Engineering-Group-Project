@@ -49,7 +49,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             user.setLastName(request.getLastName());
             user.setNickname(request.getNickname());
             user.setBio(request.getBio());
-            user.setPreferredPronouns(request.getPersonalPronouns());
+            user.setPreferredPronouns(User.StringToPronouns(request.getPersonalPronouns()));
             user.setEmail(request.getEmail());
             reply.setIsSuccess(true).setMessage("Edit user succeeded");
         } else {
@@ -74,7 +74,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setLastName(user.getLastName())
                     .setNickname(user.getNickname())
                     .setBio(user.getBio())
-                    .setPersonalPronouns(user.getPreferredPronouns())
+                    .setPersonalPronouns(User.PronounsToString(user.getPreferredPronouns()))
                     .setEmail(user.getEmail());
         }
 
@@ -96,7 +96,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     request.getLastName(),
                     request.getNickname(),
                     request.getBio(),
-                    request.getPersonalPronouns(),
+                    User.StringToPronouns(request.getPersonalPronouns()),
                     request.getEmail(),
                     request.getPassword()));
             reply
