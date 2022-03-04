@@ -40,7 +40,7 @@ public class User {
     private String bio;
 
     @Enumerated(EnumType.STRING)
-    private Pronouns preferredPronouns;
+    private String personalPronouns;
 
     //probably needs more validation
     @Size(max=255, message="Email can be at most 255 characters")
@@ -51,26 +51,10 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     private String password;
 
-    public static Pronouns StringToPronouns(String string) {
-        return switch (string) {
-            case "He/Him" -> Pronouns.HE_HIM;
-            case "She/Her" -> Pronouns.SHE_HER;
-            default -> Pronouns.THEY_THEM; //Default to They/Them to not presume anything
-        };
-    }
-
-    public static String PronounsToString(Pronouns pronouns) {
-        return switch (pronouns) {
-            case HE_HIM -> "He/Him";
-            case SHE_HER -> "She/Her";
-            case THEY_THEM -> "They/Them";
-        };
-    }
-
     protected User() {}
 
     //with userId as well
-    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, Pronouns preferredPronouns, String email, String password){
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -78,20 +62,20 @@ public class User {
         this.lastName = lastName;
         this.nickname = nickname;
         this.bio = bio;
-        this.preferredPronouns = preferredPronouns;
+        this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = password;
     }
 
     //without userId
-    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, Pronouns preferredPronouns, String email, String password){
+    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.nickname = nickname;
         this.bio = bio;
-        this.preferredPronouns = preferredPronouns;
+        this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = password;
     }
@@ -100,7 +84,7 @@ public class User {
     public String toString() {
         return String.format (
                 "User[userId=%d, username=%s, firstName=%s, middleName=%s, lastName=%s, nickname=%s, bio=%s, preferredPronouns=%s, email=%s, password=%s]",
-                userId, username, firstName, middleName, lastName, nickname, bio, preferredPronouns, email, password);
+                userId, username, firstName, middleName, lastName, nickname, bio, personalPronouns, email, password);
     }
 
     public int getUserId() {
@@ -151,12 +135,12 @@ public class User {
         this.bio = bio;
     }
 
-    public Pronouns getPreferredPronouns(){
-        return preferredPronouns;
+    public String getPersonalPronouns(){
+        return personalPronouns;
     }
 
-    public void setPreferredPronouns(Pronouns preferredPronouns) {
-        this.preferredPronouns = preferredPronouns;
+    public void setPersonalPronouns(String personalPronouns) {
+        this.personalPronouns = personalPronouns;
     }
 
     public String getEmail() {

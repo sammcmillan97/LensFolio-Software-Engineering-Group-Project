@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 
 import org.slf4j.Logger;
 
-import static nz.ac.canterbury.seng302.identityprovider.entity.Pronouns.*;
-
 @SpringBootApplication
 public class IdentityProviderApplication {
 
@@ -25,26 +23,11 @@ public class IdentityProviderApplication {
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
             // save a few users
-            repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", HE_HIM, "jack@gmail.com", "password"));
-            repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", SHE_HER, "coco@gmail.com", "password"));
-            repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", SHE_HER, "kiki@gmail.com", "password"));
-            repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", THEY_THEM, "davo@gmail.com", "password"));
-            repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", HE_HIM, "shelly@gmail.com", "password"));
-
-            // fetch all users
-            log.info("Users found with findAll():");
-            log.info("-------------------------------");
-            for (User user : repository.findAll()) {
-                log.info(user.toString());
-            }
-            log.info("");
-
-            // fetch customers by last name
-            log.info("User found with findByUsername('palmerdav'):");
-            log.info("--------------------------------------------");
-            log.info(repository.findByUsername("palmerdav").toString());
-
-            log.info("");
+            repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "he/him", "jack@gmail.com", "password"));
+            repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", "she/her", "coco@gmail.com", "password"));
+            repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", "she/her", "kiki@gmail.com", "password"));
+            repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", "they/them", "davo@gmail.com", "password"));
+            repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "password"));
         };
     }
 }
