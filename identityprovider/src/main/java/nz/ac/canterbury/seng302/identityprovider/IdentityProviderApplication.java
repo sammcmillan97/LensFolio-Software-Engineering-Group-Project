@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 
 import org.slf4j.Logger;
 
+import static nz.ac.canterbury.seng302.identityprovider.entity.Pronouns.*;
+
 @SpringBootApplication
 public class IdentityProviderApplication {
 
@@ -23,11 +25,11 @@ public class IdentityProviderApplication {
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
             // save a few users
-            repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password"));
-            repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", "SHE/HER", "coco@gmail.com", "password"));
-            repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", "SHE/HER", "kiki@gmail.com", "password"));
-            repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", "THEY/THEM", "davo@gmail.com", "password"));
-            repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", "HE/HIM", "shelly@gmail.com", "password"));
+            repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", HE_HIM, "jack@gmail.com", "password"));
+            repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", SHE_HER, "coco@gmail.com", "password"));
+            repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", SHE_HER, "kiki@gmail.com", "password"));
+            repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", THEY_THEM, "davo@gmail.com", "password"));
+            repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", HE_HIM, "shelly@gmail.com", "password"));
 
             // fetch all users
             log.info("Users found with findAll():");
