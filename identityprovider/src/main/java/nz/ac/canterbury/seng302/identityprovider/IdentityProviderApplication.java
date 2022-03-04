@@ -23,11 +23,11 @@ public class IdentityProviderApplication {
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
             // save a few users
-            repository.save(new User("bauerjac","Jack", "Bauer","Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password"));
-            repository.save(new User("obrianchl","Chloe", "OBrian", "Coco", "hello", "SHE/HER", "coco@gmail.com", "password"));
-            repository.save(new User("bauerkim","Kim", "Bauer", "Kiki", "heyy", "SHE/HER", "kiki@gmail.com", "password"));
-            repository.save(new User("palmerdav","David", "Palmer", "Davo", "gidday", "THEY/THEM", "davo@gmail.com", "password"));
-            repository.save(new User("desslermic","Michelle", "Dessler", "Shelly", "hi", "HE/HIM", "shelly@gmail.com", "password"));
+            repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password"));
+            repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", "SHE/HER", "coco@gmail.com", "password"));
+            repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", "SHE/HER", "kiki@gmail.com", "password"));
+            repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", "THEY/THEM", "davo@gmail.com", "password"));
+            repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", "HE/HIM", "shelly@gmail.com", "password"));
 
             // fetch all users
             log.info("Users found with findAll():");
@@ -47,7 +47,7 @@ public class IdentityProviderApplication {
             // fetch customers by last name
             log.info("User found with findByUsername('palmerdav'):");
             log.info("--------------------------------------------");
-            repository.findByUsername("palmerdav").toString();
+            log.info(repository.findByUsername("palmerdav").toString());
 
             log.info("");
         };

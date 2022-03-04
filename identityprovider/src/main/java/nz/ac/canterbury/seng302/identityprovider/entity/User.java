@@ -25,6 +25,10 @@ public class User {
     @Size(max=255, message="First name must be less than 255 characters")
     private String firstName;
 
+    @NotBlank(message="Middle name cannot be empty")
+    @Size(max=255, message="Middle name must be less than 255 characters")
+    private String middleName;
+
     @NotBlank(message="Last name cannot be empty")
     @Size(max=255, message="Last name must be less than 255 characters")
     private String lastName;
@@ -50,10 +54,11 @@ public class User {
     protected User() {}
 
     //with userId as well
-    public User(Long userId, String username, String firstName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
+    public User(Long userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.nickname = nickname;
         this.bio = bio;
@@ -63,9 +68,10 @@ public class User {
     }
 
     //without userId
-    public User(String username, String firstName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
+    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String preferredPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.nickname = nickname;
         this.bio = bio;
@@ -77,8 +83,8 @@ public class User {
     @Override
     public String toString() {
         return String.format (
-                "User[userId=%d, username=%s, firstName=%s, lastName=%s, nickname=%s, bio=%s, preferredPronouns=%s, email=%s, password=%s]",
-                userId, username, firstName, lastName, nickname, bio, preferredPronouns, email, password);
+                "User[userId=%d, username=%s, firstName=%s, middleName=%s, lastName=%s, nickname=%s, bio=%s, preferredPronouns=%s, email=%s, password=%s]",
+                userId, username, firstName, middleName, lastName, nickname, bio, preferredPronouns, email, password);
     }
 
     public Long getUserId() {
@@ -93,27 +99,63 @@ public class User {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getNickname() {
         return nickname;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public String getBio(){
         return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public String getPreferredPronouns(){
         return preferredPronouns;
     }
 
+    public void setPreferredPronouns(String preferredPronouns) {
+        this.preferredPronouns = preferredPronouns;
+    }
+
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword(){
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
