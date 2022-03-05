@@ -25,6 +25,17 @@ public class ProjectEntity {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
+    public ProjectEntity() {
+    }
+
+    public ProjectEntity(Long projectId, String projectName, String description, Date startDate, Date endDate) {
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Long getProject_id() {
         return projectId;
     }
