@@ -1,6 +1,12 @@
 /* CSS variables */
 :root {
+    font-size: 16px;
     --site-navigation-width: 200px;
+    --color-primary: #FBAA60;
+    --color-secondary: #FBC490;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
 }
 
 
@@ -8,6 +14,8 @@
 
 body {
     font-family: Arial, sans-serif;
+    font-weight: 200;
+    background-color: rgba(251, 196, 144, 0.5); /* Secondary Colour */
 }
 
 h5 {
@@ -34,10 +42,11 @@ h5 {
 
     /* Behaviour */
     overflow-x: hidden;
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, var(--color-primary) 0%, var(--color-tertiary) 70%);
 
     /* Text */
-    color: white;
+    color: var(--color-complement);
+    text-outline: var(--color-accent);
 }
 
 .site-navigation__list {
@@ -51,25 +60,38 @@ h5 {
     display: block;
 }
 
+.site-navigation__item h5 {
+    margin: 0;
+    padding: 0;
+}
+
+.site-navigation__link:first-of-type {
+    margin-top: 0.25rem;
+}
+
 .site-navigation__link {
     /* Position & size */
     display: block;
     height: 3rem;
     line-height: 3rem;
     border-radius: 4px;
-    margin: 0.25rem 1rem 0.25rem 1rem;
+    margin: 0.5rem 1rem 0.5rem 1rem;
 
     /* Behaviour */
     cursor: pointer;
 
     /* Text */
     text-decoration: none;
-    color: #d7d7d7;
+    font-weight: 200;
+    color: var(--color-complement);
+}
+
+.site-navigation__link.active {
+    background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
 }
 
 .site-navigation__link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
 
 

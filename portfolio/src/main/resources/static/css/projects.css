@@ -1,12 +1,22 @@
+/* CSS variables */
+:root {
+    --color-primary: #FBAA60;
+    --color-secondary: #FBC490;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
 #project-wrapper {
 
 }
 
 .project {
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--color-accent);
     border-radius: 0.5rem;
     padding: 10px 30px 10px 20px;
     margin-bottom: 1rem;
+    background-color: var(--color-complement);
 }
 
 .project__name {
