@@ -24,6 +24,7 @@
 
 .project__name {
     margin-bottom: 1rem;
+    margin-right: 10rem;
 }
 
 .project__date-wrapper h4 {
@@ -33,7 +34,7 @@
 .project__button-wrapper {
     position: absolute;
     top: 1rem;
-    right: 1rem;
+    right: 0;
 }
 
 .project__button-wrapper button {
@@ -50,10 +51,6 @@
     /* Text */
     font-size: 1rem;
     font-weight: 400;
-}
-
-.project__button-wrapper button:last-of-type {
-    margin-right: 0;
 }
 
 #new-project-button {
