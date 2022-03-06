@@ -32,10 +32,10 @@
         <div id="project-wrapper" class="flex-column">
             <!-- NOTE: Remove the following example projects from source when populating with real projects. -->
             <div class="project" th:each="project: ${projects}">
-                <h2 class="project__name"><p th:text="${project.project_name}"/></h2>
-                <h4 class="project__date"><p th:text="${project.start_date}"/></h4>
-                <h4 class="project__date"><p th:text="${project.end_date}"/></h4>
-                <p class="project__description"><p th:text="${project.description}"/></p>
+                <h2 class="project__name" th:text="${project.project_name}"></h2>
+                <h4 class="project__date" th:text="${project.start_date}"></h4>
+                <h4 class="project__date" th:text="${project.end_date}"></h4>
+                <p class="project__description" th:text="${project.description}"></p>
             </div>
         </div>
 
