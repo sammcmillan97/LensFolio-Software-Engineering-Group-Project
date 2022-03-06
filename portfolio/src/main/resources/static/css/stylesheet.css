@@ -11,7 +11,7 @@
 }
 
 
-/* Elements */
+/******************** Elements ********************/
 
 body {
     font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@ h5 {
 }
 
 
-/* Navigation bar */
+/******************** Navigation bar ********************/
 
 #site-navigation {
     /* Position & size */
@@ -101,7 +101,7 @@ h5 {
 }
 
 
-/* Page content */
+/******************** Page content ********************/
 
 #page-content {
     margin-left: var(--site-navigation-width);

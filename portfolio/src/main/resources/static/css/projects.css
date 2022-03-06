@@ -7,9 +7,8 @@
     --color-accent: #A82810;
 }
 
-#project-wrapper {
 
-}
+/******************** Project Cards ********************/
 
 .project, #new-project-button {
     position: relative;
@@ -31,14 +30,6 @@
     margin: 0;
 }
 
-.project__date {
-
-}
-
-.project__description {
-
-}
-
 .project__button-wrapper {
     position: absolute;
     top: 1rem;
@@ -46,14 +37,17 @@
 }
 
 .project__button-wrapper button {
+    /* Position & Size*/
     margin-right: 1rem;
     padding: 0;
     width: 4rem;
     height: 3rem;
     line-height: 3rem;
 
+    /* Behaviour */
     cursor: pointer;
 
+    /* Text */
     font-size: 1rem;
     font-weight: 400;
 }
