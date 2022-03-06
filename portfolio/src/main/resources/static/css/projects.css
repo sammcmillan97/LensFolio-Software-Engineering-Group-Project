@@ -24,7 +24,11 @@
 }
 
 .project__name {
+    margin-bottom: 1rem;
+}
 
+.project__date-wrapper h4 {
+    margin: 0;
 }
 
 .project__date {

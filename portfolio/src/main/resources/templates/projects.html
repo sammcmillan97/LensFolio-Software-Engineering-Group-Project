@@ -32,8 +32,11 @@
         <div id="project-wrapper" class="flex-column">
             <div class="project" th:each="project: ${projects}">
                 <h2 class="project__name" th:text="${project.project_name}"></h2>
-                <h4 class="project__date" th:text="${project.start_date}"></h4>
-                <h4 class="project__date" th:text="${project.end_date}"></h4>
+                <div class="project__date-wrapper flex-row">
+                    <h4 class="project__date" th:text="${project.start_date}"></h4>
+                    <h4>&nbsp;--->&nbsp;</h4>
+                    <h4 class="project__date" th:text="${project.end_date}"></h4>
+                </div>
                 <p class="project__description" th:text="${project.description}"></p>
 
                 <div class="project__button-wrapper flex-row">
