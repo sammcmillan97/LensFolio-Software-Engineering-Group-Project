@@ -12,10 +12,14 @@
 }
 
 .project, #new-project-button {
-    border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    position: relative;
     padding: 10px 30px 10px 20px;
     margin-bottom: 1rem;
+}
+
+.project, #new-project-button, .project__button-wrapper button {
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
     background-color: var(--color-complement);
 }
 
@@ -31,6 +35,29 @@
 
 }
 
+.project__button-wrapper {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.project__button-wrapper button {
+    margin-right: 1rem;
+    padding: 0;
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.project__button-wrapper button:last-of-type {
+    margin-right: 0;
+}
+
 #new-project-button {
     /* Position & Size */
     padding: 0;
@@ -38,14 +65,12 @@
     line-height: 3rem;
 
     /* Behaviour */
-    border-radius: 1.5rem;
     cursor: pointer;
 
     /* Text */
     font-size: 1.5rem;
-    font-weight: 600;
 }
 
-#new-project-button:hover {
+#new-project-button:hover, .project__button-wrapper button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }

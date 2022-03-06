@@ -28,6 +28,11 @@ h5 {
     flex-direction: column;
 }
 
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
 
 /* Navigation bar */
 
