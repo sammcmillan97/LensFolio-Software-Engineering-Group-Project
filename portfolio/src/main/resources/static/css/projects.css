@@ -1,5 +1,5 @@
-/* CSS variables */
 :root {
+    /* CSS variables */
     --color-primary: #FBAA60;
     --color-secondary: #FBC490;
     --color-tertiary: #F67B50;
@@ -11,9 +11,9 @@
 
 }
 
-.project {
+.project, #new-project-button {
     border: 1px solid var(--color-accent);
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
     padding: 10px 30px 10px 20px;
     margin-bottom: 1rem;
     background-color: var(--color-complement);
@@ -29,4 +29,23 @@
 
 .project__description {
 
+}
+
+#new-project-button {
+    /* Position & Size */
+    padding: 0;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Behaviour */
+    border-radius: 1.5rem;
+    cursor: pointer;
+
+    /* Text */
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#new-project-button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }

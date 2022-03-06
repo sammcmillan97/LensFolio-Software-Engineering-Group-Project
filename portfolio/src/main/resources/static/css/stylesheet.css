@@ -1,6 +1,7 @@
-/* CSS variables */
 :root {
     font-size: 16px;
+
+    /* CSS variables */
     --site-navigation-width: 200px;
     --color-primary: #FBAA60;
     --color-secondary: #FBC490;
