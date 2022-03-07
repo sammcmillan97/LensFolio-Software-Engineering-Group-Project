@@ -1,10 +1,10 @@
 stages:
   - tagChecking
-  - publishProtosToLocalMavenRepo
-  - build
-  - test
-  - sonarqube
-  - deploy
+#  - publishProtosToLocalMavenRepo
+#  - build
+#  - test
+#  - sonarqube
+#  - deploy
 
 tag-checker:
   stage: tagChecking
@@ -19,11 +19,11 @@ tag-checker:
 #     - cd portfolio
 #     - ./gradlew test
 
-# junit-identityprovider:
-#   stage: test
-#   script:
-#     - cd identityprovider
-#     - ./gradlew test
+junit-identityprovider:
+  stage: test
+  script:
+  - cd identityprovider
+  - ./gradlew test
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
