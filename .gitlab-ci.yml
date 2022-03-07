@@ -1,17 +1,17 @@
 stages:
-#  - tagChecking
-  - publishProtosToLocalMavenRepo
+  - tagChecking
+#  - publishProtosToLocalMavenRepo
   - build
   - test
   - sonarqube
   - deploy
 
-#tag-checker:
-#  stage: tagChecking
-#  script:
-#    - python3 tag_checker.py $CI_COMMIT_TAG
-#  only:
-#    - tags
+tag-checker:
+  stage: tagChecking
+  script:
+    - python3 tag_checker.py $CI_COMMIT_TAG
+  only:
+    - tags
 
 # junit-porfolio:
 #   stage: test
@@ -25,12 +25,12 @@ junit-identityprovider:
     - cd identityprovider
     - ./gradlew test
 
-publish-protos-to-maven-local:
-  stage: publishProtosToLocalMavenRepo
-  script:
-    - cd shared
-    - ./gradlew clean
-    - ./gradlew publishToMavenLocal
+#publish-protos-to-maven-local:
+#  stage: publishProtosToLocalMavenRepo
+#  script:
+#    - cd shared
+#    - ./gradlew clean
+#    - ./gradlew publishToMavenLocal
 
 # builds all branches, except dev and master
 branch-build:
