@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <link th:href="@{/css/registerCSS.css}" rel="stylesheet" />
+</head>
+<body>
+<h1>Sign Up</h1>
+<h2>Please enter your details below</h2>
+<form action="#" th:action="@{/register}" th:object="${registerRequest}" method="post">
+    <div>
+        <Label>Username
+            <input type="text" th:field=*{username}"/>
+        </Label>
+
+        <label>Email
+            <input type="email" th:field="*{email}"/>
+        </label>
+    </div>
+    <div>
+        <label>First name
+            <input type="text" th:field=*{firstName}"/>
+        </label>
+
+        <label> Last name
+            <input type="text" th:field=*{lastName}"/>
+        </label>
+    </div>
+    <div>
+        <label>Nickname
+            <input type="text" th:field=*{nickname}"/>
+        </label>
+        <label>Pronouns
+            <input type="text" th:field=*{pronouns)"/>
+        </label>
+    </div>
+    <div>
+        <label>Bio
+            <input type="text" th:field=*{bio}"/>
+        </label>
+    </div>
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+</body>
+</html>
