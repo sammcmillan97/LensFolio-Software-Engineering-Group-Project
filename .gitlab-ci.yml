@@ -1,17 +1,17 @@
 stages:
-  - tagChecking
+#  - tagChecking
   - publishProtosToLocalMavenRepo
   - build
   - test
   - sonarqube
   - deploy
 
-tag-checker:
-  stage: tagChecking
-  script:
-    - python3 tag_checker.py $CI_COMMIT_TAG
-  only:
-    - tags
+#tag-checker:
+#  stage: tagChecking
+#  script:
+#    - python3 tag_checker.py $CI_COMMIT_TAG
+#  only:
+#    - tags
 
 # junit-porfolio:
 #   stage: test
