@@ -5,8 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +32,7 @@ public class ProjectsController {
             cal.add(Calendar.MONTH, 8);
             Date endDate = new Date(cal.getTimeInMillis());
             String description = "";
-            Long projectId = Long.valueOf(1);
+            Long projectId = 1L;
             ProjectEntity defaultProject = new ProjectEntity(projectId, projectName, description, startDate, endDate);
             projectEntityRepository.save(defaultProject);
             projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
@@ -43,6 +42,12 @@ public class ProjectsController {
         model.addAttribute("projects", projects);
 
         return "projects";
+    }
+
+    @RequestMapping(value="/deleteProject/{id}", method = RequestMethod.DELETE)
+    public String deleteProjectById(@PathVariable("id") Long id) {
+        projectEntityRepository.deleteById(id);
+        return "redirect:../projects";
     }
 
 

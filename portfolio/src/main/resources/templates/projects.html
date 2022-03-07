@@ -44,7 +44,10 @@
                 <!-- Edit and delete project buttons -->
                 <div class="project__button-wrapper flex-row">
                     <button class="project__edit">Edit</button>
-                    <button class="project__delete">Delete</button>
+                    <form action="#" th:action="@{/deleteProject/{id}(id=${project.project_id})}" th:method="delete" >
+                        <button class="project__delete" type="submit" id="submitButton">Delete</button>
+                    </form>
+<!--                    <button class="project__delete" th:href="${/deleteProject/{id}(id=${project.project_id})}">Delete</button>-->
                 </div>
             </div>
 
