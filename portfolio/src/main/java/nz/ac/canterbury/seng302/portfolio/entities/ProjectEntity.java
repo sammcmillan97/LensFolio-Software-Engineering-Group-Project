@@ -4,6 +4,7 @@ import net.bytebuddy.implementation.bind.annotation.Default;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -28,6 +29,13 @@ public class ProjectEntity {
     private Date endDate;
 
     public ProjectEntity() {
+        Calendar cal = Calendar.getInstance();
+        projectName = String.format("Project %d", cal.get(Calendar.YEAR));
+        startDate = new Date(cal.getTimeInMillis());
+        cal.add(Calendar.MONTH, 8);
+        endDate = new Date(cal.getTimeInMillis());
+        description = "";
+        projectId = 1L;
     }
 
     public ProjectEntity(Long projectId, String projectName, String description, Date startDate, Date endDate) {
