@@ -26,14 +26,7 @@ public class ProjectsController {
         List<ProjectEntity> projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
 
         if (projects.size() < 1) {
-            Calendar cal = Calendar.getInstance();
-            String projectName = String.format("Project %d", cal.get(Calendar.YEAR));
-            Date startDate = new Date(cal.getTimeInMillis());
-            cal.add(Calendar.MONTH, 8);
-            Date endDate = new Date(cal.getTimeInMillis());
-            String description = "";
-            Long projectId = 1L;
-            ProjectEntity defaultProject = new ProjectEntity(projectId, projectName, description, startDate, endDate);
+            ProjectEntity defaultProject = new ProjectEntity();
             projectEntityRepository.save(defaultProject);
             projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
         }
@@ -44,10 +37,10 @@ public class ProjectsController {
         return "projects";
     }
 
-    @RequestMapping(value="/deleteProject/{id}", method = RequestMethod.DELETE)
-    public String deleteProjectById(@PathVariable("id") Long id) {
+    @DeleteMapping(value="/projects")
+    public String deleteProjectById(@RequestParam(name="id") Long id) {
         projectEntityRepository.deleteById(id);
-        return "redirect:../projects";
+        return "redirect:/projects";
     }
 
 
