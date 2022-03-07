@@ -1,6 +1,6 @@
 stages:
   - tagChecking
-#  - publishProtosToLocalMavenRepo
+  - publishProtosToLocalMavenRepo
   - build
   - test
   - sonarqube
@@ -25,12 +25,12 @@ junit-identityprovider:
     - cd identityprovider
     - ./gradlew test
 
-#publish-protos-to-maven-local:
-#  stage: publishProtosToLocalMavenRepo
-#  script:
-#    - cd shared
-#    - ./gradlew clean
-#    - ./gradlew publishToMavenLocal
+publish-protos-to-maven-local:
+  stage: publishProtosToLocalMavenRepo
+  script:
+    - cd shared
+    - ./gradlew clean
+    - ./gradlew publishToMavenLocal
 
 # builds all branches, except dev and master
 branch-build:
