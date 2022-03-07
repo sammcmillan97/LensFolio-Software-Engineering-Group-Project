@@ -4,6 +4,8 @@ import net.bytebuddy.implementation.bind.annotation.Default;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Entity
 @Table(name = "project")
@@ -60,19 +62,24 @@ public class ProjectEntity {
         this.description = description;
     }
 
-    public Date getStart_date() {
-        return startDate;
+    public String getStart_date() {
+        return dateToWords(startDate);
     }
 
     public void setStart_date(Date start_date) {
         this.startDate = start_date;
     }
 
-    public Date getEnd_date() {
-        return endDate;
+    public String getEnd_date() {
+        return dateToWords(endDate);
     }
 
     public void setEnd_date(Date end_date) {
         this.endDate = end_date;
+    }
+
+    private String dateToWords(Date date) {
+        DateFormat format2 = new SimpleDateFormat("MMMMM dd, yyyy");
+        return format2.format(date);
     }
 }
