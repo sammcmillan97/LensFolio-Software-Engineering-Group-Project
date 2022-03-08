@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Objects;
 
@@ -55,7 +56,8 @@ class IdentityProviderApplicationTests {
         assert Objects.equals(testUser.getBio(), testBio);
         assert Objects.equals(testUser.getPersonalPronouns(), testPronouns);
         assert Objects.equals(testUser.getEmail(), testEmail);
-        assert Objects.equals(testUser.getPassword(), testPassword);
+        //as the password is stored encrypted, it needs to be checked differently
+        assertTrue(testUser.checkPassword(testPassword));
     }
 
 }

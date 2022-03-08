@@ -23,7 +23,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (repository.existsById(request.getUserId())) {
             User user = repository.findByUserId(request.getUserId());
-            if (Objects.equals(user.getPassword(), request.getCurrentPassword())) {
+            if (user.checkPassword(request.getCurrentPassword())) {
                 user.setPassword(request.getNewPassword());
                 reply.setIsSuccess(true).setMessage("Successfully changed password");
             } else {

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -16,7 +15,17 @@ class UserTests {
 
     @BeforeEach
     private void setup() {
-        user1 = new User("bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password");
+        user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password");
+    }
+
+    @Test
+    void testToString(){
+        assertEquals("User[userId=1, username=bauerjac, firstName=Jack, middleName=Brown, lastName=Bauer, nickname=Jack-Jack, bio=howdy, preferredPronouns=HE/HIM, email=jack@gmail.com]", user1.toString());
+    }
+
+    @Test
+    void testUserIdMethod(){
+        assertEquals(1, user1.getUserId());
     }
 
     @Test
@@ -75,10 +84,18 @@ class UserTests {
     }
 
     @Test
-    void testPasswordMethods() {
-        assertEquals("password", user1.getPassword());
-        user1.setPassword("passwordo");
-        assertEquals("passwordo", user1.getPassword());
+    void testEncryptOccurs(){
+        assertNotEquals(user1.getPassword(), "password");
+    }
+
+    @Test
+    void testCorrectPassword() {
+        assertTrue(user1.checkPassword("password"));
+    }
+
+    @Test
+    void testIncorrectPassword() {
+        assertFalse(user1.checkPassword("theWrongPassword"));
     }
 
 

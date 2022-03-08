@@ -14,6 +14,7 @@ import java.security.SecureRandom;
 @Table(name="USERS")
 public class User {
 
+    static final int STRENGTH = 10;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -53,11 +54,7 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     private String password;
 
-    protected User() {}
-
-    //with userId as well
-    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
-        this.userId = userId;
+    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -69,10 +66,8 @@ public class User {
         this.password = encryptPassword(password);
     }
 
-
-
-    //without userId
-    public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
+        this.userId = userId;
         this.username = username;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -87,8 +82,8 @@ public class User {
     @Override
     public String toString() {
         return String.format (
-                "User[userId=%d, username=%s, firstName=%s, middleName=%s, lastName=%s, nickname=%s, bio=%s, preferredPronouns=%s, email=%s, password=%s]",
-                userId, username, firstName, middleName, lastName, nickname, bio, personalPronouns, email, password);
+                "User[userId=%d, username=%s, firstName=%s, middleName=%s, lastName=%s, nickname=%s, bio=%s, preferredPronouns=%s, email=%s]",
+                userId, username, firstName, middleName, lastName, nickname, bio, personalPronouns, email);
     }
 
     public int getUserId() {
@@ -165,13 +160,22 @@ public class User {
 
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
-     * @param password
-     * @return encrypted password
+     * @param password raw password that user has selected during registration
+     * @return encrypted password to be stored in db
      */
     private String encryptPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10, new SecureRandom());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(STRENGTH, new SecureRandom());
         return passwordEncoder.encode(password);
     }
 
+    /**
+     * Check password when user logs in
+     * @param password raw password user has entered while trying to login
+     * @return true if password is correct, otherwise false
+     */
+    public Boolean checkPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(STRENGTH);
+        return passwordEncoder.matches(password, this.password);
+    }
 
 }

@@ -42,8 +42,7 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
         System.out.println(user);
 
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
-        
-        if (user != null && request.getPassword().equals(user.getPassword())) {
+        if (user != null && user.checkPassword(request.getPassword())) {
 
             String token = jwtTokenService.generateTokenForUser(user.getUsername(), VALID_USER_ID, FULL_NAME_OF_USER, ROLE_OF_USER);
             reply
