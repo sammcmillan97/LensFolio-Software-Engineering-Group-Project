@@ -2,12 +2,15 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.entities.ProjectEntity;
 import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
+import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import java.util.Calendar;
@@ -31,7 +34,6 @@ public class ProjectsController {
             projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
         }
 
-
         model.addAttribute("projects", projects);
 
         return "projects";
@@ -40,6 +42,33 @@ public class ProjectsController {
     @DeleteMapping(value="/projects")
     public String deleteProjectById(@RequestParam(name="id") Long id) {
         projectEntityRepository.deleteById(id);
+        return "redirect:/projects";
+    }
+
+//    @GetMapping("/projects/id")
+//    public String getProjectById(@RequestParam(name="id") Long id, Model model) {
+//
+//        model.addAttribute("project", projectEntityRepository.findById(id));
+//        return "redirect:/projects";
+//    }
+
+    @PostMapping(value="/projects")
+    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") Long projectId,
+                                  @RequestParam(name = "projectName") String projectName,
+                                  @RequestParam(name = "projectDescription") String projectDescription,
+                                  @RequestParam(name = "projectStartDate") Date projectStartDate,
+                                  @RequestParam(name = "projectEndDate") Date projectEndDate,
+                                  Model model) {
+        if (projectId == -1) {
+            System.out.println(projectName);
+            ProjectEntity newProject = new ProjectEntity(projectName, projectDescription, projectStartDate, projectEndDate);
+            projectEntityRepository.save(newProject);
+        } else {
+            Optional<ProjectEntity> oldProject = projectEntityRepository.findById(projectId);
+            ProjectEntity updatedProject = new ProjectEntity(projectId, projectName, projectDescription, projectStartDate, projectEndDate);
+            projectEntityRepository.save(updatedProject);
+        }
+
         return "redirect:/projects";
     }
 
