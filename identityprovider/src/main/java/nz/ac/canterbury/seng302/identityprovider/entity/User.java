@@ -79,6 +79,9 @@ public class User {
         this.password = encryptPassword(password);
     }
 
+    protected User() {
+    }
+
     @Override
     public String toString() {
         return String.format (
