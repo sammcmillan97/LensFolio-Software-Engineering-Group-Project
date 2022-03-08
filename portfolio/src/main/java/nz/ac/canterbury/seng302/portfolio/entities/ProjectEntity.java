@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Set;
 
 @Entity
 @Table(name = "project")
@@ -27,6 +28,9 @@ public class ProjectEntity {
 
     @Column(name = "end_date", nullable = false)
     private Date endDate;
+
+    @OneToMany(mappedBy = "project")
+    private Set<SprintEntity> sprints;
 
     public ProjectEntity() {
         Calendar cal = Calendar.getInstance();
@@ -90,6 +94,14 @@ public class ProjectEntity {
 
     public void setEnd_date(Date end_date) {
         this.endDate = end_date;
+    }
+
+    public Set<SprintEntity> getSprints() {
+        return sprints;
+    }
+
+    public void setSprints(Set<SprintEntity> sprints) {
+        this.sprints = sprints;
     }
 
     private String dateToWords(Date date) {
