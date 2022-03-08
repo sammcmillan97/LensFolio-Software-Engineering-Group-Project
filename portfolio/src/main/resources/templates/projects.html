@@ -34,20 +34,20 @@
             <div>
             <label><b>Project Name</b></label>
             </div>
-            <div><input type="text" id="projectName" name="projectName" required></div>
+            <div><input type="text" id="projectName" class="edit-input" name="projectName" required></div>
 
             <div><label><b>Project Description</b></label></div>
 
-            <div><textarea id="projectDescription" name="projectDescription"></textarea></div>
+            <div><textarea id="projectDescription" class="edit-input" name="projectDescription"></textarea></div>
 
             <div><label><b>Project Start Date</b></label></div>
-            <div><input type="date" id="projectStartDate" name="projectStartDate" onchange="updateMinEndDate()" required></div>
+            <div><input type="date" id="projectStartDate" name="projectStartDate" class="edit-input" onchange="updateMinEndDate()" required></div>
 
             <div><label><b>Project End Date</b></label></div>
-            <div><input type="date" id="projectEndDate" name="projectEndDate" required></div>
+            <div><input type="date" id="projectEndDate" name="projectEndDate" class="edit-input" required></div>
 
-            <button type="submit" class="btn save">Save Changes</button>
-            <button type="button" class="btn discard" onclick="closeForm()">Discard</button>
+            <button type="submit" class="button save">Save Changes</button>
+            <button type="button" class="button discard" onclick="closeForm()">Discard</button>
         </form>
     </div>
     <div class="fullscreen-div" id="fullscreenDiv" display="none"></div>
@@ -94,10 +94,11 @@
     </div>
     <script>
         function editProject(project_id, project_name, project_description, start_date, end_date) {
-            // var project = "[[${project}]]";
 
-            let startDate = Date.parse(start_date) + 46800000; // Add 13 hours in ms to convert from UTC to NZT
-            let endDate = Date.parse(end_date) + 46800000;
+            let startDate = new Date(Date.parse(start_date)); // Add 13 hours in ms to convert from UTC to NZT
+            startDate.setUTCHours(startDate.getUTCHours() + 13);
+            let endDate = new Date(Date.parse(end_date));
+            endDate.setUTCHours(endDate.getUTCHours() + 13);
 
             document.getElementById("editAddPopup").style.display = "block";
             document.getElementById("projectName").value = project_name;
@@ -125,10 +126,13 @@
             endDate.setUTCMonth(endDate.getUTCMonth() + 8);
 
             document.getElementById("editAddPopup").style.display = "block";
+            document.getElementById("projectId").value = "";
+            document.getElementById("projectDescription").value = "";
             document.getElementById("projectName").value = "Project " + startDate.getFullYear();
             document.getElementById("projectStartDate").valueAsNumber = startDate;
             document.getElementById("projectEndDate").valueAsNumber = endDate;
             document.getElementById("fullscreenDiv").style.display = "block";
+
             startDate.setUTCDate(startDate.getUTCDate() + 1);
             document.getElementById("projectEndDate").setAttribute('min', getDateString(startDate));
             startDate.setFullYear(startDate.getFullYear() - 1);
