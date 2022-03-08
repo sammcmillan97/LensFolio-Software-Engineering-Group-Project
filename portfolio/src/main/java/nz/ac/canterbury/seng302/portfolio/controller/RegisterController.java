@@ -53,7 +53,7 @@ public class RegisterController {
             return "register";
         }
 
-        return "menu";
+        return "profile";
     }
 
     @GetMapping("/register")
