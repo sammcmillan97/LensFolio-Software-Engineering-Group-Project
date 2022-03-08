@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(controllers = ProjectsController.class)
-public class ProjectControllerTest {
+public class ProjectControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
@@ -30,5 +30,9 @@ public class ProjectControllerTest {
     void validateGetRequest() throws Exception {
         mockMvc.perform(get("/projects")).andExpect(status().isOk());
     }
-    
+
+    @Test
+    void validateDeleteRequest() throws Exception {
+        mockMvc.perform(delete("/projects").param("id", "1")).andExpect(status().is3xxRedirection());
+    }
 }
