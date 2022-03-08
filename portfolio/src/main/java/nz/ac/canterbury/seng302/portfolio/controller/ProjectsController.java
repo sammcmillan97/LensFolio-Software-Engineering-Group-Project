@@ -39,6 +39,12 @@ public class ProjectsController {
         return "projects";
     }
 
+    /**
+     * Delete endpoint for projects. Takes id parameter from http request and deletes the corresponding project from
+     * the database.
+     * @param id ID of the project to be deleted from the database.
+     * @return Redirects back to the GET mapping for /projects.
+     */
     @DeleteMapping(value="/projects")
     public String deleteProjectById(@RequestParam(name="id") Long id) {
         projectEntityRepository.deleteById(id);
