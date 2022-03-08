@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import io.grpc.StatusRuntimeException;
 import nz.ac.canterbury.seng302.portfolio.authentication.CookieUtil;
+import nz.ac.canterbury.seng302.portfolio.model.RegisterRequest;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,18 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public String register() {
+    public String register(HttpServletRequest request,
+                           HttpServletResponse response,
+                           @RequestParam(name="username") String username,
+                           @RequestParam(name="email") String email,
+                           @RequestParam(name="password") String password,
+                           @RequestParam(name="firstName") String firstName,
+                           @RequestParam(name="middleName") String middleName,
+                           @RequestParam(name="lastName") String lastName,
+                           @RequestParam(name="nickname") String nickname,
+                           @RequestParam(name="pronouns") String pronouns,
+                           @RequestParam(name="bio") String bio,
+                           Model model) {
         return "register";
     }
 }

@@ -13,40 +13,24 @@
 <body>
 <h1>Sign Up</h1>
 <h2>Please enter your details below</h2>
-<form action="#" th:action="@{/register}" method="post">
+<form th:action="@{/register}" method="post">
     <div>
-        <Label>Username
-            <input type="text" th:field=*{username}"/>
-        </Label>
+        <input type="text" th:name="*{username}" required placeholder="Username (*)"/>
+        <input type="text" th:name="*{email}" required placeholder="Email (*)"/>
+        <input type="text" th:name="*{password}" required placeholder="Password (*)"/>
+    </div>
 
-        <label>Email
-            <input type="text" th:field="*{email}"/>
-        </label>
+    <div>
+        <input type="text" th:name="*{firstName}" placeholder="First Name (*)" />
+        <input type="text" th:name="*{middleName}" placeholder="Middle Name (*)" />
+        <input type="text" th:name="*{lastName}" placeholder="Last Name (*)" />
     </div>
     <div>
-        <label>First name
-            <input type="text" th:field=*{firstName}"/>
-        </label>
-        <label> Middle name
-            <input type="text" th:field="*{middleName}"/>
-        </label>
-
-        <label> Last name
-            <input type="text" th:field=*{lastName}"/>
-        </label>
+        <input type="text" th:name="*{nickname}" placeholder="Nickname (*)" />
+        <input type="text" th:name="*{pronouns}" placeholder="Preferred Pronouns (*)" />
     </div>
     <div>
-        <label>Nickname
-            <input type="text" th:field=*{nickname}"/>
-        </label>
-        <label>Pronouns
-            <input type="text" th:field=*{pronouns)"/>
-        </label>
-    </div>
-    <div>
-        <label>Bio
-            <input type="text" th:field=*{bio}"/>
-        </label>
+        <input type="text" th:name="*{bio}" placeholder="Bio (*)" />
     </div>
     <div>
         <input type="submit" value="Submit" />
