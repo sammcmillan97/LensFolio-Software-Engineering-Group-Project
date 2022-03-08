@@ -44,9 +44,9 @@ public class ProjectEntityRepositoryTest {
 
     @Test
     void findUsers() {
-        ProjectEntity project1 = new ProjectEntity(1L, "Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-        ProjectEntity project2 = new ProjectEntity(2L, "Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
-        List<ProjectEntity> projects = new ArrayList<ProjectEntity>();
+        ProjectEntity project1 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        ProjectEntity project2 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
+        List<ProjectEntity> projects = new ArrayList<>();
         projects.add(project1);
         projects.add(project2);
         projectEntityRepository.saveAll(projects);
@@ -61,5 +61,19 @@ public class ProjectEntityRepositoryTest {
         assertThat(projectsFromDatabase.get(1).getDescription()).isEqualTo(projects.get(1).getDescription());
         assertThat(projectsFromDatabase.get(1).getStart_date()).isEqualTo(projects.get(1).getStart_date());
         assertThat(projectsFromDatabase.get(1).getEnd_date()).isEqualTo(projects.get(1).getEnd_date());
+    }
+
+    @Test
+    void findUserById() {
+        ProjectEntity project1 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        ProjectEntity project2 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
+        List<ProjectEntity> projects = new ArrayList<ProjectEntity>();
+        projects.add(project1);
+        projects.add(project2);
+        projectEntityRepository.saveAll(projects);
+        ProjectEntity project = projectEntityRepository.findById(project2.getProject_id()).orElse(null);
+        assertThat(project).isNotNull();
+        assertThat(project.getProject_id()).isEqualTo(projects.get(1).getProject_id());
+
     }
 }

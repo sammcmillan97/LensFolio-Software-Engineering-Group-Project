@@ -46,6 +46,13 @@ public class ProjectEntity {
         this.endDate = endDate;
     }
 
+    public ProjectEntity(String projectName, String description, Date startDate, Date endDate) {
+        this.projectName = projectName;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Long getProject_id() {
         return projectId;
     }
