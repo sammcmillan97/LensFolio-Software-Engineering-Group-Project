@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -15,7 +18,9 @@ class UserTests {
 
     @BeforeEach
     private void setup() {
-        user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password");
+        ZoneId timeZone = ZoneId.systemDefault();
+        LocalDate localDate = LocalDate.now(timeZone);
+        user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password", localDate);
     }
 
     @Test

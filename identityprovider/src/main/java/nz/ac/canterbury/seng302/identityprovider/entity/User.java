@@ -8,6 +8,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 
 @Entity
@@ -54,6 +56,8 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     private String password;
 
+    private LocalDate dateCreated;
+
     public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
@@ -64,9 +68,23 @@ public class User {
         this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = encryptPassword(password);
+        this.dateCreated = this.getCurrentDate();
     }
 
-    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
+    /**
+     * User can be created with set userId, and date created for testing purposes
+     * @param userId
+     * @param username
+     * @param firstName
+     * @param middleName
+     * @param lastName
+     * @param nickname
+     * @param bio
+     * @param personalPronouns
+     * @param email
+     * @param password
+     */
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password, LocalDate localDate){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -77,6 +95,7 @@ public class User {
         this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = encryptPassword(password);
+        this.dateCreated = localDate;
     }
 
     protected User() {
@@ -160,6 +179,10 @@ public class User {
     public void setPassword(String password) {
         this.password = encryptPassword(password);}
 
+    public void setDateCreated(LocalDate localDate) {this.dateCreated = localDate;}
+
+    public LocalDate getDateCreated(){ return this.dateCreated; }
+
 
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
@@ -179,6 +202,15 @@ public class User {
     public Boolean checkPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(STRENGTH);
         return passwordEncoder.matches(password, this.password);
+    }
+
+    /**
+     * Generate the current date given the system default zone id
+     * @return LocalDate
+     */
+    private LocalDate getCurrentDate(){
+        ZoneId timeZone = ZoneId.systemDefault();
+        return LocalDate.now(timeZone);
     }
 
 }
