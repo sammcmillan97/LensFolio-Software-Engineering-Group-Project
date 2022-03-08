@@ -74,4 +74,9 @@ public class LoginController {
         model.addAttribute("loginMessage", loginReply.getMessage());
         return "menu";
     }
+
+    @PostMapping("/register")
+    public String register() {
+        return "register";
+    }
 }

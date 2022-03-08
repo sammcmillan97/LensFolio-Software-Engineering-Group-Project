@@ -8,6 +8,8 @@ public class RegisterRequest {
 
     private String firstName;
 
+    private String middleName;
+
     private String lastName;
 
     private String nickname;
@@ -38,6 +40,14 @@ public class RegisterRequest {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getLastName() {

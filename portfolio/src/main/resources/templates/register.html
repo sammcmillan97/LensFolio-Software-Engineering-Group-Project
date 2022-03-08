@@ -13,19 +13,22 @@
 <body>
 <h1>Sign Up</h1>
 <h2>Please enter your details below</h2>
-<form action="#" th:action="@{/register}" th:object="${registerRequest}" method="post">
+<form action="#" th:action="@{/register}" method="post">
     <div>
         <Label>Username
             <input type="text" th:field=*{username}"/>
         </Label>
 
         <label>Email
-            <input type="email" th:field="*{email}"/>
+            <input type="text" th:field="*{email}"/>
         </label>
     </div>
     <div>
         <label>First name
             <input type="text" th:field=*{firstName}"/>
+        </label>
+        <label> Middle name
+            <input type="text" th:field="*{middleName}"/>
         </label>
 
         <label> Last name
