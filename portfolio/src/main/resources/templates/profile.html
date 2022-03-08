@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" lang="en">
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
@@ -29,14 +30,45 @@
                     <a th:href="@{/profile}">Profile</a>
                 </li>
             </ul>
-<!--            <ul class="nav navbar-nav navbar-right">-->
-<!--                <li th:if="${#authorization.expression('isAuthenticated()')}">-->
-<!--                    <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">-->
-<!--                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout-->
-<!--                    </a>-->
-<!--                    <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/logout}"></form>-->
-<!--                </li>-->
-<!--            </ul>-->
+                        <ul class="nav navbar-nav navbar-right">
+<!--                            <li th:if="${#authorization.expression('isAuthenticated()')}">-->
+                                <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">
+                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
+                                </a>
+                                <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/login}"></form>
+<!--                            </li>-->
+                        </ul>
+        </div>
+    </div>
+</div>
+<div class="UserProfile py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div style="height: 100px"></div>
+                <div class="card shadow-sm">
+                    <div class="card-header bg-transparent text-center">
+                        <img th:src="@{/images/GenericUserIcon.jpg}"  alt="profilePhoto">
+                        <h3>First Last</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0"><strong class="pr-1">Username </strong>Username here</p>
+                        <p class="mb-0"><strong class="pr-1">Pronouns </strong>User pronouns here</p>
+                        <p class="mb-0"><strong class="pr-1">Email </strong>UserEmail@here.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div style="height: 120px"></div>
+                <div class="card shadow-sm">
+                    <div class="card-header bg-transparent border-0">
+                        <h3 class="mb-0"> Bio</h3>
+                    </div>
+                    <div class="card-body pt-0">
+                        <p>User bio goes in here.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
