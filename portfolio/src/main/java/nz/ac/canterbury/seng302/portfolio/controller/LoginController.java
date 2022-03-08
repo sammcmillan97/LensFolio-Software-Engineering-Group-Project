@@ -76,19 +76,5 @@ public class LoginController {
         return "menu";
     }
 
-    @PostMapping("/register")
-    public String register(HttpServletRequest request,
-                           HttpServletResponse response,
-                           @RequestParam(name="username") String username,
-                           @RequestParam(name="email") String email,
-                           @RequestParam(name="password") String password,
-                           @RequestParam(name="firstName") String firstName,
-                           @RequestParam(name="middleName") String middleName,
-                           @RequestParam(name="lastName") String lastName,
-                           @RequestParam(name="nickname") String nickname,
-                           @RequestParam(name="pronouns") String pronouns,
-                           @RequestParam(name="bio") String bio,
-                           Model model) {
-        return "register";
-    }
+
 }
