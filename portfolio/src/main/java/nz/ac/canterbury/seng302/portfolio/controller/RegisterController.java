@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterRequest;
@@ -22,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RegisterController {
 
     @Autowired
-    UserAccountServiceGrpc userAccountServiceGrpc;
+    UserAccountClientService userAccountClientService;
 
     @PostMapping("/register")
     public String register(HttpServletRequest request,
@@ -42,20 +43,9 @@ public class RegisterController {
         //Need to add check to check if username is already in use, and any other validation
 
         try {
-            UserRegisterRequest registerRequest = UserRegisterRequest.newBuilder()
-                    .setUsername(username)
-                    .setEmail(email)
-                    .setPassword(password)
-                    .setFirstName(firstName)
-                    .setMiddleName(middleName)
-                    .setLastName(lastName)
-                    .setNickname(nickname)
-                    .setPersonalPronouns(pronouns)
-                    .setBio(bio)
-                    .build();
-
             //Call the grpc
-            UserRegisterResponse userRegisterResponse = userAccountServiceGrpc.register(registerRequest);
+            UserRegisterResponse userRegisterResponse = userAccountClientService.register(username, password, firstName,
+                    middleName, lastName, nickname, bio, pronouns, email);
             model.addAttribute("response", userRegisterResponse);
 
         } catch (Exception e){
