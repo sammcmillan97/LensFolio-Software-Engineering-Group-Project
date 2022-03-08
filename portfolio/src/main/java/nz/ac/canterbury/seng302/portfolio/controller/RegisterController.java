@@ -38,22 +38,27 @@ public class RegisterController {
                            @RequestParam(name="pronouns") String pronouns,
                            @RequestParam(name="bio") String bio,
                            Model model) {
-        UserRegisterResponse registerResponse;
 
-        //Need to add check to check if username is already in use, and any other validation
+        UserRegisterResponse userRegisterResponse;
 
         try {
             //Call the grpc
-            UserRegisterResponse userRegisterResponse = userAccountClientService.register(username, password, firstName,
+            userRegisterResponse = userAccountClientService.register(username, password, firstName,
                     middleName, lastName, nickname, bio, pronouns, email);
-            model.addAttribute("response", userRegisterResponse);
+            model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);
             return "register";
         }
 
-        return "menu";
+        if (userRegisterResponse.getIsSuccess()){
+            //implement logging in user??
+            return "menu";
+        } else {
+            model.addAttribute("Unable to register user because: ", userRegisterResponse.getMessage());
+            return "register";
+        }
     }
 
     @GetMapping("/register")

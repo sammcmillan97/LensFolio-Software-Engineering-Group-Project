@@ -15,25 +15,28 @@
 <h2>Please enter your details below</h2>
 <form th:action="@{/register}"  method="post">
     <div>
-        <input type="text" th:name="username" required placeholder="Username (*)"/>
-        <input type="text" th:name="email" required placeholder="Email (*)"/>
-        <input type="text" th:name="password" required placeholder="Password (*)"/>
+        <input type="text" th:name="username" minlength="6" maxlength="64" placeholder="Username (*)"/>
+        <input type="text" th:name="email" minlength="10" maxlength="255" placeholder="Email (*)"/>
+        <input type="text" th:name="password" minlength="8" maxlength="64" placeholder="Password (*)"/>
     </div>
 
     <div>
-        <input type="text" th:name="firstName" required placeholder="First Name (*)" />
-        <input type="text" th:name="middleName" required placeholder="Middle Name (*)" />
-        <input type="text" th:name="lastName" required placeholder="Last Name (*)" />
+        <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
+        <input type="text" th:name="middleName" maxlength="64" placeholder="Middle Name (*)" />
+        <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
     </div>
     <div>
-        <input type="text" th:name="nickname" placeholder="Nickname" />
-        <input type="text" th:name="pronouns" placeholder="Preferred Pronouns" />
+        <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname" />
+        <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" />
     </div>
     <div>
-        <input type="text" th:name="bio" placeholder="Bio" />
+        <input type="text" th:name="bio" maxlength="1024" placeholder="Bio" />
     </div>
     <div>
         <input type="submit" value="Submit" />
+    </div>
+    <div>
+        <
     </div>
 </form>
 </body>

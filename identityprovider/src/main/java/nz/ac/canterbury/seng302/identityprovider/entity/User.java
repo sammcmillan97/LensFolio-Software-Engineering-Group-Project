@@ -21,37 +21,38 @@ public class User {
     private int userId;
 
     @NotBlank(message="Username is required")
-    @Size(max=50, message="Username must be less than 50 characters")
+    @Size(max=64, message="Username must be less than 65 characters")
     private String username;
 
     @NotBlank(message="First name cannot be empty")
-    @Size(max=255, message="First name must be less than 255 characters")
+    @Size(max=64, message="First name must be less than 65 characters")
     private String firstName;
 
     @NotBlank(message="Middle name cannot be empty")
-    @Size(max=255, message="Middle name must be less than 255 characters")
+    @Size(max=64, message="Middle name must be less than 65 characters")
     private String middleName;
 
     @NotBlank(message="Last name cannot be empty")
-    @Size(max=255, message="Last name must be less than 255 characters")
+    @Size(max=64, message="Last name must be less than 65 characters")
     private String lastName;
 
-    @Size(max=255, message="Nickname must be less than 255 characters")
+    @Size(max=64, message="Nickname must be less than 65 characters")
     private String nickname;
 
-    @Size(max=255, message="Bio must be less than 255 characters")
+    @Size(max=1024, message="Bio must be less than 1025 characters")
     private String bio;
 
-    @Size(max=16, message="Personal Pronouns must be less than 16 characters")
+    @Size(max=64, message="Personal Pronouns must be less than 65 characters")
     private String personalPronouns;
 
     //probably needs more validation
-    @Size(max=255, message="Email can be at most 255 characters")
+    @Size(max=255, message="Email must be less than 256 characters")
     @NotBlank(message="Email cannot be empty")
     private String email;
 
-    @NotNull(message="Password must be at least 8 characters")
+    @NotNull(message="Password cannot be empty")
     @Size(min=8, message="Password must be at least 8 characters")
+    @Size(max=64, message="Password must be less than 65 characters")
     private String password;
 
     public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
