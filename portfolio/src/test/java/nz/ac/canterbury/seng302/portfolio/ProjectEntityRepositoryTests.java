@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.portfolio;
 
 import nz.ac.canterbury.seng302.portfolio.entities.ProjectEntity;
 import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,12 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @DataJpaTest
-public class ProjectEntityRepositoryTest {
+public class ProjectEntityRepositoryTests {
 
     @Autowired
     private DataSource dataSource;
