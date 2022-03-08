@@ -8,8 +8,6 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Objects;
-
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
 

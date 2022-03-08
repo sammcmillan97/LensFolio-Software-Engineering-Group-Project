@@ -1,11 +1,12 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
+import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
+import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class RegisterController {
 
-    UserAccountService userAccountService;
+    @Autowired
+    UserAccountServiceGrpc userAccountServiceGrpc;
 
     @PostMapping("/register")
     public String register(HttpServletRequest request,
@@ -53,7 +55,8 @@ public class RegisterController {
                     .build();
 
             //Call the grpc
-            UserRegisterResponse userRegisterResponse = userAccountService.Register(request);
+            UserRegisterResponse userRegisterResponse = userAccountServiceGrpc.register(registerRequest);
+            model.addAttribute("response", userRegisterResponse);
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);
