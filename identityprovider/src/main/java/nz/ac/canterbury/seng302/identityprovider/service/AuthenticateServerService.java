@@ -41,13 +41,13 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
             String token = jwtTokenService.generateTokenForUser(user.getUsername(), user.getUserId(),
                     user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName(), ROLE_OF_USER);
             reply
-                .setEmail("validuser@email.com")
+                .setEmail(user.getEmail())
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
                 .setMessage("Logged in successfully!")
                 .setSuccess(true)
                 .setToken(token)
-                .setUserId(1)
+                .setUserId(user.getUserId())
                 .setUsername(user.getUsername());
         } else {
             reply
