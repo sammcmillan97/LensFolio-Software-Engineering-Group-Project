@@ -51,6 +51,8 @@ public class LoginController {
             @RequestParam(name="password") String password,
             Model model
     ) {
+        System.out.println(username);
+        System.out.println(password);
         AuthenticateResponse loginReply;
         try {
             loginReply = authenticateClientService.authenticate(username, password);
@@ -68,10 +70,11 @@ public class LoginController {
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
+            return "redirect:/profile";
+        } else {
+            model.addAttribute("loginMessage", loginReply.getMessage());
+            return "login";
         }
-
-        model.addAttribute("loginMessage", loginReply.getMessage());
-        return "profile";
     }
 
 
