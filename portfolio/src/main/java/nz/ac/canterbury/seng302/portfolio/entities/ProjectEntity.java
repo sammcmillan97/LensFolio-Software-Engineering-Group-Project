@@ -35,7 +35,6 @@ public class ProjectEntity {
         cal.add(Calendar.MONTH, 8);
         endDate = new Date(cal.getTimeInMillis());
         description = "";
-        projectId = 1L;
     }
 
     public ProjectEntity(Long projectId, String projectName, String description, Date startDate, Date endDate) {

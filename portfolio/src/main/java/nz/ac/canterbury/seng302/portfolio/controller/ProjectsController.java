@@ -63,13 +63,6 @@ public class ProjectsController {
         return "redirect:/projects";
     }
 
-//    @GetMapping("/projects/id")
-//    public String getProjectById(@RequestParam(name="id") Long id, Model model) {
-//
-//        model.addAttribute("project", projectEntityRepository.findById(id));
-//        return "redirect:/projects";
-//    }
-
     @PostMapping(value="/projects")
     public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") Long projectId,
                                   @RequestParam(name = "projectName") String projectName,
@@ -78,25 +71,13 @@ public class ProjectsController {
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
         if (projectId == -1) {
-            System.out.println(projectName);
             ProjectEntity newProject = new ProjectEntity(projectName, projectDescription, projectStartDate, projectEndDate);
             projectEntityRepository.save(newProject);
         } else {
-            Optional<ProjectEntity> oldProject = projectEntityRepository.findById(projectId);
             ProjectEntity updatedProject = new ProjectEntity(projectId, projectName, projectDescription, projectStartDate, projectEndDate);
             projectEntityRepository.save(updatedProject);
         }
 
         return "redirect:/projects";
     }
-
-
-
-    @GetMapping(path="/projects/all")
-    public @ResponseBody
-    Iterable<ProjectEntity> getAllUsers() {
-        // This returns a JSON or XML with the users
-        return projectEntityRepository.findAll();
-    }
-
 }
