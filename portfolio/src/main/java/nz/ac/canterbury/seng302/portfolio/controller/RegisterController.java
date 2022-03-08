@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class RegisterController {
 
-    UserAccountServiceGrpc userAccountServiceGrpc;
-
-
+    UserAccountService userAccountService;
 
     @PostMapping("/register")
     public String register(HttpServletRequest request,
@@ -54,7 +53,7 @@ public class RegisterController {
                     .build();
 
             //Call the grpc
-            //userAccountServiceGrpc.UserRegisterResponse(registerRequest);
+            UserRegisterResponse userRegisterResponse = userAccountService.Register(request);
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);

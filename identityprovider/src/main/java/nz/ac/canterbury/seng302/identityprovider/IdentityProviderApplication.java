@@ -28,6 +28,7 @@ public class IdentityProviderApplication {
             repository.save(new User("bauerkim","Kim", "Dally", "Bauer", "Kiki", "heyy", "she/her", "kiki@gmail.com", "password"));
             repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", "they/them", "davo@gmail.com", "password"));
             repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "password"));
+            repository.save(new User("abc123","Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "Password123!"));
         };
     }
 }
