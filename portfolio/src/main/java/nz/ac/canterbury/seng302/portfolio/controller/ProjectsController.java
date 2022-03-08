@@ -17,12 +17,24 @@ import java.util.Calendar;
 
 import java.sql.Date;
 
+/**
+ * Controller for the projects page. Has various end points for interacting with the projects stored in the database.
+ */
 @Controller
 public class ProjectsController {
 
+    /**
+     * Repository which allows the controller to interact with the database.
+     */
     @Autowired
     private ProjectEntityRepository projectEntityRepository;
 
+    /**
+     * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
+     * database.
+     * @param model Allows addition of objects to the projects html page.
+     * @return The projects html page with relevant projects data.
+     */
     @GetMapping("/projects")
     public String projects(Model model) {
 //        projectEntityRepository.deleteAll(); // Use for testing if default project works
