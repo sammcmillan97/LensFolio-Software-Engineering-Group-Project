@@ -13,7 +13,7 @@ tag-checker:
   only:
     - tags
 
-# junit-porfolio:
+# junit-portfolio:
 #   stage: test
 #   script:
 #     - cd portfolio

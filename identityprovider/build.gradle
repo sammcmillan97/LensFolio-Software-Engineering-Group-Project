@@ -28,9 +28,12 @@ dependencies {
     implementation 'org.springframework:spring-web'
 
     //H2
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    runtimeOnly("com.h2database:h2")
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    runtimeOnly "com.h2database:h2"
+
+    //password encryption
+    implementation 'org.springframework.security:spring-security-crypto'
 
 
     // JWT dependencies

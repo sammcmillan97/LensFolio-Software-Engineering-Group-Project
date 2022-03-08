@@ -6,6 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.security.SecureRandom;
 
 
 @Entity
@@ -64,8 +66,10 @@ public class User {
         this.bio = bio;
         this.personalPronouns = personalPronouns;
         this.email = email;
-        this.password = password;
+        this.password = encryptPassword(password);
     }
+
+
 
     //without userId
     public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
@@ -77,7 +81,7 @@ public class User {
         this.bio = bio;
         this.personalPronouns = personalPronouns;
         this.email = email;
-        this.password = password;
+        this.password = encryptPassword(password);
     }
 
     @Override
@@ -156,6 +160,18 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = encryptPassword(password);}
+
+
+    /**
+     * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
+     * @param password
+     * @return encrypted password
+     */
+    private String encryptPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10, new SecureRandom());
+        return passwordEncoder.encode(password);
     }
+
+
 }
