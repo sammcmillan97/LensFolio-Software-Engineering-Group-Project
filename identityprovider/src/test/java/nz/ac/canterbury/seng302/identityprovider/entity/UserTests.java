@@ -1,10 +1,12 @@
 
 package nz.ac.canterbury.seng302.identityprovider.entity;
 
+import com.google.protobuf.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -18,9 +20,10 @@ class UserTests {
 
     @BeforeEach
     private void setup() {
-        ZoneId timeZone = ZoneId.systemDefault();
-        LocalDate localDate = LocalDate.now(timeZone);
-        user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password", localDate);
+        Instant time = Instant.now();
+        Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond())
+                .setNanos(time.getNano()).build();
+        user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password", timestamp);
     }
 
     @Test

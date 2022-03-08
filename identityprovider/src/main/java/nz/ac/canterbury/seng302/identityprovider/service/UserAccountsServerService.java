@@ -75,7 +75,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setNickname(user.getNickname())
                     .setBio(user.getBio())
                     .setPersonalPronouns(user.getPersonalPronouns())
-                    .setEmail(user.getEmail());
+                    .setEmail(user.getEmail())
+                    .setCreated(user.getTimeCreated());
         }
 
         responseObserver.onNext(reply.build());
