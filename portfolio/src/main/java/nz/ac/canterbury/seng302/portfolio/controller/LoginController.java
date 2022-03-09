@@ -21,7 +21,11 @@ public class LoginController {
     private AuthenticateClientService authenticateClientService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletResponse response) {
+        CookieUtil.clear(
+                response,
+                "lens-session-token"
+        );
         return "login";
     }
 

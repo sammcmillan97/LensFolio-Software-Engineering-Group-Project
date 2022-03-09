@@ -31,8 +31,8 @@
                 </li>
             </ul>
                         <ul class="nav navbar-nav navbar-right">
-<!--                            <li th:if="${#authorization.expression('isAuthenticated()')}">-->
-                                <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">
+                            <li>
+                                <a th:href="@{/login}">
                                     <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
                                 </a>
                                 <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/login}"></form>
