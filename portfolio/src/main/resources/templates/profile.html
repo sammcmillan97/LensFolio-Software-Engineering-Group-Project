@@ -11,6 +11,7 @@
 
 <div>
     <ul>
+        <li> <p th:text="${user.username}" /></li>
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
             <div class="dropdown-content">
@@ -38,18 +39,6 @@
                         <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Date of Registration </strong>  <p th:text="${date}" /> </p>
-                        <p class="mb=0"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div style="height: 120px"></div>
-                <div class="card shadow-sm">
-                    <div class="card-header bg-transparent border-0">
-                        <h3 class="mb-0"> Bio</h3>
-                    </div>
-                    <div class="card-body pt-0">
-                        <p th:text="${user.bio}" />
                         <p class="mb=0"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
                     </div>
                 </div>
