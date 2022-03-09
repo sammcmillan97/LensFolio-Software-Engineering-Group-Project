@@ -181,3 +181,7 @@ html {
     background: #f1f1f1;
     padding: 10px 30px 10px 20px;
 }
+
+.project__sprints-wrapper {
+    align-content: flex-start;
+}

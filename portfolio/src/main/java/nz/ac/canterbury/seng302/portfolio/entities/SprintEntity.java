@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.entities;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Entity
 @Table(name="sprint")
@@ -29,6 +31,19 @@ public class SprintEntity {
 
     @Column(name = "end_date", nullable = false)
     private Date endDate;
+
+    public SprintEntity(ProjectEntity project, String sprintLabel, String sprintName, String description, Date startDate, Date endDate) {
+        this.project = project;
+        this.sprintLabel = sprintLabel;
+        this.sprintName = sprintName;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public SprintEntity() {
+
+    }
 
     public ProjectEntity getProject() {
         return project;
@@ -70,19 +85,25 @@ public class SprintEntity {
         this.description = description;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public String getStartDate() {
+        return dateToWords(startDate);
     }
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getEndDate() {
+        return dateToWords(endDate);
+    }
+
+    private String dateToWords(Date date) {
+        DateFormat format2 = new SimpleDateFormat("MMMMM dd, yyyy");
+        return format2.format(date);
     }
 }

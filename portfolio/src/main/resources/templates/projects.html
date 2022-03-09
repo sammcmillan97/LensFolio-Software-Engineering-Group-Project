@@ -58,9 +58,9 @@
         <div id="project-wrapper" class="flex-column">
 
             <!-- Project -->
-            <div class="project collapsed" th:each="project: ${projects}">
+            <div class="project collapsed" th:each="project : ${projects}">
                 <!-- Project Title -->
-                <h2 class="project__name" th:text="${project.project_name}"></h2>
+                <h2 class="project__name" th:text="${project.getProject_name}"></h2>
 
                 <!-- Edit and delete project buttons -->
                 <div class="project__button-wrapper flex-row">
@@ -82,7 +82,18 @@
 
                     <!-- Project Sprints -->
                     <div class="project__sprints-wrapper">
+                        <div class="sprint" th:each="sprint : ${project.getSprints}">
+                            <div class="sprint__name-wrapper flex-row">
+                                <h3 class="sprint__label" th:text="${sprint.getSprintLabel}"></h3>
+                                <h3>:&nbsp;</h3>
+                                <h3 class="sprint__name" th:text="${sprint.getSprintName}"></h3>
+                                <h3>:&nbsp;</h3>
+                                <h4 class="sprint__date" th:text="${sprint.getStartDate}"></h4>
+                                <h4>&nbsp;--->&nbsp;</h4>
+                                <h4 class="sprint__date" th:text="${sprint.getEndDate}"></h4>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>

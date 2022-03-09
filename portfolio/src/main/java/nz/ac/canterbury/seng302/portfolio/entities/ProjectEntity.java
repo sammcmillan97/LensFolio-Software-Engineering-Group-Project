@@ -29,7 +29,7 @@ public class ProjectEntity {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<SprintEntity> sprints;
 
     public ProjectEntity() {
