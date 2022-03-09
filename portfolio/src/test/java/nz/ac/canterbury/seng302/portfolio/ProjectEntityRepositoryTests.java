@@ -41,7 +41,7 @@ public class ProjectEntityRepositoryTests {
     }
 
     @Test
-    void findUsers() {
+    void findProjects() {
         ProjectEntity project1 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         ProjectEntity project2 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
         List<ProjectEntity> projects = new ArrayList<>();
@@ -62,16 +62,29 @@ public class ProjectEntityRepositoryTests {
     }
 
     @Test
-    void findUserById() {
+    void findProjectById() {
         ProjectEntity project1 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         ProjectEntity project2 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
         List<ProjectEntity> projects = new ArrayList<ProjectEntity>();
         projects.add(project1);
         projects.add(project2);
         projectEntityRepository.saveAll(projects);
-        ProjectEntity project = projectEntityRepository.findById(project2.getProject_id()).orElse(null);
-        assertThat(project).isNotNull();
-        assertThat(project.getProject_id()).isEqualTo(projects.get(1).getProject_id());
+        ProjectEntity retrievedProject1 = projectEntityRepository.findById(projects.get(0).getProject_id()).orElse(null);
+        ProjectEntity retrievedProject2 = projectEntityRepository.findById(projects.get(1).getProject_id()).orElse(null);
+
+        assertThat(retrievedProject1).isNotNull();
+        assertThat(retrievedProject1.getProject_id()).isEqualTo(projects.get(0).getProject_id());
+        assertThat(retrievedProject1.getProject_name()).isEqualTo(projects.get(0).getProject_name());
+        assertThat(retrievedProject1.getDescription()).isEqualTo(projects.get(0).getDescription());
+        assertThat(retrievedProject1.getStart_date()).isEqualTo(projects.get(0).getStart_date());
+        assertThat(retrievedProject1.getEnd_date()).isEqualTo(projects.get(0).getEnd_date());
+
+        assertThat(retrievedProject2).isNotNull();
+        assertThat(retrievedProject2.getProject_id()).isEqualTo(projects.get(1).getProject_id());
+        assertThat(retrievedProject2.getProject_name()).isEqualTo(projects.get(1).getProject_name());
+        assertThat(retrievedProject2.getDescription()).isEqualTo(projects.get(1).getDescription());
+        assertThat(retrievedProject2.getStart_date()).isEqualTo(projects.get(1).getStart_date());
+        assertThat(retrievedProject2.getEnd_date()).isEqualTo(projects.get(1).getEnd_date());
 
     }
 }

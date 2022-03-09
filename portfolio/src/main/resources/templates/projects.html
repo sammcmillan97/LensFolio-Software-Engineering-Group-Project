@@ -119,7 +119,7 @@
             document.getElementById("projectId").value = project_id;
             document.getElementById("fullscreenDiv").style.display = "block";
 
-            startDate = new Date(startDate);
+            startDate = new Date();
             startDate.setUTCDate(startDate.getUTCDate() + 1);
             document.getElementById("projectEndDate").setAttribute('min', getDateString(startDate));
             startDate.setFullYear(startDate.getFullYear() - 1);
@@ -131,7 +131,7 @@
         function addProject() {
             // var project = "[[${project}]]";
 
-            let startDate = new Date(); // Add 13 hours in ms to convert from UTC to NZT
+            let startDate = new Date();
             startDate.setUTCHours(startDate.getUTCHours() + 13);
             let endDate = new Date(startDate.getTime());
             endDate.setUTCMonth(endDate.getUTCMonth() + 8);
