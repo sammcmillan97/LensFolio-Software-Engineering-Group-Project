@@ -1,3 +1,7 @@
+/*
+    Team 13
+ */
+
 plugins {
     id "java"
     id "idea"
