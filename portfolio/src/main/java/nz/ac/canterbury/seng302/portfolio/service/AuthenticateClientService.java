@@ -14,7 +14,6 @@ public class AuthenticateClientService {
 
     @GrpcClient("identity-provider-grpc-server")
     private AuthenticationServiceGrpc.AuthenticationServiceBlockingStub authenticationStub;
-
     public AuthenticateResponse authenticate(final String username, final String password)  {
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
                 .setUsername(username)
@@ -22,7 +21,6 @@ public class AuthenticateClientService {
                 .build();
         return authenticationStub.authenticate(authRequest);
     }
-
     public AuthState checkAuthState() throws StatusRuntimeException {
         return authenticationStub.checkAuthState(Empty.newBuilder().build());
     }

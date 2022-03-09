@@ -6,8 +6,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.google.protobuf.Timestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.security.SecureRandom;
+import java.sql.Time;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 
 @Entity
@@ -55,6 +60,21 @@ public class User {
     @Size(max=64, message="Password must be less than 65 characters")
     private String password;
 
+    @Column(length = 1024)
+    private Timestamp timeCreated;
+
+    /**
+     * Create a user for use in backend database.
+     * @param username Username of user
+     * @param firstName First name of user
+     * @param middleName Middle name of user
+     * @param lastName Last name of user
+     * @param nickname Nickname of user
+     * @param bio Bio of user
+     * @param personalPronouns Personal pronouns of user
+     * @param email Email of user
+     * @param password Password of user
+     */
     public User(String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
         this.username = username;
         this.firstName = firstName;
@@ -65,9 +85,24 @@ public class User {
         this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = encryptPassword(password);
+        this.timeCreated = this.getCurrentTime();
     }
 
-    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password){
+    /**
+     * User can be created with set userId, and date created for testing purposes.
+     * @param userId ID of user
+     * @param username Username of user
+     * @param firstName First name of user
+     * @param middleName Middle name of user
+     * @param lastName Last name of user
+     * @param nickname Nickname of user
+     * @param bio Bio of user
+     * @param personalPronouns Personal pronouns of user
+     * @param email Email of user
+     * @param password Password of user
+     * @param timestamp Date user was created
+     */
+    public User(int userId, String username, String firstName, String middleName, String lastName, String nickname, String bio, String personalPronouns, String email, String password, Timestamp timestamp){
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -78,6 +113,7 @@ public class User {
         this.personalPronouns = personalPronouns;
         this.email = email;
         this.password = encryptPassword(password);
+        this.timeCreated = timestamp;
     }
 
     protected User() {
@@ -161,6 +197,10 @@ public class User {
     public void setPassword(String password) {
         this.password = encryptPassword(password);}
 
+    public void setTimeCreated(Timestamp timeCreated) {this.timeCreated = timeCreated;}
+
+    public Timestamp getTimeCreated(){ return this.timeCreated; }
+
 
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
@@ -180,6 +220,16 @@ public class User {
     public Boolean checkPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(STRENGTH);
         return passwordEncoder.matches(password, this.password);
+    }
+
+    /**
+     * Generate the current date given the system default zone id
+     * @return LocalDate
+     */
+    private Timestamp getCurrentTime(){
+        Instant time = Instant.now();
+        return Timestamp.newBuilder().setSeconds(time.getEpochSecond())
+                .setNanos(time.getNano()).build();
     }
 
 }
