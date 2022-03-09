@@ -60,6 +60,7 @@ public class User {
     @Size(max=64, message="Password must be less than 65 characters")
     private String password;
 
+    @Column(length = 1024)
     private Timestamp timeCreated;
 
     /**
