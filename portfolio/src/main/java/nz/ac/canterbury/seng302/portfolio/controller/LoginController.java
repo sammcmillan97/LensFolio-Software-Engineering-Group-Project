@@ -15,12 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Class which handles the backend of the login page
+ */
 @Controller
 public class LoginController {
 
     @Autowired
     private AuthenticateClientService authenticateClientService;
 
+    /**
+     * Gets the mapping to the login page html and renders it
+     * @param response
+     * @return the mapping to the login html page.
+     */
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
         CookieUtil.clear(
