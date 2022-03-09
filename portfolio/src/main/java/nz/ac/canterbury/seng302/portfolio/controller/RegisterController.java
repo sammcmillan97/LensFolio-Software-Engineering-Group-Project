@@ -1,17 +1,13 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
+
+
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -54,9 +50,9 @@ public class RegisterController {
 
         if (userRegisterResponse.getIsSuccess()){
             //implement logging in user??
-            return "menu";
+            return "redirect:/profile";
         } else {
-            model.addAttribute("Unable to register user because: ", userRegisterResponse.getMessage());
+            model.addAttribute("registerMessage", userRegisterResponse.getMessage());
             return "register";
         }
     }
@@ -65,4 +61,5 @@ public class RegisterController {
     public String register() {
         return "register";
     }
+
 }

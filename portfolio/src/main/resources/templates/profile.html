@@ -49,12 +49,13 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-transparent text-center">
                         <img th:src="@{/images/GenericUserIcon.jpg}"  alt="profilePhoto">
-                        <h3>First Last</h3>
+                        <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
                     </div>
                     <div class="card-body">
-                        <p class="mb-0"><strong class="pr-1">Username </strong> Add username here</p>
-                        <p class="mb-0"><strong class="pr-1">Pronouns </strong> He/him </p>
-                        <p class="mb-0"><strong class="pr-1">Email </strong>  UserEmail@here.com  </p>
+                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
+                        <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
+                        <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
+                        <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
                     </div>
                 </div>
             </div>
@@ -65,7 +66,7 @@
                         <h3 class="mb-0"> Bio</h3>
                     </div>
                     <div class="card-body pt-0">
-                        <p>User bio goes in here.</p>
+                        <p th:text="${user.bio}" />
                     </div>
                 </div>
             </div>

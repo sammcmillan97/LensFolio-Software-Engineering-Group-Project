@@ -15,14 +15,14 @@
 <h2>Please enter your details below</h2>
 <form th:action="@{/register}"  method="post">
     <div>
-        <input type="text" th:name="username" minlength="6" maxlength="64" placeholder="Username (*)"/>
-        <input type="text" th:name="email" minlength="10" maxlength="255" placeholder="Email (*)"/>
-        <input type="text" th:name="password" minlength="8" maxlength="64" placeholder="Password (*)"/>
+        <input type="text" th:name="username" minlength="6" maxlength="64" required placeholder="Username (*)"/>
+        <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*)"/>
+        <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/>
     </div>
 
     <div>
         <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
-        <input type="text" th:name="middleName" maxlength="64" placeholder="Middle Name (*)" />
+        <input type="text" th:name="middleName" maxlength="64"  required placeholder="Middle Name (*)" />
         <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
     </div>
     <div>
@@ -36,5 +36,6 @@
         <input type="submit" value="Submit" />
     </div>
 </form>
+    <p th:text="${registerMessage}" />
 </body>
 </html>
