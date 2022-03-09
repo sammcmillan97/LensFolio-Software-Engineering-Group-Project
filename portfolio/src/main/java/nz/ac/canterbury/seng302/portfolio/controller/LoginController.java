@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,15 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
+        CookieUtil.clear(
+                response,
+                "lens-session-token"
+        );
+        return "login";
+    }
+
+    @RequestMapping("/")
+    public String home(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
                 "lens-session-token"

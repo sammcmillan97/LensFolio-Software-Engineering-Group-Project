@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.*;
+
 @Controller
 public class ProfileController {
 
@@ -31,9 +33,13 @@ public class ProfileController {
         UserResponse user = userService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
+
+        LocalDate timeCreated = Instant.ofEpochSecond( user.getCreated().getSeconds() , user.getCreated().getNanos() )
+                .atZone( ZoneId.of( "Pacific/Auckland" ) ).toLocalDate();
         return "profile";
     }
 
 
 }
+
 
