@@ -32,6 +32,9 @@ public class ProjectEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<SprintEntity> sprints;
 
+    /**
+     * A constructor which creates a default project entity for the projects controller.
+     */
     public ProjectEntity() {
         Calendar cal = Calendar.getInstance();
         projectName = String.format("Project %d", cal.get(Calendar.YEAR));
