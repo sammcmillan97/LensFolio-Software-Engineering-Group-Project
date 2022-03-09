@@ -32,6 +32,16 @@ public class SprintEntity {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
+    public SprintEntity(ProjectEntity project, Long sprintId, String sprintLabel, String sprintName, String description, Date startDate, Date endDate) {
+        this.project = project;
+        this.sprintId = sprintId;
+        this.sprintLabel = sprintLabel;
+        this.sprintName = sprintName;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public SprintEntity(ProjectEntity project, String sprintLabel, String sprintName, String description, Date startDate, Date endDate) {
         this.project = project;
         this.sprintLabel = sprintLabel;
@@ -84,7 +94,6 @@ public class SprintEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;

@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio;
 
 import nz.ac.canterbury.seng302.portfolio.entities.ProjectEntity;
+import nz.ac.canterbury.seng302.portfolio.entities.SprintEntity;
 import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,6 +86,36 @@ public class ProjectEntityRepositoryTests {
         assertThat(retrievedProject2.getDescription()).isEqualTo(projects.get(1).getDescription());
         assertThat(retrievedProject2.getStart_date()).isEqualTo(projects.get(1).getStart_date());
         assertThat(retrievedProject2.getEnd_date()).isEqualTo(projects.get(1).getEnd_date());
+
+    }
+
+    @Test
+    void updateSprint() {
+        ProjectEntity project1 = new ProjectEntity("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+
+        projectEntityRepository.save(project1);
+
+        // Check that the project was inserted correctly
+        ProjectEntity retrievedProject = projectEntityRepository.findById(project1.getProject_id()).orElse(null);
+        assertThat(retrievedProject).isNotNull();
+        assertThat(retrievedProject.getProject_id()).isEqualTo(project1.getProject_id());
+        assertThat(retrievedProject.getProject_name()).isEqualTo(project1.getProject_name());
+        assertThat(retrievedProject.getDescription()).isEqualTo(project1.getDescription());
+        assertThat(retrievedProject.getStart_date()).isEqualTo(project1.getStart_date());
+        assertThat(retrievedProject.getEnd_date()).isEqualTo(project1.getEnd_date());
+
+        ProjectEntity newProject = new ProjectEntity(project1.getProject_id(), "Changed Project Name", project1.getDescription(), Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        projectEntityRepository.save(newProject);
+
+        // Use original project id to fetch updated sprint to confirm it's using the same id
+        // Check that the project was updated correctly
+        retrievedProject = projectEntityRepository.findById(project1.getProject_id()).orElse(null);
+        assertThat(retrievedProject).isNotNull();
+        assertThat(retrievedProject.getProject_id()).isEqualTo(newProject.getProject_id());
+        assertThat(retrievedProject.getProject_name()).isEqualTo(newProject.getProject_name());
+        assertThat(retrievedProject.getDescription()).isEqualTo(newProject.getDescription());
+        assertThat(retrievedProject.getStart_date()).isEqualTo(newProject.getStart_date());
+        assertThat(retrievedProject.getEnd_date()).isEqualTo(newProject.getEnd_date());
 
     }
 }
