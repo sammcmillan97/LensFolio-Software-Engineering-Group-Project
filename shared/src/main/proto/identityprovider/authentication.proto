@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package nz.ac.canterbury.seng302;
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "nz.ac.canterbury.seng302.shared.identityprovider";
+option java_outer_classname = "AuthenticationProto";
+
+message AuthState {
+   string Name = 1;
+   string AuthenticationType = 2;
+   bool IsAuthenticated = 3;
+   string NameClaimType = 4;
+   string RoleClaimType = 5;
+   string Label = 6;
+   repeated ClaimDTO Claims = 7;
+}
+message AuthenticateRequest {
+   string Username = 1;
+   string Password = 2;
+   bool KeepLoggedIn = 3;
+}
+message AuthenticateResponse {
+   string Message = 1;
+   string Token = 2;
+   bool Success = 3;
+   int64 UserId = 4;
+   string FirstName = 5;
+   string LastName = 6;
+   string Username = 7;
+   string Email = 8;
+}
+message ClaimDTO {
+   string Issuer = 1;
+   string OriginalIssuer = 2;
+   string Type = 3;
+   string Value = 4;
+   string ValueType = 5;
+}
+service AuthenticationService {
+   rpc Authenticate (AuthenticateRequest) returns (AuthenticateResponse);
+   rpc CheckAuthState (.google.protobuf.Empty) returns (AuthState);
+}

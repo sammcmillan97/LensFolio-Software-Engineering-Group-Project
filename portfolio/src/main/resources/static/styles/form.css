@@ -1,0 +1,49 @@
+label {
+    color: #5e0202;
+}
+
+input {
+    padding: 5px;
+    font-size: large;
+    border-radius: 8px;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.horizontal-group {
+    display: flex;
+    padding: 10px 0px;
+    width: 100%;
+}
+
+.horizontal-group-element {
+    margin: 5px;
+}
+
+.description-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 5px;
+    font-size: large;
+    border-radius: 8px;
+    border: 1px solid black;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: large;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    min-width: 50px;
+}
+
+.cancel {
+    background-color: #444444;
+    color: white;
+}
+
+.save {
+    background-color: #5e0202;
+    color: white;
+}

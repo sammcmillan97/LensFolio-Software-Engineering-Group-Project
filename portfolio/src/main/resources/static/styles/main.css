@@ -1,0 +1,136 @@
+.header {
+    background-color: #b70f0a;
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    padding: 20px 10px 5px 10px;
+    display: flex;
+    align-items: baseline;
+    justify-content: start;
+}
+
+.title-name {
+    color: white;
+    font-size: xx-large;
+    font-weight: bolder;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.title-date {
+    color: #ffffff99;
+    font-size: large;
+}
+
+.content {
+    margin: 10px;
+    width:calc(100% - 20px);
+}
+
+.detail-block {
+    padding: 5px;
+    min-height: 100px;
+    background-color: white;
+    border-radius: 8px;
+    margin: 5px;
+    flex-grow: 1;
+    width:calc(100% - 10px);
+}
+
+.sprint-block {
+    display:flex;
+    width: 100%;
+}
+
+.sprint-label {
+    background-color: white;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: #ff3823;
+}
+
+.sprint-title {
+    font-weight: bold;
+    color: #453737;
+    font-size: large;
+}
+
+.sprint-date {
+    color: #a0a0a0;
+    font-size: small;
+}
+
+.sprint-description {
+    color: #636363;
+    padding-top: 5px;
+}
+
+* {
+    font-family: 'Helvetica';
+    box-sizing: inherit;
+}
+
+body {
+    background-color: #f0e6e5;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.edit-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    border: none;
+    background-color: #c0c0c0;
+    color: #5e0202;
+}
+.edit-project-button {
+    height: 60px;
+    width: 60px;
+    border-radius: 40px;
+    border: none;
+    background-color: white;
+    color: #5e0202;
+    margin: 20px;
+}
+
+.delete-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    border: none;
+    background-color: #e61610;
+    color: white;
+}
+
+.detail-block {
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
+}
+
+.add-sprint {
+    padding: 10px 20px 10px 10px;
+    font-size: large;
+    border-radius: 10px;
+    border: 1px solid #5e0202;
+    color: #5e0202;
+    font-weight: bold;
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+}
+
+

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package nz.ac.canterbury.seng302;
+
+option java_multiple_files = true;
+option java_package = "nz.ac.canterbury.seng302.shared.util";
+option java_outer_classname = "ValidationErrorProto";
+
+message ValidationError {
+    string FieldName = 1;
+    string ErrorText = 2;
+ }

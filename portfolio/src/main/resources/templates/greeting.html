@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h3>Message from IdP (passed on by Portfolio)</h3>
+<p th:text="${idpMessage}" />
+<br>
+<h3>Message from Portfolio</h3>
+<p th:text="${portfolioMessage}" />
+<br>
+<h3>Actually... I don't like the colour <span th:text="${currentFavouriteColour}" ></span>...</h3>
+<form th:action="@{./favouriteColour}"
+    method="post">
+    <label for="favouriteColour">What's your favourite colour?</label>
+
+    <input id="favouriteColour" type="text" th:name="favouriteColour" th:value="*{favouriteColour}">
+
+    <button type="submit">Submit colour!</button>
+</form>
+</body>
+</html>

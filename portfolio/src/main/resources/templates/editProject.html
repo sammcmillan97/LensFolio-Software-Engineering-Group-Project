@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Project</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+    <link th:href="@{/styles/form.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="header">
+    <div class="title">
+        <div class="title-name">Edit Project</div>
+    </div>
+</div>
+<div class="content">
+<form th:action="@{/edit-project}"
+      method="post">
+    <label for="projectName">Project Name</label> <br/>
+    <input id="projectName" type="text" th:name="projectName" th:value="*{projectName}">
+    <br/>
+    <div class="horizontal-group">
+    <div class="horizontal-group-element" >
+        <label for="projectStartDate">Project Start Date</label> <br/>
+        <input id="projectStartDate" type="text" th:name="projectStartDate" th:value="*{projectStartDate}">
+    </div>
+    <div class="horizontal-group-element" >
+        <label for="projectEndDate">Project End Date</label> <br/>
+        <input id="projectEndDate" type="text" th:name="projectEndDate" th:value="*{projectEndDate}">
+    </div>
+    </div>
+    <div>
+        <label for="projectDescription">Project Description</label> <br/>
+        <textarea class="description-input" id="projectDescription" th:name="projectDescription" th:text="*{projectDescription}"></textarea>
+    </div>
+    <br/>
+    <button class="cancel" type="button">
+        <a th:href="@{'/details'}">Cancel</a>
+    </button>
+    <button class="save" type="submit">Save</button>
+</form>
+</div>
+</body>
+</html>

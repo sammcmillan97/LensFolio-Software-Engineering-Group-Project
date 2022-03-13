@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Sprint</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+    <link th:href="@{/styles/form.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="header">
+    <div class="title">
+        <div class="title-name">Edit Sprint</div>
+    </div>
+</div>
+<div class="content">
+    <form th:action="@{/edit-sprint}"
+          method="post">
+        <label for="sprintName">Sprint Name</label> <br/>
+        <input id="sprintName" type="text" th:name="sprintName" th:value="*{sprintName}">
+        <br/>
+        <div class="horizontal-group">
+            <div class="horizontal-group-element" >
+                <label for="sprintStartDate">Sprint Start Date</label> <br/>
+                <input id="sprintStartDate" type="text" th:name="sprintStartDate" th:value="*{sprintStartDate}">
+            </div>
+            <div class="horizontal-group-element" >
+                <label for="sprintEndDate">Sprint End Date</label> <br/>
+                <input id="sprintEndDate" type="text" th:name="sprintEndDate" th:value="*{sprintEndDate}">
+            </div>
+        </div>
+        <div>
+            <label for="sprintDescription">Sprint Description</label> <br/>
+            <textarea class="description-input" id="sprintDescription" th:name="sprintDescription" th:text="*{sprintDescription}"></textarea>
+        </div>
+        <br/>
+        <button class="cancel" type="button">
+            <a th:href="@{'/details'}">Cancel</a>
+        </button>
+        <button class="save" type="submit">Save</button>
+    </form>
+</div>
+</body>
+</html>

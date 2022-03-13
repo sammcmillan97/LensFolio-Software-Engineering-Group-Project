@@ -1,0 +1,15 @@
+[Unit]
+Description=SENG302 Production identity provider service
+StartLimitInterval=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+User=gitlab-runner
+WorkingDirectory=/home/gitlab-runner
+ExecStart=/usr/bin/bash production-identityprovider.sh
+
+[Install]
+WantedBy=multi-user.target
