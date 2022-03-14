@@ -12,12 +12,34 @@ wrapper {
     gradleVersion = '7.4'
 }
 
+
+
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'org.springframework:spring-web'
+
+    //H2
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    runtimeOnly "com.h2database:h2"
+
+    //password encryption
+    implementation 'org.springframework.security:spring-security-crypto'
+
+
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework:spring-web'
 
@@ -33,6 +55,12 @@ dependencies {
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    runtimeOnly( group: 'com.h2database', name: 'h2', version: '2.1.210')
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.6.4'
 }
 
 tasks.named('test') {
