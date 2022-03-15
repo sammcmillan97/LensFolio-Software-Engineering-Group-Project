@@ -75,6 +75,7 @@ public class RegisterController {
                 return "login";
             }
         } else {
+            model.addAttribute("registerMessage", "");
             model.addAttribute("registerMessage", userRegisterResponse.getMessage());
             return "register";
         }

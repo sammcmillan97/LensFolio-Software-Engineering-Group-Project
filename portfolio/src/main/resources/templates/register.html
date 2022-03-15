@@ -15,7 +15,7 @@
     <form th:action="@{/login}">
         <div class="row button">
             <label>
-                <input type="submit" value="Back">
+                <input class="button" type="submit" value="Back">
             </label>
         </div>
     </form>
@@ -25,29 +25,29 @@
         <h2>Please enter your details below</h2>
     </div>
 
-<form th:action="@{/register}"  method="post">
-    <div>
-        <input type="text" th:name="username" minlength="6" maxlength="64" required placeholder="Username (*)" class = "attribute"/>
-        <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*)"/>
-        <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/>
-    </div>
+    <form th:action="@{/register}"  method="post">
+        <div>
+            <input type="text" th:name="username" minlength="5" maxlength="64" required placeholder="Username (*)" class = "attribute"/>
+            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*)"/>
+            <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/>
+        </div>
 
-    <div>
-        <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
-        <input type="text" th:name="middleName" maxlength="64"  required placeholder="Middle Name (*)" />
-        <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
-    </div>
-    <div>
-        <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname" />
-        <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" />
-    </div>
-    <div>
-        <input type="text" th:name="bio" maxlength="1024" placeholder="Bio" />
-    </div>
-    <div>
-        <input type="submit" value="Submit" />
-    </div>
-</form>
+        <div>
+            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
+            <input type="text" th:name="middleName" maxlength="64"  required placeholder="Middle Name (*)" />
+            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
+        </div>
+        <div>
+            <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname" />
+            <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" />
+        </div>
+        <div>
+            <input type="text" th:name="bio" maxlength="1024" placeholder="Bio" />
+        </div>
+        <div>
+            <input class="button" type="submit" value="Submit" />
+        </div>
+    </form>
     <p th:text="${registerMessage}" />
 
 
@@ -77,4 +77,19 @@
     input {
         align-content: center;
     }
+
+    /* Selects any valid <input> */
+    input:valid {
+        outline-color: green;
+    }
+
+    /* Selects any invalid <input> */
+    input:invalid {
+        outline-color: red;
+    }
+
+    input.button {
+        outline-color: cadetblue;
+    }
+
 </style>
