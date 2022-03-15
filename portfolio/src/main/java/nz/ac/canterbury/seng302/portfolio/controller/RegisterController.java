@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 
 @Controller
@@ -43,7 +44,7 @@ public class RegisterController {
 
         try {
             //Call the grpc
-            userRegisterResponse = userAccountClientService.register(username, password, firstName,
+            userRegisterResponse = userAccountClientService.register(username.toLowerCase(Locale.ROOT), password, firstName,
                     middleName, lastName, nickname, bio, pronouns, email);
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
