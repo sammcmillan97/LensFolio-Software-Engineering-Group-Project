@@ -104,8 +104,10 @@ html {
     cursor: pointer;
 }
 
+/******************** Add/Edit Project Form ********************/
+
 /* The popup form - hidden by default */
-.edit-add-popup {
+#add-edit__popup {
     display: none;
     position: fixed;
     top: 50%;
@@ -143,7 +145,7 @@ html {
 }
 
 /* Set a style for the  button */
-.form-container .button {
+.form-container button {
     background-color: var(--color-complement);
     color: black;
     padding: 16px 20px;
@@ -159,12 +161,12 @@ html {
 
 
  /*Add some hover effects to buttons */
-.form-container .button:hover, .open-button:hover {
+.form-container button:hover {
      background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
      cursor: pointer;
 }
 
-.fullscreen-div {
+#add-edit__overlay {
     display: none;
     position: fixed;
     width: 100%;
