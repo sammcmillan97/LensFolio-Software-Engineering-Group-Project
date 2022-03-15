@@ -33,16 +33,16 @@
             <input type="hidden" id="add-edit__project-id" name="projectId"/>
             <input type="hidden" id="add-edit__earliest-date-allowed"/>
 
-            <label><b>Project Name</b></label>
+            <label for="add-edit__name-field"><b>Project Name</b></label>
             <input type="text" id="add-edit__name-field" class="edit-input" name="projectName" required>
 
-            <label><b>Project Description</b></label>
+            <label for="add-edit__description-field"><b>Project Description</b></label>
             <textarea id="add-edit__description-field" class="edit-input" name="projectDescription"></textarea>
 
-            <label><b>Project Start Date</b></label>
+            <label for="add-edit__start-date-field"><b>Project Start Date</b></label>
             <input type="date" id="add-edit__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" required>
 
-            <label><b>Project End Date</b></label>
+            <label for="add-edit__end-date-field"><b>Project End Date</b></label>
             <input type="date" id="add-edit__end-date-field" class="edit-input" name="projectEndDate" required>
 
             <button type="submit" class="add-edit__save">Save Changes</button>
