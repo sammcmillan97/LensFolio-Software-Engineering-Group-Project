@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.entities.ProjectEntity;
-import nz.ac.canterbury.seng302.portfolio.entities.SprintEntity;
-import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
-import nz.ac.canterbury.seng302.portfolio.repositories.SprintEntityRepository;
+import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,10 +27,10 @@ public class ProjectsController {
      * Repository which allows the controller to interact with the database.
      */
     @Autowired
-    private ProjectEntityRepository projectEntityRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    private SprintEntityRepository sprintEntityRepository;
+    private SprintRepository sprintRepository;
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
@@ -40,13 +40,12 @@ public class ProjectsController {
      */
     @GetMapping("/projects")
     public String projects(Model model) {
-//        projectEntityRepository.deleteAll(); // Use for testing if default project works
-        List<ProjectEntity> projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
+        List<Project> projects = StreamSupport.stream(projectRepository.findAll().spliterator(), false).toList();
 
         if (projects.size() < 1) {
-            ProjectEntity defaultProject = new ProjectEntity();
-            projectEntityRepository.save(defaultProject);
-            projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
+            Project defaultProject = new Project();
+            projectRepository.save(defaultProject);
+            projects = StreamSupport.stream(projectRepository.findAll().spliterator(), false).toList();
         }
 
 
@@ -62,76 +61,80 @@ public class ProjectsController {
      * @return Redirects back to the GET mapping for /projects.
      */
     @DeleteMapping(value="/projects")
-    public String deleteProjectById(@RequestParam(name="id") Long id) {
-        projectEntityRepository.deleteById(id);
+    public String deleteProjectById(@RequestParam(name="id") int id) {
+        ///projectRepository.deleteById(id);
         return "redirect:/projects";
     }
 
     @PostMapping(value="/projects")
-    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") Long projectId,
+    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") int projectId,
                                   @RequestParam(name = "projectName") String projectName,
                                   @RequestParam(name = "projectDescription") String projectDescription,
                                   @RequestParam(name = "projectStartDate") Date projectStartDate,
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
         if (projectId == -1) {
-            ProjectEntity newProject = new ProjectEntity(projectName, projectDescription, projectStartDate, projectEndDate);
-            projectEntityRepository.save(newProject);
+            Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
+            projectRepository.save(newProject);
         } else {
-            ProjectEntity updatedProject = new ProjectEntity(projectId, projectName, projectDescription, projectStartDate, projectEndDate);
-            projectEntityRepository.save(updatedProject);
+            Project existingProject = projectRepository.findById(projectId);
+            existingProject.setName(projectName);
+            existingProject.setStartDate(projectStartDate);
+            existingProject.setEndDate(projectEndDate);
+            existingProject.setDescription(projectDescription);
+            projectRepository.save(existingProject);
         }
 
         return "redirect:/projects";
     }
 
-    @GetMapping(value="/projects/all")
-    public String addEntitiesForDemo(Model model) {
-
-        Calendar cal = Calendar.getInstance();
-        Date startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.MONTH, 8);
-        Date endDate = new Date(cal.getTimeInMillis());
-
-        ProjectEntity project1 = new ProjectEntity("Project 1", "This is a project", startDate, endDate);
-        ProjectEntity project2 = new ProjectEntity("Project 2", "This is another project", startDate, endDate);
-
-        cal.add(Calendar.MONTH, -8);
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.WEEK_OF_YEAR, 3);
-        endDate = new Date(cal.getTimeInMillis());
-
-        SprintEntity sprint1 = new SprintEntity(project1, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-        SprintEntity sprint2 = new SprintEntity(project2, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.WEEK_OF_YEAR, 3);
-        endDate = new Date(cal.getTimeInMillis());
-
-        SprintEntity sprint3 = new SprintEntity(project1, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-        SprintEntity sprint4 = new SprintEntity(project2, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-
-        Set<SprintEntity> project1Sprints = new HashSet<>();
-        Set<SprintEntity> project2Sprints = new HashSet<>();
-
-        project1Sprints.add(sprint1);
-        project1Sprints.add(sprint3);
-        project2Sprints.add(sprint2);
-        project2Sprints.add(sprint4);
-
-        project1.setSprints(project1Sprints);
-        project2.setSprints(project2Sprints);
-
-        projectEntityRepository.save(project1);
-        projectEntityRepository.save(project2);
-        sprintEntityRepository.save(sprint1);
-        sprintEntityRepository.save(sprint2);
-        sprintEntityRepository.save(sprint3);
-        sprintEntityRepository.save(sprint4);
-
-        return "redirect:/projects";
-
-    }
+//    @GetMapping(value="/projects/all")
+//    public String addEntitiesForDemo(Model model) {
+//
+//        Calendar cal = Calendar.getInstance();
+//        Date startDate = new Date(cal.getTimeInMillis());
+//        cal.add(Calendar.MONTH, 8);
+//        Date endDate = new Date(cal.getTimeInMillis());
+//
+//        Project project1 = new Project("Project 1", "This is a project", startDate, endDate);
+//        Project project2 = new Project("Project 2", "This is another project", startDate, endDate);
+//
+//        cal.add(Calendar.MONTH, -8);
+//        cal.add(Calendar.DAY_OF_MONTH, 1);
+//        startDate = new Date(cal.getTimeInMillis());
+//        cal.add(Calendar.WEEK_OF_YEAR, 3);
+//        endDate = new Date(cal.getTimeInMillis());
+//
+//        Sprint sprint1 = new Sprint(project1, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
+//        Sprint sprint2 = new Sprint(project2, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
+//
+//        cal.add(Calendar.DAY_OF_MONTH, 1);
+//        startDate = new Date(cal.getTimeInMillis());
+//        cal.add(Calendar.WEEK_OF_YEAR, 3);
+//        endDate = new Date(cal.getTimeInMillis());
+//
+//        Sprint sprint3 = new Sprint(project1, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
+//        Sprint sprint4 = new Sprint(project2, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
+//
+//        Set<Sprint> project1Sprints = new HashSet<>();
+//        Set<Sprint> project2Sprints = new HashSet<>();
+//
+//        project1Sprints.add(sprint1);
+//        project1Sprints.add(sprint3);
+//        project2Sprints.add(sprint2);
+//        project2Sprints.add(sprint4);
+//
+//        project1.setSprints(project1Sprints);
+//        project2.setSprints(project2Sprints);
+//
+//        projectRepository.save(project1);
+//        projectRepository.save(project2);
+//        sprintRepository.save(sprint1);
+//        sprintRepository.save(sprint2);
+//        sprintRepository.save(sprint3);
+//        sprintRepository.save(sprint4);
+//
+//        return "redirect:/projects";
+//
+//    }
 }
