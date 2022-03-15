@@ -1,13 +1,11 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
 @Entity // this is an entity, assumed to be in a table called Project
+@Table(name="PROJECTS")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
