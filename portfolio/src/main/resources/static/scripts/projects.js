@@ -14,9 +14,9 @@ document.addEventListener('click', (e) => {
 })
 
 function getDateString(date) {
-    var dd = date.getDate();
-    var mm = date.getMonth() + 1; //January is 0!
-    var yyyy = date.getFullYear();
+    let dd = date.getDate();
+    let mm = date.getMonth() + 1; //January is 0!
+    let yyyy = date.getFullYear();
 
     if (dd < 10) {
         dd = '0' + dd;
@@ -39,8 +39,8 @@ function updateMinEndDate() {
 
 function openAddEditForm(id, name, description, startDateString, endDateString) {
     // Display the form and grey out other page content using overlay
-    document.getElementById("add-edit__popup").style.display = "block";
-    document.getElementById("add-edit__overlay").style.display = "block";
+    document.getElementById("add-edit__popup").classList.remove("hidden");
+    document.getElementById("add-edit__overlay").classList.remove("hidden");
 
     // Set id of project being edited
     document.getElementById("add-edit__project-id").value = id;
@@ -62,12 +62,12 @@ function openAddEditForm(id, name, description, startDateString, endDateString) 
 }
 
 function closeAddEditForm() {
-    document.getElementById("add-edit__popup").style.display = "none";
-    document.getElementById("add-edit__overlay").style.display = "none";
+    // Hide the form and overlay by adding class 'hidden' to both
+    document.getElementById("add-edit__popup").classList.add("hidden");
+    document.getElementById("add-edit__overlay").classList.add("hidden");
 }
 
 function addProject() {
-
     let startDate = new Date();
     startDate.setUTCHours(startDate.getUTCHours() + 13);
     let endDate = new Date(startDate.getTime());

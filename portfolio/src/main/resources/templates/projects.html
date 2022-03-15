@@ -27,7 +27,7 @@
     </nav>
 
     <!-- A pop-up form for adding/editing projects -->
-    <div id="add-edit__popup">
+    <div id="add-edit__popup" class="hidden">
         <form th:action="@{/projects}" class="form-container" th:method="post">
             <h1>Edit Project</h1>
             <input type="hidden" id="add-edit__project-id" name="projectId"/>
@@ -50,7 +50,7 @@
         </form>
     </div>
     <!-- Background page overlay -->
-    <div id="add-edit__overlay" display="none"></div>
+    <div id="add-edit__overlay" class="hidden"></div>
 
     <!-- Page content -->
     <div id="page-content">
