@@ -12,9 +12,7 @@
 </head>
 <body>
 <div class="main">
-    <form th:action="@{/login}">
-        <button class="button">Back</button>
-    </form>
+    <a th:href="@{/login}" class="button">Back</a>
 
     <div style="text-align:center;">
         <h1>Sign Up</h1>
@@ -29,23 +27,21 @@
 
         <div>
             <label>Account Details *</label><br>
-            <input type="text" th:name="username" minlength="5" maxlength="64" required placeholder="Username (*)" class = "attribute"/><label class="helper" >Required, must be unique and at least 5 characters</label><br>
-            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*) "/><label class="helper" >Required, must include '@', and be at least 10 characters</label><br>
-            <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/><label class="helper" >Required, must be at least 8 characters</label><br>
+            <input type="text" th:name="username" minlength="5" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >Required, must be unique and at least 5 characters</label><br>
+            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*) " class="required" /><label class="helper" >Required, must include '@', and be at least 10 characters</label><br>
+            <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)" class="required" /><label class="helper" >Required, must be at least 8 characters</label><br>
             <br>
             <label>Full Name *</label><br>
-            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" /><label class="helper" >Required, must be at least 2 characters</label><br>
-            <input type="text" th:name="middleName" minlength="2" maxlength="64"  required placeholder="Middle Name (*)" /><label class="helper" >Required, must be at least 2 characters</label><br>
-            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="middleName" minlength="2" maxlength="64"  required placeholder="Middle Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
             <br>
             <label>Person Details</label><br>
             <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname"/><label class="helper">Optional</label><br>
             <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" /><label class="helper">Optional</label><br>
             <br>
             <label>Bio</label><label class="helper">Optional</label><br>
-            <label>
-                <textarea th:name="bio" maxlength="1024" placeholder="Bio"></textarea>
-            </label>
+            <textarea th:name="bio" maxlength="1024" placeholder=""></textarea>
             <br><br>
 
             <input class="button" type="submit" value="Submit" />
@@ -55,12 +51,6 @@
 </div>
 </body>
 </html>
-
-<script>
-    $("input").on('keyup', function(){
-        $(this).prev('label').toggleClass('hide', !!this.value);
-    });
-</script>
 
 <style>
     html, body {
@@ -84,28 +74,35 @@
 
     input, textarea {
         margin-left: 10px;
+        margin-bottom: 5px;
+        outline-color: white;
     }
 
     label.helper{
         margin-left: 10px;
         font-style: italic;
         font-weight: normal;
-        color: #a0a0a0;
+        color: #c8c8c8;
     }
 
     /* Selects any valid <input> */
     input:valid, textarea {
+        border: none;
+        border-bottom: 2px solid lightgray;
+    }
+
+    input.required:valid {
         outline-color: green;
     }
 
     /* Selects any invalid <input> */
     input:invalid {
-        outline-color: red;
+        background-color: #fff5f5;
+        border: none;
+        border-bottom: 2px solid red;
     }
 
     input.button {
-        outline-color: cadetblue;
-        color: black;
         padding: 3px 10px 3px 10px;
         margin-left: 0px;
     }
@@ -142,6 +139,16 @@
         color: red;
         margin-top: 20px;
         margin-bottom: -20px;
+    }
+
+    a.button {
+        font-size: medium;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 4px 10px 4px 10px;
+        border-bottom: 1px solid lightgray;
+        border-radius: 3px;
     }
 
 </style>

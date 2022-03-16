@@ -73,8 +73,6 @@ public class LoginController {
             @RequestParam(name="password") String password,
             Model model
     ) {
-        System.out.println(username);
-        System.out.println(password);
         AuthenticateResponse loginReply;
         try {
             loginReply = authenticateClientService.authenticate(username, password);

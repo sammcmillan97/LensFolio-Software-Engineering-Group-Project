@@ -44,7 +44,7 @@ public class RegisterController {
 
         //some validation, could use more
         if (username.isBlank() || email.isBlank() || password.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
-            model.addAttribute("errorMessage", "Please ensure that no fields are left blank (required fields must include characters)");
+            model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
             return "register";
         }
 
