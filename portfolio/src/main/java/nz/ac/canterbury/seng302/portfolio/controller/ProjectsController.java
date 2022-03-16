@@ -62,7 +62,7 @@ public class ProjectsController {
      */
     @DeleteMapping(value="/projects")
     public String deleteProjectById(@RequestParam(name="id") int id) {
-        ///projectRepository.deleteById(id);
+        projectRepository.deleteById(id);
         return "redirect:/projects";
     }
 
