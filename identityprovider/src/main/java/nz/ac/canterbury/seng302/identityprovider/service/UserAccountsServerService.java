@@ -30,6 +30,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             User user = repository.findByUserId(request.getUserId());
             if (Boolean.TRUE.equals(user.checkPassword(request.getCurrentPassword()))) {
                 user.setPassword(request.getNewPassword());
+                repository.save(user);
                 reply.setIsSuccess(true).setMessage("Successfully changed password");
             } else {
                 reply.setIsSuccess(false).setMessage("Password change failed: current password is incorrect");
@@ -61,6 +62,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             user.setBio(request.getBio());
             user.setPersonalPronouns(request.getPersonalPronouns());
             user.setEmail(request.getEmail());
+            repository.save(user);
             reply.setIsSuccess(true).setMessage("Edit user succeeded");
         } else {
             reply.setIsSuccess(false).setMessage("Edit user failed: user does not exist");
