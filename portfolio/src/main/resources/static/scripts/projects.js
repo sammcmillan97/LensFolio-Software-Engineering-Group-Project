@@ -11,7 +11,7 @@ document.addEventListener('click', (e) => {
             project.classList.add("collapsed");
         }
     }
-})
+});
 
 function getDateString(date) {
     let dd = date.getDate();
@@ -65,6 +65,8 @@ function closeAddEditForm() {
     // Hide the form and overlay by adding class 'hidden' to both
     document.getElementById("add-edit__popup").classList.add("hidden");
     document.getElementById("add-edit__overlay").classList.add("hidden");
+
+    return false;
 }
 
 function addProject() {
