@@ -42,6 +42,12 @@ public class RegisterController {
 
         UserRegisterResponse userRegisterResponse;
 
+        //some validation, could use more
+        if (username.isBlank() || email.isBlank() || password.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
+            model.addAttribute("errorMessage", "Please ensure that no fields are left blank (required fields must include characters)");
+            return "register";
+        }
+
         try {
             //Call the grpc
             userRegisterResponse = userAccountClientService.register(username.toLowerCase(Locale.ROOT), password, firstName,
@@ -49,9 +55,13 @@ public class RegisterController {
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
         } catch (Exception e){
+            System.out.println("check");
             model.addAttribute("errorMessage", e);
             return "register";
         }
+
+
+
         if (userRegisterResponse.getIsSuccess()){
             AuthenticateResponse loginReply;
             try {
