@@ -63,9 +63,9 @@
                 <div class="project__details">
                     <!-- Project Details -->
                     <div class="project__date-wrapper flex-row">
-                        <h4 class="project__date" th:text="${project.getStartDate}"></h4>
+                        <h4 class="project__date" th:text="${project.getStartDateString}"></h4>
                         <h4>&nbsp;--->&nbsp;</h4>
-                        <h4 class="project__date" th:text="${project.getEndDate}"></h4>
+                        <h4 class="project__date" th:text="${project.getEndDateString}"></h4>
                     </div>
                     <p class="project__description" th:text="${project.getDescription}"></p>
 
