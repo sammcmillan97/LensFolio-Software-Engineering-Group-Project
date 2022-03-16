@@ -48,8 +48,10 @@ public class RegisterController {
             return "register";
         }
 
+
+
         try {
-            //Call the grpc
+            //Call the grpc with users validated params
             userRegisterResponse = userAccountClientService.register(username.toLowerCase(Locale.ROOT), password, firstName,
                     middleName, lastName, nickname, bio, pronouns, email);
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
