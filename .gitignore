@@ -5,3 +5,4 @@
 */.idea/
 */src/generated/
 */bin/
+*/subdirectory/*.db
