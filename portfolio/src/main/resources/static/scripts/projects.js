@@ -62,9 +62,8 @@ function openAddEditForm(id, name, description, startDateString, endDateString) 
 }
 
 function closeAddEditForm() {
-    // Hide the form and overlay by adding class 'hidden' to both
+    // Hide the form and overlay by adding class 'hidden' to container
     document.getElementById("add-edit__popup").classList.add("hidden");
-    document.getElementById("add-edit__overlay").classList.add("hidden");
 
     return false;
 }

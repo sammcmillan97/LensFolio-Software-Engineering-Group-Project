@@ -111,8 +111,12 @@ html {
 
 /******************** Add/Edit Project Form ********************/
 
-/* The popup form */
 #add-edit__popup {
+    display: block;
+}
+
+/* The popup form */
+#add-edit__form {
     display: block;
     position: fixed;
     top: 50%;
@@ -126,14 +130,14 @@ html {
 }
 
 /* Add styles to the form container */
-.form-container {
+#add-edit__form {
     width: 600px;
     padding: 10px;
     background-color: #FADFC6FF;
 }
 
  /*Full-width input fields*/
-.form-container .edit-input {
+#add-edit__form .edit-input {
     width: calc(100% - 30px);
     padding: 15px;
     margin: 5px 20px 25px 0;
@@ -144,13 +148,13 @@ html {
 }
 
 /* When the inputs get focus, do something */
-.form-container .edit-input:focus {
+#add-edit__form .edit-input:focus {
     background-color: #ddd;
     outline: none;
 }
 
 /* Set a style for the  button */
-.form-container button {
+#add-edit__form button {
     background-color: var(--color-complement);
     color: black;
     padding: 16px 20px;
@@ -166,7 +170,7 @@ html {
 
 
  /*Add some hover effects to buttons */
-.form-container button:hover {
+#add-edit__form button:hover {
      background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
      cursor: pointer;
 }

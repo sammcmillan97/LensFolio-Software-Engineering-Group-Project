@@ -28,11 +28,15 @@
 
     <!-- A pop-up form for adding/editing projects -->
     <div id="add-edit__popup" class="hidden">
-        <form th:action="@{/projects}" class="form-container" th:method="post">
-            <h1>Edit Project</h1>
+        <!-- Background page overlay -->
+        <div id="add-edit__overlay"></div>
+
+        <!-- Form -->
+        <form id="add-edit__form" th:action="@{/projects}" class="form-container" th:method="post">
             <input type="hidden" id="add-edit__project-id" name="projectId"/>
             <input type="hidden" id="add-edit__earliest-date-allowed"/>
 
+            <h1>Edit Project</h1>
             <label for="add-edit__name-field"><b>Project Name</b></label>
             <input type="text" id="add-edit__name-field" class="edit-input" name="projectName" required>
 
@@ -49,8 +53,6 @@
             <button id="add-edit__discard" onclick="return closeAddEditForm()">Discard</button>
         </form>
     </div>
-    <!-- Background page overlay -->
-    <div id="add-edit__overlay" class="hidden"></div>
 
     <!-- Page content -->
     <div id="page-content">
