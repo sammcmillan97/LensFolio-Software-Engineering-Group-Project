@@ -80,23 +80,60 @@ class UserAccountsServiceServiceTests {
         assertTrue(repository.findByUserId(testId).checkPassword(newPassword));
     }
 
-    /*
-    public EditUserResponse editUser(final int userId, final String firstName, final String middleName,
-                                     final String lastName, final String nickname, final String bio,
-                                     final String personalPronouns, final String email)  {
+    @Test
+    void editUserBadUserTest() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
-                .setUserId(userId)
-                .setFirstName(firstName)
-                .setMiddleName(middleName)
-                .setLastName(lastName)
-                .setNickname(nickname)
-                .setBio(bio)
-                .setPersonalPronouns(personalPronouns)
-                .setEmail(email)
+                .setUserId(-1)
+                .setFirstName(testFirstName + "new")
+                .setMiddleName(testMiddleName + "new")
+                .setLastName(testLastName + "new")
+                .setNickname(testNickname + "new")
+                .setBio(testBio + "new")
+                .setPersonalPronouns(testPronouns + "new")
+                .setEmail(testEmail + "new")
                 .build();
-        return userStub.editUser(editUserRequest);
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+        assertEquals("Edit user failed: user does not exist", response.getMessage());
+        assertFalse(response.getIsSuccess());
+
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName, testUser.getFirstName());
+        assertEquals(testMiddleName, testUser.getMiddleName());
+        assertEquals(testLastName, testUser.getLastName());
+        assertEquals(testNickname, testUser.getNickname());
+        assertEquals(testBio, testUser.getBio());
+        assertEquals(testPronouns, testUser.getPersonalPronouns());
+        assertEquals(testEmail, testUser.getEmail());
     }
 
+    @Test
+    void editUserGoodUserTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName(testFirstName + "new")
+                .setMiddleName(testMiddleName + "new")
+                .setLastName(testLastName + "new")
+                .setNickname(testNickname + "new")
+                .setBio(testBio + "new")
+                .setPersonalPronouns(testPronouns + "new")
+                .setEmail(testEmail + "new")
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+        assertEquals("Edit user succeeded", response.getMessage());
+        assertTrue(response.getIsSuccess());
+
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName + "new", testUser.getFirstName());
+        assertEquals(testMiddleName + "new", testUser.getMiddleName());
+        assertEquals(testLastName + "new", testUser.getLastName());
+        assertEquals(testNickname + "new", testUser.getNickname());
+        assertEquals(testBio + "new", testUser.getBio());
+        assertEquals(testPronouns + "new", testUser.getPersonalPronouns());
+        assertEquals(testEmail + "new", testUser.getEmail());
+    }
+    /*
     public UserResponse getUserAccountById(final int userId)  {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(userId)
