@@ -22,6 +22,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    /**
+     * Handler for password change requests.
+     * If the user exists, and their password is correct, change it to the new password.
+     * @param request A password change request according to user_accounts.proto
+     * @return A password change response according to user_accounts.proto
+     */
     @VisibleForTesting
     ChangePasswordResponse changeUserPasswordHandler(ChangePasswordRequest request) {
         ChangePasswordResponse.Builder reply = ChangePasswordResponse.newBuilder();
@@ -49,6 +55,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    /**
+     * Handler for edit user requests.
+     * If the user exists, change their details to the new details in the request.
+     * @param request A user edit request according to user_accounts.proto
+     * @return A user edit response according to user_accounts.proto
+     */
     @VisibleForTesting
     EditUserResponse editUserHandler(EditUserRequest request) {
         EditUserResponse.Builder reply = EditUserResponse.newBuilder();
@@ -77,6 +89,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    /**
+     * Handler for user information retrieval requests.
+     * If the user id exists, return their information.
+     * Else, return blank information.
+     * @param request A get user by id request according to user_accounts.proto
+     * @return A user response according to user_accounts.proto
+     */
     @VisibleForTesting
     UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
         UserResponse.Builder reply = UserResponse.newBuilder();
@@ -105,6 +124,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     }
 
+    /**
+     * Handler for user register requests.
+     * If the username is already taken, fails.
+     * Else, creates the user and returns the new user id.
+     * @param request A user register request according to user_accounts.proto
+     * @return A user register response according to user_accounts.proto
+     */
     @VisibleForTesting
     UserRegisterResponse registerHandler(UserRegisterRequest request) {
         UserRegisterResponse.Builder reply = UserRegisterResponse.newBuilder();
