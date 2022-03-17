@@ -31,7 +31,7 @@ public class ProjectDetailsController {
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("project", project);
 
-        List<Sprint> sprintList = sprintService.getAllSprints();
+        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         model.addAttribute("sprints", sprintList);
 
 
