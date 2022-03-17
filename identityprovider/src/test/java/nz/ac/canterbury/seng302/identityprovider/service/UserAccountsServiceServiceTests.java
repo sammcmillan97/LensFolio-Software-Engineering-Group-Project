@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
+import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
@@ -30,12 +31,14 @@ class UserAccountsServiceServiceTests {
     private final String testPassword = "test password";
 
     private int testId;
+    private Timestamp testCreated;
 
     @BeforeEach
     public void setup() {
         repository.deleteAll();
         User testUser = repository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
         testId = testUser.getUserId();
+        testCreated = testUser.getTimeCreated();
     }
 
     @Test
@@ -133,30 +136,87 @@ class UserAccountsServiceServiceTests {
         assertEquals(testPronouns + "new", testUser.getPersonalPronouns());
         assertEquals(testEmail + "new", testUser.getEmail());
     }
-    /*
-    public UserResponse getUserAccountById(final int userId)  {
+
+    @Test
+    void getUserByIdBadUserTest() {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
-                .setId(userId)
+                .setId(-1)
                 .build();
-        return userStub.getUserAccountById(getUserByIdRequest);
+        UserResponse reply = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertEquals("", reply.getUsername());
+        assertEquals("", reply.getFirstName());
+        assertEquals("", reply.getMiddleName());
+        assertEquals("", reply.getLastName());
+        assertEquals("", reply.getNickname());
+        assertEquals("", reply.getBio());
+        assertEquals("", reply.getPersonalPronouns());
+        assertEquals("", reply.getEmail());
+        assertEquals(Timestamp.newBuilder().build(), reply.getCreated());
     }
 
-    public UserRegisterResponse register(final String username, final String password, final String firstName,
-                                         final String middleName, final String lastName, final String nickname,
-                                         final String bio, final String personalPronouns, final String email)  {
-        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
-                .setUsername(username)
-                .setPassword(password)
-                .setFirstName(firstName)
-                .setMiddleName(middleName)
-                .setLastName(lastName)
-                .setNickname(nickname)
-                .setBio(bio)
-                .setPersonalPronouns(personalPronouns)
-                .setEmail(email)
+    @Test
+    void getUserByIdGoodUserTest() {
+        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
+                .setId(testId)
                 .build();
-        return userStub.register(userRegisterRequest);
+        UserResponse reply = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertEquals(testUsername, reply.getUsername());
+        assertEquals(testFirstName, reply.getFirstName());
+        assertEquals(testMiddleName, reply.getMiddleName());
+        assertEquals(testLastName, reply.getLastName());
+        assertEquals(testNickname, reply.getNickname());
+        assertEquals(testBio, reply.getBio());
+        assertEquals(testPronouns, reply.getPersonalPronouns());
+        assertEquals(testEmail, reply.getEmail());
+        assertEquals(testCreated, reply.getCreated());
     }
-    */
+
+    @Test
+    void userRegisterBadUsernameTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername(testUsername)
+                .setPassword(testPassword + "2")
+                .setFirstName(testFirstName + "2")
+                .setMiddleName(testMiddleName + "2")
+                .setLastName(testLastName + "2")
+                .setNickname(testNickname + "2")
+                .setBio(testBio + "2")
+                .setPersonalPronouns(testPronouns + "2")
+                .setEmail(testEmail + "2")
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Username already taken", reply.getMessage());
+        assertFalse(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterGoodUsernameTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername(testUsername + "2")
+                .setPassword(testPassword + "2")
+                .setFirstName(testFirstName + "2")
+                .setMiddleName(testMiddleName + "2")
+                .setLastName(testLastName + "2")
+                .setNickname(testNickname + "2")
+                .setBio(testBio + "2")
+                .setPersonalPronouns(testPronouns + "2")
+                .setEmail(testEmail + "2")
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt succeeded", reply.getMessage());
+        assertTrue(reply.getIsSuccess());
+        int newTestId = reply.getNewUserId();
+        User testUser = repository.findByUserId(newTestId);
+        assertEquals(testUsername + "2", testUser.getUsername());
+        assertEquals(testFirstName + "2", testUser.getFirstName());
+        assertEquals(testMiddleName + "2", testUser.getMiddleName());
+        assertEquals(testLastName + "2", testUser.getLastName());
+        assertEquals(testNickname + "2", testUser.getNickname());
+        assertEquals(testBio + "2", testUser.getBio());
+        assertEquals(testPronouns + "2", testUser.getPersonalPronouns());
+        assertEquals(testEmail + "2", testUser.getEmail());
+        //as the password is stored encrypted, it needs to be checked differently
+        assertTrue(testUser.checkPassword(testPassword + "2"));
+    }
 
 }
