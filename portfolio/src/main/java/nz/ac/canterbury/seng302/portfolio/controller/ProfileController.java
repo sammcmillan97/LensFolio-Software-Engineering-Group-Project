@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,6 +22,12 @@ public class ProfileController {
     @Autowired
     private UserAccountClientService userService;
 
+    /**
+     * Display the user's profile page.
+     * @param principal Authentication state of client
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The string "profile"
+     */
     @GetMapping("/profile")
     public String profile(
             @AuthenticationPrincipal AuthState principal,
