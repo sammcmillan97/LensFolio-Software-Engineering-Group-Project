@@ -6,3 +6,4 @@
 */src/generated/
 */bin/
 */data/*.db
+*/subdirectory/*.db
