@@ -7,37 +7,37 @@
     <link th:href="@{/css/loginCSS.css}" rel="stylesheet" />
 </head>
 <body>
-<div class="container">
-    <div class="wrapper">
-        <div class="title"><span>Login</span></div>
-        <form th:action="@{/login}" method="post">
-<!--            <p th:if="${error}" class="error">Incorrect UserName & Password</p>-->
-            <div class="row">
+<div>
 
-                <label>
-                    <input type="text" required placeholder="Username" th:name="username">
-                </label>
-            </div>
-            <div class="row">
-
-                <label>
-                    <input type="password" required placeholder="Password" th:name="password">
-                </label>
-            </div>
-            <div class="row button">
-                <input type="submit" value="Login">
-            </div>
-        </form>
-        <form th:action="@{/register}">
-            <div class="row button">
-                <label>
-                    <input type="submit" value="Register">
-                </label>
-            </div>
-        </form>
+    <div style="text-align:center;">
+        <h1>Login</h1>
     </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="row">
+            <label>
+                <input type="text" required placeholder="Username" th:name="username">
+            </label>
+        </div>
+        <div class="row">
+            <label>
+                <input type="password" required placeholder="Password" th:name="password">
+            </label>
+        </div>
+        <div class="row button">
+            <input class="button" type="submit" value="Login">
+        </div>
+    </form>
+    <form th:action="@{/register}">
+        <div class="row button">
+            <label>
+                <input class="button" type="submit" value="Register">
+            </label>
+        </div>
+    </form>
+    <p th:text="${loginMessage}"></p>
 </div>
-<p th:text="${loginMessage}" />
+
 </body>
 </html>
 
@@ -53,8 +53,7 @@
     body {
         display: table-cell;
         vertical-align: middle;
-        font-weight: bold;
-        font-size: xx-large;
+        font-family: "Calibri Light";
     }
 
     div {
@@ -63,5 +62,19 @@
 
     input {
         align-content: center;
+    }
+
+    p {
+        color: red;
+    }
+
+    input {
+        width: 170px;
+        padding: 3px 0px 3px 3px;
+    }
+
+    input.button {
+        padding: 3px 0px 3px 0px;
+        width: 175px;
     }
 </style>
