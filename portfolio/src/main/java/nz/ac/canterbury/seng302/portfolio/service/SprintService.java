@@ -38,4 +38,9 @@ public class SprintService {
             throw new Exception("Project not found");
         }
     }
+
+    public List<Sprint> getByParentProjectId(int projectId) {
+        List<Sprint> list = repository.findByParentProjectId(projectId);
+        return list;
+    }
 }
