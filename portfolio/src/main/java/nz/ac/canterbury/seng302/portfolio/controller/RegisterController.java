@@ -67,7 +67,7 @@ public class RegisterController {
         if (userRegisterResponse.getIsSuccess()){
             AuthenticateResponse loginReply;
             try {
-                loginReply = authenticateClientService.authenticate(username, password);
+                loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
             } catch (StatusRuntimeException e){
                 model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
                 return "login";

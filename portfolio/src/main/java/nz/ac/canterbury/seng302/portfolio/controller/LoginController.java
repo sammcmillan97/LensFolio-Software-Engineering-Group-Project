@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * Class which handles the backend of the login page
@@ -75,7 +76,7 @@ public class LoginController {
     ) {
         AuthenticateResponse loginReply;
         try {
-            loginReply = authenticateClientService.authenticate(username, password);
+            loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
         } catch (StatusRuntimeException e){
             model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
             return "login";
