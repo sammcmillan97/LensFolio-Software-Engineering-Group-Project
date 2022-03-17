@@ -88,53 +88,54 @@ public class ProjectsController {
         return "redirect:/projects";
     }
 
-//    @GetMapping(value="/projects/all")
-//    public String addEntitiesForDemo(Model model) {
-//
-//        Calendar cal = Calendar.getInstance();
-//        Date startDate = new Date(cal.getTimeInMillis());
-//        cal.add(Calendar.MONTH, 8);
-//        Date endDate = new Date(cal.getTimeInMillis());
-//
-//        Project project1 = new Project("Project 1", "This is a project", startDate, endDate);
-//        Project project2 = new Project("Project 2", "This is another project", startDate, endDate);
-//
-//        cal.add(Calendar.MONTH, -8);
-//        cal.add(Calendar.DAY_OF_MONTH, 1);
-//        startDate = new Date(cal.getTimeInMillis());
-//        cal.add(Calendar.WEEK_OF_YEAR, 3);
-//        endDate = new Date(cal.getTimeInMillis());
-//
-//        Sprint sprint1 = new Sprint(project1, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-//        Sprint sprint2 = new Sprint(project2, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-//
-//        cal.add(Calendar.DAY_OF_MONTH, 1);
-//        startDate = new Date(cal.getTimeInMillis());
-//        cal.add(Calendar.WEEK_OF_YEAR, 3);
-//        endDate = new Date(cal.getTimeInMillis());
-//
-//        Sprint sprint3 = new Sprint(project1, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-//        Sprint sprint4 = new Sprint(project2, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-//
-//        Set<Sprint> project1Sprints = new HashSet<>();
-//        Set<Sprint> project2Sprints = new HashSet<>();
-//
-//        project1Sprints.add(sprint1);
-//        project1Sprints.add(sprint3);
-//        project2Sprints.add(sprint2);
-//        project2Sprints.add(sprint4);
-//
-//        project1.setSprints(project1Sprints);
-//        project2.setSprints(project2Sprints);
-//
-//        projectRepository.save(project1);
-//        projectRepository.save(project2);
-//        sprintRepository.save(sprint1);
-//        sprintRepository.save(sprint2);
-//        sprintRepository.save(sprint3);
-//        sprintRepository.save(sprint4);
-//
-//        return "redirect:/projects";
-//
-//    }
+    @GetMapping(value="/projects/all")
+    public String addEntitiesForDemo(Model model) {
+
+        Calendar cal = Calendar.getInstance();
+        Date startDate = new Date(cal.getTimeInMillis());
+        cal.add(Calendar.MONTH, 8);
+        Date endDate = new Date(cal.getTimeInMillis());
+
+        Project project1 = new Project("Project 1", "This is a project", startDate, endDate);
+        Project project2 = new Project("Project 2", "This is another project", startDate, endDate);
+        projectRepository.save(project1);
+        projectRepository.save(project2);
+
+        cal.add(Calendar.MONTH, -8);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        startDate = new Date(cal.getTimeInMillis());
+        cal.add(Calendar.WEEK_OF_YEAR, 3);
+        endDate = new Date(cal.getTimeInMillis());
+
+        Sprint sprint1 = new Sprint(project1.getId(), "Sprint Name", "Sprint 1", "This is a sprint", startDate, endDate);
+        Sprint sprint2 = new Sprint(project2.getId(), "Sprint Name", "Sprint 2", "This is a sprint", startDate, endDate);
+
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        startDate = new Date(cal.getTimeInMillis());
+        cal.add(Calendar.WEEK_OF_YEAR, 3);
+        endDate = new Date(cal.getTimeInMillis());
+
+        Sprint sprint3 = new Sprint(project1.getId(), "Sprint Name", "Sprint 3", "This is a sprint", startDate, endDate);
+        Sprint sprint4 = new Sprint(project2.getId(), "Sprint Name", "Sprint 4", "This is a sprint", startDate, endDate);
+
+        List<Sprint> project1Sprints = new ArrayList<>();
+        List<Sprint> project2Sprints = new ArrayList<>();
+
+        project1Sprints.add(sprint1);
+        project1Sprints.add(sprint3);
+        project2Sprints.add(sprint2);
+        project2Sprints.add(sprint4);
+
+        /*project1.setSprints(project1Sprints);
+        project2.setSprints(project2Sprints);*/
+
+
+        sprintRepository.save(sprint1);
+        sprintRepository.save(sprint2);
+        sprintRepository.save(sprint3);
+        sprintRepository.save(sprint4);
+
+        return "redirect:/projects";
+
+    }
 }
