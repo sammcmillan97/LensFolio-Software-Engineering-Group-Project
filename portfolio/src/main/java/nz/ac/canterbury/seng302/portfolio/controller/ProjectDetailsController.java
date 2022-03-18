@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
@@ -10,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @Controller
@@ -22,6 +23,12 @@ public class ProjectDetailsController {
     private ProjectService projectService;
     @Autowired
     private SprintService sprintService;
+
+    /**
+     * Repository which allows the controller to interact with the database.
+     */
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @GetMapping("/projects/{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
@@ -44,11 +51,36 @@ public class ProjectDetailsController {
 
         /* Return the name of the Thymeleaf template */
         // detects the role of the current user and returns appropriate page
-        /*if (role.equals("teacher")) {
-            return "teacherProjectDetails";
-        } else {
-            return "userProjectDetails";
-        }*/
+//        System.out.println(role);
+//        if (role.equals("teacher")) {
+//            return "teacherProjectDetails";
+//        } else if (role.equals("student")) {
+//            return "userProjectDetails";
+//        } else {
+//            System.out.println("Invalid Role");
+//            //TODO error page if user has invalid role
+//            return "projects";
+//        }
         return "teacherProjectDetails";
     }
+
+    @PutMapping(value="/projects")
+    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") int projectId,
+                                  @RequestParam(name = "projectName") String projectName,
+                                  @RequestParam(name = "projectDescription") String projectDescription,
+                                  @RequestParam(name = "projectStartDate") Date projectStartDate,
+                                  @RequestParam(name = "projectEndDate") Date projectEndDate,
+                                  Model model) {
+
+        Project existingProject = projectRepository.findById(projectId);
+        existingProject.setName(projectName);
+        existingProject.setStartDate(projectStartDate);
+        existingProject.setEndDate(projectEndDate);
+        existingProject.setDescription(projectDescription);
+        projectRepository.save(existingProject);
+
+
+        return "redirect:/projects/" + projectId;
+    }
+
 }

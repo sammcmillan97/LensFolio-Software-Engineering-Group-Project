@@ -1,7 +1,7 @@
 :root {
     /* CSS variables */
     --color-primary: #FBAA60;
-    --color-secondary: #FBC490;
+    --color-secondary: #FADFC6FF;
     --color-tertiary: #F67B50;
     --color-complement: #F4EAE6;
     --color-accent: #A82810;
@@ -123,7 +123,7 @@ html {
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     border: 1px solid var(--color-accent);
-    background-color: #FADFC6FF;
+    background-color: var(--color-secondary);
     overflow: hidden;
     border-radius: 1.5rem;
     z-index: 9;
@@ -133,7 +133,7 @@ html {
 #add-edit__form {
     width: 600px;
     padding: 10px;
-    background-color: #FADFC6FF;
+    background-color: var(--color-secondary);
 }
 
  /*Full-width input fields*/

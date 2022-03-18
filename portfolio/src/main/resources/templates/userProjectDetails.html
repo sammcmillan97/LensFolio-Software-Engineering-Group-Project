@@ -8,21 +8,21 @@
 <body>
 <div class="header">
     <div class="title">
-        <p class="title-name" th:text="${project.getName}" />
-        <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
+        <p class="title-name" th:text="${project.getName}"></p>
+        <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}"></p>
     </div>
 </div>
 <div class="content">
-    <div class="detail-block" th:text="${project.getDescription}" />
+    <div class="detail-block" th:text="${project.getDescription}"></div>
     <hr/>
     <div th:each="sprint: ${sprints}">
         <div class="sprint-block">
-            <div class="sprint-label" th:text="${sprint.getLabel}" />
+            <div class="sprint-label" th:text="${sprint.getLabel}"></div>
             <div class="detail-block">
                 <div>
-                <div class="sprint-title" th:text="${sprint.getName}" />
-                <div class="sprint-date" th:text="${sprint.getStartDateString} + ' - ' + ${sprint.getEndDateString}" />
-                <div class="sprint-description" th:text="${sprint.getDescription}" />
+                <div class="sprint-title" th:text="${sprint.getName}"></div>
+                <div class="sprint-date" th:text="${sprint.getStartDateString} + ' - ' + ${sprint.getEndDateString}"></div>
+                <div class="sprint-description" th:text="${sprint.getDescription}"></div>
                 </div>
             </div>
         </div>
