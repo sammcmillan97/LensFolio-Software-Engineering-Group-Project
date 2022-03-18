@@ -1,10 +1,80 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:href="@{/css/loginCSS.css}" rel="stylesheet" />
 </head>
 <body>
-<p th:text="${loginMessage}" />
+<div>
+
+    <div style="text-align:center;">
+        <h1>Login</h1>
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="row">
+            <label>
+                <input type="text" required placeholder="Username" th:name="username">
+            </label>
+        </div>
+        <div class="row">
+            <label>
+                <input type="password" required placeholder="Password" th:name="password">
+            </label>
+        </div>
+        <div class="row button">
+            <input class="button" type="submit" value="Login">
+        </div>
+    </form>
+    <form th:action="@{/register}">
+        <div class="row button">
+            <label>
+                <input class="button" type="submit" value="Register">
+            </label>
+        </div>
+    </form>
+    <p th:text="${loginMessage}"></p>
+</div>
+
 </body>
 </html>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+    html {
+        display: table;
+        margin: auto;
+    }
+
+    body {
+        display: table-cell;
+        vertical-align: middle;
+        font-family: "Calibri Light";
+    }
+
+    div {
+        padding: 5px;
+    }
+
+    input {
+        align-content: center;
+    }
+
+    p {
+        color: red;
+    }
+
+    input {
+        width: 170px;
+        padding: 3px 0px 3px 3px;
+    }
+
+    input.button {
+        padding: 3px 0px 3px 0px;
+        width: 175px;
+    }
+</style>
