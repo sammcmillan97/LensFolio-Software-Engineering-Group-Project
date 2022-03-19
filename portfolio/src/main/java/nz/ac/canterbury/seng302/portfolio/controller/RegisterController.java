@@ -39,7 +39,6 @@ public class RegisterController {
                            @RequestParam(name="pronouns") String pronouns,
                            @RequestParam(name="bio") String bio,
                            Model model) {
-        System.out.println("called register");
         UserRegisterResponse userRegisterResponse;
 
         //some validation, could use more

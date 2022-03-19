@@ -8,6 +8,8 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
 
@@ -35,22 +37,34 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    /**
+     * Edit User Method
+     * @param request
+     * @param responseObserver
+     */
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
-
         EditUserResponse.Builder reply = EditUserResponse.newBuilder();
 
-        if (repository.existsById(request.getUserId())) {
-            User user = repository.findByUserId(request.getUserId());
+        //Optional as an id may be entered that doesn't exist in the repository
+        Optional<User> optionalUser = repository.findById(request.getUserId());
+
+        //If the user id is present in the repository, then update relevant details
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setEmail(request.getEmail());
             user.setFirstName(request.getFirstName());
             user.setMiddleName(request.getMiddleName());
             user.setLastName(request.getLastName());
             user.setNickname(request.getNickname());
-            user.setBio(request.getBio());
             user.setPersonalPronouns(request.getPersonalPronouns());
-            user.setEmail(request.getEmail());
-            reply.setIsSuccess(true).setMessage("Edit user succeeded");
+            user.setBio(request.getBio());
+            //repository.save works both as saving a new user,
+            //or where a user exists it will update
+            repository.save(user);
+            reply.setIsSuccess(true).setMessage("Edit user succeeded");//model message updated
         } else {
+            //model message updated and displayed in the edit page
             reply.setIsSuccess(false).setMessage("Edit user failed: user does not exist");
         }
 

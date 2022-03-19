@@ -15,14 +15,14 @@
 
     <p th:text="${editMessage}"></p>
     <p th:text="${errorMessage}"></p>
-    <p th:text="${Response}"></p>
+    <br>
 
     <!-- form puts the params to the register controller-->
     <form th:action="@{/editUser}" method="post">
 
         <div>
+            <input type="hidden" th:name="username"  th:value="${user.username}" />
             <label>Account Details *</label><br>
-            <input type="text" th:name="username" minlength="5" maxlength="64" readonly th:value="${user.username}" class="required" /><label class="helper" >Username cannot be edited</label><br>
             <input type="email" th:name="email" minlength="10" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@', and be at least 10 characters</label><br>
             <br>
             <label>Full Name *</label><br>
@@ -85,10 +85,10 @@
         border-bottom: 2px solid lightgray;
     }
 
-    input:read-only{
+    input.readonly{
         border: none;
         border-bottom: 2px solid lightgray;
-        colour: #c8c8c8;
+        font-colour: #c8c8c8;
     }
 
     input.required:valid {
@@ -100,10 +100,6 @@
         background-color: #fff5f5;
         border: none;
         border-bottom: 2px solid red;
-    }
-
-    input.userId {
-        display: none;
     }
 
     input.button {
