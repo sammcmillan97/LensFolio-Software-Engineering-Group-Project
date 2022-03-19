@@ -3,29 +3,42 @@
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/main.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" href="/styles/projects.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script rel="script" src="/scripts/projects.js"></script>
 </head>
 <body>
-<div class="header">
-    <div class="title">
-        <p class="title-name" th:text="${project.getName}"></p>
-        <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}"></p>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div id="page-content">
+    <!-- Populate the following div with projects and their details. -->
+    <div class="header">
+        <div class="title">
+            <p class="title-name" th:text="${project.getName}" />
+            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
+        </div>
     </div>
-</div>
-<div class="content">
-    <div class="detail-block" th:text="${project.getDescription}"></div>
-    <hr/>
-    <div th:each="sprint: ${sprints}">
-        <div class="sprint-block">
-            <div class="sprint-label" th:text="${sprint.getLabel}"></div>
-            <div class="detail-block">
-                <div>
-                <div class="sprint-title" th:text="${sprint.getName}"></div>
-                <div class="sprint-date" th:text="${sprint.getStartDateString} + ' - ' + ${sprint.getEndDateString}"></div>
-                <div class="sprint-description" th:text="${sprint.getDescription}"></div>
+    <div id="project-wrapper" class="flex-column">
+
+        <!-- Project -->
+        <div class="project collapsed" th:each="sprint : ${sprints}">
+            <!-- Project Title -->
+            <h2 class="project__name" th:text="${sprint.getLabel}"></h2>
+
+            <div class="project__details">
+                <!-- Sprint Details -->
+                <h3 class="sprint__name" th:text="${sprint.getName}"></h3>
+                <div class="project__date-wrapper flex-row">
+                    <h4 class="project__date" th:text="${sprint.getStartDateString}"></h4>
+                    <h4>&nbsp;--->&nbsp;</h4>
+                    <h4 class="project__date" th:text="${sprint.getEndDateString}"></h4>
                 </div>
+                <p class="project__description" th:text="${sprint.getDescription}"></p>
             </div>
         </div>
+
     </div>
 </div>
 </body>

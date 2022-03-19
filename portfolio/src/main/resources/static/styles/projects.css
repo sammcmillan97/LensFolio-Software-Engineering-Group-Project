@@ -196,3 +196,12 @@ html {
 .sprint__description {
     padding-bottom: 1rem;
 }
+
+.sprint__name {
+    margin: 0 10rem 0 0;
+    padding: 0;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
