@@ -39,7 +39,7 @@ public class RegisterController {
                            @RequestParam(name="pronouns") String pronouns,
                            @RequestParam(name="bio") String bio,
                            Model model) {
-
+        System.out.println("called register");
         UserRegisterResponse userRegisterResponse;
 
         //some validation, could use more
@@ -47,8 +47,6 @@ public class RegisterController {
             model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
             return "register";
         }
-
-
 
         try {
             //Call the grpc with users validated params
@@ -60,8 +58,6 @@ public class RegisterController {
             model.addAttribute("errorMessage", e);
             return "register";
         }
-
-
 
         if (userRegisterResponse.getIsSuccess()){
             AuthenticateResponse loginReply;

@@ -15,17 +15,15 @@
 
     <p th:text="${editMessage}"></p>
     <p th:text="${errorMessage}"></p>
-    <p th:text="${loginMessage}"></p>
+    <p th:text="${Response}"></p>
 
-    <!-- form posts the params to the register controller-->
-    <form th:action="@{/editUser}"  method="put">
+    <!-- form puts the params to the register controller-->
+    <form th:action="@{/editUser}" method="post">
 
         <div>
-            <input type="hidden" class="userId" th:name="${userId}"/><br>
             <label>Account Details *</label><br>
-            <input type="text" th:name="username" minlength="5" maxlength="64" readonly th:value="${user.username}" class="required" /><label class="helper" >Sorry, this field cannot be edited</label><br>
-            <input type= "email" th:name="email" minlength="10" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Required, must include '@', and be at least 10 characters</label><br>
-            <input type="password" th:name="password" minlength="8" maxlength="64" readonly placeholder="********" class="required" /><label class="helper" >To edit your password, go to ###</label><br>
+            <input type="text" th:name="username" minlength="5" maxlength="64" readonly th:value="${user.username}" class="required" /><label class="helper" >Username cannot be edited</label><br>
+            <input type="email" th:name="email" minlength="10" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@', and be at least 10 characters</label><br>
             <br>
             <label>Full Name *</label><br>
             <input type="text" th:name="firstName" minlength="2" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required, must be at least 2 characters</label><br>

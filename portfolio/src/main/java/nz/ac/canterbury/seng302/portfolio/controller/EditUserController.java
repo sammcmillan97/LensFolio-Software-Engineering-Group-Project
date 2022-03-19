@@ -10,13 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Locale;
 
 @Controller
 public class EditUserController {
@@ -45,12 +41,9 @@ public class EditUserController {
     }
 
     @PostMapping("/editUser")
-    public String edit(HttpServletRequest request,
-                           HttpServletResponse response,
-                           @RequestParam(name="userId") int userId,
+    public String editUser(@AuthenticationPrincipal AuthState principal,
                            @RequestParam(name="username") String username,
                            @RequestParam(name="email") String email,
-                           @RequestParam(name="password") String password,
                            @RequestParam(name="firstName") String firstName,
                            @RequestParam(name="middleName") String middleName,
                            @RequestParam(name="lastName") String lastName,
@@ -59,6 +52,13 @@ public class EditUserController {
                            @RequestParam(name="bio") String bio,
                            Model model) {
 
+        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+
+        System.out.println("called edit user");
         EditUserResponse editUserResponse;
 
         //some validation, could use more
@@ -69,41 +69,22 @@ public class EditUserController {
 
         try {
             //Call the grpc with users validated params
-            editUserResponse = userAccountClientService.editUser(userId, firstName,
+            editUserResponse = userAccountClientService.editUser(id, firstName,
                     middleName, lastName, nickname, bio, pronouns, email);
-            model.addAttribute("Response: ", editUserResponse.getMessage());
+            model.addAttribute("Response", editUserResponse.getMessage());
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);
             return "register";
         }
 
-
-
         if (editUserResponse.getIsSuccess()){
-            AuthenticateResponse editReply;
-            try {
-                editReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
-            } catch (StatusRuntimeException e){
-                model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-                return "login";
-            }
-            if (editReply.getSuccess()) {
-                var domain = request.getHeader("host");
-                CookieUtil.create(
-                        response,
-                        "lens-session-token",
-                        editReply.getToken(),
-                        true,
-                        5 * 60 * 60, // Expires in 5 hours
-                        domain.startsWith("localhost") ? null : domain
-                );
-                return "redirect:/profile";
-            } else {
-                model.addAttribute("loginMessage", editReply.getMessage());
-                return "login";
-            }
+            UserResponse user = userAccountClientService.getUserAccountById(id);
+            model.addAttribute("user", user);
+            model.addAttribute("userId", id);
+            return "/profile";
         } else {
+            System.out.println("error, error");
             model.addAttribute("editMessage", "");
             model.addAttribute("editMessage", editUserResponse.getMessage());
             return "/editUser";
