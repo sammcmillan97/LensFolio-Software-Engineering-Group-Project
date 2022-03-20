@@ -23,7 +23,7 @@ import java.sql.Date;
  * Controller for the projects page. Has various end points for interacting with the projects stored in the database.
  */
 @Controller
-public class ProjectsController {
+public class ProjectSummariesController {
 
     /**
      * Repository which allows the controller to interact with the database.
@@ -53,7 +53,7 @@ public class ProjectsController {
         model.addAttribute("projects", projects);
         model.addAttribute("sprints", sprints);
 
-        return "projects";
+        return "projectSummaries";
     }
 
     /**
