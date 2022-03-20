@@ -8,48 +8,150 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
-    <link th:href="@{/css/registerPage.css}" rel="stylesheet" />
-
+    <link th:href="@{/css/registerCSS.css}" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-        <form th:action="@{/login}">
-            <div class="row button">
-                    <input type="submit" value="Back">
-            </div>
-        </form>
+<div class="main">
+    <!--Link designed as button will take the user back to login-->
+    <a th:href="@{/login}" class="button">Back</a>
 
-        <div class="wrapper">
-            <h1>Sign Up</h1>
-            <h2>Please enter your details below</h2>
-        </div>
+    <div style="text-align:center;">
+        <h1>Sign Up</h1>
+        <h2>Please enter your details below</h2>
+    </div>
 
+    <!-- error message received from the controller-->
+    <p th:text="${registerMessage}"></p>
+    <p th:text="${errorMessage}"></p>
+    <p th:text="${loginMessage}"></p>
+
+    <!-- form posts the params to the register controller-->
     <form th:action="@{/register}"  method="post">
-        <div class="row">
-            <input type="text" th:name="username" minlength="6" maxlength="64" required placeholder="Username (*)" class = "attribute"/>
-            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*)"/>
-            <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/>
-        </div>
 
-        <div class="row">
-            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
-            <input type="text" th:name="middleName" maxlength="64"  required placeholder="Middle Name (*)" />
-            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
-        </div>
-        <div class="row">
-            <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname" />
-            <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" />
-        </div>
-        <div class="biorow">
-            <textarea type="text" th:name="bio" maxlength="1024" placeholder="Bio" ></textarea>
-        </div>
-        <div class="row button">
-            <input type="submit" value="Submit" />
+        <div>
+            <label>Account Details *</label><br>
+            <input type="text" th:name="username" minlength="5" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >Required, must be unique and at least 5 characters</label><br>
+            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*) " class="required" /><label class="helper" >Required, must include '@', and be at least 10 characters</label><br>
+            <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)" class="required" /><label class="helper" >Required, must be at least 8 characters</label><br>
+            <br>
+            <label>Full Name *</label><br>
+            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="middleName" minlength="2" maxlength="64"  required placeholder="Middle Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <br>
+            <label>Person Details</label><br>
+            <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname"/><label class="helper">Optional</label><br>
+            <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" /><label class="helper">Optional</label><br>
+            <br>
+            <label>Bio</label><label class="helper">Optional</label><br>
+            <textarea th:name="bio" maxlength="1024" placeholder=""></textarea>
+            <br><br>
+
+            <input class="button" type="submit" value="Submit" />
         </div>
     </form>
-        <p th:text="${registerMessage}" />
 
-
-    </div>
+</div>
 </body>
 </html>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    html {
+        display: table;
+        margin: auto;
+    }
+
+    body {
+        display: table-cell;
+        vertical-align: middle;
+        font-family: "Calibri Light";
+    }
+
+    div {
+        padding: 20px;
+    }
+
+    input, textarea {
+        margin-left: 10px;
+        margin-bottom: 5px;
+        outline-color: white;
+    }
+
+    label.helper{
+        margin-left: 10px;
+        font-style: italic;
+        font-weight: normal;
+        color: #c8c8c8;
+    }
+
+    /* Selects any valid <input> */
+    input:valid, textarea {
+        border: none;
+        border-bottom: 2px solid lightgray;
+    }
+
+    input.required:valid {
+        outline-color: green;
+    }
+
+    /* Selects any invalid <input> */
+    input:invalid {
+        background-color: #fff5f5;
+        border: none;
+        border-bottom: 2px solid red;
+    }
+
+    input.button {
+        padding: 3px 10px 3px 10px;
+        margin-left: 0px;
+    }
+
+    button {
+        padding: 3px 10px 3px 10px;
+        margin-right: 5px;
+        margin-left: 20px;
+    }
+
+    h1 {
+        margin-top: -40px;
+    }
+
+    h2 {
+        margin-bottom: 0px;
+    }
+
+    h4 {
+        color: #333333;
+        font-size: small;
+        margin-bottom: 0;
+    }
+
+    h6 {
+        color: #444444;
+        font-size: smaller;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-left: 10px;
+        color: red;
+        margin-top: 20px;
+        margin-bottom: -20px;
+    }
+
+    a.button {
+        font-size: medium;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 4px 10px 4px 10px;
+        border-bottom: 1px solid lightgray;
+        border-radius: 3px;
+    }
+
+</style>
