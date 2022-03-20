@@ -25,11 +25,11 @@ function getDateString(date) {
  * A project may not end on or before the date on which it begins.
  */
 function updateMinEndDate() {
-    let startDate = document.getElementById("add-edit__start-date-field").valueAsNumber;
+    let startDate = document.getElementById("project-form__start-date-field").valueAsNumber;
     let endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
 
-    document.getElementById("add-edit__end-date-field").setAttribute('min', getDateString(endDate));
+    document.getElementById("project-form__end-date-field").setAttribute('min', getDateString(endDate));
 }
 
 /**
@@ -97,22 +97,22 @@ function addProject() {
 function openAddEditForm(form_title, project_id, project_name, project_description, start_date, end_date) {
 
     // Set the form title
-    document.getElementById("add-edit__title").innerHTML = "<h1>" + form_title + "</h1>"
+    document.getElementById("project-form__title").innerHTML = "<h1>" + form_title + "</h1>"
 
     // Populate form inputs with project name and description
-    document.getElementById("add-edit__name-field").value = project_name;
-    document.getElementById("add-edit__description-field").value = project_description;
+    document.getElementById("project-form__name-field").value = project_name;
+    document.getElementById("project-form__description-field").value = project_description;
 
     // Insert start and end dates
-    document.getElementById("add-edit__start-date-field").valueAsNumber = start_date;
-    document.getElementById("add-edit__end-date-field").valueAsNumber = end_date;
+    document.getElementById("project-form__start-date-field").valueAsNumber = start_date;
+    document.getElementById("project-form__end-date-field").valueAsNumber = end_date;
 
     // Set the id of the project being edited
-    document.getElementById("add-edit__project-id").value = project_id;
+    document.getElementById("project-form__id").value = project_id;
 
     // Display the form and grey out other page content using overlay
-    document.getElementById("add-edit__popup").classList.remove("hidden");
-    document.getElementById("add-edit__overlay").classList.remove("hidden");
+    document.getElementById("project-form__popup").classList.remove("hidden");
+    document.getElementById("project-form__overlay").classList.remove("hidden");
 
     // Set minimum end date to the day after the current start date
     updateMinEndDate();
@@ -120,7 +120,7 @@ function openAddEditForm(form_title, project_id, project_name, project_descripti
     // Set the minimum start date to one year before today
     let min_date = new Date();
     min_date.setFullYear(min_date.getFullYear() - 1);
-    document.getElementById("add-edit__start-date-field").setAttribute('min', getDateString(min_date));
+    document.getElementById("project-form__start-date-field").setAttribute('min', getDateString(min_date));
 }
 
 
@@ -131,7 +131,7 @@ function openAddEditForm(form_title, project_id, project_name, project_descripti
  */
 function closeAddEditForm() {
     // Hide the form and overlay by adding class 'hidden' to container
-    document.getElementById("add-edit__popup").classList.add("hidden");
+    document.getElementById("project-form__popup").classList.add("hidden");
 
     // Return false to prevent form submission
     return false;
