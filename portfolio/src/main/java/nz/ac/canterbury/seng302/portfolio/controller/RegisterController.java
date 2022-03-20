@@ -115,6 +115,7 @@ public class RegisterController {
         }
     }
 
+
     @GetMapping("/register")
     public String register() {
         return "register";
