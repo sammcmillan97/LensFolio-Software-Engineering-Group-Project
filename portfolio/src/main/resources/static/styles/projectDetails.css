@@ -25,7 +25,7 @@ html {
 
 /******************** Project Details ********************/
 
-#project, .project__button-wrapper button {
+#project, .project__button-wrapper button, .sprint__button-wrapper button {
     position: relative;
 
     padding-top: 0;
@@ -88,6 +88,7 @@ html {
 /********************Sprints ********************/
 
 .sprint, #new-sprint-button {
+    position: relative;
     padding: 0 2rem 0 2rem;
     border-top: 1px solid var(--color-accent);
     background-color: var(--color-complement);
@@ -103,6 +104,26 @@ html {
     height: 5rem;
     line-height: 5rem;
 }
+
+.sprint__button-wrapper {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+}
+
+.sprint__button-wrapper button {
+    /* Position & Size */
+    margin-right: 1rem;
+    padding: 0;
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1rem;
+    font-weight: 400;
+}
+
 
 .sprint .sprint__details {
     border-top: 1px solid var(--color-accent);
@@ -127,6 +148,7 @@ html {
     cursor: pointer;
 }
 
-#new-sprint-button:hover {
+.sprint__button-wrapper button:hover, #new-sprint-button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
 }

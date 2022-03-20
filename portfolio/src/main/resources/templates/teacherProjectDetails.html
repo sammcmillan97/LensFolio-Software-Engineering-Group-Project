@@ -71,6 +71,13 @@
             <div class="sprint" th:each="sprint : ${sprints}">
                 <h2 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h2>
 
+                <!-- Edit/Delete Sprint Buttons -->
+                <div class="sprint__button-wrapper flex-row">
+                    <button th:onclick="editSprint(...)">Edit</button>
+                    <button>Delete</button>
+                </div>
+
+                <!-- Sprint Details -->
                 <div class="sprint__details">
                     <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
                     <p class="sprint__description" th:text="${sprint.getDescription}"></p>
