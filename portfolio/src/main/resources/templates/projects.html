@@ -47,8 +47,37 @@
 
             <!-- Project -->
             <div class="project collapsed" th:each="project : ${projects}">
-                <!-- Project Title -->
-                <h2 class="project__name" th:text="${project.getName}"></h2>
+
+                <!-- Project Details -->
+                <div class="project__details-wrapper">
+                    <!-- Project Title -->
+                    <h2 class="project__name" th:text="${project.getName}"></h2>
+
+                    <div class="project__details">
+                        <div class="project__date-wrapper flex-row">
+                            <h4 class="project__date" th:text="${project.getStartDateString}"></h4>
+                            <h4>&nbsp;--->&nbsp;</h4>
+                            <h4 class="project__date" th:text="${project.getEndDateString}"></h4>
+                        </div>
+                        <p class="project__description" th:text="${project.getDescription}"></p>
+                    </div>
+                </div>
+
+                <!-- Project Sprints -->
+                <div class="project__sprints-wrapper flex-column">
+                    <div class="sprint collapsed" th:each="sprint : ${sprints.get(project.getId)}">
+                        <h3 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h3>
+
+                        <div class="sprint__details">
+                            <div class="sprint__date-wrapper flex-row">
+                                <h4 class="sprint__date" th:text="${sprint.getStartDateString}"></h4>
+                                <h4>&nbsp;--->&nbsp;</h4>
+                                <h4 class="sprint__date" th:text="${sprint.getEndDateString}"></h4>
+                            </div>
+                            <p class="sprint__description" th:text="${sprint.getDescription}"></p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Edit and delete project buttons -->
                 <div class="project__button-wrapper flex-row">
@@ -63,35 +92,6 @@
                     </form>
                 </div>
 
-                <div class="project__details">
-                    <!-- Project Details -->
-                    <div class="project__date-wrapper flex-row">
-                        <h4 class="project__date" th:text="${project.getStartDateString}"></h4>
-                        <h4>&nbsp;--->&nbsp;</h4>
-                        <h4 class="project__date" th:text="${project.getEndDateString}"></h4>
-                    </div>
-                    <p class="project__description" th:text="${project.getDescription}"></p>
-
-                    <!-- Project Sprints -->
-                    <div class="project__sprints-wrapper flex-column">
-                        <div class="sprint collapsed" th:each="sprint : ${sprints.get(project.getId)}">
-                            <h3 class="sprint__name" th:text="${sprint.getName}"></h3>
-
-                            <div class="sprint__details">
-                                <h3 class="sprint__label" th:text="${sprint.getLabel}"></h3>
-                                <div class="sprint__date-wrapper flex-row">
-                                    <h4 class="sprint__date" th:text="${sprint.getStartDateString}"></h4>
-                                    <h4>&nbsp;--->&nbsp;</h4>
-                                    <h4 class="sprint__date" th:text="${sprint.getEndDateString}"></h4>
-                                </div>
-                                <div class="sprint__description" th:text="${sprint.getDescription}"></div>
-                            </div>
-                        </div>
-
-                        <div class="new-sprint-button" onclick="addSprint()">New Sprint</div>
-                    </div>
-
-                </div>
             </div>
 
             <!-- New Project Button -->
