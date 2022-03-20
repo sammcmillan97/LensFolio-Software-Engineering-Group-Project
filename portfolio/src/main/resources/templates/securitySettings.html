@@ -23,12 +23,12 @@
             </div>
             <div class="row">
                 <label>
-                    <input type="password" placeholder="New password" th:name="newPassword"minlength="8" maxlength="64" required class="required" />
+                    <input id="newPassword" type="password" placeholder="New password" th:name="newPassword"minlength="8" maxlength="64" required class="required" />
                 </label>
             </div>
             <div>
                 <label>
-                    <input type="password" placeholder="Confirm password" th:name="confirmPassword "minlength="8" maxlength="64" requiredclass="required" />
+                    <input id="confirmPassword" type="password" placeholder="Confirm password" th:name="confirmPassword "minlength="8" maxlength="64" requiredclass="required" />
                 </label>
             </div>
             <input class="button" type="submit" value="Submit" />
@@ -38,6 +38,21 @@
 
 </body>
 </html>
+
+<script>
+    const password = document.getElementById("newPassword")
+        , confirm_password = document.getElementById("confirmPassword");
+    function validatePassword(){
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
+
 
 <style>
 
@@ -58,6 +73,24 @@
 
     div {
         padding: 20px;
+    }
+
+
+    input.required:valid {
+        outline-color: green;
+    }
+
+    /* Selects any invalid <input> */
+    input:invalid {
+        background-color: #fff5f5;
+        border: none;
+        border-bottom: 2px solid red;
+    }
+
+    input.button {
+        padding: 4px 10px 4px 10px;
+        margin-left: 0;
+        border: 1px solid #16a085
     }
 
 </style>

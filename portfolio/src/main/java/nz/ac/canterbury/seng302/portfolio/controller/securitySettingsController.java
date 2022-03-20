@@ -25,7 +25,7 @@ public class securitySettingsController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -43,7 +43,7 @@ public class securitySettingsController {
             Model model ) {
         //NEED TO DISCUSS VALIDATION WITH TEAM, FRONT END OR BACK END
 
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
