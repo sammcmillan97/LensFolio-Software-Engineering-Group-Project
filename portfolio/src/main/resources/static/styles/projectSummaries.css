@@ -81,7 +81,7 @@ html {
     visibility: visible;
 }
 
-.project__date-wrapper h4 {
+.project__date {
     margin: 0;
 }
 
@@ -163,7 +163,7 @@ html {
     visibility: visible;
 }
 
-.sprint__date-wrapper h4 {
+.sprint__date {
     margin: 0;
 }
 

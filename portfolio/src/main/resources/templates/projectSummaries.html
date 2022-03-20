@@ -55,9 +55,7 @@
 
                     <div class="project__details">
                         <div class="project__date-wrapper flex-row">
-                            <h4 class="project__date" th:text="${project.getStartDateString}"></h4>
-                            <h4>&nbsp;--->&nbsp;</h4>
-                            <h4 class="project__date" th:text="${project.getEndDateString}"></h4>
+                            <h4 class="project__date" th:text="|${project.getStartDateString} ---> ${project.getEndDateString}|"></h4>
                         </div>
                         <p class="project__description" th:text="${project.getDescription}"></p>
                     </div>
@@ -69,11 +67,7 @@
                         <h3 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h3>
 
                         <div class="sprint__details">
-                            <div class="sprint__date-wrapper flex-row">
-                                <h4 class="sprint__date" th:text="${sprint.getStartDateString}"></h4>
-                                <h4>&nbsp;--->&nbsp;</h4>
-                                <h4 class="sprint__date" th:text="${sprint.getEndDateString}"></h4>
-                            </div>
+                            <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
                             <p class="sprint__description" th:text="${sprint.getDescription}"></p>
                         </div>
                     </div>
