@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Navigation Bar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+</head>
+
+<body>
+
+<!-- A pop-up form for adding/editing sprints -->
+<div th:fragment="addEditSprintForm" id="sprint-form__popup" class="hidden">
+    <link rel="stylesheet" href="/styles/addEditSprint.css">
+    <script rel="script" src="/scripts/addEditSprint.js"></script>
+
+    <!-- Background page overlay -->
+    <div id="sprint-form__overlay"></div>
+
+    <!-- Form -->
+    <form id="sprint-form__form" th:action="@{/projects/edit-sprint}" class="form-container" th:method="put">
+        <input type="hidden" id="sprint-form__project-id" name="parentProjectId"/>
+        <input type="hidden" id="sprint-form__sprint-id" name="sprintId"/>
+        <input type="hidden" name="sprintLabel" value="Sprint #"/>
+
+        <h1 id="sprint-form__title"></h1>
+        <h2 id="sprint-form__label">Sprint #</h2>
+
+        <label for="sprint-form__name-field"><b>Sprint Name</b></label>
+        <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" required>
+
+        <label for="sprint-form__description-field"><b>Sprint Description</b></label>
+        <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription"></textarea>
+
+        <label for="sprint-form__start-date-field"><b>Sprint Start Date</b></label>
+        <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" onchange="updateMinEndDate()" required>
+
+        <label for="sprint-form__end-date-field"><b>Sprint End Date</b></label>
+        <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" required>
+
+        <button type="submit" id="sprint-form__save">Save Changes</button>
+        <button id="sprint-form__discard" onclick="return closeAddEditForm()">Discard</button>
+    </form>
+</div>
+
+</body>
+
+</html>

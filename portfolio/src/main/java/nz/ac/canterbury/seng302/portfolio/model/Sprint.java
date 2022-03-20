@@ -45,11 +45,20 @@ public class Sprint {
     public String getName() {
         return sprintName;
     }
+    public void setName(String name) {
+        sprintName = name;
+    }
     public String getLabel() {
         return sprintLabel;
     }
+    public void setLabel(String label) {
+        sprintLabel = label;
+    }
     public String getDescription(){
         return sprintDescription;
+    }
+    public void setDescription(String description) {
+        sprintDescription = description;
     }
 
     public Date getStartDate() {

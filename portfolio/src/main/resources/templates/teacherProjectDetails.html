@@ -17,6 +17,9 @@
 <!-- Import a pop-up form for adding/editing projects -->
 <div th:replace="fragments/addEditProjectForm :: addEditProjectForm"></div>
 
+<!-- Import a pop-up form for adding/editing sprints -->
+<div th:replace="fragments/addEditSprintForm :: addEditSprintForm"></div>
+
 <!-- Page content -->
 <div id="page-content">
 
@@ -50,7 +53,7 @@
 
             <!-- Edit/Delete Sprint Buttons -->
             <div class="sprint__button-wrapper flex-row">
-                <button th:onclick="editSprint(...)">Edit</button>
+                <button th:onclick="editSprint([[${project.getId}]], [[${sprint.getId}]], [[${sprint.getName}]], [[${sprint.getDescription}]], [[${sprint.getStartDate}]], [[${sprint.getEndDate}]])">Edit</button>
                 <button>Delete</button>
             </div>
 
@@ -62,7 +65,7 @@
         </div>
 
         <!-- New Sprint Button -->
-        <button id="new-sprint-button" onclick="addSprint()">Add Sprint</button>
+        <button id="new-sprint-button" th:onclick="addSprint([[${project.getId}]])">Add Sprint</button>
     </div>
 
 </div>

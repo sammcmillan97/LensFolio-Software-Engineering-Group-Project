@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 public class ProjectDetailsController {
@@ -75,6 +76,33 @@ public class ProjectDetailsController {
         } catch (Exception ignored) {}
 
         return "redirect:/projects/" + projectId;
+    }
+
+    @PutMapping(value="/projects/edit-sprint")
+    public String editSprintById(@RequestParam(name = "parentProjectId", defaultValue = "-1") int parentProjectId,
+                                 @RequestParam(name = "sprintId", defaultValue = "-1") int sprintId,
+                                 @RequestParam(name = "sprintLabel") String sprintLabel,
+                                 @RequestParam(name = "sprintName") String sprintName,
+                                 @RequestParam(name = "sprintDescription") String sprintDescription,
+                                 @RequestParam(name = "sprintStartDate") Date sprintStartDate,
+                                 @RequestParam(name = "sprintEndDate") Date sprintEndDate,
+                                 Model model) {
+        try {
+            Sprint existingSprint = sprintService.getSprintById(sprintId);
+            existingSprint.setLabel(sprintLabel);
+            existingSprint.setName(sprintName);
+            existingSprint.setDescription(sprintDescription);
+            existingSprint.setStartDate(sprintStartDate);
+            existingSprint.setEndDate(sprintEndDate);
+            sprintService.saveSprint(existingSprint);
+
+        } catch (NoSuchElementException e) {
+            // For now use this to add new sprint
+            Sprint newSprint = new Sprint(parentProjectId, sprintLabel, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+            sprintService.saveSprint(newSprint);
+        } catch (Exception e) {}
+
+        return "redirect:/projects/" + parentProjectId;
     }
 
 }
