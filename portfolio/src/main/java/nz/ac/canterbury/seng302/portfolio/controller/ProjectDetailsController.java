@@ -24,12 +24,6 @@ public class ProjectDetailsController {
     @Autowired
     private SprintService sprintService;
 
-    /**
-     * Repository which allows the controller to interact with the database.
-     */
-    @Autowired
-    private ProjectRepository projectRepository;
-
     @GetMapping("/projects/{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         /* Add project details to the model */
@@ -71,14 +65,14 @@ public class ProjectDetailsController {
                                   @RequestParam(name = "projectStartDate") Date projectStartDate,
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
-
-        Project existingProject = projectRepository.findById(projectId);
-        existingProject.setName(projectName);
-        existingProject.setStartDate(projectStartDate);
-        existingProject.setEndDate(projectEndDate);
-        existingProject.setDescription(projectDescription);
-        projectRepository.save(existingProject);
-
+        try {
+            Project existingProject = projectService.getProjectById(projectId);
+            existingProject.setName(projectName);
+            existingProject.setStartDate(projectStartDate);
+            existingProject.setEndDate(projectEndDate);
+            existingProject.setDescription(projectDescription);
+            projectService.saveProject(existingProject);
+        } catch (Exception ignored) {}
 
         return "redirect:/projects/" + projectId;
     }

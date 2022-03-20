@@ -43,4 +43,9 @@ public class SprintService {
         List<Sprint> list = repository.findByParentProjectId(projectId);
         return list;
     }
+
+    public void saveSprint(Sprint sprint) {
+        Sprint sprintSaved = repository.save(sprint);
+
+    }
 }
