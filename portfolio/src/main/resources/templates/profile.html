@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       lang="en">
@@ -36,6 +36,7 @@
                     </div>
                     <div class="card-body">
                         <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}"></p> </p>
+                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
