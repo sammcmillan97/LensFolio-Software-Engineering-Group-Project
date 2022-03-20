@@ -20,6 +20,9 @@
             <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
         </div>
     </div>
+    <div class="header__paragraph">
+        <p class="title-project_description" th:text="${project.getDescription()}"/>
+    </div>
     <div id="project-wrapper" class="flex-column">
 
         <!-- Project -->
