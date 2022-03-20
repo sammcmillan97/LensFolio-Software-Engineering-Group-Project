@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class SprintService {
     @Autowired
     private SprintRepository repository;
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * Get list of all sprints
@@ -42,6 +46,18 @@ public class SprintService {
     public List<Sprint> getByParentProjectId(int projectId) {
         List<Sprint> list = repository.findByParentProjectId(projectId);
         return list;
+    }
+
+    public Map<Integer, List<Sprint>> getAllByParentProjectId() {
+        List<Project> projects = projectService.getAllProjects();
+
+        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<Integer, List<Sprint>>();
+        for (Project project : projects) {
+            int projectId = project.getId();
+            sprintsByParentProject.put(projectId, getByParentProjectId(projectId));
+        }
+
+        return sprintsByParentProject;
     }
 
     public void saveSprint(Sprint sprint) {

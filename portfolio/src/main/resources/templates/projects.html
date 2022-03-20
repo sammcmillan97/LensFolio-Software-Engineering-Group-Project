@@ -72,22 +72,25 @@
                     </div>
                     <p class="project__description" th:text="${project.getDescription}"></p>
 
-<!--                    &lt;!&ndash; Project Sprints &ndash;&gt;-->
-<!--                    <div class="project__sprints-wrapper">-->
-<!--                        <div class="sprint" th:each="sprint : ${project.getSprints}">-->
-<!--                            <div class="sprint__name-wrapper flex-row">-->
-<!--                                <h3 class="sprint__label" th:text="${sprint.getSprintLabel}"></h3>-->
-<!--                                <h3>:&nbsp;</h3>-->
-<!--                                <h3 class="sprint__name" th:text="${sprint.getSprintName}"></h3>-->
-<!--                                <h3>:&nbsp;</h3>-->
-<!--                                <h4 class="sprint__date" th:text="${sprint.getStartDate}"></h4>-->
-<!--                                <h4>&nbsp;-&ndash;&gt;&nbsp;</h4>-->
-<!--                                <h4 class="sprint__date" th:text="${sprint.getEndDate}"></h4>-->
-<!--                            </div>-->
-<!--                            <div class="sprint__description" th:text="${sprint.getDescription}"></div>-->
+                    <!-- Project Sprints -->
+                    <div class="project__sprints-wrapper flex-column">
+                        <div class="sprint collapsed" th:each="sprint : ${sprints.get(project.getId)}">
+                            <h3 class="sprint__name" th:text="${sprint.getName}"></h3>
 
-<!--                        </div>-->
-<!--                    </div>-->
+                            <div class="sprint__details">
+                                <h3 class="sprint__label" th:text="${sprint.getLabel}"></h3>
+                                <div class="sprint__date-wrapper flex-row">
+                                    <h4 class="sprint__date" th:text="${sprint.getStartDateString}"></h4>
+                                    <h4>&nbsp;--->&nbsp;</h4>
+                                    <h4 class="sprint__date" th:text="${sprint.getEndDateString}"></h4>
+                                </div>
+                                <div class="sprint__description" th:text="${sprint.getDescription}"></div>
+                            </div>
+                        </div>
+
+                        <div class="new-sprint-button" onclick="addSprint()">New Sprint</div>
+                    </div>
+
                 </div>
             </div>
 

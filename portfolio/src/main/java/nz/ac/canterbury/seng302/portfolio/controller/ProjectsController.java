@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,8 @@ public class ProjectsController {
      */
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private SprintService sprintService;
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
@@ -39,6 +42,7 @@ public class ProjectsController {
     @GetMapping("/projects")
     public String projects(Model model) {
         List<Project> projects = projectService.getAllProjects();
+        Map<Integer, List<Sprint>> sprints = sprintService.getAllByParentProjectId();
 
         if (projects.size() < 1) {
             Project defaultProject = new Project();
@@ -46,8 +50,8 @@ public class ProjectsController {
             projects = projectService.getAllProjects();
         }
 
-
         model.addAttribute("projects", projects);
+        model.addAttribute("sprints", sprints);
 
         return "projects";
     }
