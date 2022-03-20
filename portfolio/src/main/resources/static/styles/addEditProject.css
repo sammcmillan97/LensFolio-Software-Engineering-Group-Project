@@ -1,0 +1,82 @@
+/******************** Add/Edit Project Form ********************/
+
+#add-edit__popup {
+    display: block;
+}
+
+/* The popup form */
+#add-edit__form {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    border: 1px solid var(--color-accent);
+    background-color: var(--color-secondary);
+    overflow: hidden;
+    border-radius: 1.5rem;
+    z-index: 9;
+}
+
+/* Add styles to the form container */
+#add-edit__form {
+    width: 600px;
+    padding: 10px;
+    background-color: var(--color-secondary);
+}
+
+/*Full-width input fields*/
+#add-edit__form .edit-input {
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin: 5px 20px 25px 0;
+    border: none;
+    background: #f1f1f1;
+    border-radius: 1rem;
+    resize: none;
+}
+
+/* When the inputs get focus, do something */
+#add-edit__form .edit-input:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Set a style for the  button */
+#add-edit__form button {
+    background-color: var(--color-complement);
+    color: black;
+    padding: 16px 20px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    opacity: 0.8;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-accent);
+}
+
+
+/*Add some hover effects to buttons */
+#add-edit__form button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}
+
+#add-edit__overlay {
+    display: block;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(51,51,51,0.7);
+    z-index: 8;
+}
+
+.form-container .editProject {
+    width: 100%;
+    border: none;
+    background: #f1f1f1;
+    padding: 10px 30px 10px 20px;
+}

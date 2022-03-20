@@ -14,32 +14,8 @@
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<!-- A pop-up form for adding/editing projects -->
-<div id="add-edit__popup" class="hidden">
-    <!-- Background page overlay -->
-    <div id="add-edit__overlay"></div>
-
-    <!-- Form -->
-    <form id="add-edit__form" th:action="@{/projects}" class="form-container" th:method="post">
-        <input type="hidden" id="add-edit__project-id" name="projectId"/>
-
-        <div id="add-edit__title"></div>
-        <label for="add-edit__name-field"><b>Project Name</b></label>
-        <input type="text" id="add-edit__name-field" class="edit-input" name="projectName" required>
-
-        <label for="add-edit__description-field"><b>Project Description</b></label>
-        <textarea id="add-edit__description-field" class="edit-input" name="projectDescription"></textarea>
-
-        <label for="add-edit__start-date-field"><b>Project Start Date</b></label>
-        <input type="date" id="add-edit__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" required>
-
-        <label for="add-edit__end-date-field"><b>Project End Date</b></label>
-        <input type="date" id="add-edit__end-date-field" class="edit-input" name="projectEndDate" required>
-
-        <button type="submit" id="add-edit__save">Save Changes</button>
-        <button id="add-edit__discard" onclick="return closeAddEditForm()">Discard</button>
-    </form>
-</div>
+<!-- Import a pop-up form for adding/editing projects -->
+<div th:replace="fragments/addEditProjectForm :: addEditProjectForm"></div>
 
 <!-- Page content -->
 <div id="page-content">
