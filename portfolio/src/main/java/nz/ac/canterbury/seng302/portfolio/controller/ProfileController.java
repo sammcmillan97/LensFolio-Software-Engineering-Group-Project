@@ -24,6 +24,12 @@ public class ProfileController {
     @Autowired
     private UserAccountClientService userService;
 
+    /**
+     * Display the user's profile page.
+     * @param principal Authentication state of client
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The string "profile"
+     */
     @GetMapping("/profile")
     public String profile(
             @AuthenticationPrincipal AuthState principal,
