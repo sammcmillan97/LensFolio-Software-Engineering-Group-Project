@@ -135,7 +135,18 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     UserRegisterResponse registerHandler(UserRegisterRequest request) {
         UserRegisterResponse.Builder reply = UserRegisterResponse.newBuilder();
 
+        String username = request.getUsername();
+        String firstName = request.getFirstName();
+        String middleName = request.getMiddleName();
+        String lastName = request.getLastName();
+        String nickname = request.getNickname();
+        String bio = request.getBio();
+        String personalPronouns = request.getPersonalPronouns();
+        String email = request.getEmail();
+        String password = request.getPassword();
+
         if (repository.findByUsername(request.getUsername()) == null) { //Middle name
+
             repository.save(new User(
                     request.getUsername(),
                     request.getFirstName(),
