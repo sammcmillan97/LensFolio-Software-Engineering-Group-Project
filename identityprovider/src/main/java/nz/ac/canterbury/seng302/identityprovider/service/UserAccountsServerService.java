@@ -145,18 +145,24 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         String email = request.getEmail();
         String password = request.getPassword();
 
+        if (repository.findByUsername(request.getUsername()) != null) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError;
+            reply.setValidationErrors();
+        }
+
         if (repository.findByUsername(request.getUsername()) == null) { //Middle name
 
             repository.save(new User(
-                    request.getUsername(),
-                    request.getFirstName(),
-                    request.getMiddleName(),
-                    request.getLastName(),
-                    request.getNickname(),
-                    request.getBio(),
-                    request.getPersonalPronouns(),
-                    request.getEmail(),
-                    request.getPassword()));
+                    username,
+                    firstName,
+                    middleName,
+                    lastName,
+                    nickname,
+                    bio,
+                    personalPronouns,
+                    email,
+                    password));
             reply
                     .setIsSuccess(true)
                     .setNewUserId(repository.findByUsername(request.getUsername()).getUserId())

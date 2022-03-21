@@ -30,7 +30,6 @@ public class User {
     @Size(max=64, message="First name must be less than 65 characters")
     private String firstName;
 
-    @NotBlank(message="Middle name cannot be empty")
     @Size(max=64, message="Middle name must be less than 65 characters")
     private String middleName;
 
