@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 
 @Controller
@@ -62,20 +63,32 @@ public class RegisterController {
 
         UserRegisterResponse userRegisterResponse;
 
+        //some validation, could use more
+        if (username.isBlank() || email.isBlank() || password.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
+            model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
+            return "register";
+        }
+
+
+
         try {
-            //Call the grpc
-            userRegisterResponse = userAccountClientService.register(username, password, firstName,
+            //Call the grpc with users validated params
+            userRegisterResponse = userAccountClientService.register(username.toLowerCase(Locale.ROOT), password, firstName,
                     middleName, lastName, nickname, bio, pronouns, email);
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
         } catch (Exception e){
+            System.out.println("check");
             model.addAttribute("errorMessage", e);
             return "register";
         }
+
+
+
         if (userRegisterResponse.getIsSuccess()){
             AuthenticateResponse loginReply;
             try {
-                loginReply = authenticateClientService.authenticate(username, password);
+                loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
             } catch (StatusRuntimeException e){
                 model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
                 return "login";
@@ -96,10 +109,12 @@ public class RegisterController {
                 return "login";
             }
         } else {
+            model.addAttribute("registerMessage", "");
             model.addAttribute("registerMessage", userRegisterResponse.getMessage());
             return "register";
         }
     }
+
 
     @GetMapping("/register")
     public String register() {
