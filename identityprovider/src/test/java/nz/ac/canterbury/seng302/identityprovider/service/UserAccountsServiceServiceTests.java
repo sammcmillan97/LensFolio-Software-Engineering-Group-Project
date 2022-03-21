@@ -41,6 +41,7 @@ class UserAccountsServiceServiceTests {
         testCreated = testUser.getTimeCreated();
     }
 
+    //Tests that password change fails if the user does not exist
     @Test
     void changePasswordBadUserTest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
@@ -55,6 +56,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
     }
 
+    //Tests that password change fails if the password is incorrect
     @Test
     void changePasswordBadPasswordTest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
@@ -69,6 +71,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
     }
 
+    //Tests that password change succeeds if password is correct
     @Test
     void changePasswordGoodPasswordTest() {
         final String newPassword = "new password";
@@ -83,6 +86,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(repository.findByUserId(testId).checkPassword(newPassword));
     }
 
+    // Tests that editing user fails if user does not exist
     @Test
     void editUserBadUserTest() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
@@ -110,6 +114,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail, testUser.getEmail());
     }
 
+    // Tests that editing user succeeds if user exists
     @Test
     void editUserGoodUserTest() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
@@ -137,6 +142,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail + "new", testUser.getEmail());
     }
 
+    // Tests that getting user fails if user does not exist
     @Test
     void getUserByIdBadUserTest() {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
@@ -154,6 +160,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(Timestamp.newBuilder().build(), reply.getCreated());
     }
 
+    // Tests that getting user succeeds if user exists
     @Test
     void getUserByIdGoodUserTest() {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
@@ -171,6 +178,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testCreated, reply.getCreated());
     }
 
+    // Tests that creating user fails if username already exists
     @Test
     void userRegisterNoFieldsTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder().build();
@@ -308,6 +316,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(reply.getIsSuccess());
     }
 
+    // Tests that creating user succeeds if username does not exist
     @Test
     void userRegisterGoodUsernameTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
