@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcService
@@ -126,8 +127,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Handler for user register requests.
-     * If the username is already taken, fails.
-     * Else, creates the user and returns the new user id.
+     * Checks if the fields for user creation are valid, and creates the user.
+     * If some fields are not valid, instead fails and returns a list of non-valid fields.
      * @param request A user register request according to user_accounts.proto
      * @return A user register response according to user_accounts.proto
      */
@@ -145,14 +146,97 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        if (repository.findByUsername(request.getUsername()) != null) {
+        if (repository.findByUsername(username) != null) {
             int validationErrorIndex = reply.getValidationErrorsCount();
-            ValidationError validationError;
-            reply.setValidationErrors();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName("username").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
         }
 
-        if (repository.findByUsername(request.getUsername()) == null) { //Middle name
+        if (username.equals("")) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName("username").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
 
+        if (username.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName("username").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (firstName.equals("")) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName("firstName").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (firstName.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName("firstName").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (middleName.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (lastName.equals("")) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName("lastName").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (lastName.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName("lastName").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (nickname.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName("nickname").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (bio.length() > 1024) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName("bio").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (personalPronouns.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName("personalPronouns").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (email.equals("")) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName("email").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (email.length() > 64) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName("email").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (!email.contains("@")) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName("email").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (password.length() <= 8) {
+            int validationErrorIndex = reply.getValidationErrorsCount();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
+            reply.setValidationErrors(validationErrorIndex, validationError);
+        }
+
+        if (reply.getValidationErrorsCount() == 0) {
             repository.save(new User(
                     username,
                     firstName,
@@ -168,7 +252,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setNewUserId(repository.findByUsername(request.getUsername()).getUserId())
                     .setMessage("Register attempt succeeded");
         } else {
-            reply.setIsSuccess(false).setMessage("Register attempt failed: Username already taken");
+            reply.setIsSuccess(false).setMessage("Register attempt failed: Validation failed");
         }
         return reply.build();
     }
