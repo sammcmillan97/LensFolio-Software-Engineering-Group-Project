@@ -172,7 +172,81 @@ class UserAccountsServiceServiceTests {
     }
 
     @Test
-    void userRegisterBadUsernameTest() {
+    void userRegisterNoFieldsTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder().build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
+        assertEquals(5, reply.getValidationErrorsCount());
+        assertEquals("username", reply.getValidationErrors(0).getFieldName());
+        assertEquals("Username is required", reply.getValidationErrors(0).getErrorText());
+        assertEquals("firstName", reply.getValidationErrors(1).getFieldName());
+        assertEquals("First name is required", reply.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", reply.getValidationErrors(2).getFieldName());
+        assertEquals("Last name is required", reply.getValidationErrors(2).getErrorText());
+        assertEquals("email", reply.getValidationErrors(3).getFieldName());
+        assertEquals("Email is required", reply.getValidationErrors(3).getErrorText());
+        assertEquals("password", reply.getValidationErrors(4).getFieldName());
+        assertEquals("Password must be at least 8 characters", reply.getValidationErrors(4).getErrorText());
+        assertFalse(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterLongFieldsTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername("a".repeat(64))
+                .setPassword("a".repeat(64))
+                .setFirstName("a".repeat(64))
+                .setMiddleName("a".repeat(64))
+                .setLastName("a".repeat(64))
+                .setNickname("a".repeat(64))
+                .setBio("a".repeat(1024))
+                .setPersonalPronouns("a".repeat(64))
+                .setEmail("@".repeat(255))
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt succeeded", reply.getMessage());
+        assertTrue(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterExtraLongFieldsTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername("a".repeat(65))
+                .setPassword("a".repeat(65))
+                .setFirstName("a".repeat(65))
+                .setMiddleName("a".repeat(65))
+                .setLastName("a".repeat(65))
+                .setNickname("a".repeat(65))
+                .setBio("a".repeat(1025))
+                .setPersonalPronouns("a".repeat(65))
+                .setEmail("@".repeat(256))
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
+        assertEquals(9, reply.getValidationErrorsCount());
+        assertEquals("username", reply.getValidationErrors(0).getFieldName());
+        assertEquals("Username must be less than 65 characters", reply.getValidationErrors(0).getErrorText());
+        assertEquals("firstName", reply.getValidationErrors(1).getFieldName());
+        assertEquals("First name must be less than 65 characters", reply.getValidationErrors(1).getErrorText());
+        assertEquals("middleName", reply.getValidationErrors(2).getFieldName());
+        assertEquals("Middle name must be less than 65 characters", reply.getValidationErrors(2).getErrorText());
+        assertEquals("lastName", reply.getValidationErrors(3).getFieldName());
+        assertEquals("Last name must be less than 65 characters", reply.getValidationErrors(3).getErrorText());
+        assertEquals("nickname", reply.getValidationErrors(4).getFieldName());
+        assertEquals("Nickname must be less than 65 characters", reply.getValidationErrors(4).getErrorText());
+        assertEquals("bio", reply.getValidationErrors(5).getFieldName());
+        assertEquals("Bio must be less than 1025 characters", reply.getValidationErrors(5).getErrorText());
+        assertEquals("personalPronouns", reply.getValidationErrors(6).getFieldName());
+        assertEquals("Personal pronouns must be less than 65 characters", reply.getValidationErrors(6).getErrorText());
+        assertEquals("email", reply.getValidationErrors(7).getFieldName());
+        assertEquals("Email must be less than 256 characters", reply.getValidationErrors(7).getErrorText());
+        assertEquals("password", reply.getValidationErrors(8).getFieldName());
+        assertEquals("Password must be less than 65 characters", reply.getValidationErrors(8).getErrorText());
+        assertFalse(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterRepeatedUsernameTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword(testPassword + "2")
@@ -185,7 +259,52 @@ class UserAccountsServiceServiceTests {
                 .setEmail(testEmail + "2")
                 .build();
         UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Username already taken", reply.getMessage());
+        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
+        assertEquals(1, reply.getValidationErrorsCount());
+        assertEquals("username", reply.getValidationErrors(0).getFieldName());
+        assertEquals("Username already taken", reply.getValidationErrors(0).getErrorText());
+        assertFalse(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterBadEmailTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername(testUsername + "2")
+                .setPassword(testPassword + "2")
+                .setFirstName(testFirstName + "2")
+                .setMiddleName(testMiddleName + "2")
+                .setLastName(testLastName + "2")
+                .setNickname(testNickname + "2")
+                .setBio(testBio + "2")
+                .setPersonalPronouns(testPronouns + "2")
+                .setEmail("bad email")
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
+        assertEquals(1, reply.getValidationErrorsCount());
+        assertEquals("email", reply.getValidationErrors(0).getFieldName());
+        assertEquals("Email must be valid", reply.getValidationErrors(0).getErrorText());
+        assertFalse(reply.getIsSuccess());
+    }
+
+    @Test
+    void userRegisterBadPasswordTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setUsername(testUsername + "2")
+                .setPassword(":seven:")
+                .setFirstName(testFirstName + "2")
+                .setMiddleName(testMiddleName + "2")
+                .setLastName(testLastName + "2")
+                .setNickname(testNickname + "2")
+                .setBio(testBio + "2")
+                .setPersonalPronouns(testPronouns + "2")
+                .setEmail(testEmail + "2")
+                .build();
+        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
+        assertEquals(1, reply.getValidationErrorsCount());
+        assertEquals("password", reply.getValidationErrors(0).getFieldName());
+        assertEquals("Password must be at least 8 characters", reply.getValidationErrors(0).getErrorText());
         assertFalse(reply.getIsSuccess());
     }
 
