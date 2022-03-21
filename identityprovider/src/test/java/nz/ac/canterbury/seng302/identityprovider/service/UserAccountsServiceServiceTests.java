@@ -178,7 +178,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testCreated, reply.getCreated());
     }
 
-    // Tests that creating user fails if username already exists
+    // Tests that creating user fails if no fields are entered
     @Test
     void userRegisterNoFieldsTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder().build();
@@ -198,6 +198,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(reply.getIsSuccess());
     }
 
+    // Tests the max length for each field
     @Test
     void userRegisterLongFieldsTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
@@ -216,6 +217,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(reply.getIsSuccess());
     }
 
+    // Tests that if fields are too long, the request is rejected
     @Test
     void userRegisterExtraLongFieldsTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
@@ -253,6 +255,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(reply.getIsSuccess());
     }
 
+    // Tests that creating user fails if username already exists
     @Test
     void userRegisterRepeatedUsernameTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
@@ -274,6 +277,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(reply.getIsSuccess());
     }
 
+    // Tests that an email that does not contain @ is rejected
     @Test
     void userRegisterBadEmailTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
@@ -295,6 +299,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(reply.getIsSuccess());
     }
 
+    // Tests that a password less than 8 characters is rejected
     @Test
     void userRegisterBadPasswordTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
