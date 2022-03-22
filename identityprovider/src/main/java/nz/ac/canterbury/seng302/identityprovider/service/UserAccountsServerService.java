@@ -216,6 +216,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     *  Checks that the username is within the length requirements
+     * @param username the username to check
+     * @return A list of validation errors found when checking the username
+     */
     private List<ValidationError> checkUsername(String username) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -231,6 +236,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the first name is within the length requirements
+     * @param firstName the first name to check
+     * @return A list of validation errors found when checking the first name
+     */
     private List<ValidationError> checkFirstName(String firstName) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -245,8 +255,14 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the middle name is within the length requirements
+     * @param middleName the middle name to check
+     * @return A list of validation errors found when checking the middle name
+     */
     private List<ValidationError> checkMiddleName(String middleName) {
         List<ValidationError> validationErrors = new ArrayList<>();
+
         if (middleName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
             validationErrors.add(validationError);
@@ -254,6 +270,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the last name is within the length requirements
+     * @param lastName the last name to check
+     * @return A list of validation errors found when checking the last name
+     */
     private List<ValidationError> checkLastName(String lastName) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -268,6 +289,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     *  Checks that the nickname is within the length requirements
+     * @param nickname the nickname to check
+     * @return A list of validation errors found when checking the nickname
+     */
     private List<ValidationError> checkNickname(String nickname) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -278,6 +304,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the bio is within the length requirement
+     * @param bio the bio to check
+     * @return A list of validation errors found when checking the bio
+     */
     private List<ValidationError> checkBio(String bio) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -288,6 +319,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the personal pronouns are within the length requirements
+     * @param personalPronouns the personal pronouns to check
+     * @return A list of validation errors found when checking the personal pronouns
+     */
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -298,6 +334,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the email is within the length requirements and contains an '@' symbol
+     * @param email the email to check
+     * @return A list of validation errors found when checking the email
+     */
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -316,6 +357,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the given password meets the length requirements
+     * @param password the password to check
+     * @return A list of validation errors found when checking the password
+     */
     private List<ValidationError> checkPassword(String password) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
@@ -331,6 +377,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the given user id exists
+     * @param userId the user id to check
+     * @return A list of validation errors found when checking the user id
+     */
     private List<ValidationError> checkUserExists(int userId) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (!repository.existsById(userId)) {
@@ -340,6 +391,14 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Checks that the given password is the users current password and returns a list of any validation errors found
+     * when checking
+     *
+     * @param currentPassword The current password to be checked
+     * @param userId The user id to check the password against (assumed to be valid)
+     * @return A list of validation errors found when checking the password
+     */
     private List<ValidationError> checkCurrentPassword(String currentPassword, int userId) {
         List<ValidationError> validationErrors = new ArrayList<>();
         User tempUser = repository.findByUserId(userId);
