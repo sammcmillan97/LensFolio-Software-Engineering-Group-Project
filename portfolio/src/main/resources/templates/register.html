@@ -23,7 +23,7 @@
         <!-- error message received from the controller-->
         <p th:text="${registerMessage}"></p>
         <tr th:each="entity: ${validationErrors}">
-            <td><span th:text="${entity.errorText}"> Error </span></td>
+            <td><p th:text="${entity.errorText}"> Error </p></td>
         </tr>
         <p th:text="${errorMessage}"></p>
         <p th:text="${loginMessage}"></p>
