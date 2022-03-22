@@ -13,7 +13,8 @@
         <h1>Security Settings</h1>
     </div>
 
-    <p th:text="${response}"></p>
+    <p id="success"  th:text="${success}"></p>
+    <p id="failure" th:text="${failure}"></p>
     <br>
 
     <form th:action="@{/securitySettings}" method="post">
@@ -22,7 +23,7 @@
             <h2> Change Password </h2>
             <div class ="row">
                 <label>
-                    <input type="password" placeholder="Old password" th:name="oldPassword" minlength="8" maxlength="64" required class="required" />
+                    <input type="password" placeholder="Current password" th:name="oldPassword" minlength="8" maxlength="64" required class="required" />
                 </label>
             </div>
             <div class="row">
@@ -59,6 +60,14 @@
 
 
 <style>
+
+    #success {
+        color : green
+    }
+
+    #failure {
+        color : red
+    }
 
     html, body {
         height: 100%;

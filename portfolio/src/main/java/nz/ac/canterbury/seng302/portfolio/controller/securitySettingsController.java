@@ -54,12 +54,15 @@ public class securitySettingsController {
         try {
             changePasswordResponse = userAccountClientService.changeUserPassword(id, oldPassword, newPassword);
         } catch(Exception e) {
-            model.addAttribute("response", "Error connecting to Identity Provider");
+            model.addAttribute("failure", "Error connecting to Identity Provider");
             return "securitySettings";
         }
         //Success or fail the user will be returned to the security menu with appropriate feedback message displayed
-        model.addAttribute("response", changePasswordResponse.getMessage());
-        System.out.println(changePasswordResponse.getMessage());
+        if (changePasswordResponse.getIsSuccess()) {
+            model.addAttribute("success", changePasswordResponse.getMessage());
+        } else {
+            model.addAttribute("failure", changePasswordResponse.getMessage());
+        }
         return "securitySettings";
     }
 
