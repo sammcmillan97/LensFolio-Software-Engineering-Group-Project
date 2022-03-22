@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.MessageOrBuilder;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
@@ -9,6 +11,9 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
@@ -33,17 +38,27 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     ChangePasswordResponse changeUserPasswordHandler(ChangePasswordRequest request) {
         ChangePasswordResponse.Builder reply = ChangePasswordResponse.newBuilder();
 
-        if (repository.existsById(request.getUserId())) {
+        int userId = request.getUserId();
+        String currentPassword = request.getCurrentPassword();
+        String newPassword = request.getNewPassword();
+
+        reply.addAllValidationErrors(checkPassword(newPassword));
+
+        List<ValidationError> userValidationErrors = checkUserExists(userId);
+        reply.addAllValidationErrors(userValidationErrors);
+
+        if (userValidationErrors.size() == 0) {
+            reply.addAllValidationErrors(checkCurrentPassword(currentPassword, userId));
+        }
+
+        if (reply.getValidationErrorsCount() == 0) {
             User user = repository.findByUserId(request.getUserId());
-            if (Boolean.TRUE.equals(user.checkPassword(request.getCurrentPassword()))) {
-                user.setPassword(request.getNewPassword());
-                repository.save(user);
-                reply.setIsSuccess(true).setMessage("Successfully changed password");
-            } else {
-                reply.setIsSuccess(false).setMessage("Password change failed: current password is incorrect");
-            }
+            user.setPassword(newPassword);
+            repository.save(user);
+            reply.setIsSuccess(true).setMessage("Successfully changed password");
+
         } else {
-            reply.setIsSuccess(false).setMessage("Password change failed: user does not exist");
+            reply.setIsSuccess(false).setMessage("Password change failed: Validation failed");
         }
 
         return reply.build();
@@ -66,19 +81,38 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     EditUserResponse editUserHandler(EditUserRequest request) {
         EditUserResponse.Builder reply = EditUserResponse.newBuilder();
 
-        if (repository.existsById(request.getUserId())) {
-            User user = repository.findByUserId(request.getUserId());
-            user.setFirstName(request.getFirstName());
-            user.setMiddleName(request.getMiddleName());
-            user.setLastName(request.getLastName());
-            user.setNickname(request.getNickname());
-            user.setBio(request.getBio());
-            user.setPersonalPronouns(request.getPersonalPronouns());
-            user.setEmail(request.getEmail());
+        int userId = request.getUserId();
+        String firstName = request.getFirstName();
+        String middleName = request.getMiddleName();
+        String lastName = request.getLastName();
+        String nickname = request.getNickname();
+        String bio = request.getBio();
+        String personalPronouns = request.getPersonalPronouns();
+        String email = request.getEmail();
+
+        reply.addAllValidationErrors(checkFirstName(firstName));
+        reply.addAllValidationErrors(checkMiddleName(middleName));
+        reply.addAllValidationErrors(checkLastName(lastName));
+        reply.addAllValidationErrors(checkNickname(nickname));
+        reply.addAllValidationErrors(checkBio(bio));
+        reply.addAllValidationErrors(checkPersonalPronouns(personalPronouns));
+        reply.addAllValidationErrors(checkEmail(email));
+        reply.addAllValidationErrors(checkUserExists(userId));
+
+        if (reply.getValidationErrorsCount() == 0) {
+
+            User user = repository.findByUserId(userId);
+            user.setFirstName(firstName);
+            user.setMiddleName(middleName);
+            user.setLastName(lastName);
+            user.setNickname(nickname);
+            user.setBio(bio);
+            user.setPersonalPronouns(personalPronouns);
+            user.setEmail(email);
             repository.save(user);
             reply.setIsSuccess(true).setMessage("Edit user succeeded");
         } else {
-            reply.setIsSuccess(false).setMessage("Edit user failed: user does not exist");
+            reply.setIsSuccess(false).setMessage("Edit user failed: Validation failed");
         }
         return reply.build();
     }
@@ -151,78 +185,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             reply.addValidationErrors(validationError);
         }
 
-        if (username.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName("username").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (username.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName("username").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (firstName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName("firstName").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (firstName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName("firstName").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (middleName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (lastName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName("lastName").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (lastName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName("lastName").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (nickname.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName("nickname").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (bio.length() > 1024) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName("bio").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (personalPronouns.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName("personalPronouns").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (email.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName("email").build();
-            reply.addValidationErrors(validationError);
-        } else if (!email.contains("@")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName("email").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (email.length() > 255) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName("email").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (password.length() <= 8) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
-            reply.addValidationErrors(validationError);
-        }
-
-        if (password.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName("password").build();
-            reply.addValidationErrors(validationError);
-        }
+        reply.addAllValidationErrors(checkUsername(username));
+        reply.addAllValidationErrors(checkFirstName(firstName));
+        reply.addAllValidationErrors(checkMiddleName(middleName));
+        reply.addAllValidationErrors(checkLastName(lastName));
+        reply.addAllValidationErrors(checkNickname(nickname));
+        reply.addAllValidationErrors(checkBio(bio));
+        reply.addAllValidationErrors(checkPersonalPronouns(personalPronouns));
+        reply.addAllValidationErrors(checkEmail(email));
+        reply.addAllValidationErrors(checkPassword(password));
 
         if (reply.getValidationErrorsCount() == 0) {
             repository.save(new User(
@@ -244,5 +215,147 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         return reply.build();
     }
+
+    private List<ValidationError> checkUsername(String username) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (username.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName("username").build();
+            validationErrors.add(validationError);
+        }
+
+        if (username.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName("username").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkFirstName(String firstName) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (firstName.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName("firstName").build();
+            validationErrors.add(validationError);
+        }
+        if (firstName.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName("firstName").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkMiddleName(String middleName) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        if (middleName.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkLastName(String lastName) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (lastName.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName("lastName").build();
+            validationErrors.add(validationError);
+        }
+        if (lastName.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName("lastName").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkNickname(String nickname) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (nickname.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName("nickname").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkBio(String bio) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (bio.length() > 1024) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName("bio").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (personalPronouns.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName("personalPronouns").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkEmail(String email) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (email.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName("email").build();
+            validationErrors.add(validationError);
+        } else if (!email.contains("@")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName("email").build();
+            validationErrors.add(validationError);
+        }
+
+        if (email.length() > 255) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName("email").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkPassword(String password) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+
+        if (password.length() <= 8) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
+            validationErrors.add(validationError);
+        }
+
+        if (password.length() > 64) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName("password").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkUserExists(int userId) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        if (!repository.existsById(userId)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("User does not exist").setFieldName("userId").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+    private List<ValidationError> checkCurrentPassword(String currentPassword, int userId) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        User tempUser = repository.findByUserId(userId);
+        if (Boolean.FALSE.equals(tempUser.checkPassword(currentPassword))) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Current password is incorrect").setFieldName("currentPassword").build();
+            validationErrors.add(validationError);
+        }
+        return validationErrors;
+    }
+
+
+
+
+
+
+
+
 
 }
