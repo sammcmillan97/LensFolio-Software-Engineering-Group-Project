@@ -41,8 +41,8 @@ public class securitySettingsController {
             @RequestParam(name="oldPassword") String oldPassword,
             @RequestParam(name="newPassword") String newPassword,
             Model model ) {
-        //NEED TO DISCUSS VALIDATION WITH TEAM, FRONT END OR BACK END
 
+        //Get current user ID
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -50,17 +50,17 @@ public class securitySettingsController {
                 .orElse("-100"));
 
         ChangePasswordResponse changePasswordResponse;
-
+        //Try to connect to IDP to summit password response
         try {
             changePasswordResponse = userAccountClientService.changeUserPassword(id, oldPassword, newPassword);
-            model.addAttribute("Reponse", changePasswordResponse.getMessage());
         } catch(Exception e) {
-            model.addAttribute("errorMessage", e);
+            model.addAttribute("response", "Error connecting to Identity Provider");
             return "securitySettings";
         }
+        //Success or fail the user will be returned to the security menu with appropriate feedback message displayed
+        model.addAttribute("response", changePasswordResponse.getMessage());
         System.out.println(changePasswordResponse.getMessage());
         return "securitySettings";
-
     }
 
 }
