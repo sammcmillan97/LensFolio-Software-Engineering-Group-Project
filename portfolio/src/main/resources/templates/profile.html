@@ -10,19 +10,19 @@
 </head>
 <body>
     <div class="header">
-        <h1>Header</h1>
+        <h1><span style="font-size: 30px; cursor: pointer; text-align: left" onclick="clickEvent()">&#9776</span>Header</h1>
     </div>
     <nav id="site-navigation">
         <span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span>
         <ul class="site-navigation__list">
             <li class="site-navigation__item">
                 <h5>
-                    <a th:href="@{/profile.html}" class="site-navigation__link">Profile</a>
+                    <a th:href="@{/profile}" class="site-navigation__link active">Profile</a>
                 </h5>
             </li>
             <li class="site-navigation__item">
                 <h5>
-                    <a th:href="@{/projects.html}" class="site-navigation__link active">Projects</a>
+                    <a th:href="@{/projects}" class="site-navigation__link">Projects</a>
                 </h5>
             </li>
         </ul>
@@ -40,7 +40,7 @@
 <!--    </div>-->
 
 
-    <div class="UserProfile">
+    <div class="page-content">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4">
@@ -126,22 +126,22 @@
 
 <!--</style>-->
 <script>
-    let navOpen = true;
+    let navOpen = false;
     function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        document.getElementById("main").style.marginLeft = "250px";
-        navOpen = false;
+        document.getElementById("site-navigation").style.width = "200px";
+        document.getElementById("page-content").style.marginLeft = "200px";
     }
 
     function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLeft= "0";
-        navOpen = true;
+        document.getElementById("site-navigation").style.width = "0";
+        document.getElementById("page-content").style.marginLeft= "0";
     }
     function clickEvent() {
         if (navOpen === true) {
+            navOpen = false;
             openNav();
         } else {
+            navOpen = true;
             closeNav();
         }
     }
