@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -127,5 +128,45 @@ public class EditUserController {
             model.addAttribute("editMessage", editUserResponse.getMessage());
             return "/editUser";
         }
+    }
+
+    /**
+     * Get mapping to open addProfilePicture page
+     * @param principal
+     * @param model
+     * @return the addProfilePicture page
+     */
+    @GetMapping("/addProfilePicture")
+    public String addProfilePicture(
+            @AuthenticationPrincipal AuthState principal,
+            Model model
+    ) {
+        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+
+        UserResponse user = userAccountClientService.getUserAccountById(id);
+        model.addAttribute("user", user);
+        return "addProfilePicture";
+    }
+
+
+
+    @PostMapping("/addProfilePicture")
+    public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
+                                    @RequestParam(name="username") String username,
+                                    @RequestParam(name="image") File image,
+                                    Model model) {
+
+        //get userId using the Authentication Principle
+        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+
+        return "profile";
     }
 }

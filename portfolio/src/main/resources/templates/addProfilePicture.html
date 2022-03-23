@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Profile Picture</title>
+</head>
+<body>
+    <a th:href="@{/profile}" class="button">Back</a>
+
+    <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
+        <!--HIDDEN-->
+        <input type="hidden" th:name="username"  th:value="${user.username}" />
+
+        <label>Select Image File:</label><br>
+        <input type="file" id="image" th:name="image" accept=".jpg,.png"><br>
+        <br><label class="helper" >Required, must be filetype jpg or png, and be less than 5MB</label><br>
+        <input type="submit" name="submit" value="Upload">
+    </form>
+
+</body>
+</html>
+
+<script>
+    const uploadField = document.getElementById("image");
+
+    //5MB
+    const maxAllowedSize = 5 * 1024 * 1024;
+
+    uploadField.onchange = function() {
+        if(this.files[0].size > maxAllowedSize){
+            alert("File is too big! Must be less than 5MB");
+            this.value = "";
+        };
+    };
+</script>
+
+<style>
+
+    label.helper{
+    margin-left: 10px;
+    font-style: italic;
+    font-weight: normal;
+    color: #c8c8c8;
+    }
+
+    a.button {
+        font-size: medium;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 4px 10px 4px 10px;
+        border-bottom: 1px solid lightgray;
+        border-radius: 3px;
+    }
+</style>
