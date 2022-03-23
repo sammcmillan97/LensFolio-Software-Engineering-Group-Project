@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-public class securitySettingsController {
+public class SecuritySettingsController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
