@@ -25,7 +25,7 @@ import java.sql.Date;
 public class ProjectsController {
 
     /**
-     * Repository which allows the controller to interact with the database.
+     * Autowired project service, which handles the project database calls
      */
     @Autowired
     private ProjectService projectService;
