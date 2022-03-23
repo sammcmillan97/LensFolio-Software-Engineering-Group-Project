@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${project.getName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" href="/styles/planner.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script rel="script" src="/scripts/planner.js"></script>
+</head>
+<body>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div id="page-content">
+    <!-- Populate the following div with projects and their details. -->
+    <div class="header">
+        <div class="title">
+            <p class="title-name" th:text="${project.getName}" />
+            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
+        </div>
+    </div>
+    <div class="header__paragraph">
+        <p class="title-project_description" th:text="${project.getDescription()}"/>
+    </div>
+    <div id="project-wrapper" class="flex-column">
+
+    </div>
+</div>
+</body>
+</html>
