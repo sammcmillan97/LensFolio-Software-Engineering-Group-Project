@@ -60,7 +60,6 @@ public class RegisterController {
                            @RequestParam(name="pronouns") String pronouns,
                            @RequestParam(name="bio") String bio,
                            Model model) {
-
         UserRegisterResponse userRegisterResponse;
 
         //some validation, could use more
@@ -69,8 +68,6 @@ public class RegisterController {
             return "register";
         }
 
-
-
         try {
             //Call the grpc with users validated params
             userRegisterResponse = userAccountClientService.register(username.toLowerCase(Locale.ROOT), password, firstName,
@@ -78,12 +75,9 @@ public class RegisterController {
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
         } catch (Exception e){
-            System.out.println("check");
             model.addAttribute("errorMessage", e);
             return "register";
         }
-
-
 
         if (userRegisterResponse.getIsSuccess()){
             AuthenticateResponse loginReply;
