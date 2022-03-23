@@ -9,10 +9,7 @@ import javax.validation.constraints.Size;
 import com.google.protobuf.Timestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.security.SecureRandom;
-import java.sql.Time;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 
 @Entity
@@ -116,6 +113,7 @@ public class User {
         this.timeCreated = timestamp;
     }
 
+    // Empty constructor is needed for JPA
     protected User() {
     }
 
@@ -223,8 +221,8 @@ public class User {
     }
 
     /**
-     * Generate the current date given the system default zone id
-     * @return LocalDate
+     * Returns the current time
+     * @return A google.protobuf.Timestamp object representing the current time
      */
     private Timestamp getCurrentTime(){
         Instant time = Instant.now();

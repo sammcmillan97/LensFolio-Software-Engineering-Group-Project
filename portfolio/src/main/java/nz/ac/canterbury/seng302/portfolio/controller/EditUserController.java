@@ -2,9 +2,6 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 
 import com.google.protobuf.Timestamp;
-import io.grpc.StatusRuntimeException;
-import nz.ac.canterbury.seng302.portfolio.authentication.CookieUtil;
-import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,15 +109,7 @@ public class EditUserController {
 
         //if edit user was successful
         if (editUserResponse.getIsSuccess()){
-            //generic model attribut that need to be set for the profile page
-            model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
-            Timestamp ts = user.getCreated();
-            Instant timeCreated = Instant.ofEpochSecond( ts.getSeconds() , ts.getNanos() );
-            LocalDate dateCreated = timeCreated.atZone( ZoneId.systemDefault() ).toLocalDate();
-            long months = ChronoUnit.MONTHS.between(dateCreated, LocalDate.now());
-            String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
-            model.addAttribute("date", formattedDate);
-            return "profile";
+            return "redirect:/profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("editMessage", "");
