@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <link th:href="@{/css/registerCSS.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="main">
+    <form th:action="@{/login}">
+        <div class="row button">
+            <label>
+                <input type="submit" value="Back">
+            </label>
+        </div>
+    </form>
+
+    <div style="text-align:center;">
+        <h1>Sign Up</h1>
+        <h2>Please enter your details below</h2>
+    </div>
+
+<form th:action="@{/register}"  method="post">
+    <div>
+        <input type="text" th:name="username" minlength="6" maxlength="64" required placeholder="Username (*)" class = "attribute"/>
+        <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*)"/>
+        <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)"/>
+    </div>
+
+    <div>
+        <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" />
+        <input type="text" th:name="middleName" maxlength="64"  required placeholder="Middle Name (*)" />
+        <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" />
+    </div>
+    <div>
+        <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname" />
+        <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" />
+    </div>
+    <div>
+        <input type="text" th:name="bio" maxlength="1024" placeholder="Bio" />
+    </div>
+    <div>
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+    <p th:text="${registerMessage}" />
+
+
+</div>
+</body>
+</html>
+
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    html {
+        display: table;
+        margin: auto;
+    }
+
+    body {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    div {
+        padding: 20px;
+    }
+
+    input {
+        align-content: center;
+    }
+</style>
