@@ -2,6 +2,7 @@
 package nz.ac.canterbury.seng302.identityprovider.entity;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -121,6 +122,7 @@ class UserTests {
     // Tests that every user has a student role by default
     @Test
     void testDefaultStudentRole() {
+        assertEquals(user1.getRole(), UserRole.STUDENT);
 
     }
 
