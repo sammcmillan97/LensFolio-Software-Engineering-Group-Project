@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
@@ -28,13 +29,37 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
 
-
     @Autowired
     private UserRepository repository;
 
+    @VisibleForTesting
+    private boolean isAuthenticated() {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        return authState.getIsAuthenticated();
+    }
+
+    @VisibleForTesting
+    private boolean isAuthenticatedAsUser(int claimedId) {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        String authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+        return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
+    }
+
     @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {
-        ChangePasswordResponse reply = changeUserPasswordHandler(request);
+        ChangePasswordResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = changeUserPasswordHandler(request);
+        } else {
+            reply = ChangePasswordResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Password change failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -77,7 +102,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
-        EditUserResponse reply = editUserHandler(request);
+        EditUserResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = editUserHandler(request);
+        } else {
+            reply = EditUserResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Edit user failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -130,7 +163,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     @Override
     public void getUserAccountById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
-        UserResponse reply = getUserAccountByIdHandler(request);
+        UserResponse reply;
+        if (isAuthenticated()) {
+            reply = getUserAccountByIdHandler(request);
+        } else {
+            reply = UserResponse.newBuilder().build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
