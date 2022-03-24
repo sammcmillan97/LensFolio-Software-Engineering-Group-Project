@@ -36,6 +36,9 @@ public class ProjectDetailsController {
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         model.addAttribute("sprints", sprintList);
 
+        int sprintCount = sprintList.size();
+        model.addAttribute("sprintCount", sprintCount);
+
 
         // Below code is just begging to be added as a method somewhere...
         String role = principal.getClaimsList().stream()
@@ -87,21 +90,30 @@ public class ProjectDetailsController {
                                  @RequestParam(name = "sprintStartDate") Date sprintStartDate,
                                  @RequestParam(name = "sprintEndDate") Date sprintEndDate,
                                  Model model) {
-        try {
-            Sprint existingSprint = sprintService.getSprintById(sprintId);
-            existingSprint.setLabel(sprintLabel);
-            existingSprint.setName(sprintName);
-            existingSprint.setDescription(sprintDescription);
-            existingSprint.setStartDate(sprintStartDate);
-            existingSprint.setEndDate(sprintEndDate);
-            sprintService.saveSprint(existingSprint);
+        if (parentProjectId == -1) {
+            // Error - For now simply go back to project details
+        }
 
-        } catch (NoSuchElementException e) {
-            // For now use this to add new sprint
-            Sprint newSprint = new Sprint(parentProjectId, sprintLabel, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+        if (sprintId == -1) {
+            // Id == -1 signals to create new sprint
+            Sprint newSprint = new Sprint(parentProjectId, sprintName, sprintLabel, sprintDescription, sprintStartDate, sprintEndDate);
             sprintService.saveSprint(newSprint);
-        } catch (Exception e) {}
+        } else {
+            // Otherwise edit existing sprint
+            try {
+                Sprint existingSprint = sprintService.getSprintById(sprintId);
+                existingSprint.setLabel(sprintLabel);
+                existingSprint.setName(sprintName);
+                existingSprint.setDescription(sprintDescription);
+                existingSprint.setStartDate(sprintStartDate);
+                existingSprint.setEndDate(sprintEndDate);
+                sprintService.saveSprint(existingSprint);
+            } catch (Exception ignored) {
+                // TODO
+            }
+        }
 
+        // Reload project details page
         return "redirect:/projects/" + parentProjectId;
     }
 

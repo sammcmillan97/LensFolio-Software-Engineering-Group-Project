@@ -87,7 +87,7 @@ public class ProjectSummariesController {
                 existingProject.setDescription(projectDescription);
                 projectService.saveProject(existingProject);
             } catch(Exception ignored) {
-
+                // TODO
             }
         }
 

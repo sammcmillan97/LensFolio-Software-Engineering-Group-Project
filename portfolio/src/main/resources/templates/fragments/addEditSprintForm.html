@@ -19,12 +19,12 @@
 
     <!-- Form -->
     <form id="sprint-form__form" th:action="@{/projects/edit-sprint}" class="form-container" th:method="put">
+        <input type="hidden" id="sprint-count" name="sprintCount" th:value="${sprintCount}"/>
         <input type="hidden" id="sprint-form__project-id" name="parentProjectId"/>
         <input type="hidden" id="sprint-form__sprint-id" name="sprintId"/>
-        <input type="hidden" name="sprintLabel" value="Sprint #"/>
+        <input type="hidden" id="sprint-form__label" name="sprintLabel"/>
 
         <h1 id="sprint-form__title"></h1>
-        <h2 id="sprint-form__label">Sprint #</h2>
 
         <label for="sprint-form__name-field"><b>Sprint Name</b></label>
         <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" required>

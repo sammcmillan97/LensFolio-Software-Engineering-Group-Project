@@ -66,9 +66,13 @@ function addSprint(parentProjectId) {
 
     // Assign default project values
     let sprintId = "";
-    let name = "Sprint #";
+    let name = "Sprint Name";
     let description = "";
     let formTitle = "Add Sprint";
+
+    // Get the sprint number and set the sprint label
+    let sprintCount = parseInt(document.getElementById("sprint-count").value);
+    document.getElementById("sprint-form__label").value = "Sprint " + (sprintCount + 1);
 
     // Calculate the start and end dates
     // Start date is today
