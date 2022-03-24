@@ -9,8 +9,17 @@
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 </head>
 <body>
-    <div class="header">
-        <h1><span style="font-size: 30px; cursor: pointer; text-align: left" onclick="clickEvent()">&#9776</span>Header</h1>
+    <div>
+        <ul>
+            <a><span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span></a>
+            <li> <p th:text="${user.username}" /></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
+                <div class="dropdown-content">
+                    <a th:href="@{/login}">Logout</a>
+                </div>
+            </li>
+        </ul>
     </div>
     <nav id="site-navigation">
         <span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span>
@@ -27,24 +36,12 @@
             </li>
         </ul>
     </nav>
-<!--    <div>-->
-<!--        <ul>-->
-<!--            <li> <p th:text="${user.username}" /></li>-->
-<!--            <li class="dropdown">-->
-<!--                <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>-->
-<!--                <div class="dropdown-content">-->
-<!--                    <a th:href="@{/login}">Logout</a>-->
-<!--                </div>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </div>-->
 
-
-    <div class="page-content">
+    <div id="page-content">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4">
-                    <div style="height: 100px"></div>
+                    <div style="height: 50px"></div>
                     <div class="card shadow-sm">
                         <div class="card-header bg-transparent text-center">
                             <img th:src="@{/GenericUserIcon.jpg}"  width="50px" alt="profilePhoto">
@@ -129,12 +126,12 @@
     let navOpen = false;
     function openNav() {
         document.getElementById("site-navigation").style.width = "200px";
-        document.getElementById("page-content").style.marginLeft = "200px";
+        document.getElementById("page-content").style.marginLeft = "250px";
     }
 
     function closeNav() {
         document.getElementById("site-navigation").style.width = "0";
-        document.getElementById("page-content").style.marginLeft= "0";
+        document.getElementById("page-content").style.marginLeft= "50px";
     }
     function clickEvent() {
         if (navOpen === true) {
