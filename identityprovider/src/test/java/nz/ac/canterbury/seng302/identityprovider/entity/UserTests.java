@@ -118,5 +118,12 @@ class UserTests {
         assertFalse(user1.checkPassword("theWrongPassword"));
     }
 
+    // Tests that every user has a student role by default
+    @Test
+    void testDefaultStudentRole() {
+
+    }
+
+
 
 }
