@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
+import net.bytebuddy.implementation.bind.annotation.Default;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -55,6 +57,9 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     @Size(max=64, message="Password must be less than 65 characters")
     private String password;
+
+
+    private UserRole role = UserRole.STUDENT;
 
     @Column(length = 1024)
     private Timestamp timeCreated;
@@ -198,6 +203,15 @@ public class User {
 
     public Timestamp getTimeCreated(){ return this.timeCreated; }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+
 
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
@@ -228,5 +242,7 @@ public class User {
         return Timestamp.newBuilder().setSeconds(time.getEpochSecond())
                 .setNanos(time.getNano()).build();
     }
+
+
 
 }

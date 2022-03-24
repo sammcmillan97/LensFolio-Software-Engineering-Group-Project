@@ -41,6 +41,50 @@ class UserAccountsServiceServiceTests {
         testCreated = testUser.getTimeCreated();
     }
 
+    //Tests that the password change fails if the new password is too short
+    @Test
+    void changePasswordEmptyPasswordTest() {
+        ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
+                .setUserId(testId)
+                .setCurrentPassword(testPassword)
+                .build();
+        ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
+        assertEquals("Password change failed: Validation failed", response.getMessage());
+        assertEquals("password", response.getValidationErrors(0).getFieldName());
+        assertEquals("Password must be at least 8 characters", response.getValidationErrors(0).getErrorText());
+        assertFalse(response.getIsSuccess());
+        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+    }
+
+    //Test the max length for the new password field
+    @Test
+    void changePasswordLongFieldTest() {
+        ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
+                .setUserId(testId)
+                .setCurrentPassword(testPassword)
+                .setNewPassword("a".repeat(64))
+                .build();
+        ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
+        assertTrue(response.getIsSuccess());
+        assertTrue(repository.findByUserId(testId).checkPassword("a".repeat(64)));
+    }
+
+    //Tests that the password change fails if the new password is too long
+    @Test
+    void changePasswordExtraLongPasswordTest() {
+        ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
+                .setUserId(testId)
+                .setCurrentPassword(testPassword)
+                .setNewPassword("a".repeat(65))
+                .build();
+        ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
+        assertEquals("Password change failed: Validation failed", response.getMessage());
+        assertEquals("password", response.getValidationErrors(0).getFieldName());
+        assertEquals("Password must be less than 65 characters", response.getValidationErrors(0).getErrorText());
+        assertFalse(response.getIsSuccess());
+        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+    }
+
     //Tests that password change fails if the user does not exist
     @Test
     void changePasswordBadUserTest() {
@@ -51,7 +95,7 @@ class UserAccountsServiceServiceTests {
                 .build();
 
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
-        assertEquals("Password change failed: user does not exist", response.getMessage());
+        assertEquals("Password change failed: Validation failed", response.getMessage());
         assertFalse(response.getIsSuccess());
         assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
     }
@@ -66,7 +110,7 @@ class UserAccountsServiceServiceTests {
                 .build();
 
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
-        assertEquals("Password change failed: current password is incorrect", response.getMessage());
+        assertEquals("Password change failed: Validation failed", response.getMessage());
         assertFalse(response.getIsSuccess());
         assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
     }
@@ -86,6 +130,106 @@ class UserAccountsServiceServiceTests {
         assertTrue(repository.findByUserId(testId).checkPassword(newPassword));
     }
 
+    // Tests that editing a user fails if no fields are entered
+    @Test
+    void editUserEmptyFieldsTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName("")
+                .setMiddleName("")
+                .setLastName("")
+                .setNickname("")
+                .setBio("")
+                .setPersonalPronouns("")
+                .setEmail("")
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+
+        assertEquals(3, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name is required", response.getValidationErrors(0).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Last name is required", response.getValidationErrors(1).getErrorText());
+        assertEquals("email", response.getValidationErrors(2).getFieldName());
+        assertEquals("Email is required", response.getValidationErrors(2).getErrorText());
+        assertEquals("Edit user failed: Validation failed", response.getMessage());
+
+        assertFalse(response.getIsSuccess());
+
+        // Check user hasn't been changed
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName, testUser.getFirstName());
+        assertEquals(testMiddleName, testUser.getMiddleName());
+        assertEquals(testLastName, testUser.getLastName());
+        assertEquals(testNickname, testUser.getNickname());
+        assertEquals(testBio, testUser.getBio());
+        assertEquals(testPronouns, testUser.getPersonalPronouns());
+        assertEquals(testEmail, testUser.getEmail());
+    }
+
+    // Tests the max field length
+    @Test
+    void editUserLongFieldsTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName("a".repeat(64))
+                .setMiddleName("a".repeat(64))
+                .setLastName("a".repeat(64))
+                .setNickname("a".repeat(64))
+                .setBio("a".repeat(1024))
+                .setPersonalPronouns("a".repeat(64))
+                .setEmail("@".repeat(255))
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+        assertEquals("Edit user succeeded", response.getMessage());
+        assertTrue(response.getIsSuccess());
+
+        // Check that user info has been changed to correct values
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals("a".repeat(64), testUser.getFirstName());
+        assertEquals("a".repeat(64), testUser.getMiddleName());
+        assertEquals("a".repeat(64), testUser.getLastName());
+        assertEquals("a".repeat(64), testUser.getNickname());
+        assertEquals("a".repeat(1024), testUser.getBio());
+        assertEquals("a".repeat(64), testUser.getPersonalPronouns());
+        assertEquals("@".repeat(255), testUser.getEmail());
+    }
+
+    // Tests that if fields are too long, the request is rejected
+    @Test
+    void editUserExtraLongFieldsTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName("a".repeat(65))
+                .setMiddleName("a".repeat(65))
+                .setLastName("a".repeat(65))
+                .setNickname("a".repeat(65))
+                .setBio("a".repeat(1025))
+                .setPersonalPronouns("a".repeat(65))
+                .setEmail("@".repeat(256))
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+        assertEquals("Edit user failed: Validation failed", response.getMessage());
+        assertEquals(7, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name must be less than 65 characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Middle name must be less than 65 characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name must be less than 65 characters", response.getValidationErrors(2).getErrorText());
+        assertEquals("nickname", response.getValidationErrors(3).getFieldName());
+        assertEquals("Nickname must be less than 65 characters", response.getValidationErrors(3).getErrorText());
+        assertEquals("bio", response.getValidationErrors(4).getFieldName());
+        assertEquals("Bio must be less than 1025 characters", response.getValidationErrors(4).getErrorText());
+        assertEquals("personalPronouns", response.getValidationErrors(5).getFieldName());
+        assertEquals("Personal pronouns must be less than 65 characters", response.getValidationErrors(5).getErrorText());
+        assertEquals("email", response.getValidationErrors(6).getFieldName());
+        assertEquals("Email must be less than 256 characters", response.getValidationErrors(6).getErrorText());
+        assertFalse(response.getIsSuccess());
+    }
+
     // Tests that editing user fails if user does not exist
     @Test
     void editUserBadUserTest() {
@@ -100,9 +244,10 @@ class UserAccountsServiceServiceTests {
                 .setEmail(testEmail + "new")
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
-        assertEquals("Edit user failed: user does not exist", response.getMessage());
+        assertEquals("Edit user failed: Validation failed", response.getMessage());
         assertFalse(response.getIsSuccess());
 
+        // Check user hasn't been changed
         User testUser = repository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName, testUser.getFirstName());
@@ -131,6 +276,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("Edit user succeeded", response.getMessage());
         assertTrue(response.getIsSuccess());
 
+        // Check that user info has been changed to correct values
         User testUser = repository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName + "new", testUser.getFirstName());
@@ -148,16 +294,16 @@ class UserAccountsServiceServiceTests {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(-1)
                 .build();
-        UserResponse reply = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertEquals("", reply.getUsername());
-        assertEquals("", reply.getFirstName());
-        assertEquals("", reply.getMiddleName());
-        assertEquals("", reply.getLastName());
-        assertEquals("", reply.getNickname());
-        assertEquals("", reply.getBio());
-        assertEquals("", reply.getPersonalPronouns());
-        assertEquals("", reply.getEmail());
-        assertEquals(Timestamp.newBuilder().build(), reply.getCreated());
+        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertEquals("", response.getUsername());
+        assertEquals("", response.getFirstName());
+        assertEquals("", response.getMiddleName());
+        assertEquals("", response.getLastName());
+        assertEquals("", response.getNickname());
+        assertEquals("", response.getBio());
+        assertEquals("", response.getPersonalPronouns());
+        assertEquals("", response.getEmail());
+        assertEquals(Timestamp.newBuilder().build(), response.getCreated());
     }
 
     // Tests that getting user succeeds if user exists
@@ -166,36 +312,36 @@ class UserAccountsServiceServiceTests {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
-        UserResponse reply = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertEquals(testUsername, reply.getUsername());
-        assertEquals(testFirstName, reply.getFirstName());
-        assertEquals(testMiddleName, reply.getMiddleName());
-        assertEquals(testLastName, reply.getLastName());
-        assertEquals(testNickname, reply.getNickname());
-        assertEquals(testBio, reply.getBio());
-        assertEquals(testPronouns, reply.getPersonalPronouns());
-        assertEquals(testEmail, reply.getEmail());
-        assertEquals(testCreated, reply.getCreated());
+        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertEquals(testUsername, response.getUsername());
+        assertEquals(testFirstName, response.getFirstName());
+        assertEquals(testMiddleName, response.getMiddleName());
+        assertEquals(testLastName, response.getLastName());
+        assertEquals(testNickname, response.getNickname());
+        assertEquals(testBio, response.getBio());
+        assertEquals(testPronouns, response.getPersonalPronouns());
+        assertEquals(testEmail, response.getEmail());
+        assertEquals(testCreated, response.getCreated());
     }
 
     // Tests that creating user fails if no fields are entered
     @Test
-    void userRegisterNoFieldsTest() {
+    void userRegisterEmptyFieldsTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder().build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
-        assertEquals(5, reply.getValidationErrorsCount());
-        assertEquals("username", reply.getValidationErrors(0).getFieldName());
-        assertEquals("Username is required", reply.getValidationErrors(0).getErrorText());
-        assertEquals("firstName", reply.getValidationErrors(1).getFieldName());
-        assertEquals("First name is required", reply.getValidationErrors(1).getErrorText());
-        assertEquals("lastName", reply.getValidationErrors(2).getFieldName());
-        assertEquals("Last name is required", reply.getValidationErrors(2).getErrorText());
-        assertEquals("email", reply.getValidationErrors(3).getFieldName());
-        assertEquals("Email is required", reply.getValidationErrors(3).getErrorText());
-        assertEquals("password", reply.getValidationErrors(4).getFieldName());
-        assertEquals("Password must be at least 8 characters", reply.getValidationErrors(4).getErrorText());
-        assertFalse(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(5, response.getValidationErrorsCount());
+        assertEquals("username", response.getValidationErrors(0).getFieldName());
+        assertEquals("Username is required", response.getValidationErrors(0).getErrorText());
+        assertEquals("firstName", response.getValidationErrors(1).getFieldName());
+        assertEquals("First name is required", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name is required", response.getValidationErrors(2).getErrorText());
+        assertEquals("email", response.getValidationErrors(3).getFieldName());
+        assertEquals("Email is required", response.getValidationErrors(3).getErrorText());
+        assertEquals("password", response.getValidationErrors(4).getFieldName());
+        assertEquals("Password must be at least 8 characters", response.getValidationErrors(4).getErrorText());
+        assertFalse(response.getIsSuccess());
     }
 
     // Tests the max length for each field
@@ -212,9 +358,9 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns("a".repeat(64))
                 .setEmail("@".repeat(255))
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt succeeded", reply.getMessage());
-        assertTrue(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt succeeded", response.getMessage());
+        assertTrue(response.getIsSuccess());
     }
 
     // Tests that if fields are too long, the request is rejected
@@ -231,28 +377,28 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns("a".repeat(65))
                 .setEmail("@".repeat(256))
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
-        assertEquals(9, reply.getValidationErrorsCount());
-        assertEquals("username", reply.getValidationErrors(0).getFieldName());
-        assertEquals("Username must be less than 65 characters", reply.getValidationErrors(0).getErrorText());
-        assertEquals("firstName", reply.getValidationErrors(1).getFieldName());
-        assertEquals("First name must be less than 65 characters", reply.getValidationErrors(1).getErrorText());
-        assertEquals("middleName", reply.getValidationErrors(2).getFieldName());
-        assertEquals("Middle name must be less than 65 characters", reply.getValidationErrors(2).getErrorText());
-        assertEquals("lastName", reply.getValidationErrors(3).getFieldName());
-        assertEquals("Last name must be less than 65 characters", reply.getValidationErrors(3).getErrorText());
-        assertEquals("nickname", reply.getValidationErrors(4).getFieldName());
-        assertEquals("Nickname must be less than 65 characters", reply.getValidationErrors(4).getErrorText());
-        assertEquals("bio", reply.getValidationErrors(5).getFieldName());
-        assertEquals("Bio must be less than 1025 characters", reply.getValidationErrors(5).getErrorText());
-        assertEquals("personalPronouns", reply.getValidationErrors(6).getFieldName());
-        assertEquals("Personal pronouns must be less than 65 characters", reply.getValidationErrors(6).getErrorText());
-        assertEquals("email", reply.getValidationErrors(7).getFieldName());
-        assertEquals("Email must be less than 256 characters", reply.getValidationErrors(7).getErrorText());
-        assertEquals("password", reply.getValidationErrors(8).getFieldName());
-        assertEquals("Password must be less than 65 characters", reply.getValidationErrors(8).getErrorText());
-        assertFalse(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(9, response.getValidationErrorsCount());
+        assertEquals("username", response.getValidationErrors(0).getFieldName());
+        assertEquals("Username must be less than 65 characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("firstName", response.getValidationErrors(1).getFieldName());
+        assertEquals("First name must be less than 65 characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Middle name must be less than 65 characters", response.getValidationErrors(2).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(3).getFieldName());
+        assertEquals("Last name must be less than 65 characters", response.getValidationErrors(3).getErrorText());
+        assertEquals("nickname", response.getValidationErrors(4).getFieldName());
+        assertEquals("Nickname must be less than 65 characters", response.getValidationErrors(4).getErrorText());
+        assertEquals("bio", response.getValidationErrors(5).getFieldName());
+        assertEquals("Bio must be less than 1025 characters", response.getValidationErrors(5).getErrorText());
+        assertEquals("personalPronouns", response.getValidationErrors(6).getFieldName());
+        assertEquals("Personal pronouns must be less than 65 characters", response.getValidationErrors(6).getErrorText());
+        assertEquals("email", response.getValidationErrors(7).getFieldName());
+        assertEquals("Email must be less than 256 characters", response.getValidationErrors(7).getErrorText());
+        assertEquals("password", response.getValidationErrors(8).getFieldName());
+        assertEquals("Password must be less than 65 characters", response.getValidationErrors(8).getErrorText());
+        assertFalse(response.getIsSuccess());
     }
 
     // Tests that creating user fails if username already exists
@@ -269,12 +415,12 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns(testPronouns + "2")
                 .setEmail(testEmail + "2")
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
-        assertEquals(1, reply.getValidationErrorsCount());
-        assertEquals("username", reply.getValidationErrors(0).getFieldName());
-        assertEquals("Username already taken", reply.getValidationErrors(0).getErrorText());
-        assertFalse(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(1, response.getValidationErrorsCount());
+        assertEquals("username", response.getValidationErrors(0).getFieldName());
+        assertEquals("Username already taken", response.getValidationErrors(0).getErrorText());
+        assertFalse(response.getIsSuccess());
     }
 
     // Tests that an email that does not contain @ is rejected
@@ -291,12 +437,12 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns(testPronouns + "2")
                 .setEmail("bad email")
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
-        assertEquals(1, reply.getValidationErrorsCount());
-        assertEquals("email", reply.getValidationErrors(0).getFieldName());
-        assertEquals("Email must be valid", reply.getValidationErrors(0).getErrorText());
-        assertFalse(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(1, response.getValidationErrorsCount());
+        assertEquals("email", response.getValidationErrors(0).getFieldName());
+        assertEquals("Email must be valid", response.getValidationErrors(0).getErrorText());
+        assertFalse(response.getIsSuccess());
     }
 
     // Tests that a password less than 8 characters is rejected
@@ -313,12 +459,12 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns(testPronouns + "2")
                 .setEmail(testEmail + "2")
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt failed: Validation failed", reply.getMessage());
-        assertEquals(1, reply.getValidationErrorsCount());
-        assertEquals("password", reply.getValidationErrors(0).getFieldName());
-        assertEquals("Password must be at least 8 characters", reply.getValidationErrors(0).getErrorText());
-        assertFalse(reply.getIsSuccess());
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(1, response.getValidationErrorsCount());
+        assertEquals("password", response.getValidationErrors(0).getFieldName());
+        assertEquals("Password must be at least 8 characters", response.getValidationErrors(0).getErrorText());
+        assertFalse(response.getIsSuccess());
     }
 
     // Tests that creating user succeeds if username does not exist
@@ -335,10 +481,10 @@ class UserAccountsServiceServiceTests {
                 .setPersonalPronouns(testPronouns + "2")
                 .setEmail(testEmail + "2")
                 .build();
-        UserRegisterResponse reply = userService.registerHandler(userRegisterRequest);
-        assertEquals("Register attempt succeeded", reply.getMessage());
-        assertTrue(reply.getIsSuccess());
-        int newTestId = reply.getNewUserId();
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt succeeded", response.getMessage());
+        assertTrue(response.getIsSuccess());
+        int newTestId = response.getNewUserId();
         User testUser = repository.findByUserId(newTestId);
         assertEquals(testUsername + "2", testUser.getUsername());
         assertEquals(testFirstName + "2", testUser.getFirstName());
