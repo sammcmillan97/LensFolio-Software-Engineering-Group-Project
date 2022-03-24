@@ -13,7 +13,7 @@
     <ul>
         <li> <p th:text="${user.username}"></p></li>
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
+            <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" class="croppedProfileIcon"></a>
             <div class="dropdown-content">
                 <a th:href="@{/editUser}">Edit User</a>
                 <a th:href="@{/addProfilePicture}">Edit Profile Picture</a>
@@ -32,8 +32,8 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-transparent text-center">
                         <div class="container">
-                            <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" width="100px" alt="profilePhoto">
-                            <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="cameraIcon"></img></a>
+                            <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
+                            <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></img></a>
                         </div>
 
                         <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
@@ -112,7 +112,20 @@
     }
 
     .icon {
+        width: 30px;
         margin-left: -20px;
         margin-bottom: -12px;
+    }
+
+    .croppedImage {
+        width:150px;
+        height:150px;
+        object-fit:cover;
+    }
+
+    .croppedProfileIcon {
+        width:30px;
+        height:30px;
+        object-fit:cover;
     }
 </style>

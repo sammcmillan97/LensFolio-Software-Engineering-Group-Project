@@ -19,7 +19,7 @@
 
             <div class="container">
                 <!-- if user.image != null, show user image, else show generic user icon-->
-                <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" width="150px" alt="profilePhoto">
+                <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
 
                 <!-- if user.image = null hide, else show-->
                 <a th:href="@{/deleteProfilePicture}"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></img></a>
@@ -95,5 +95,11 @@
     .icon {
         margin-left: -20px;
         margin-bottom: -12px;
+    }
+
+    .croppedImage {
+        width:150px;
+        height:150px;
+        object-fit:cover;
     }
 </style>
