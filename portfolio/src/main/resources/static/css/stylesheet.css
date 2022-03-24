@@ -46,16 +46,7 @@ h5 {
 header {
     margin: 0 0 0 var(--site-navigation-width);
     padding: 0;
-/*    display: inline-flex;*/
 }
-
-/*header button {*/
-/*    align-self: flex-start;*/
-/*}*/
-
-/*header .dropdown {*/
-/*    align-self: flex-end;*/
-/*}*/
 
 header ul {
     list-style-type: none;

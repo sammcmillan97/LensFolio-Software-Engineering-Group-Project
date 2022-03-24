@@ -23,18 +23,7 @@
 <!--            </div>-->
 <!--        </header>-->
 <!--    </div>-->
-    <header class="constrict">
-        <ul>
-            <a><span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span></a>
-            <li> <p th:text="${user.username}" /></li>
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
-                <div class="dropdown-content">
-                    <a th:href="@{/login}">Logout</a>
-                </div>
-            </li>
-        </ul>
-    </header>
+    <header th:replace="fragments/header :: header"> </header>
     <nav id="site-navigation" class="expanded">
         <ul class="site-navigation__list">
             <li class="site-navigation__item">
