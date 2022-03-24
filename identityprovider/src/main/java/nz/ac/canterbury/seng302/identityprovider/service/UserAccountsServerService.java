@@ -32,15 +32,29 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Autowired
     private UserRepository repository;
 
-    @VisibleForTesting
+    /**
+     * Checks if the requesting user is authenticated.
+     * @return True if the requesting user is authenticated
+     */
     private boolean isAuthenticated() {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
 
-    @VisibleForTesting
+    /**
+     * Checks if the requesting user is authenticated as the claimed user.
+     * @param claimedId The id of the user that the requesting user claims to be
+     * @return True if the requesting user is authenticated as the claimed user
+     */
     private boolean isAuthenticatedAsUser(int claimedId) {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        // The following line needs some explanation.
+        // authState.getClaimsList() gets a list of ClaimDTO objects - these are defined in authentication.proto
+        // .stream() turns the list into a stream, this is a nice way of processing collections in java
+        // .filter() filters the stream to only nameid claims - this is the user's claimed id
+        // .findFirst() gets the first nameid claim - there should only be one but we have to consider this possibility
+        // .map() takes the ClaimDTO object and converts it to the userId we want
+        // .orElse() takes care of the case that no nameid claims were found (like the case when the user is not logged in)
         String authenticatedId = authState.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -49,6 +63,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+    /**
+     * If the user is authenticated as the user they want to change the password for, attempt to change their password
+     * @param request The request to change the user's password
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {
         ChangePasswordResponse reply;
@@ -100,6 +119,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as the user they want to edit, attempt to edit the user
+     * @param request The request to edit the user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
         EditUserResponse reply;
@@ -161,6 +185,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as any valid user, attempt to get the information of the requested user
+     * @param request The request to get the user's information
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void getUserAccountById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
         UserResponse reply;
@@ -199,6 +228,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * Attempt to register a user. Does not check authentication.
+     * @param request The request to register a user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void register(UserRegisterRequest request, StreamObserver<UserRegisterResponse> responseObserver) {
 
@@ -457,13 +491,5 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         return validationErrors;
     }
-
-
-
-
-
-
-
-
 
 }
