@@ -20,11 +20,11 @@ function getDateString(date) {
 }
 
 
-// /**
-//  * Updates the soonest end date which a sprint may be given.
-//  * A project may not end on or before the date on which it begins.
-//  */
-function updateMinEndDate() {
+/**
+ * Updates the soonest end date which a sprint may be given.
+ * A project may not end on or before the date on which it begins.
+ */
+function updateMinSprintEndDate() {
     let startDate = document.getElementById("sprint-form__start-date-field").valueAsNumber;
     let endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
@@ -64,24 +64,25 @@ function editSprint(parentProjectId, sprintId, name, description, startDate, end
  */
 function addSprint(parentProjectId) {
 
+    // Get the sprint number and set the sprint label
+    let sprintCount = parseInt(document.getElementById("sprint-count").value);
+    let label = "Sprint " + (sprintCount + 1);
+    document.getElementById("sprint-form__label").value = label;
+
     // Assign default project values
     let sprintId = "";
-    let name = "Sprint Name";
+    let name = label;
     let description = "";
     let formTitle = "Add Sprint";
 
-    // Get the sprint number and set the sprint label
-    let sprintCount = parseInt(document.getElementById("sprint-count").value);
-    document.getElementById("sprint-form__label").value = "Sprint " + (sprintCount + 1);
-
     // Calculate the start and end dates
-    // Start date is today
-    // End date is 8 months from now
+    // Start date is project start date or day after previous sprint end
     let startDate = new Date();
     startDate.setUTCHours(startDate.getUTCHours() - startDate.getTimezoneOffset() / 60);
+    document.getElementById("sprint-form__start-date-field").setAttribute("min", getDateString(startDate));
 
-    let endDate = new Date(startDate.getTime());
-    endDate.setUTCMonth(endDate.getUTCMonth() + 8);
+    // Default end date is 3 weeks after start
+    let endDate = new Date(startDate.getDate() + (3 * 7));
 
     openSprintForm(formTitle, parentProjectId, sprintId, name, description, startDate, endDate);
 }
@@ -120,7 +121,7 @@ function openSprintForm(formTitle, parentProjectId, sprintId, name, description,
     document.getElementById("sprint-form__popup").classList.remove("hidden");
 
     // Set minimum end date to the day after the current start date
-    updateMinEndDate();
+    updateMinSprintEndDate();
 
     // Set the minimum start date to one year before today
     let min_date = new Date();

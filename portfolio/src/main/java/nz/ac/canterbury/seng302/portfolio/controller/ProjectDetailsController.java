@@ -28,7 +28,6 @@ public class ProjectDetailsController {
     @GetMapping("/projects/{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         /* Add project details to the model */
-        // Gets the project with id 0 to plonk on the page
         int projectId = Integer.parseInt(id);
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("project", project);
@@ -38,6 +37,29 @@ public class ProjectDetailsController {
 
         int sprintCount = sprintList.size();
         model.addAttribute("sprintCount", sprintCount);
+
+        // Set the minimum start date for a new sprint
+        // If no existing sprints
+        if (sprintCount == 0) {
+            // Then min start date is project start date
+
+        } else {
+            // Otherwise min start date is the day after the end of the previous sprint
+            // Find previous sprint
+            List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
+            Sprint previousSprint;
+            for (Sprint sprint : sprints) {
+                if (sprint.getLabel() == "Sprint " + sprintCount) {
+                    previousSprint = sprint;
+                }
+            }
+
+            Date minStartDate = previousSprint.getEndDate();
+             = minStartDate.toLocalDate();
+            date.
+        }
+
+        model.addAttribute("newSprintStart", minStartDate);
 
 
         // Below code is just begging to be added as a method somewhere...

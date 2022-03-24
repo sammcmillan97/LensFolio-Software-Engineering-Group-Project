@@ -20,6 +20,7 @@
     <!-- Form -->
     <form id="sprint-form__form" th:action="@{/projects/edit-sprint}" class="form-container" th:method="put">
         <input type="hidden" id="sprint-count" name="sprintCount" th:value="${sprintCount}"/>
+        <input type="hidden" id="newSprintStart" name="newSprintStart" th:value="${newSprintStart}"/>
         <input type="hidden" id="sprint-form__project-id" name="parentProjectId"/>
         <input type="hidden" id="sprint-form__sprint-id" name="sprintId"/>
         <input type="hidden" id="sprint-form__label" name="sprintLabel"/>
@@ -33,7 +34,7 @@
         <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription"></textarea>
 
         <label for="sprint-form__start-date-field"><b>Sprint Start Date</b></label>
-        <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" onchange="updateMinEndDate()" required>
+        <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" onchange="updateMinSprintEndDate()" required>
 
         <label for="sprint-form__end-date-field"><b>Sprint End Date</b></label>
         <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" required>
