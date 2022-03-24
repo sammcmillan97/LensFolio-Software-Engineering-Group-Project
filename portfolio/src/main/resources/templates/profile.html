@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       lang="en">
@@ -6,106 +6,153 @@
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 </head>
 <body>
+<!--    <div width="100%">-->
+<!--        <header class="constrict" width="100%">-->
+<!--            <button onclick="clickEvent()">&#9776</button>-->
+<!--            <div class="dropdown">-->
+<!--                <a href="javascript:void(0)" class="dropbtn">-->
+<!--                    <img src="/GenericUserIcon.jpg" width="30px">-->
+<!--                    <div th:text="${user.username}"></div>-->
+<!--                </a>-->
+<!--                <div class="dropdown-content">-->
+<!--                    <a th:href="@{/login}">Logout</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </header>-->
+<!--    </div>-->
+    <header th:replace="fragments/header :: header"> </header>
+    <nav id="site-navigation" class="expanded">
+        <ul class="site-navigation__list">
+            <li class="site-navigation__item">
+                <h5>
+                    <a th:href="@{/profile}" class="site-navigation__link active">Profile</a>
+                </h5>
+            </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a th:href="@{/projects}" class="site-navigation__link">Projects</a>
+                </h5>
+            </li>
+        </ul>
+    </nav>
 
-<div>
-    <ul>
-        <li> <p th:text="${user.username}"></p></li>
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
-            <div class="dropdown-content">
-                <a th:href="@{/editUser}">Edit User</a>
-                <a th:href="@{/login}">Logout</a>
-                <a th:href="@{/securitySettings}">Security Settings</a>
-            </div>
-        </li>
-    </ul>
-</div>
-
-
-<div class="UserProfile">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div style="height: 100px"></div>
-                <div class="card shadow-sm">
-                    <div class="card-header bg-transparent text-center">
-                        <img th:src="@{/GenericUserIcon.jpg}"  width="50px" alt="profilePhoto">
-                        <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}"></p> </p>
-                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Date of Registration </strong>  <p th:text="${date}" /> </p>
-                        <p class="mb=0"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
+    <div id="page-content" class="constrict">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div style="height: 50px"></div>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-transparent text-center">
+                            <img th:src="@{/GenericUserIcon.jpg}"  width="50px" alt="profilePhoto">
+                            <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
+                            <p class="mb-0"><strong class="pr-1">Time </strong>  <p th:text="${user.created}" /> </p>
+                            <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
+                            <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
+                            <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
+                            <p class="mb-0"><strong class="pr-1">Date of Registration </strong>  <p th:text="${date}" /> </p>
+                            <p class="mb=0"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
 
 
-<style>
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
+<!--<style>-->
+<!--    ul {-->
+<!--        list-style-type: none;-->
+<!--        margin: 0;-->
+<!--        padding: 0;-->
+<!--        overflow: hidden;-->
+<!--        background-color: #333;-->
+<!--    }-->
+
+<!--    li {-->
+<!--        float: right;-->
+<!--    }-->
+
+<!--    li a, .dropbtn {-->
+<!--        display: inline-block;-->
+<!--        color: white;-->
+<!--        text-align: center;-->
+<!--        padding: 14px 16px;-->
+<!--        text-decoration: none;-->
+<!--    }-->
+
+<!--    li a:hover, .dropdown:hover .dropbtn {-->
+<!--        background-color: white;-->
+<!--    }-->
+
+<!--    li.dropdown {-->
+<!--        display: inline-block;-->
+<!--    }-->
+
+<!--    .dropdown-content {-->
+<!--        display: none;-->
+<!--        position: absolute;-->
+<!--        background-color: #f9f9f9;-->
+<!--        min-width: 160px;-->
+<!--        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);-->
+<!--        z-index: 1;-->
+<!--    }-->
+
+<!--    .dropdown-content a {-->
+<!--        color: black;-->
+<!--        padding: 12px 16px;-->
+<!--        text-decoration: none;-->
+<!--        display: block;-->
+<!--        text-align: left;-->
+<!--    }-->
+
+<!--    .dropdown-content a:hover {background-color: #f1f1f1;}-->
+
+<!--    .dropdown:hover .dropdown-content {-->
+<!--        display: block;-->
+<!--    }-->
+
+<!--    .UserProfile {-->
+<!--        padding-left: 50px;-->
+<!--    }-->
+
+<!--</style>-->
+<script>
+    let navOpen = false;
+    function openNav() {
+        document.getElementById("site-navigation").classList.remove("collapsed");
+        document.getElementById("site-navigation").classList.add("expanded");
+        document.getElementById("page-content").classList.remove("expanded");
+        document.getElementById("page-content").classList.add("constrict");
+        document.getElementsByTagName("header").item(0).classList.add("constrict")
+        document.getElementsByTagName("header").item(0).classList.remove("expanded")
+
     }
 
-    li {
-        float: right;
+    function closeNav() {
+        document.getElementById("site-navigation").classList.remove("expanded");
+        document.getElementById("site-navigation").classList.add("collapsed");
+        document.getElementById("page-content").classList.remove("constrict");
+        document.getElementById("page-content").classList.add("expanded");
+        document.getElementsByTagName("header").item(0).classList.add("expanded")
+        document.getElementsByTagName("header").item(0).classList.remove("constrict")
+
+
     }
-
-    li a, .dropbtn {
-        display: inline-block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
+    function clickEvent() {
+        if (navOpen === true) {
+            navOpen = false;
+            openNav();
+        } else {
+            navOpen = true;
+            closeNav();
+        }
     }
-
-    li a:hover, .dropdown:hover .dropbtn {
-        background-color: white;
-    }
-
-    li.dropdown {
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-    }
-
-    .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        text-align: left;
-    }
-
-    .dropdown-content a:hover {background-color: #f1f1f1;}
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .UserProfile {
-        padding-left: 50px;
-    }
-
-</style>
+</script>
