@@ -365,7 +365,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPassword(String password) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        if (password.length() <= 8) {
+        if (password.length() < 8) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
             validationErrors.add(validationError);
         }
