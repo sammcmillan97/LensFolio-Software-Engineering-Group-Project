@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Profile Picture</title>
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+</head>
+<body>
+
+    <nav th:replace="fragments/navbar :: navbar"></nav>
+
+    <div class="content">
+
+        <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
+            <!--HIDDEN-->
+            <input type="hidden" th:name="username"  th:value="${user.username}" />
+
+            <h1>Update Profile Picture</h1><br>
+
+            <div class="container">
+                <!-- if user.image != null, show user image, else show generic user icon-->
+                <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
+
+                <!-- if user.image = null hide, else show-->
+                <a th:href="@{/deleteProfilePicture}"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></img></a>
+            </div>
+
+            <h4>Upload a new photo</h4>
+            <input type="file" id="image" class="button" th:name="image" accept=".jpg,.png,.jpeg">
+            <br><label class="helper" >Required, must be filetype jpg, jpeg, or png, and be less than 5MB</label><br><br>
+            <input class="button" type="submit" name="submit" value="Save Changes">
+        </form>
+    </div>
+
+
+</body>
+</html>
+
+<script>
+    const uploadField = document.getElementById("image");
+
+    //5MB
+    const maxAllowedSize = 5 * 1024 * 1024;
+
+    //ensure that an image upload doesn't exceed 5MB
+    uploadField.onchange = function() {
+        if(this.files[0].size > maxAllowedSize){
+            alert("File is too big! Must be less than 5MB");
+            this.value = "";
+        };
+    };
+</script>
+
+<style>
+
+    label.helper{
+        margin-left: 5px;
+        margin-top: 5px;
+        font-style: italic;
+        font-weight: normal;
+        color: dimgrey;
+    }
+
+    .button {
+        font-size: medium;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 4px 10px 4px 10px;
+        border-bottom: 1px solid lightgray;
+        border-radius: 3px;
+    }
+
+    div.content {
+        margin-left: 200px;
+    }
+
+    h1 {
+        text-align: center;
+        font-weight: normal;
+    }
+
+    h4 {
+        margin-bottom: 5px;
+    }
+
+    .content {
+        border: #F67B50 solid 2px;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 5px;
+        width: auto;
+    }
+
+    .icon {
+        margin-left: -20px;
+        margin-bottom: -12px;
+    }
+
+    .croppedImage {
+        width:150px;
+        height:150px;
+        object-fit:cover;
+    }
+</style>
