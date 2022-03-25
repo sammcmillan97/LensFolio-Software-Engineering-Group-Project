@@ -55,42 +55,4 @@ public class ProjectSummariesController {
 
         return "projectSummaries";
     }
-
-    /**
-     * Delete endpoint for projects. Takes id parameter from http request and deletes the corresponding project from
-     * the database.
-     * @param id ID of the project to be deleted from the database.
-     * @return Redirects back to the GET mapping for /projects.
-     */
-    @DeleteMapping(value="/projects")
-    public String deleteProjectById(@RequestParam(name="id") int id) throws Exception {
-        projectService.deleteProjectById(id);
-        return "redirect:/projects";
-    }
-
-    @PostMapping(value="/projects")
-    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") int projectId,
-                                  @RequestParam(name = "projectName") String projectName,
-                                  @RequestParam(name = "projectDescription") String projectDescription,
-                                  @RequestParam(name = "projectStartDate") Date projectStartDate,
-                                  @RequestParam(name = "projectEndDate") Date projectEndDate,
-                                  Model model) {
-        if (projectId == -1) {
-            Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
-            projectService.saveProject(newProject);
-        } else {
-            try {
-                Project existingProject = projectService.getProjectById(projectId);
-                existingProject.setName(projectName);
-                existingProject.setStartDate(projectStartDate);
-                existingProject.setEndDate(projectEndDate);
-                existingProject.setDescription(projectDescription);
-                projectService.saveProject(existingProject);
-            } catch(Exception ignored) {
-                // TODO
-            }
-        }
-
-        return "redirect:/projects";
-    }
 }
