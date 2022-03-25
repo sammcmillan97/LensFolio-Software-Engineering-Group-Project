@@ -5,22 +5,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
 </head>
 <body>
+    <header th:replace="fragments/header :: header"> </header>
+    <nav id="site-navigation" class="expanded">
+        <ul class="site-navigation__list">
+            <li class="site-navigation__item">
+                <h5>
+                    <a th:href="@{/profile}" class="site-navigation__link active">Profile</a>
+                </h5>
+            </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a th:href="@{/projects}" class="site-navigation__link">Projects</a>
+                </h5>
+            </li>
+        </ul>
+    </nav>
 
-<div>
-    <ul>
-        <li> <p th:text="${user.username}" /></li>
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
-            <div class="dropdown-content">
-                <a th:href="@{/login}">Logout</a>
+    <div id="page-content" class="constrict">
+        <div class="container">
+            <div class="profile_pic__row">
+                <img th:src="@{/GenericUserIcon.jpg}" alt="profilePhoto">
+                <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
             </div>
-        </li>
-    </ul>
-</div>
-
 
 <div class="UserProfile">
     <div class="container">
@@ -42,67 +54,8 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-</div>
 </body>
 </html>
-
-
-<style>
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
-    }
-
-    li {
-        float: right;
-    }
-
-    li a, .dropbtn {
-        display: inline-block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-    }
-
-    li a:hover, .dropdown:hover .dropbtn {
-        background-color: white;
-    }
-
-    li.dropdown {
-        display: inline-block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-    }
-
-    .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        text-align: left;
-    }
-
-    .dropdown-content a:hover {background-color: #f1f1f1;}
-
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-
-    .UserProfile {
-        padding-left: 50px;
-    }
-
-</style>
