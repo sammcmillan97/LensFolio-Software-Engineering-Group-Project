@@ -14,9 +14,6 @@
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<!-- Import a pop-up form for adding/editing projects -->
-<div th:replace="fragments/addEditProjectForm :: addEditProjectForm"></div>
-
 <!-- Import a pop-up form for adding/editing sprints -->
 <div th:replace="fragments/addEditSprintForm :: addEditSprintForm"></div>
 
@@ -34,9 +31,11 @@
 
         <!-- Edit/Delete Project Buttons -->
         <div class="project__button-wrapper flex-row">
-            <button th:onclick="editProject([[${project.getId}]], [[${project.getName}]], [[${project.getDescription}]], [[${project.getStartDate}]], [[${project.getEndDate}]])">Edit</button>
+            <form action="#" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="get">
+                <button type="submit">Edit</button>
+            </form>
 
-            <form action="#" th:action="@{/projects(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.') " th:method="delete">
+            <form action="#" th:action="@{/projects/delete/{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
                 <button type="submit">Delete</button>
             </form>
         </div>
