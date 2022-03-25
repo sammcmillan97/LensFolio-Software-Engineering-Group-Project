@@ -25,23 +25,26 @@ class UserTests {
                 .setNanos(time.getNano()).build();
         user1 = new User(1, "bauerjac", "Jack", "Brown", "Bauer", "Jack-Jack", "howdy", "HE/HIM", "jack@gmail.com", "password", timestamp);
     }
-
+    //Tests that the toString function works
     @Test
     void testToString(){
         assertEquals("User[userId=1, username=bauerjac, firstName=Jack, middleName=Brown, lastName=Bauer, nickname=Jack-Jack, bio=howdy, preferredPronouns=HE/HIM, email=jack@gmail.com]", user1.toString());
     }
 
+    //Tests that the getUserId function works
     @Test
     void testUserIdMethod(){
         assertEquals(1, user1.getUserId());
     }
 
+    //Tests that the getUsername function works
     @Test
     void testUsernameMethods() {
         assertEquals("bauerjac", user1.getUsername());
         //not setter for username
     }
 
+    //Tests that the getFirstName and setFirstName functions work
     @Test
     void testFirstNameMethods() {
         assertEquals("Jack", user1.getFirstName());
@@ -49,6 +52,7 @@ class UserTests {
         assertEquals("Jacko", user1.getFirstName());
     }
 
+    //Tests that the getMiddleName and setMiddleName functions work
     @Test
     void testMiddleNameMethods() {
         assertEquals("Brown", user1.getMiddleName());
@@ -56,6 +60,7 @@ class UserTests {
         assertEquals("Browno", user1.getMiddleName());
     }
 
+    //Tests that the getLastName and setLastName functions work
     @Test
     void testLastNameMethods() {
         assertEquals("Bauer", user1.getLastName());
@@ -63,6 +68,7 @@ class UserTests {
         assertEquals("Bauero", user1.getLastName());
     }
 
+    //Tests that the getNickname and setNickname functions work
     @Test
     void testNicknameMethods() {
         assertEquals("Jack-Jack", user1.getNickname());
@@ -70,6 +76,7 @@ class UserTests {
         assertEquals("Jacko-Jacko", user1.getNickname());
     }
 
+    //Tests that the getBio and setBio functions work
     @Test
     void testBioMethods() {
         assertEquals("howdy", user1.getBio());
@@ -77,6 +84,7 @@ class UserTests {
         assertEquals("howdyo", user1.getBio());
     }
 
+    //Tests that the getPronouns and setPronouns functions work
     @Test
     void testPronounMethods() {
         assertEquals("HE/HIM", user1.getPersonalPronouns());
@@ -84,6 +92,7 @@ class UserTests {
         assertEquals("SHE/HER", user1.getPersonalPronouns());
     }
 
+    //Tests that the getEmail and setEmail functions work
     @Test
     void testEmailMethods() {
         assertEquals("jack@gmail.com", user1.getEmail());
@@ -91,16 +100,19 @@ class UserTests {
         assertEquals("jacko@gmail.com", user1.getEmail());
     }
 
+    //Tests that the password is not stored in plain text
     @Test
     void testEncryptOccurs(){
         assertNotEquals(user1.getPassword(), "password");
     }
 
+    //Tests that the checkPassword function works with the correct password
     @Test
     void testCorrectPassword() {
         assertTrue(user1.checkPassword("password"));
     }
 
+    //Tests that the checkPassword function fails with the incorrect password
     @Test
     void testIncorrectPassword() {
         assertFalse(user1.checkPassword("theWrongPassword"));

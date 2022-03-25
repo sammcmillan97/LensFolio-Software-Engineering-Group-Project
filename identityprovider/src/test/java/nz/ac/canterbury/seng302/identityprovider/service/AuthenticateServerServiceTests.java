@@ -44,6 +44,7 @@ class AuthenticateServerServiceTests {
         testId = testUser.getUserId();
     }
 
+    //Tests that logging in fails if the username does not exist
     @Test
     void testBadUsername(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
@@ -57,6 +58,7 @@ class AuthenticateServerServiceTests {
         assertFalse(response.getSuccess());
     }
 
+    //Tests that logging in fails if the password is incorrect
     @Test
     void testBadPassword(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
@@ -70,6 +72,7 @@ class AuthenticateServerServiceTests {
         assertFalse(response.getSuccess());
     }
 
+    //Tests that logging in succeeds if the password and username are correct
     @Test
     void testGoodLogin(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
