@@ -23,17 +23,17 @@
             <h2> Change Password </h2>
             <div class ="row">
                 <label>
-                    <input type="password" placeholder="Current password" th:name="oldPassword" minlength="8" maxlength="64" required class="required" />
+                    <input type="password" placeholder="Current password" th:name="oldPassword" minlength="8" maxlength="64" required class="required" /><label class="helper" >Please enter your current password</label>
                 </label>
             </div>
             <div class="row">
                 <label>
-                    <input id="newPassword" type="password" placeholder="New password" th:name="newPassword" minlength="8" maxlength="64" required class="required" />
+                    <input id="newPassword" type="password" placeholder="New password" th:name="newPassword" minlength="8" maxlength="64" required class="required" /><label class="helper" >Please enter your new password, must be at least 8 characters</label>
                 </label>
             </div>
             <div>
                 <label>
-                    <input id="confirmPassword" type="password" placeholder="Confirm password" th:name="confirmPassword " minlength="8" maxlength="64" requiredclass="required" />
+                    <input id="confirmPassword" type="password" placeholder="Confirm password" th:name="confirmPassword " minlength="8" maxlength="64" requiredclass="required" /><label class="helper" >Please confirm new password, it must match your new password</label>
                 </label>
             </div>
             <input class="button" type="submit" value="Submit" />

@@ -20,6 +20,12 @@ public class SecuritySettingsController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    /**
+     * Get mapping to return security setting page
+     * @param principal
+     * @param model
+     * @return security setting page
+     */
     @GetMapping("/securitySettings")
     public String securitySettings(
             @AuthenticationPrincipal AuthState principal,
@@ -35,6 +41,14 @@ public class SecuritySettingsController {
         return "securitySettings";
     }
 
+    /**
+     * Post request to change user password
+     * @param principal
+     * @param oldPassword User's current password
+     * @param newPassword User's new password
+     * @param model
+     * @return Security settings page
+     */
     @PostMapping("/securitySettings")
     public String changePassword(
             @AuthenticationPrincipal AuthState principal,
@@ -50,7 +64,7 @@ public class SecuritySettingsController {
                 .orElse("-100"));
 
         ChangePasswordResponse changePasswordResponse;
-        //Try to connect to IDP to summit password response
+        //Try to connect to IDP to submit password response
         try {
             changePasswordResponse = userAccountClientService.changeUserPassword(id, oldPassword, newPassword);
         } catch(Exception e) {
