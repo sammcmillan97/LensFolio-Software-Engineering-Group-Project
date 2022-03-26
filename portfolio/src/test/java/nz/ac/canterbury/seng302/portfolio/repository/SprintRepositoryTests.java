@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio;
+package nz.ac.canterbury.seng302.portfolio.repository;
 
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
@@ -16,9 +16,7 @@ import javax.sql.DataSource;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
@@ -47,7 +45,7 @@ public class SprintRepositoryTests {
     }
 
     @Test
-    void findProjects() {
+    void findAllSprints() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", "Sprint Name", "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
         Sprint sprint2 = new Sprint(project1.getId(), "Sprint 2", "Sprint Name 2", "This is a sprint", Date.valueOf("2022-04-30"), Date.valueOf("2022-05-15"));
@@ -107,7 +105,7 @@ public class SprintRepositoryTests {
     }
 
     @Test
-    void updateSprint() {
+    void addSprintViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", "Sprint Name", "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
         projectRepository.save(project1);
@@ -122,20 +120,6 @@ public class SprintRepositoryTests {
         assertThat(retrievedSprint.getDescription()).isEqualTo(sprint1.getDescription());
         assertThat(retrievedSprint.getStartDate()).isEqualTo(sprint1.getStartDate());
         assertThat(retrievedSprint.getEndDate()).isEqualTo(sprint1.getEndDate());
-
-//        Sprint newSprint = new Sprint( sprint1.getParentProjectId(), sprint1.getLabel(), "Changed Sprint Name", sprint1.getDescription(), Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
-//        sprintRepository.save(newSprint);
-//
-//        // Use original sprint id to fetch updated sprint to confirm it's using the same id
-//        // Check that the sprint was updated correctly
-//        retrievedSprint = sprintRepository.findById(sprint1.getId());
-//        assertThat(retrievedSprint).isNotNull();
-//        assertThat(retrievedSprint.getId()).isEqualTo(newSprint.getId());
-//        assertThat(retrievedSprint.getName()).isEqualTo(newSprint.getName());
-//        assertThat(retrievedSprint.getLabel()).isEqualTo(newSprint.getLabel());
-//        assertThat(retrievedSprint.getDescription()).isEqualTo(newSprint.getDescription());
-//        assertThat(retrievedSprint.getStartDate()).isEqualTo(newSprint.getStartDate());
-//        assertThat(retrievedSprint.getEndDate()).isEqualTo(newSprint.getEndDate());
 
     }
 

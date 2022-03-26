@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio;
+package nz.ac.canterbury.seng302.portfolio.integration;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
+@Deprecated
 @AutoConfigureMockMvc(addFilters = false)
 class ProjectsIntegrationTests {
     @Autowired
@@ -29,7 +29,7 @@ class ProjectsIntegrationTests {
         projectRepository.deleteAll();
     }
 
-
+    //@Test
     void validateDeleteRequest() throws Exception {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Project project2 = new Project("Project2", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
@@ -43,7 +43,7 @@ class ProjectsIntegrationTests {
         assertThat(project3).isNull();
     }
 
-
+    //@Test
     void validateDefaultProject() throws Exception {
         Iterable<Project> projects = projectRepository.findAll();
         int counter = 0;
