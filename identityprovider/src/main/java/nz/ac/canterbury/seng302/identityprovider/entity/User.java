@@ -7,11 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
-import net.bytebuddy.implementation.bind.annotation.Default;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
-import org.hibernate.annotations.Fetch;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -215,6 +212,10 @@ public class User {
 
     public void addRole(UserRole role) {
         this.roles.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        this.roles.remove(role);
     }
 
 

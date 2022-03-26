@@ -104,7 +104,7 @@ class UserTests {
     //Tests that the password is not stored in plain text
     @Test
     void testEncryptOccurs(){
-        assertNotEquals(user1.getPassword(), "password");
+        assertNotEquals("password", user1.getPassword());
     }
 
     //Tests that the checkPassword function works with the correct password
@@ -158,6 +158,24 @@ class UserTests {
         assertEquals(2, user1.getRoles().size());
     }
 
+    // Tests that removing roles works
+    @Test
+    void testRemoveGoodRole() {
+        user1.addRole(UserRole.TEACHER);
+        user1.removeRole(UserRole.STUDENT);
+        assertEquals(1, user1.getRoles().size());
+        assertTrue(user1.getRoles().contains(UserRole.TEACHER));
+    }
+
+    // Tests that removing a non-existent role removes no roles
+    @Test
+    void testRemoveBadRole() {
+        user1.addRole(UserRole.TEACHER);
+        user1.removeRole(UserRole.COURSE_ADMINISTRATOR);
+        assertEquals(2, user1.getRoles().size());
+        assertTrue(user1.getRoles().contains(UserRole.TEACHER));
+        assertTrue(user1.getRoles().contains(UserRole.STUDENT));
+    }
 
 
 
