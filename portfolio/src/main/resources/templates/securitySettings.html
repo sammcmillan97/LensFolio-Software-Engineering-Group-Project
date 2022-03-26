@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>SecuritySettings</title>
+    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
 </head>
 <body>
-<div class="main">
 
+<header th:replace="fragments/header :: header"> </header>
+<nav th:replace="fragments/navigationBar :: nav"></nav>
+
+<div class="main">
     <a th:href="@{/profile}" class="button">Back</a>
 
     <div style="text-align:center;">
@@ -71,17 +77,6 @@
 
     html, body {
         height: 100%;
-    }
-
-    html {
-        display: table;
-        margin: auto;
-    }
-
-    body {
-        display: table-cell;
-        vertical-align: middle;
-        font-family: "Calibri Light";
     }
 
     div {
@@ -156,12 +151,6 @@
         margin-bottom: 0;
     }
 
-    p {
-        margin-left: 10px;
-        color: red;
-        margin-top: 20px;
-        margin-bottom: -20px;
-    }
 
     a.button {
         font-size: medium;
