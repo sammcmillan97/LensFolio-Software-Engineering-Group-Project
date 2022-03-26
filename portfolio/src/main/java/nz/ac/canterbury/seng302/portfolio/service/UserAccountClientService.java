@@ -59,4 +59,12 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
+    public String getRole(AuthState principal) {
+        return principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("role"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+    }
+
 }

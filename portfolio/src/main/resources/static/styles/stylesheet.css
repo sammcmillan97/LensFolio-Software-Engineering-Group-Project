@@ -1,0 +1,43 @@
+:root {
+    font-size: 16px;
+
+    /* CSS variables */
+    --site-navigation-width: 200px;
+    --color-primary: #FBAA60;
+    --color-secondary: #fadfc6;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/******************** Elements ********************/
+
+body {
+    font-family: Arial, sans-serif;
+    font-weight: 200;
+    background-color: rgba(251, 196, 144, 0.5); /* Secondary Colour */
+}
+
+h5 {
+    font-size: 1.5rem;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+
+/******************** Page content ********************/
+
+#page-content {
+    margin-left: var(--site-navigation-width);
+    display: block;
+    padding: 1rem;
+}

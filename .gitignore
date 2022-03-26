@@ -5,6 +5,7 @@
 */.idea/
 */src/generated/
 */bin/
+*/subdirectory/*.db
 */data/*.db
 /subdirectory/*.db
 */subdirectory/*.db
