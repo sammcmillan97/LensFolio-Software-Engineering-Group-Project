@@ -1,9 +1,11 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.entities.ProjectEntity;
-import nz.ac.canterbury.seng302.portfolio.entities.SprintEntity;
-import nz.ac.canterbury.seng302.portfolio.repositories.ProjectEntityRepository;
-import nz.ac.canterbury.seng302.portfolio.repositories.SprintEntityRepository;
+import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,13 +26,12 @@ import java.sql.Date;
 public class ProjectsController {
 
     /**
-     * Repository which allows the controller to interact with the database.
+     * Autowired project service, which handles the project database calls
      */
     @Autowired
-    private ProjectEntityRepository projectEntityRepository;
-
+    private ProjectService projectService;
     @Autowired
-    private SprintEntityRepository sprintEntityRepository;
+    private UserAccountClientService userAccountClientService;
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
@@ -39,20 +40,24 @@ public class ProjectsController {
      * @return The projects html page with relevant projects data.
      */
     @GetMapping("/projects")
-    public String projects(Model model) {
-//        projectEntityRepository.deleteAll(); // Use for testing if default project works
-        List<ProjectEntity> projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
+    public String projects(@AuthenticationPrincipal AuthState principal, Model model) {
+        List<Project> projects = projectService.getAllProjects();
 
         if (projects.size() < 1) {
-            ProjectEntity defaultProject = new ProjectEntity();
-            projectEntityRepository.save(defaultProject);
-            projects = StreamSupport.stream(projectEntityRepository.findAll().spliterator(), false).toList();
+            Project defaultProject = new Project();
+            projectService.saveProject(defaultProject);
+            projects = projectService.getAllProjects();
         }
 
-
         model.addAttribute("projects", projects);
+        String role = userAccountClientService.getRole(principal);
 
-        return "projects";
+        //Detects role of user and returns appropriate page
+        if (role.equals("teacher")) {
+            return "projects";
+        } else {
+            return "userProjects";
+        }
     }
 
     /**
@@ -62,76 +67,41 @@ public class ProjectsController {
      * @return Redirects back to the GET mapping for /projects.
      */
     @DeleteMapping(value="/projects")
-    public String deleteProjectById(@RequestParam(name="id") Long id) {
-        projectEntityRepository.deleteById(id);
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @RequestParam(name="id") int id) throws Exception {
+        String role = userAccountClientService.getRole(principal);
+        if (role.equals("teacher")) {
+            projectService.deleteProjectById(id);
+        }
         return "redirect:/projects";
     }
 
     @PostMapping(value="/projects")
-    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") Long projectId,
+    public String editProjectById(@AuthenticationPrincipal AuthState principal,
+                                  @RequestParam(name = "projectId", defaultValue = "-1") int projectId,
                                   @RequestParam(name = "projectName") String projectName,
                                   @RequestParam(name = "projectDescription") String projectDescription,
                                   @RequestParam(name = "projectStartDate") Date projectStartDate,
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
-        if (projectId == -1) {
-            ProjectEntity newProject = new ProjectEntity(projectName, projectDescription, projectStartDate, projectEndDate);
-            projectEntityRepository.save(newProject);
-        } else {
-            ProjectEntity updatedProject = new ProjectEntity(projectId, projectName, projectDescription, projectStartDate, projectEndDate);
-            projectEntityRepository.save(updatedProject);
+        String role = userAccountClientService.getRole(principal);
+        if (role.equals("teacher")) {
+            if (projectId == -1) {
+                Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
+                projectService.saveProject(newProject);
+            } else {
+                try {
+                    Project existingProject = projectService.getProjectById(projectId);
+                    existingProject.setName(projectName);
+                    existingProject.setStartDate(projectStartDate);
+                    existingProject.setEndDate(projectEndDate);
+                    existingProject.setDescription(projectDescription);
+                    projectService.saveProject(existingProject);
+                } catch(Exception ignored) {
+
+                }
+            }
         }
 
         return "redirect:/projects";
-    }
-
-    @GetMapping(value="/projects/all")
-    public String addEntitiesForDemo(Model model) {
-
-        Calendar cal = Calendar.getInstance();
-        Date startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.MONTH, 8);
-        Date endDate = new Date(cal.getTimeInMillis());
-
-        ProjectEntity project1 = new ProjectEntity("Project 1", "This is a project", startDate, endDate);
-        ProjectEntity project2 = new ProjectEntity("Project 2", "This is another project", startDate, endDate);
-
-        cal.add(Calendar.MONTH, -8);
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.WEEK_OF_YEAR, 3);
-        endDate = new Date(cal.getTimeInMillis());
-
-        SprintEntity sprint1 = new SprintEntity(project1, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-        SprintEntity sprint2 = new SprintEntity(project2, "Sprint 1", "Sprint Name", "This is a sprint", startDate, endDate);
-
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        startDate = new Date(cal.getTimeInMillis());
-        cal.add(Calendar.WEEK_OF_YEAR, 3);
-        endDate = new Date(cal.getTimeInMillis());
-
-        SprintEntity sprint3 = new SprintEntity(project1, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-        SprintEntity sprint4 = new SprintEntity(project2, "Sprint 2", "Sprint Name", "This is a sprint", startDate, endDate);
-
-        Set<SprintEntity> project1Sprints = new HashSet<>();
-        Set<SprintEntity> project2Sprints = new HashSet<>();
-
-        project1Sprints.add(sprint1);
-        project1Sprints.add(sprint3);
-        project2Sprints.add(sprint2);
-        project2Sprints.add(sprint4);
-
-        project1.setSprints(project1Sprints);
-        project2.setSprints(project2Sprints);
-
-        projectEntityRepository.save(project1);
-        projectEntityRepository.save(project2);
-        sprintEntityRepository.save(sprint1);
-        sprintEntityRepository.save(sprint2);
-        sprintEntityRepository.save(sprint3);
-        sprintEntityRepository.save(sprint4);
-
-        return "redirect:/projects";
-
     }
 }

@@ -3,9 +3,10 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import javax.persistence.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 @Entity // this is an entity, assumed to be in a table called Project
-@Table(name="PROJECTS")
+@Table(name="PROJECT")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,7 +16,14 @@ public class Project {
     private Date projectStartDate;
     private Date projectEndDate;
 
-    protected Project() {}
+    public Project() {
+        Calendar cal = Calendar.getInstance();
+        projectName = String.format("Project %d", cal.get(Calendar.YEAR));
+        projectStartDate = new Date(cal.getTimeInMillis());
+        cal.add(Calendar.MONTH, 8);
+        projectEndDate = new Date(cal.getTimeInMillis());
+        projectDescription = "";
+    }
 
     public Project(String projectName, String projectDescription, Date projectStartDate, Date projectEndDate) {
         this.projectName = projectName;
