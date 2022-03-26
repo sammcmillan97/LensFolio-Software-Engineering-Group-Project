@@ -64,7 +64,7 @@ public class RegisterController {
         UserRegisterResponse userRegisterResponse;
 
         //some validation, could use more
-        if (username.isBlank() || email.isBlank() || password.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
+        if (username.isBlank() || email.isBlank() || password.isBlank() || firstName.isBlank() || lastName.isBlank()){
             model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
             return "register";
         }
@@ -78,7 +78,6 @@ public class RegisterController {
             model.addAttribute("Response: ", userRegisterResponse.getMessage());
 
         } catch (Exception e){
-            System.out.println("check");
             model.addAttribute("errorMessage", e);
             return "register";
         }
@@ -109,8 +108,7 @@ public class RegisterController {
                 return "login";
             }
         } else {
-            model.addAttribute("registerMessage", "");
-            model.addAttribute("registerMessage", userRegisterResponse.getMessage());
+            model.addAttribute("validationErrors", userRegisterResponse.getValidationErrorsList());
             return "register";
         }
     }
