@@ -35,16 +35,19 @@ class IdentityproviderApplicationTests {
         testId = testUser.getUserId();
     }
 
+    //Tests that the findByUserId function works
     @Test
     void testGetById() {
         assertEquals(testUsername, repository.findByUserId(testId).getUsername());
     }
 
+    //Tests that the findByUsername function works
     @Test
     void testGetByUsername() {
         assertEquals(testUsername, repository.findByUsername(testUsername).getUsername());
     }
 
+    //Tests that when the user is created, all fields are put in the right locations
     @Test
     void testAllFieldsInPlace() {
         User testUser = repository.findByUserId(testId);
