@@ -30,6 +30,7 @@ public class ProjectServiceTest {
         projectRepository.deleteAll();
     }
 
+    //Test saving a project when no current projects in the database.
     @Test
     void whenNoProjects_testSaveProject() {
         List<Project> projects = (List<Project>) projectRepository.findAll();
@@ -38,7 +39,7 @@ public class ProjectServiceTest {
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(1);
     }
-
+    //Test saving a project when one current project in the database.
     @Test
     void whenOneProjectSaved_testSaveProject(){
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -48,7 +49,7 @@ public class ProjectServiceTest {
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(2);
     }
-
+    //Test saving a project when many current projects in the database.
     @Test
     void whenManyProjectSaved_testSaveProject(){
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -61,20 +62,20 @@ public class ProjectServiceTest {
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(5);
     }
-
+    //Test getting all projects from the database when no projects are saved.
     @Test
     void whenNoProjectSaved_testGetAllProjects() {
         List<Project> projects = projectService.getAllProjects();
         assertThat(projects.size()).isEqualTo(0);
     }
-
+    //Test getting all projects from the database when one project are saved.
     @Test
     void whenOneProjectSaved_testGetAllProjects() {
         projectService.saveProject(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Project> projects = projectService.getAllProjects();
         assertThat(projects.size()).isEqualTo(1);
     }
-
+    //Test getting all projects from the database when many projects are saved.
     @Test
     void whenManyProjectSaved_testGetAllProjects() {
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -84,7 +85,7 @@ public class ProjectServiceTest {
         List<Project> projects = projectService.getAllProjects();
         assertThat(projects.size()).isEqualTo(4);
     }
-
+    //Test getting one project by the projects id when the id does not exist.
     @Test
     void whenProjectIdNotExists_testGetProjectById() throws Exception {
         List<Project> projects = (List<Project>) projectRepository.findAll();
@@ -96,7 +97,7 @@ public class ProjectServiceTest {
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
+    //Test getting one project by the projects id when the id does exist.
     @Test
     void whenProjectIdExists_testGetProjectById() throws Exception {
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -109,7 +110,7 @@ public class ProjectServiceTest {
         assertThat(project.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-15 00:00:00"));
         assertThat(project.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-16 00:00:00"));
     }
-
+    //Test deleting a project from the database when no projects are saved. Should throw and exception.
     @Test
     void whenNoProjectExists_testDeleteProjectById() {
         List<Project> projects = (List<Project>) projectRepository.findAll();
@@ -121,7 +122,7 @@ public class ProjectServiceTest {
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
+    //Test deleting a project from the database when one project is saved.
     @Test
     void whenOneProjectExists_testDeleteProjectById() throws Exception {
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -132,7 +133,7 @@ public class ProjectServiceTest {
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(0);
     }
-
+    //Test deleting a project from the database when many projects are saved.
     @Test
     void whenManyProjectsExist_testDeleteProjectById() throws Exception {
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
@@ -146,7 +147,9 @@ public class ProjectServiceTest {
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(3);
     }
-
+    /*Test for delete by 0 issue in case it occurs in future. Checks that the first project added to database
+    does not have a project id of 0. See GitLab wiki Delete by 0 issue for more context.
+     */
     @Test
     void whenFirstProjectSaved_testNotHasIdZero() throws Exception {
         List<Project> projects = (List<Project>) projectRepository.findAll();
