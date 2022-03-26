@@ -53,7 +53,7 @@ public class ProjectsController {
         String role = userAccountClientService.getRole(principal);
 
         //Detects role of user and returns appropriate page
-        if (role.equals("teacher")) {
+        if (role.contains("teacher")) {
             return "projects";
         } else {
             return "userProjects";
@@ -67,9 +67,9 @@ public class ProjectsController {
      * @return Redirects back to the GET mapping for /projects.
      */
     @DeleteMapping(value="/projects")
-    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @RequestParam(name="id") int id) throws Exception {
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @RequestParam(name="id") int id) {
         String role = userAccountClientService.getRole(principal);
-        if (role.equals("teacher")) {
+        if (role.contains("teacher")) {
             projectService.deleteProjectById(id);
         }
         return "redirect:/projects";
@@ -84,7 +84,7 @@ public class ProjectsController {
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
         String role = userAccountClientService.getRole(principal);
-        if (role.equals("teacher")) {
+        if (role.contains("teacher")) {
             if (projectId == -1) {
                 Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
                 projectService.saveProject(newProject);

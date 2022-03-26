@@ -43,7 +43,7 @@ public class ProjectDetailsController {
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page
         System.out.println(role);*/
-        if (role.equals("teacher")) {
+        if (role.contains("teacher")) {
             return "teacherProjectDetails";
         } else {
             return "userProjectDetails";
@@ -59,7 +59,7 @@ public class ProjectDetailsController {
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
         String role = userAccountClientService.getRole(principal);
-        if (role.equals("teacher")) {
+        if (role.contains("teacher")) {
             try {
                 Project existingProject = projectService.getProjectById(projectId);
                 existingProject.setName(projectName);
