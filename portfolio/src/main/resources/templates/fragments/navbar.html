@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Navigation Bar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+</head>
+
+<body>
+    <!-- The application's navigation bar. -->
+    <nav th:fragment="navbar" id="site-navigation">
+        <link rel="stylesheet" href="/styles/navbar.css">
+        <ul class="site-navigation__list">
+            <li class="site-navigation__item">
+                <h5>
+                    <a href="/" class="site-navigation__link">Home</a>
+                </h5>
+            </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a href="/projects" class="site-navigation__link active">Projects</a>
+                </h5>
+            </li>
+        </ul>
+    </nav>
+</body>
+
+</html>

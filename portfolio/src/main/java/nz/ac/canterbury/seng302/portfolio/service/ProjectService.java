@@ -39,4 +39,13 @@ public class ProjectService {
             throw new Exception("Project not found");
         }
     }
+
+    public void saveProject(Project project) {
+        Project projectSaved = repository.save(project);
+
+    }
+
+    public void deleteProjectById(int id) {
+        repository.deleteById(id);
+    }
 }

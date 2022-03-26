@@ -180,3 +180,35 @@ Such examples would include:
 * Gamification achievements, badges, etc.
 
 
+
+## Todo (Sprint 1)
+
+- Add team name into `build.gradle`
+- Update this README title
+- Update this README contributors
+
+## Todo (Sprint 2)
+
+- Update team name into `build.gradle`
+- Update this README title
+- Update this README contributors
+- Set up Gitlab CI server (refer to the student guide on learn)
+- Decide on a LICENSE
+
+## Contributors
+
+- SENG302 teaching team
+- Billy Sandri
+- Bede Skinner-Vennell
+- Connor Dunlop
+- Amy Sloane
+- Luke Garside
+- Sam McMillan
+- Danish Khursheed Jahangir
+
+## References
+
+- [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+- [Spring JPA docs](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- [Thymeleaf Docs](https://www.thymeleaf.org/documentation.html)
+- [Learn resources](https://learn.canterbury.ac.nz/course/view.php?id=13269&section=9)
