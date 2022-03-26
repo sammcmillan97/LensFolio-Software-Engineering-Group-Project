@@ -63,6 +63,9 @@ public class SecuritySettingsController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
+        UserResponse user = userAccountClientService.getUserAccountById(id);
+        model.addAttribute("user", user);
+
         ChangePasswordResponse changePasswordResponse;
         //Try to connect to IDP to submit password response
         try {
@@ -75,7 +78,7 @@ public class SecuritySettingsController {
         if (changePasswordResponse.getIsSuccess()) {
             model.addAttribute("success", changePasswordResponse.getMessage());
         } else {
-            model.addAttribute("failure", changePasswordResponse.getMessage());
+            model.addAttribute("failure", changePasswordResponse.getValidationErrorsList());
         }
         return "securitySettings";
     }

@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
+    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
 </head>
 <body>
 <div class="main">
-    <!--Link designed as button will take the user back to login-->
-    <a th:href="@{/profile}" class="button">Back</a>
 
-    <div style="text-align:center;">
-        <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
-    </div>
+    <header th:replace="fragments/header :: header"> </header>
+    <nav th:replace="fragments/navigationBar :: nav"></nav>
 
-    <p th:text="${editMessage}"></p>
-    <p th:text="${errorMessage}"></p>
-    <br>
+    <div id="page-content" class="constrict">
+        <div class="container">
+
 
     <!-- form puts the params to the register controller-->
     <form th:action="@{/editUser}" method="post">
-
+        <br>
+        <p th:text="${editMessage}"></p>
+        <p th:text="${errorMessage}"></p>
+        <br>
+        <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
         <div>
             <input type="hidden" th:name="username"  th:value="${user.username}" />
             <label>Account Details *</label><br>
@@ -41,29 +45,28 @@
             <input class="button" type="submit" value="Submit" />
         </div>
     </form>
-
+    </div>
 </div>
 </body>
 </html>
 
 <style>
-    html, body {
-        height: 100%;
-    }
+    /*html, body {*/
+    /*    height: 100%;*/
+    /*}*/
 
-    html {
-        display: table;
-        margin: auto;
-    }
+    /*html {*/
+    /*    display: table;*/
+    /*    margin: auto;*/
+    /*}*/
 
-    body {
-        display: table-cell;
-        vertical-align: middle;
-        font-family: "Calibri Light";
-    }
-
-    div {
-        padding: 20px;
+    /*body {*/
+    /*    display: table-cell;*/
+    /*    vertical-align: middle;*/
+    /*    font-family: "Calibri Light";*/
+    /*}*/
+    .container {
+        align-items: center;
     }
 
     input, textarea {
@@ -115,6 +118,7 @@
 
     h1 {
         margin-top: -40px;
+        color:  black;
     }
 
     h2 {
@@ -134,12 +138,12 @@
         margin-bottom: 0;
     }
 
-    p {
-        margin-left: 10px;
-        color: red;
-        margin-top: 20px;
-        margin-bottom: -20px;
-    }
+    /*p {*/
+    /*    margin-left: 10px;*/
+    /*    color: red;*/
+    /*    margin-top: 20px;*/
+    /*    margin-bottom: -20px;*/
+    /*}*/
 
     a.button {
         font-size: medium;
