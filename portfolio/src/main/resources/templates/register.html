@@ -22,6 +22,9 @@
 
     <!-- error message received from the controller-->
     <p th:text="${registerMessage}"></p>
+    <tr th:each="entity: ${validationErrors}">
+        <td><p th:text="${entity.errorText}"> Error </p></td>
+    </tr>
     <p th:text="${errorMessage}"></p>
     <p th:text="${loginMessage}"></p>
 
@@ -30,14 +33,14 @@
 
         <div>
             <label>Account Details *</label><br>
-            <input type="text" th:name="username" minlength="5" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >Required, must be unique and at least 5 characters</label><br>
-            <input type= "email" th:name="email" minlength="10" maxlength="255" required placeholder="Email (*) " class="required" /><label class="helper" >Required, must include '@', and be at least 10 characters</label><br>
+            <input type="text" th:name="username" minlength="1" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >Required, must be unique</label><br>
+            <input type= "email" th:name="email" minlength="1" maxlength="255" required placeholder="Email (*)" class="required" /><label class="helper" >Required, must include '@'</label><br>
             <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)" class="required" /><label class="helper" >Required, must be at least 8 characters</label><br>
             <br>
             <label>Full Name *</label><br>
-            <input type="text" th:name="firstName" minlength="2" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
-            <input type="text" th:name="middleName" minlength="2" maxlength="64"  required placeholder="Middle Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
-            <input type="text" th:name="lastName" minlength="2" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >Required, must be at least 2 characters</label><br>
+            <input type="text" th:name="firstName" minlength="1" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >Required</label><br>
+            <input type="text" th:name="middleName" minlength="1" maxlength="64"  placeholder="Middle Name" class="helper" /><label class="helper" >Optional</label><br>
+            <input type="text" th:name="lastName" minlength="1" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >Required</label><br>
             <br>
             <label>Person Details</label><br>
             <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname"/><label class="helper">Optional</label><br>

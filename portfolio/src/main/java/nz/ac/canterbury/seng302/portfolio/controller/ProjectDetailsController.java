@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class ProjectDetailsController {
     private ProjectService projectService;
     @Autowired
     private SprintService sprintService;
+    @Autowired
+    private UserAccountClientService userAccountClientService;
 
     @GetMapping("/projects/{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
@@ -35,44 +38,38 @@ public class ProjectDetailsController {
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         model.addAttribute("sprints", sprintList);
 
+        String role = userAccountClientService.getRole(principal);
 
-        // Below code is just begging to be added as a method somewhere...
-        String role = principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("role"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("NOT FOUND");
-
-        /* Return the name of the Thymeleaf template */
-        // detects the role of the current user and returns appropriate page
-//        System.out.println(role);
-//        if (role.equals("teacher")) {
-//            return "teacherProjectDetails";
-//        } else if (role.equals("student")) {
-//            return "userProjectDetails";
-//        } else {
-//            System.out.println("Invalid Role");
-//            //TODO error page if user has invalid role
-//            return "projects";
-//        }
-        return "teacherProjectDetails";
+        /* Return the name of the Thymeleaf template
+        detects the role of the current user and returns appropriate page
+        System.out.println(role);*/
+        if (role.equals("teacher")) {
+            return "teacherProjectDetails";
+        } else {
+            return "userProjectDetails";
+        }
     }
 
     @PutMapping(value="/projects")
-    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") int projectId,
+    public String editProjectById(@AuthenticationPrincipal AuthState principal,
+                                  @RequestParam(name = "projectId", defaultValue = "-1") int projectId,
                                   @RequestParam(name = "projectName") String projectName,
                                   @RequestParam(name = "projectDescription") String projectDescription,
                                   @RequestParam(name = "projectStartDate") Date projectStartDate,
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
-        try {
-            Project existingProject = projectService.getProjectById(projectId);
-            existingProject.setName(projectName);
-            existingProject.setStartDate(projectStartDate);
-            existingProject.setEndDate(projectEndDate);
-            existingProject.setDescription(projectDescription);
-            projectService.saveProject(existingProject);
-        } catch (Exception ignored) {}
+        String role = userAccountClientService.getRole(principal);
+        if (role.equals("teacher")) {
+            try {
+                Project existingProject = projectService.getProjectById(projectId);
+                existingProject.setName(projectName);
+                existingProject.setStartDate(projectStartDate);
+                existingProject.setEndDate(projectEndDate);
+                existingProject.setDescription(projectDescription);
+                projectService.saveProject(existingProject);
+            } catch (Exception ignored) {
+            }
+        }
 
         return "redirect:/projects/" + projectId;
     }

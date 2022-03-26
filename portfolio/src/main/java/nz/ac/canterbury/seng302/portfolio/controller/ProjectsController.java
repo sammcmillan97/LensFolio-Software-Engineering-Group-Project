@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,8 @@ public class ProjectsController {
      */
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private UserAccountClientService userAccountClientService;
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
@@ -37,7 +40,7 @@ public class ProjectsController {
      * @return The projects html page with relevant projects data.
      */
     @GetMapping("/projects")
-    public String projects(Model model) {
+    public String projects(@AuthenticationPrincipal AuthState principal, Model model) {
         List<Project> projects = projectService.getAllProjects();
 
         if (projects.size() < 1) {
@@ -46,10 +49,15 @@ public class ProjectsController {
             projects = projectService.getAllProjects();
         }
 
-
         model.addAttribute("projects", projects);
+        String role = userAccountClientService.getRole(principal);
 
-        return "projects";
+        //Detects role of user and returns appropriate page
+        if (role.equals("teacher")) {
+            return "projects";
+        } else {
+            return "userProjects";
+        }
     }
 
     /**
@@ -59,31 +67,38 @@ public class ProjectsController {
      * @return Redirects back to the GET mapping for /projects.
      */
     @DeleteMapping(value="/projects")
-    public String deleteProjectById(@RequestParam(name="id") int id) throws Exception {
-        projectService.deleteProjectById(id);
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @RequestParam(name="id") int id) throws Exception {
+        String role = userAccountClientService.getRole(principal);
+        if (role.equals("teacher")) {
+            projectService.deleteProjectById(id);
+        }
         return "redirect:/projects";
     }
 
     @PostMapping(value="/projects")
-    public String editProjectById(@RequestParam(name = "projectId", defaultValue = "-1") int projectId,
+    public String editProjectById(@AuthenticationPrincipal AuthState principal,
+                                  @RequestParam(name = "projectId", defaultValue = "-1") int projectId,
                                   @RequestParam(name = "projectName") String projectName,
                                   @RequestParam(name = "projectDescription") String projectDescription,
                                   @RequestParam(name = "projectStartDate") Date projectStartDate,
                                   @RequestParam(name = "projectEndDate") Date projectEndDate,
                                   Model model) {
-        if (projectId == -1) {
-            Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
-            projectService.saveProject(newProject);
-        } else {
-            try {
-                Project existingProject = projectService.getProjectById(projectId);
-                existingProject.setName(projectName);
-                existingProject.setStartDate(projectStartDate);
-                existingProject.setEndDate(projectEndDate);
-                existingProject.setDescription(projectDescription);
-                projectService.saveProject(existingProject);
-            } catch(Exception ignored) {
+        String role = userAccountClientService.getRole(principal);
+        if (role.equals("teacher")) {
+            if (projectId == -1) {
+                Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
+                projectService.saveProject(newProject);
+            } else {
+                try {
+                    Project existingProject = projectService.getProjectById(projectId);
+                    existingProject.setName(projectName);
+                    existingProject.setStartDate(projectStartDate);
+                    existingProject.setEndDate(projectEndDate);
+                    existingProject.setDescription(projectDescription);
+                    projectService.saveProject(existingProject);
+                } catch(Exception ignored) {
 
+                }
             }
         }
 
