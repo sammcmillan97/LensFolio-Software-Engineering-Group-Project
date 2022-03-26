@@ -3,10 +3,8 @@ package nz.ac.canterbury.seng302.portfolio;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
@@ -16,7 +14,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+
+
 @AutoConfigureMockMvc(addFilters = false)
 class ProjectsIntegrationTests {
     @Autowired
@@ -30,7 +29,7 @@ class ProjectsIntegrationTests {
         projectRepository.deleteAll();
     }
 
-    @Test
+
     void validateDeleteRequest() throws Exception {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Project project2 = new Project("Project2", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
@@ -44,7 +43,7 @@ class ProjectsIntegrationTests {
         assertThat(project3).isNull();
     }
 
-    @Test
+
     void validateDefaultProject() throws Exception {
         Iterable<Project> projects = projectRepository.findAll();
         int counter = 0;
