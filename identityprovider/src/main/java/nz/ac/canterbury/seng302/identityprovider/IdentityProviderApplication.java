@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.identityprovider;
 
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,6 +30,9 @@ public class IdentityProviderApplication {
             repository.save(new User("palmerdav","David", "Blue", "Palmer", "Davo", "gidday", "they/them", "davo@gmail.com", "password"));
             repository.save(new User("desslermic","Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "password"));
             repository.save(new User("abc123","Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "Password123!"));
+            User teacher = new User("teacher", "Tee", "A", "Cher", "", "I am the teacher of this class", "she/her", "teacher@uc.ac.nz", "password");
+            teacher.addRole(UserRole.TEACHER);
+            repository.save(teacher);
         };
     }
 }

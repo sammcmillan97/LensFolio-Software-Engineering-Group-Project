@@ -122,9 +122,43 @@ class UserTests {
     // Tests that every user has a student role by default
     @Test
     void testDefaultStudentRole() {
-        assertEquals(user1.getRole(), UserRole.STUDENT);
-
+        assertTrue(user1.getRoles().contains(UserRole.STUDENT));
     }
+
+    // Tests that adding a second role adds the new role
+    @Test
+    void testAddingSecondRoleContainsNewRole() {
+        user1.addRole(UserRole.TEACHER);
+        // Check teacher role has been added
+        assertTrue(user1.getRoles().contains(UserRole.TEACHER));
+    }
+
+    // Tests that adding a second role keeps the old role
+    @Test
+    void testAddingSecondRoleContainsOldRole() {
+        user1.addRole(UserRole.TEACHER);
+        // Check student role is still there
+        assertTrue(user1.getRoles().contains(UserRole.STUDENT));
+    }
+
+    // Tests that adding a second role only adds one role to the list
+    @Test
+    void testAddingSecondRoleListCorrectSize() {
+        user1.addRole(UserRole.TEACHER);
+        user1.addRole(UserRole.TEACHER);
+        // Check list of roles is the correct size
+        assertEquals(2, user1.getRoles().size());
+    }
+
+    // Tests that adding the same role again doesn't do anything
+    @Test
+    void testAddingRepeatedRoleListCorrectSize() {
+        user1.addRole(UserRole.TEACHER);
+        // Check list of roles is the correct size
+        assertEquals(2, user1.getRoles().size());
+    }
+
+
 
 
 

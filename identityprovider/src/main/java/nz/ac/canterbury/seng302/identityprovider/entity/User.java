@@ -9,9 +9,13 @@ import javax.validation.constraints.Size;
 import com.google.protobuf.Timestamp;
 import net.bytebuddy.implementation.bind.annotation.Default;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.*;
 
 
 @Entity
@@ -58,8 +62,8 @@ public class User {
     @Size(max=64, message="Password must be less than 65 characters")
     private String password;
 
-
-    private UserRole role = UserRole.STUDENT;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<UserRole> roles = new HashSet<>();
 
     @Column(length = 1024)
     private Timestamp timeCreated;
@@ -87,6 +91,7 @@ public class User {
         this.email = email;
         this.password = encryptPassword(password);
         this.timeCreated = this.getCurrentTime();
+        this.addRole(UserRole.STUDENT);
     }
 
     /**
@@ -115,6 +120,7 @@ public class User {
         this.email = email;
         this.password = encryptPassword(password);
         this.timeCreated = timestamp;
+        this.addRole(UserRole.STUDENT);
     }
 
     // Empty constructor is needed for JPA
@@ -203,12 +209,12 @@ public class User {
 
     public Timestamp getTimeCreated(){ return this.timeCreated; }
 
-    public UserRole getRole() {
-        return role;
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void addRole(UserRole role) {
+        this.roles.add(role);
     }
 
 

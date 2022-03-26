@@ -1,8 +1,6 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.MessageOrBuilder;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
@@ -13,6 +11,7 @@ import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @GrpcService
@@ -145,7 +144,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setBio(user.getBio())
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
-                    .setCreated(user.getTimeCreated());
+                    .setCreated(user.getTimeCreated())
+                    .addAllRoles(user.getRoles());
         }
         return reply.build();
     }
