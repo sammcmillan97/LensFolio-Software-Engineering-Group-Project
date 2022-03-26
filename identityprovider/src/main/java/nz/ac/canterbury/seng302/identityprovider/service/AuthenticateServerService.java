@@ -42,8 +42,17 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
 
-        if (user != null && user.checkPassword(request.getPassword())) {
-
+        if (user == null) {
+            reply
+                    .setMessage("Log in attempt failed: username not registered")
+                    .setSuccess(false)
+                    .setToken("");
+        } else if (Boolean.FALSE.equals(user.checkPassword(request.getPassword()))) {
+            reply
+                    .setMessage("Log in attempt failed: password incorrect")
+                    .setSuccess(false)
+                    .setToken("");
+        } else {
             String token = jwtTokenService.generateTokenForUser(user.getUsername(), user.getUserId(),
                     user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName(), ROLE_OF_USER);
             reply
@@ -55,11 +64,6 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
                     .setToken(token)
                     .setUserId(user.getUserId())
                     .setUsername(user.getUsername());
-        } else {
-            reply
-                    .setMessage("Log in attempt failed: username or password incorrect")
-                    .setSuccess(false)
-                    .setToken("");
         }
 
         return reply.build();

@@ -53,7 +53,7 @@ class AuthenticateServerServiceTests {
                 .build();
         AuthenticateResponse response = authService.authenticateHandler(authRequest);
         System.out.println(response.getMessage());
-        assertEquals("Log in attempt failed: username or password incorrect", response.getMessage());
+        assertEquals("Log in attempt failed: username not registered", response.getMessage());
         assertEquals("", response.getToken());
         assertFalse(response.getSuccess());
     }
@@ -67,7 +67,7 @@ class AuthenticateServerServiceTests {
                 .build();
         AuthenticateResponse response = authService.authenticateHandler(authRequest);
         System.out.println(response.getMessage());
-        assertEquals("Log in attempt failed: username or password incorrect", response.getMessage());
+        assertEquals("Log in attempt failed: password incorrect", response.getMessage());
         assertEquals("", response.getToken());
         assertFalse(response.getSuccess());
     }
