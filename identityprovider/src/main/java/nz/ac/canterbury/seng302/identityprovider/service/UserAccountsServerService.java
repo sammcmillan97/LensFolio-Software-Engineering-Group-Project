@@ -22,6 +22,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Autowired
     private UserRepository repository;
 
+    /**
+     * Allows user to upload their profile photo through bidirectional streaming.
+     * Takes a StreamObserver that the client has created and uses it
+     * to build a new StreamObserver the client can use to upload the photo.
+     * Photo should be sent over the StreamObserver like so:
+     *  - metadata first
+     *  - actual data split into chunks of max. 2^16 (65536)
+     *  - call onCompleted()
+     * @param responseObserver a StreamObserver that the client has created
+     * @return a StreamObserver that the server has created for the client to use
+     */
     @Override
     public StreamObserver<UploadUserProfilePhotoRequest> uploadUserProfilePhoto(StreamObserver<FileUploadStatusResponse> responseObserver) {
         return new StreamObserver<>() {
@@ -102,19 +113,31 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Override
     public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
         // TODO authenticate user
+        DeleteUserProfilePhotoResponse response = deleteUserProfilePhotoHandler(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Handler for deleting user's photo. If the photo exists, try to delete it.
+     * @param request A DeleteUserProfilePhotoRequest according to user_accounts.proto
+     * @return A DeleteUserProfilePhotoResponse with success true if the photo was deleted, or did not exist in the first place.
+     */
+    DeleteUserProfilePhotoResponse deleteUserProfilePhotoHandler(DeleteUserProfilePhotoRequest request) {
+        DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
             File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
-                DeleteUserProfilePhotoResponse response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-                responseObserver.onNext(response);
-                responseObserver.onCompleted();
+                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+
             } else {
-                DeleteUserProfilePhotoResponse response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
-                responseObserver.onNext(response);
-                responseObserver.onCompleted();
+                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
+        } else {
+            response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
         }
+        return response;
     }
 
     @Override

@@ -33,6 +33,12 @@ public class UserAccountClientService {
         return result;
     }
 
+    /**
+     * Allows for uploading photos to the IDP. The URL will be stored in the IDP for retrieval.
+     * @param fileContent The photo content, in bytes
+     * @param userId The ID of the user
+     * @param fileType The file type of the photo
+     */
     public void uploadUserProfilePhoto(byte[] fileContent, int userId, String fileType){
         StreamObserver<FileUploadStatusResponse> responseObserver = new StreamObserver<FileUploadStatusResponse>() {
 
