@@ -2,14 +2,21 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
+import net.bytebuddy.implementation.bytecode.Throw;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponseOrBuilder;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,11 +28,71 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private UserRepository repository;
 
     @Override
+    public StreamObserver<UploadUserProfilePhotoRequest> uploadUserProfilePhoto(StreamObserver<FileUploadStatusResponse> responseObserver) {
+        return new StreamObserver<>() {
+            ProfilePhotoUploadMetadata metaData;
+            byte[] fileContent = new byte[0];
+
+            @Override
+            public void onNext(UploadUserProfilePhotoRequest request) { //This is where we put the server's implementation after receiving each message
+                if (request.hasMetaData()) {
+                    if (metaData == null) {
+                        metaData = request.getMetaData();
+                        FileUploadStatusResponse response;
+                        if (fileContent.length == 0) {
+                            response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.PENDING).setMessage("Pending").build();
+                        } else {
+                            response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                        }
+                        responseObserver.onNext(response);
+                    } else {
+                        responseObserver.onError(new IllegalArgumentException());
+                    }
+                } else {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+                    try {
+                        output.write(fileContent);
+                        output.write(request.getFileContent().toByteArray());
+                    } catch (IOException e) {
+                        responseObserver.onError(e);
+                    }
+
+                    fileContent = output.toByteArray();
+                }
+                FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
+                        .setStatus(FileUploadStatus.IN_PROGRESS).setMessage("In progress").build();
+                responseObserver.onNext(response);
+
+            }
+
+            @Override
+            public void onCompleted() { //This is where to put the server's implementation after all messages are sent
+                if (metaData == null) {
+                     responseObserver.onError(new IllegalStateException());
+                } else {
+
+                }
+                responseObserver.onCompleted();
+            }
+
+            @Override
+            public void onError(Throwable throwableError) {
+
+            }
+        };
+    }
+
+
+    @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {
         ChangePasswordResponse reply = changeUserPasswordHandler(request);
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
+
 
     /**
      * Handler for password change requests.
