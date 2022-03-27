@@ -99,6 +99,23 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         };
     }
 
+    @Override
+    public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
+        // TODO authenticate user
+        User user = repository.findByUserId(request.getUserId());
+        if (user.getProfileImagePath() != null) {
+            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+            if (oldPhoto.delete()) {
+                DeleteUserProfilePhotoResponse response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            } else {
+                DeleteUserProfilePhotoResponse response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            }
+        }
+    }
 
     @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {

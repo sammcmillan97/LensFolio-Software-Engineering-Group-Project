@@ -22,7 +22,7 @@ public class UserAccountClientService {
 
     public static List<byte[]> divideArray(byte[] source, int chunksize) {
 
-        List<byte[]> result = new ArrayList<byte[]>();
+        List<byte[]> result = new ArrayList<>();
         int start = 0;
         while (start < source.length) {
             int end = Math.min(source.length, start + chunksize);
@@ -71,6 +71,10 @@ public class UserAccountClientService {
         requestObserver.onCompleted();
     }
 
+    public DeleteUserProfilePhotoResponse deleteUserProfilePhoto(final int userId)  {
+        DeleteUserProfilePhotoRequest request = DeleteUserProfilePhotoRequest.newBuilder().setUserId(userId).build();
+        return userStub.deleteUserProfilePhoto(request);
+    }
 
     public ChangePasswordResponse changeUserPassword(final int userId, final String currentPassword, final String newPassword)  {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
