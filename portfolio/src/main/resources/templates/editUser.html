@@ -3,26 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
-    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/editUser.css}">
 
 </head>
 <body>
-    <div class="main">
-
         <header th:replace="fragments/header :: header"> </header>
         <nav th:replace="fragments/navbar :: nav"></nav>
 
         <div id="page-content" class="constrict">
             <div class="container">
 
-
              <!-- form puts the params to the register controller-->
             <form th:action="@{/editUser}" method="post">
-                <br>
-                <p th:text="${editMessage}"></p>
-                <p th:text="${errorMessage}"></p>
-                <br>
+
                 <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
                 <div>
                     <input type="hidden" th:name="username"  th:value="${user.username}" />
@@ -40,120 +33,15 @@
                     <br>
                     <label>Bio</label><label class="helper">Optional</label><br>
                     <textarea th:name="bio" maxlength="1024" th:value="${user.bio}"></textarea>
-                    <br><br>
-
+                    <br>
+                    <div>
+                    <p th:text="${editMessage}"></p>
+                    <p th:text="${errorMessage}"></p>
+                    </div>
                     <input class="button" type="submit" value="Submit" />
                 </div>
             </form>
             </div>
         </div>
-    </div>
 </body>
 </html>
-
-<style>
-    /*html, body {*/
-    /*    height: 100%;*/
-    /*}*/
-
-    /*html {*/
-    /*    display: table;*/
-    /*    margin: auto;*/
-    /*}*/
-
-    /*body {*/
-    /*    display: table-cell;*/
-    /*    vertical-align: middle;*/
-    /*    font-family: "Calibri Light";*/
-    /*}*/
-    .container {
-        align-items: center;
-    }
-
-    input, textarea {
-        margin-left: 10px;
-        margin-bottom: 5px;
-        outline-color: white;
-    }
-
-    label.helper{
-        margin-left: 10px;
-        font-style: italic;
-        font-weight: normal;
-        color: #c8c8c8;
-    }
-
-    /* Selects any valid <input> */
-    input:valid, textarea {
-        border: none;
-        border-bottom: 2px solid lightgray;
-    }
-
-    input.readonly{
-        border: none;
-        border-bottom: 2px solid lightgray;
-        font-colour: #c8c8c8;
-    }
-
-    input.required:valid {
-        outline-color: green;
-    }
-
-    /* Selects any invalid <input> */
-    input:invalid {
-        background-color: #fff5f5;
-        border: none;
-        border-bottom: 2px solid red;
-    }
-
-    input.button {
-        padding: 3px 10px 3px 10px;
-        margin-left: 0px;
-    }
-
-    button {
-        padding: 3px 10px 3px 10px;
-        margin-right: 5px;
-        margin-left: 20px;
-    }
-
-    h1 {
-        margin-top: -40px;
-        color:  black;
-    }
-
-    h2 {
-        margin-bottom: 0px;
-    }
-
-    h4 {
-        color: #333333;
-        font-size: small;
-        margin-bottom: 0;
-    }
-
-    h6 {
-        color: #444444;
-        font-size: smaller;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    /*p {*/
-    /*    margin-left: 10px;*/
-    /*    color: red;*/
-    /*    margin-top: 20px;*/
-    /*    margin-bottom: -20px;*/
-    /*}*/
-
-    a.button {
-        font-size: medium;
-        text-decoration: none;
-        background-color: #EEEEEE;
-        color: #333333;
-        padding: 4px 10px 4px 10px;
-        border-bottom: 1px solid lightgray;
-        border-radius: 3px;
-    }
-
-</style>

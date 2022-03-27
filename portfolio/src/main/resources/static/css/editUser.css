@@ -1,17 +1,9 @@
-
 .container {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-#success {
-    color : green
-}
-
-#failure {
-    color : red
-}
 
 div {
     padding: 10px;
@@ -66,9 +58,12 @@ button {
 
 h1 {
     margin-top: 30px;
-    color: black;
+    color:  black;
 }
 
+h2 {
+    margin-bottom: 0px;
+}
 
 h4 {
     color: #333333;
@@ -83,12 +78,6 @@ h6 {
     margin-bottom: 0;
 }
 
-.validation_check {
-    margin-left: 10px;
-    color: red;
-    margin-top: 20px;
-    margin-bottom: -20px;
-}
 
 a.button {
     font-size: medium;

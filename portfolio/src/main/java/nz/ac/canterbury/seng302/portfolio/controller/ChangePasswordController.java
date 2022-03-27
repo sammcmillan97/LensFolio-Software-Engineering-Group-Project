@@ -78,7 +78,7 @@ public class ChangePasswordController {
         if (changePasswordResponse.getIsSuccess()) {
             model.addAttribute("success", changePasswordResponse.getMessage());
         } else {
-            model.addAttribute("failure", changePasswordResponse.getValidationErrorsList());
+            model.addAttribute("failure", changePasswordResponse.getValidationErrors(0).getErrorText());
         }
         return "changePassword";
     }
