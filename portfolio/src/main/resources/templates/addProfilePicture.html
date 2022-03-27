@@ -18,100 +18,84 @@
             <h1>Update Profile Picture</h1><br>
 
             <div class="container">
-                <!-- if user.image != null, show user image, else show generic user icon-->
-                <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
+                <table>
+                    <row>
+                        <!-- if user.image != null, show user image, else show generic user icon-->
+                        <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
-                <!-- if user.image = null hide, else show-->
-                <a th:href="@{/deleteProfilePicture}"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></img></a>
+                        <!-- if user.image = null hide, else show-->
+                        <a th:href="@{/deleteProfilePicture}"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></img></a>
+
+                        <div id="root"></div>
+                    </row>
+                </table>
+
             </div>
 
             <h4>Upload a new photo</h4>
             <input type="file" id="img-input" class="button" th:name="image" accept=".jpg,.png,.jpeg">
-            <br><label class="helper" >Required, must be filetype jpg, jpeg, or png, and be less than 5MB</label><br><br>
+            <br><label class="helper" >Must be filetype jpg, jpeg, or png, and will be cropped to 1:1 ratio</label><br>
+            <p class="helper">Upload an image to see the preview</p><br><br>
             <input class="button" type="submit" name="submit" value="Save Changes">
-        </form>
+        </form><br>
     </div>
-
 
 </body>
 </html>
 
 <script>
-    const MAX_WIDTH = 300;
-    const MAX_HEIGHT = 300;
-    const MIME_TYPE = "image/jpeg";
-    const QUALITY = 0.7;
+    let profileImageInput = document.getElementById("img-input");
 
-    const input = document.getElementById("img-input");
-    input.onchange = function (ev) {
-        const file = ev.target.files[0]; // get the file
-        const blobURL = URL.createObjectURL(file);
-        const img = new Image();
-        img.src = blobURL;
-        img.onerror = function () {
-            URL.revokeObjectURL(this.src);
-            // Handle the failure properly
-            console.log("Cannot load image");
-        };
-        img.onload = function () {
-            URL.revokeObjectURL(this.src);
-            const [newWidth, newHeight] = calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
-            const canvas = document.createElement("canvas");
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, newWidth, newHeight);
-            canvas.toBlob(
-                (blob) => {
-                    // Handle the compressed image. es. upload or save in local state
-                    displayInfo('Original file', file);
-                    displayInfo('Compressed file', blob);
-                },
-                MIME_TYPE,
-                QUALITY
-            );
-            document.getElementById("root").append(canvas);
-        };
-    };
+    const MAX_PIXELS = 150;
+    let excessWidth= 0;
+    let excessHeight=0;
+    let maxSize=0;
 
-    function calculateSize(img, maxWidth, maxHeight) {
-        let width = img.width;
-        let height = img.height;
-
-        // calculate the width and height, constraining the proportions
-        if (width > height) {
-            if (width > maxWidth) {
-                height = Math.round((height * maxWidth) / width);
-                width = maxWidth;
-            }
+    function calculateSize(width, height) {
+        if (width === height) {
+            return 0, 0, width;
         } else {
-            if (height > maxHeight) {
-                width = Math.round((width * maxHeight) / height);
-                height = maxHeight;
+            if (width > height) {
+                maxSize = height;
+            } else {
+                maxSize = width;
             }
         }
-        return [width, height];
+        excessWidth = width - maxSize;
+        excessHeight = height - maxSize;
     }
 
-    // Utility functions for demo purpose
-
-    function displayInfo(label, file) {
-        const p = document.createElement('p');
-        p.innerText = `${label} - ${readableBytes(file.size)}`;
-        document.getElementById('root').append(p);
-    }
-
-    function readableBytes(bytes) {
-        const i = Math.floor(Math.log(bytes) / Math.log(1024)),
-            sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-    }
+    profileImageInput.onchange = function() {
+        // if(this.files[0].size > maxAllowedSize){
+        //     alert("File is too big! Must be less than 5MB");
+        // } else {
+        const [file] = profileImageInput.files
+        if (file) {
+            const blobURL = URL.createObjectURL(file);
+            const img = new Image();
+            img.src = blobURL;
+            img.onerror = function() {
+                URL.revokeObjectURL(this.src);
+                console.log("Cannot load image");
+            }
+            img.onload = function () {
+                URL.revokeObjectURL(this.src);
+                const canvas = document.createElement("canvas");
+                canvas.width = MAX_PIXELS;
+                canvas.height = MAX_PIXELS;
+                calculateSize(img.width, img.height);
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, excessWidth/2, excessHeight/2, maxSize, maxSize, 0, 0, MAX_PIXELS, MAX_PIXELS);
+                document.getElementById("root").append(canvas);
+            }
+        }
+    };
 </script>
+
 
 <style>
 
-    label.helper{
+    label.helper, p.helper{
         margin-left: 5px;
         margin-top: 5px;
         font-style: italic;
@@ -155,9 +139,13 @@
         margin-bottom: -12px;
     }
 
-    .croppedImage {
+    #profile-image-display {
         width:150px;
         height:150px;
         object-fit:cover;
+    }
+
+    #root {
+        display: inline-block;
     }
 </style>
