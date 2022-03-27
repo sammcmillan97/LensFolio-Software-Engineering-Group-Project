@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
-    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/styles/navbar.css}">
     <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
 </head>
 <body>
@@ -35,13 +35,13 @@
             </div>
 
             <div class="profile_body__row">
-                <p class="profile_body__content"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Date of Registration </strong>  <p th:text="${date}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
-                <p class="profile_body__content"><strong class="pr-1">Roles</strong><p><span th:each="role, iterStat: ${user.rolesList}" th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"></span> </p> </p>
+                <p class="profile_body__content"><strong >Nickname </strong>  <p th:text="${user.nickname}" /> </p>
+                <p class="profile_body__content"><strong >Username </strong>  <p th:text="${user.username}" /> </p>
+                <p class="profile_body__content"><strong >Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
+                <p class="profile_body__content"><strong >Email </strong>  <p th:text="${user.email}" /> </p>
+                <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${date}" /> </p>
+                <p class="profile_body__content"><strong >Bio</strong><p th:text="${user.bio}" /> </p>
+                <p class="profile_body__content"><strong >Role</strong><p><span th:each="role, iterStat: ${user.rolesList}" th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"></span> </p> </p>
             </div>
 
         </div>
