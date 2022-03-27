@@ -4,6 +4,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -113,7 +114,12 @@ public class EditUserController {
         } else {
             //if edit user was unsuccessful
             model.addAttribute("editMessage", "");
-            model.addAttribute("editMessage", editUserResponse.getMessage());
+            StringBuilder editMessage = new StringBuilder();
+            for (ValidationError error: editUserResponse.getValidationErrorsList()) {
+                editMessage.append("\n");
+                editMessage.append(error.getErrorText());
+            }
+            model.addAttribute("editMessage", editMessage);
             return "/editUser";
         }
     }
