@@ -88,6 +88,7 @@ html {
 /********************Sprints ********************/
 
 .sprint, #new-sprint-button {
+    display: block;
     position: relative;
 
     border: 1px solid var(--color-accent);
@@ -138,12 +139,14 @@ html {
 }
 
 #new-sprint-button {
-    width: 100%;
+    padding: 0;
     height: 3rem;
     line-height: 3rem;
 
     font-size: 1.5rem;
-    cursor: pointer;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
 }
 
 .sprint__button-wrapper button:hover, #new-sprint-button:hover {

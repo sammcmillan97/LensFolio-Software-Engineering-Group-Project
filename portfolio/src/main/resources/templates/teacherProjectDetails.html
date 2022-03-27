@@ -47,8 +47,13 @@
 
                 <!-- Edit/Delete Sprint Buttons -->
                 <div class="sprint__button-wrapper flex-row">
-                    <button th:onclick="editSprint([[${project.getId}]], [[${sprint.getId}]], [[${sprint.getName}]], [[${sprint.getDescription}]], [[${sprint.getStartDate}]], [[${sprint.getEndDate}]])">Edit</button>
-                    <button>Delete</button>
+                    <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${sprint.getId})}" th:method="get">
+                        <button type="submit">Edit</button>
+                    </form>
+
+                    <form action="#" th:action="@{/projects/delete/{project}/{sprint}(project=${project.getId}, sprint=${sprint.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                        <button type="submit">Delete</button>
+                    </form>
                 </div>
 
                 <!-- Sprint Details -->
@@ -59,7 +64,7 @@
             </div>
 
             <!-- New Sprint Button -->
-            <button id="new-sprint-button" th:onclick="addSprint([[${project.getId}]])">Add Sprint</button>
+            <a id="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
         </div>
 
     </div>
