@@ -63,10 +63,13 @@
 
             </div>
 
+<!--            &lt;!&ndash; New Project Button &ndash;&gt;-->
+<!--            <form action="#" th:action="@{/projects/edit/-1}" th:method="get">-->
+<!--                <button type="submit" id="new-project-button">New Project</button>-->
+<!--            </form>-->
+
             <!-- New Project Button -->
-            <form action="#" th:action="@{/projects/edit/-1}" th:method="get">
-                <button type="submit" id="new-project-button">New Project</button>
-            </form>
+            <a id="new-project-button" th:href="@{/projects/edit/-1}">New Project</a>
 
         </div>
     </div>
