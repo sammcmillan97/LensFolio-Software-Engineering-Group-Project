@@ -28,20 +28,18 @@ public class SprintService {
      * Get sprint by id
      */
     public Sprint getSprintById(Integer id) throws Exception {
-
         Optional<Sprint> sprint = repository.findById(id);
-        if(sprint!=null) {
+        if(sprint.isPresent()) {
             return sprint.get();
         }
         else
         {
-            throw new Exception("Project not found");
+            throw new Exception("Sprint not found");
         }
     }
 
     public List<Sprint> getByParentProjectId(int projectId) {
-        List<Sprint> list = repository.findByParentProjectId(projectId);
-        return list;
+        return repository.findByParentProjectId(projectId);
     }
 
     public void saveSprint(Sprint sprint) {
