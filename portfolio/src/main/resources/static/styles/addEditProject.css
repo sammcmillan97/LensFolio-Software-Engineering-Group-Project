@@ -1,82 +1,55 @@
 /******************** Add/Edit Project Form ********************/
 
-#project-form__popup {
-    display: block;
+.project-form__header {
+    padding: 3rem 2rem 3rem 2rem;
+    border-bottom: 1px solid var(--color-accent);
+
+    background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
+    color: var(--color-complement);
+    text-outline: var(--color-accent);
 }
 
-/* The popup form */
-#project-form__form {
+#project-form__wrapper {
     display: block;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    background-color: var(--color-complement);
     border: 1px solid var(--color-accent);
-    background-color: var(--color-secondary);
-    overflow: hidden;
     border-radius: 1.5rem;
-    z-index: 9;
+    overflow: hidden;
 }
 
-/* Add styles to the form container */
 #project-form__form {
-    width: 600px;
-    padding: 10px;
-    background-color: var(--color-secondary);
+    padding: 1rem 2rem 1rem 2rem;
 }
 
-/*Full-width input fields*/
-#project-form__form .edit-input {
-    width: calc(100% - 30px);
-    padding: 15px;
-    margin: 5px 20px 25px 0;
+#project-form__form label {
+    margin-bottom: 0.5rem;
+}
+
+#project-form__form input, #project-form__form textarea {
+    margin: 0 0 1rem 1rem;
     border: none;
-    background: #f1f1f1;
-    border-radius: 1rem;
-    resize: none;
-}
-
-/* When the inputs get focus, do something */
-#project-form__form .edit-input:focus {
-    background-color: #ddd;
-    outline: none;
+    border-bottom: 2px solid lightgray;
 }
 
 /* Set a style for the  button */
-#project-form__form button {
+#project-form__form button, #project-form__form a {
+    padding: 0;
+    margin-bottom: 1rem;
     background-color: var(--color-complement);
-    color: black;
-    padding: 16px 20px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom:10px;
-    opacity: 0.8;
-    overflow: hidden;
-    border-radius: 1.5rem;
     border: 1px solid var(--color-accent);
-}
+    border-radius: 1.5rem;
+    overflow: hidden;
 
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    color: black;
+    font-size: 1rem;
+    text-decoration: none;
+}
 
 /*Add some hover effects to buttons */
-#project-form__form button:hover {
+#project-form__form button:hover, #project-form__form a:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
-}
-
-#project-form__overlay {
-    display: block;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background: rgba(51,51,51,0.7);
-    z-index: 8;
-}
-
-.form-container .editProject {
-    width: 100%;
-    border: none;
-    background: #f1f1f1;
-    padding: 10px 30px 10px 20px;
 }

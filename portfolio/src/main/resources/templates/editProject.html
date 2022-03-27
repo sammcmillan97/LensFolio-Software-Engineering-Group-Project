@@ -15,25 +15,30 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
-        <h2 th:inline="text">Editing [[${project.getName}]]</h2>
+        <div id="project-form__wrapper">
+            <!-- Name, Date -->
+            <header class="project-form__header flex-column">
+                <h1 id="project__name" th:text="${project.getName}"></h1>
+            </header>
 
-        <!-- Add/Edit Project Form -->
-        <form id="project-form__form" class="form-container" th:action="@{/projects/edit/${project.getId}}" th:method="post">
-            <label for="project-form__name-field"><b>Project Name</b></label>
-            <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:value="${project.getName}" required>
+            <!-- Add/Edit Project Form -->
+            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/${project.getId}}" th:method="post">
+                <label for="project-form__name-field">Project Name *</label>
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${project.getName}" th:value="${project.getName}" required>
 
-            <label for="project-form__description-field"><b>Project Description</b></label>
-            <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:value="${project.getDescription}"></textarea>
+                <label for="project-form__description-field">Project Description</label>
+                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${project.getDescription}" th:value="${project.getDescription}"></textarea>
 
-            <label for="project-form__start-date-field"><b>Project Start Date</b></label>
-            <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" th:value="${project.getStartDate}" required>
+                <label for="project-form__start-date-field">Project Start Date *</label>
+                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" th:placeholder="${project.getStartDate}" th:value="${project.getStartDate}" required>
 
-            <label for="project-form__end-date-field"><b>Project End Date</b></label>
-            <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:value="${project.getEndDate}" required>
+                <label for="project-form__end-date-field">Project End Date *</label>
+                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${project.getEndDate}" th:value="${project.getEndDate}" required>
 
-            <button type="submit" id="project-form__save">Save Changes</button>
-            <button id="project-form__discard" onclick="return closeAddEditForm()">Discard</button>
-        </form>
+                <button type="submit" id="project-form__save">Save Changes</button>
+                <a id="project-form__discard" th:href="@{/projects/{id}(id=${project.getId})}">Discard</a>
+            </form>
+        </div>
     </div>
 </body>
 </html>
