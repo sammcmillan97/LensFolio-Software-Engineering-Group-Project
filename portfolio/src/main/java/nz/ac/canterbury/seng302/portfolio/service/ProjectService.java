@@ -32,7 +32,6 @@ public class ProjectService {
     public Project getProjectById(Integer id) throws Exception {
 
         Optional<Project> project = repository.findById(id);
-        System.out.println(project);
         if(project.isPresent()) {
             return project.get();
         }
