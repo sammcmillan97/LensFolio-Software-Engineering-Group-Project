@@ -71,16 +71,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     // TODO authenticate user
                     User user = repository.findByUserId(metaData.getUserId());
                     if (user.getProfileImagePath() != null) {
-                        File oldPhoto = new File(user.getProfileImagePath());
+                        File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
                         if (!oldPhoto.delete()) {
                             responseObserver.onError(new FileNotFoundException());
                         }
                     }
                     user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
-                    String filepath = "profile-images/" + user.getUsername() + "." + metaData.getFileType();
+                    String filepath = "src/main/resources/" + user.getProfileImagePath();
                     File file = new File(filepath);
                     try (OutputStream os = new FileOutputStream(file)) {
                         os.write(fileContent);
+                        repository.save(user);
                         FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                 .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
                         responseObserver.onNext(response);
@@ -89,12 +90,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         responseObserver.onError(e);
                     }
                 }
-                responseObserver.onCompleted();
             }
 
             @Override
             public void onError(Throwable throwableError) {
-
+                // Client should never throw an error, so server does not need to handle them.
             }
         };
     }

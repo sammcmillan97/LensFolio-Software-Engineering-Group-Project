@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import org.springframework.stereotype.Service;
 
@@ -34,18 +35,25 @@ public class UserAccountClientService {
 
     public void uploadUserProfilePhoto(byte[] fileContent, int userId, String fileType){
         StreamObserver<FileUploadStatusResponse> responseObserver = new StreamObserver<FileUploadStatusResponse>() {
+
             @Override
             public void onNext(FileUploadStatusResponse response) { // This is where to put the client's implementation after server sends a message
-
+                if (response.getStatus() == FileUploadStatus.FAILED) {
+                    onError(new IllegalStateException());
+                }
+                onError(new IllegalStateException());
             }
 
             @Override
-            public void onCompleted() { // This is where to put the client's implementation after server has sent all messages
+            public void onCompleted() {
+                // Client should close connection, so this completion is never utilised
             }
 
+            @Override
             public void onError(Throwable throwable) {
-
+                // Default implementation should handle this case.
             }
+
         };
 
         StreamObserver<UploadUserProfilePhotoRequest> requestObserver = userNonBlockingStub.uploadUserProfilePhoto(responseObserver);
@@ -60,7 +68,6 @@ public class UserAccountClientService {
             UploadUserProfilePhotoRequest uploadRequest = UploadUserProfilePhotoRequest.newBuilder().setFileContent(ByteString.copyFrom(byteArray)).build();
             requestObserver.onNext(uploadRequest);
         }
-
         requestObserver.onCompleted();
     }
 
