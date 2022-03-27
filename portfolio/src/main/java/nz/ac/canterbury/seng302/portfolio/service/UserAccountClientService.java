@@ -1,14 +1,69 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
+import com.google.protobuf.ByteString;
+import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class UserAccountClientService {
 
     @GrpcClient("identity-provider-grpc-server")
     private UserAccountServiceGrpc.UserAccountServiceBlockingStub userStub;
+    @GrpcClient("identity-provider-grpc-server")
+    private UserAccountServiceGrpc.UserAccountServiceStub userNonBlockingStub;
+
+    public static List<byte[]> divideArray(byte[] source, int chunksize) {
+
+        List<byte[]> result = new ArrayList<byte[]>();
+        int start = 0;
+        while (start < source.length) {
+            int end = Math.min(source.length, start + chunksize);
+            result.add(Arrays.copyOfRange(source, start, end));
+            start += chunksize;
+        }
+
+        return result;
+    }
+
+    public void uploadUserProfilePhoto(byte[] fileContent, int userId, String fileType){
+        StreamObserver<FileUploadStatusResponse> responseObserver = new StreamObserver<FileUploadStatusResponse>() {
+            @Override
+            public void onNext(FileUploadStatusResponse response) { // This is where to put the client's implementation after server sends a message
+
+            }
+
+            @Override
+            public void onCompleted() { // This is where to put the client's implementation after server has sent all messages
+            }
+
+            public void onError(Throwable throwable) {
+
+            }
+        };
+
+        StreamObserver<UploadUserProfilePhotoRequest> requestObserver = userNonBlockingStub.uploadUserProfilePhoto(responseObserver);
+        ProfilePhotoUploadMetadata metaData = ProfilePhotoUploadMetadata.newBuilder()
+                .setUserId(userId)
+                .setFileType(fileType)
+                .build();
+        UploadUserProfilePhotoRequest request = UploadUserProfilePhotoRequest.newBuilder().setMetaData(metaData).build();
+        requestObserver.onNext(request);
+        List<byte[]> byteArrays = divideArray(fileContent, 65536);
+        for (byte[] byteArray: byteArrays) {
+            UploadUserProfilePhotoRequest uploadRequest = UploadUserProfilePhotoRequest.newBuilder().setFileContent(ByteString.copyFrom(byteArray)).build();
+            requestObserver.onNext(uploadRequest);
+        }
+
+        requestObserver.onCompleted();
+    }
+
 
     public ChangePasswordResponse changeUserPassword(final int userId, final String currentPassword, final String newPassword)  {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
