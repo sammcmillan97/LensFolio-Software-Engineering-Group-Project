@@ -43,8 +43,8 @@ public class SprintService {
         }
     }
 
-    public List<Sprint> getByParentProjectId(int projectId) {
-        List<Sprint> list = repository.findByParentProjectId(projectId);
+    public List<Sprint> getByParentProjectId(int parentProjectId) {
+        List<Sprint> list = repository.findByParentProjectId(parentProjectId);
         return list;
     }
 
@@ -60,8 +60,12 @@ public class SprintService {
         return sprintsByParentProject;
     }
 
-    public void saveSprint(Sprint sprint) {
-        Sprint sprintSaved = repository.save(sprint);
+    public Sprint saveSprint(Sprint sprint) {
+        Sprint savedSprint = repository.save(sprint);
+        return savedSprint;
+    }
 
+    public void deleteById(int sprintId) {
+        repository.deleteById(sprintId);
     }
 }
