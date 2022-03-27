@@ -25,6 +25,12 @@ junit-identityprovider:
     - cd identityprovider
     - ./gradlew test
 
+junit-portfolio:
+  stage: test
+  script:
+    - cd portfolio
+    - ./gradlew test
+
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
   script:

@@ -1,5 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +20,29 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class EditProjectController {
     @Autowired
     ProjectService projectService;
+    @Autowired
+    UserAccountClientService userAccountClientService;
 
     /* Create default project. TODO: use database to check for this*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
     @GetMapping("/projects/edit/{id}")
-    public String projectForm(@PathVariable("id") String projectId, Model model) {
+    public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
+        // Add user details to model
+        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        model.addAttribute("user", user);
+
         int id = Integer.parseInt(projectId);
 
         Project project;
@@ -50,6 +69,11 @@ public class EditProjectController {
             @RequestParam(value="projectDescription") String projectDescription,
             Model model
     ) {
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
         int id = Integer.parseInt(projectId);
 
         Project savedProject;
@@ -84,7 +108,12 @@ public class EditProjectController {
      * @return Redirects back to the GET mapping for /projects.
      */
     @DeleteMapping(value="/projects/delete/{id}")
-    public String deleteProjectById(@PathVariable("id") String projectId) {
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
         int id = Integer.parseInt(projectId);
         projectService.deleteProjectById(id);
         return "redirect:/projects";

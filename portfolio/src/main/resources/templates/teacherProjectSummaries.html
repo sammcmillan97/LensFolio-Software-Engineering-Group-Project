@@ -10,11 +10,13 @@
 </head>
 
 <body>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
     <!-- Import the application's navigation bar. -->
     <nav th:replace="fragments/navbar :: navbar"></nav>
 
     <!-- Page content -->
-    <div id="page-content">
+    <div id="page-content" class="constrict">
         <!-- Populate the following div with projects and their details. -->
         <div id="project-wrapper" class="flex-column">
 

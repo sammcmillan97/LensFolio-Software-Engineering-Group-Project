@@ -198,9 +198,14 @@ Such examples would include:
 ## Contributors
 
 - SENG302 teaching team
-- Billy Sandri
+- Amy Sloane
 - Bede Skinner-Vennell
+- Billy Sandri
 - Connor Dunlop
+- Danish Khursheed Jahangir
+- Luke Garside
+- Sam McMillan
+
 
 ## References
 
