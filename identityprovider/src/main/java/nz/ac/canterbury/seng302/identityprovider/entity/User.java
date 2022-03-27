@@ -65,6 +65,8 @@ public class User {
     @Column(length = 1024)
     private Timestamp timeCreated;
 
+    private String profileImagePath;
+
     /**
      * Create a user for use in backend database.
      * @param username Username of user
@@ -193,6 +195,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
     }
 
     public String getPassword(){

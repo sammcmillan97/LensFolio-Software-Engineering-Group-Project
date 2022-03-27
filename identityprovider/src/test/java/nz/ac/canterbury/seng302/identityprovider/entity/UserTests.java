@@ -101,6 +101,14 @@ class UserTests {
         assertEquals("jacko@gmail.com", user1.getEmail());
     }
 
+    //Tests that the getProfileImagePath and setProfileImagePath functions work
+    @Test
+    void testProfileImagePathMethods() {
+        assertNull(user1.getProfileImagePath());
+        user1.setProfileImagePath("http://localhost:8080/resources/test.jpg");
+        assertEquals("http://localhost:8080/resources/test.jpg", user1.getProfileImagePath());
+    }
+
     //Tests that the password is not stored in plain text
     @Test
     void testEncryptOccurs(){
