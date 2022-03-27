@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
-import net.bytebuddy.implementation.bytecode.Throw;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
@@ -10,15 +9,11 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
-import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponseOrBuilder;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @GrpcService
@@ -73,7 +68,26 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 if (metaData == null) {
                      responseObserver.onError(new IllegalStateException());
                 } else {
-
+                    // TODO authenticate user
+                    User user = repository.findByUserId(metaData.getUserId());
+                    if (user.getProfileImagePath() != null) {
+                        File oldPhoto = new File(user.getProfileImagePath());
+                        if (!oldPhoto.delete()) {
+                            responseObserver.onError(new FileNotFoundException());
+                        }
+                    }
+                    user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
+                    String filepath = "profile-images/" + user.getUsername() + "." + metaData.getFileType();
+                    File file = new File(filepath);
+                    try (OutputStream os = new FileOutputStream(file)) {
+                        os.write(fileContent);
+                        FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
+                                .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                        responseObserver.onNext(response);
+                        responseObserver.onCompleted();
+                    } catch (Exception e) {
+                        responseObserver.onError(e);
+                    }
                 }
                 responseObserver.onCompleted();
             }
@@ -212,6 +226,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
                     .setCreated(user.getTimeCreated())
+                    .setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath())
                     .addAllRoles(user.getRoles());
         }
         return reply.build();
