@@ -5,12 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
 </head>
 <body>
     <header th:replace="fragments/header :: header"> </header>
-    <nav th:replace="fragments/navigationBar :: nav"></nav>
+    <nav th:replace="fragments/navbar :: nav"></nav>
 
     <div id="page-content" class="constrict">
         <div class="container">
@@ -19,28 +18,17 @@
                 <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
             </div>
 
-<div class="UserProfile">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4">
-                <div style="height: 100px"></div>
-                <div class="card shadow-sm">
-                    <div class="card-header bg-transparent text-center">
-                        <img th:src="@{/GenericUserIcon.jpg}"  width="50px" alt="profilePhoto">
-                        <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>
-                        <p class="mb-0"><strong class="pr-1">Date of Registration </strong>  <p th:text="${date}" /> </p>
-                        <p class="mb=0"><strong class="pr-1">Bio</strong><p th:text="${user.bio}" /> </p>
-                    </div>
-                </div>
+            <div class="profile_body__row">
+                <p class="profile_body__content"><strong >Nickname </strong>  <p th:text="${user.nickname}" /> </p>
+                <p class="profile_body__content"><strong >Time </strong>  <p th:text="${user.created}" /> </p>
+                <p class="profile_body__content"><strong >Username </strong>  <p th:text="${user.username}" /> </p>
+                <p class="profile_body__content"><strong >Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
+                <p class="profile_body__content"><strong >Email </strong>  <p th:text="${user.email}" /> </p>
+                <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${date}" /> </p>
+                <p class="profile_body__content"><strong >Bio</strong><p th:text="${user.bio}" /> </p>
             </div>
-
         </div>
     </div>
+
 </body>
 </html>

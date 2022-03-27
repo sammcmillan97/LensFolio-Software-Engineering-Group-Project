@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-public class SecuritySettingsController {
+public class ChangePasswordController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
@@ -24,9 +24,9 @@ public class SecuritySettingsController {
      * Get mapping to return security setting page
      * @param principal
      * @param model
-     * @return security setting page
+     * @return change password page
      */
-    @GetMapping("/securitySettings")
+    @GetMapping("/changePassword")
     public String securitySettings(
             @AuthenticationPrincipal AuthState principal,
             Model model
@@ -38,7 +38,7 @@ public class SecuritySettingsController {
                 .orElse("-100"));
         UserResponse user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
-        return "securitySettings";
+        return "changePassword";
     }
 
     /**
@@ -47,9 +47,9 @@ public class SecuritySettingsController {
      * @param oldPassword User's current password
      * @param newPassword User's new password
      * @param model
-     * @return Security settings page
+     * @return change password page
      */
-    @PostMapping("/securitySettings")
+    @PostMapping("/changePassword")
     public String changePassword(
             @AuthenticationPrincipal AuthState principal,
             @RequestParam(name="oldPassword") String oldPassword,
@@ -72,7 +72,7 @@ public class SecuritySettingsController {
             changePasswordResponse = userAccountClientService.changeUserPassword(id, oldPassword, newPassword);
         } catch(Exception e) {
             model.addAttribute("failure", "Error connecting to Identity Provider");
-            return "securitySettings";
+            return "changePassword";
         }
         //Success or fail the user will be returned to the security menu with appropriate feedback message displayed
         if (changePasswordResponse.getIsSuccess()) {
@@ -80,7 +80,7 @@ public class SecuritySettingsController {
         } else {
             model.addAttribute("failure", changePasswordResponse.getValidationErrorsList());
         }
-        return "securitySettings";
+        return "changePassword";
     }
 
 }
