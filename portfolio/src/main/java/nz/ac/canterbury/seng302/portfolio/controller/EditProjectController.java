@@ -55,8 +55,12 @@ public class EditProjectController {
             project = defaultProject;
         }
 
-        /* Add project to the model */
-        model.addAttribute("project", project);
+        /* Add project details to the model */
+        model.addAttribute("projectId", project.getId());
+        model.addAttribute("projectName", project.getName());
+        model.addAttribute("projectDescription", project.getDescription());
+        model.addAttribute("projectStartDateString", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
+        model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
 
         return "editProject";
     }

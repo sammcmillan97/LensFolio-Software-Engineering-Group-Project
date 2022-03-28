@@ -18,25 +18,25 @@
         <div id="project-form__wrapper">
             <!-- Name, Date -->
             <header class="project-form__header flex-column">
-                <h1 id="project__name" th:text="${project.getName}"></h1>
+                <h1 id="project__name" th:text="${projectName}"></h1>
             </header>
 
             <!-- Add/Edit Project Form -->
-            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="post">
+            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${projectId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
-                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${project.getName}" th:value="${project.getName}" required>
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${projectName}" th:value="${projectName}" required>
 
                 <label for="project-form__description-field">Project Description</label>
-                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${project.getDescription}" th:value="${project.getDescription}"></textarea>
+                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
                 <label for="project-form__start-date-field">Project Start Date *</label>
-                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" th:placeholder="${project.getStartDate}" th:value="${project.getStartDate}" required>
+                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" required>
 
                 <label for="project-form__end-date-field">Project End Date *</label>
-                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${project.getEndDate}" th:value="${project.getEndDate}" required>
+                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" required>
 
                 <button type="submit" id="project-form__save">Save Changes</button>
-                <a id="project-form__discard" th:href="@{/projects/{id}(id=${project.getId})}">Discard</a>
+                <a id="project-form__discard" th:href="@{/projects/{id}(id=${projectId})}">Discard</a>
             </form>
         </div>
     </div>
