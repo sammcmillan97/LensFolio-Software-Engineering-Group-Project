@@ -22,7 +22,7 @@
             </header>
 
             <!-- Add/Edit Project Form -->
-            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/${project.getId}}" th:method="post">
+            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
                 <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${project.getName}" th:value="${project.getName}" required>
 
