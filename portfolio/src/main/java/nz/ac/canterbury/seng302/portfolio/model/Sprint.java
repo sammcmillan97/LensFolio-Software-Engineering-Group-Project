@@ -12,17 +12,17 @@ public class Sprint {
     private int id;
     private int parentProjectId;
     private String sprintName;
-    private String sprintLabel;
+    private int sprintNumber;
     private String sprintDescription;
     private Date sprintStartDate;
     private Date sprintEndDate;
 
     protected Sprint() {}
 
-    public Sprint(int parentProjectId, String sprintName, String sprintLabel, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
+    public Sprint(int parentProjectId, String sprintName, int sprintNumber, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
         this.parentProjectId = parentProjectId;
         this.sprintName = sprintName;
-        this.sprintLabel = sprintLabel;
+        this.sprintNumber = sprintNumber;
         this.sprintDescription = sprintDescription;
         this.sprintStartDate = sprintStartDate;
         this.sprintEndDate = sprintEndDate;
@@ -32,7 +32,7 @@ public class Sprint {
     public String toString() {
         return String.format(
                 "Sprint[id=%d, parentProjectId='%d', sprintName='%s', sprintLabel='%s', sprintStartDate='%s', sprintEndDate='%s', sprintDescription='%s']",
-                id, parentProjectId, sprintName, sprintLabel, sprintStartDate, sprintEndDate, sprintDescription);
+                id, parentProjectId, sprintName, "Sprint " + sprintNumber, sprintStartDate, sprintEndDate, sprintDescription);
     }
 
 
@@ -48,11 +48,11 @@ public class Sprint {
     public void setName(String name) {
         sprintName = name;
     }
-    public String getLabel() {
-        return sprintLabel;
+    public int getNumber() {
+        return sprintNumber;
     }
-    public void setLabel(String label) {
-        sprintLabel = label;
+    public void setNumber(int number) {
+        sprintNumber = number;
     }
     public String getDescription(){
         return sprintDescription;
