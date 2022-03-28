@@ -22,13 +22,13 @@
             <div class="container">
                 <table>
                     <row>
-                        <!-- if user.image != null, show user image, else show generic user icon-->
-                        <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
+                        <!-- if user.image != null, show user image, else show generic user icon- th:src="${user.profileImagePath}==null ? '/GenericUserIcon.jpg' : ${user.profileImagePath}"-->
+                        <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
-                        <!-- if user.image = null hide, else show-->
-                        <form th:action="@{/removeProfilePicture}" th:method="delete"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></form>
+                        <!-- if user.image = null hide, else show th:style="${user.profileImagePath}==null ? 'display:none;' : 'z-index: 2;'-->
+                        <form th:action="@{/removeProfilePicture}" method="delete" ><img src="/deleteIcon.png" class="icon" width="25px" alt="deleteIcon"></form>
 
-                        <div id="root" th:name="image"></div>
+                        <div id="root"></div>
                     </row>
                 </table>
 
@@ -38,8 +38,9 @@
             <input type="file" id="img-input" class="button" th:name="image" accept=".jpg,.png,.jpeg">
             <br><label class="helper" >Must be filetype jpg, jpeg, or png, and will be cropped to 1:1 ratio</label><br>
             <p class="helper">Upload an image to see the preview</p><br><br>
-            <p id="error" th:text="${deleteMessage}"></p>
-            <button type="submit" name="submit-button" id="submit-button" onclick="uploadImage()">Save new Profile Picture</button>
+            <p class="error" th:text="${deleteMessage}"></p>
+            <p class="error" th:text="@{errorMessage}"></p>
+            <input class="button" type="submit" value="Save new Profile Picture" />
         </form><br>
     </div>
 
@@ -47,7 +48,6 @@
 </html>
 
 <script>
-    import EditUserController from "../../java/nz/ac/canterbury/seng302/portfolio/controller/EditUserController.java";
     let profileImageInput = document.getElementById("img-input");
 
     const MAX_PIXELS = 150;
@@ -94,7 +94,7 @@
                 ctx.drawImage(img, excessWidth/2, excessHeight/2, maxSize, maxSize, 0, 0, MAX_PIXELS, MAX_PIXELS);
                 document.getElementById("root").appendChild(canvas);
 
-                let imageData = canvas.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
+                let imageData = ctx.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
                 let byteArray = imageData.data;
                 //set file type
                 document.getElementById("fileType").value="png";
@@ -162,7 +162,7 @@
         display: inline-block;
     }
 
-    #error {
+    .error {
         margin-left: 10px;
         color: red;
         margin-top: 20px;
