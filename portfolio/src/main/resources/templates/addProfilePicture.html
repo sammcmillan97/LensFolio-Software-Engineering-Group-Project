@@ -13,7 +13,9 @@
 
         <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
             <!--HIDDEN-->
-            <input type="hidden" th:name="username"  th:value="${user.username}" />
+            <input type="hidden" th:name="username"  th:value="${user.username}" id="username"/>
+            <input type="hidden" th:name="fileContent" th:value="null" id="fileContent"/>
+            <input type="hidden" th:name="fileType" th:value="null" id="fileType"/>
 
             <h1>Update Profile Picture</h1><br>
 
@@ -24,9 +26,9 @@
                         <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
                         <!-- if user.image = null hide, else show-->
-                        <a th:href="@{/deleteProfilePicture}"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></img></a>
+                        <form th:action="@{/removeProfilePicture}" th:method="delete"><img src="/deleteIcon.png"  style="z-index: 2;" class="icon" width="25px" alt="deleteIcon"></form>
 
-                        <div id="root"></div>
+                        <div id="root" th:name="image"></div>
                     </row>
                 </table>
 
@@ -36,7 +38,8 @@
             <input type="file" id="img-input" class="button" th:name="image" accept=".jpg,.png,.jpeg">
             <br><label class="helper" >Must be filetype jpg, jpeg, or png, and will be cropped to 1:1 ratio</label><br>
             <p class="helper">Upload an image to see the preview</p><br><br>
-            <input class="button" type="submit" name="submit" value="Save Changes">
+            <p id="error" th:text="${deleteMessage}"></p>
+            <button type="submit" name="submit-button" id="submit-button" onclick="uploadImage()">Save new Profile Picture</button>
         </form><br>
     </div>
 
@@ -44,6 +47,7 @@
 </html>
 
 <script>
+    import EditUserController from "../../java/nz/ac/canterbury/seng302/portfolio/controller/EditUserController.java";
     let profileImageInput = document.getElementById("img-input");
 
     const MAX_PIXELS = 150;
@@ -89,6 +93,13 @@
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, excessWidth/2, excessHeight/2, maxSize, maxSize, 0, 0, MAX_PIXELS, MAX_PIXELS);
                 document.getElementById("root").appendChild(canvas);
+
+                let imageData = canvas.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
+                let byteArray = imageData.data;
+                //set file type
+                document.getElementById("fileType").value="png";
+                //set byteArray
+                document.getElementById("fileContent").value=byteArray;
             }
         }
     };
@@ -149,5 +160,12 @@
 
     #root {
         display: inline-block;
+    }
+
+    #error {
+        margin-left: 10px;
+        color: red;
+        margin-top: 20px;
+        margin-bottom: -20px;
     }
 </style>

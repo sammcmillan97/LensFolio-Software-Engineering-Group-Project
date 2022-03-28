@@ -17,6 +17,7 @@ public class UserAccountClientService {
 
     @GrpcClient("identity-provider-grpc-server")
     private UserAccountServiceGrpc.UserAccountServiceBlockingStub userStub;
+
     @GrpcClient("identity-provider-grpc-server")
     private UserAccountServiceGrpc.UserAccountServiceStub userNonBlockingStub;
 
