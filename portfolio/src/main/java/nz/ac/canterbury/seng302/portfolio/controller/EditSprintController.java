@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.util.Date;
+
 
 /**
  * Controller for the edit sprint details page
@@ -28,7 +30,7 @@ public class EditSprintController {
     @Autowired
     SprintService sprintService;
 
-    //private Sprint defaultSprint = new Sprint();
+    private Sprint defaultSprint = new Sprint(-1, "A Sprint", "Sprint #", "Here's a description", new Date(), new Date());
 
     @GetMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
@@ -56,6 +58,8 @@ public class EditSprintController {
         if (Integer.parseInt(sprintId) != -1) {
             Sprint sprint = sprintService.getSprintById(Integer.parseInt(sprintId));
             model.addAttribute("sprint", sprint);
+        } else {
+            model.addAttribute("sprint", defaultSprint);
         }
 
         /* Return the name of the Thymeleaf template */
