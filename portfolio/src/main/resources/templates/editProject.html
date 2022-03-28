@@ -30,7 +30,7 @@
                 <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
                 <label for="project-form__start-date-field">Project Start Date *</label>
-                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" required>
+                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" onchange="updateMinEndDate()" required>
 
                 <label for="project-form__end-date-field">Project End Date *</label>
                 <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" required>
