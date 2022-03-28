@@ -221,8 +221,8 @@ public class EditSprintController {
             @PathVariable("parentProjectId") String projectIdString,
             @PathVariable("sprintId") String sprintIdString,
             @RequestParam(value="sprintName") String sprintName,
-            @RequestParam(value="sprintStartDate") String sprintStartDateString,
-            @RequestParam(value="sprintEndDate") String sprintEndDateString,
+            @RequestParam(value="sprintStartDate") java.sql.Date sprintStartDate,
+            @RequestParam(value="sprintEndDate") java.sql.Date sprintEndDate,
             @RequestParam(value="sprintDescription") String sprintDescription,
             Model model
     ) {
@@ -235,8 +235,8 @@ public class EditSprintController {
         int sprintId = Integer.parseInt(sprintIdString);
         int projectId = Integer.parseInt(projectIdString);
 
-        Date sprintStartDate = Project.stringToDate(sprintStartDateString);
-        Date sprintEndDate = Project.stringToDate(sprintEndDateString);
+        //Date sprintStartDate = Project.stringToDate(sprintStartDateString);
+        //Date sprintEndDate = Project.stringToDate(sprintEndDateString);
 
         Sprint savedSprint;
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
