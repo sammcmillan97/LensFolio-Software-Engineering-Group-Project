@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.sql.Date;
+
 
 /**
  * Controller for the edit project details page
@@ -64,8 +66,8 @@ public class EditProjectController {
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("id") String projectId,
             @RequestParam(value="projectName") String projectName,
-            @RequestParam(value="projectStartDate") String projectStartDate,
-            @RequestParam(value="projectEndDate") String projectEndDate,
+            @RequestParam(value="projectStartDate") Date projectStartDate,
+            @RequestParam(value="projectEndDate") Date projectEndDate,
             @RequestParam(value="projectDescription") String projectDescription,
             Model model
     ) {
@@ -77,25 +79,18 @@ public class EditProjectController {
         int id = Integer.parseInt(projectId);
 
         Project savedProject;
-        // An id of -1 signals to create a new project
-        if (id == -1) {
+        //Try to find existing project and update if exists. Catch 'not found' error and save new project.
+        try {
+            Project existingProject = projectService.getProjectById(Integer.parseInt(projectId));
+            existingProject.setName(projectName);
+            existingProject.setStartDate(projectStartDate);
+            existingProject.setEndDate(projectEndDate);
+            existingProject.setDescription(projectDescription);
+            savedProject = projectService.saveProject(existingProject);
+
+        } catch(Exception ignored) {
             Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
             savedProject = projectService.saveProject(newProject);
-
-        // Otherwise edit the existing project matching id
-        } else {
-            try {
-                Project existingProject = projectService.getProjectById(Integer.parseInt(projectId));
-                existingProject.setName(projectName);
-                existingProject.setStartDateString(projectStartDate);
-                existingProject.setEndDateString(projectEndDate);
-                existingProject.setDescription(projectDescription);
-                savedProject = projectService.saveProject(existingProject);
-
-            } catch(Exception ignored) {
-                // TODO
-                return "redirect:/projects";
-            }
         }
 
         return "redirect:/projects/" + savedProject.getId();
