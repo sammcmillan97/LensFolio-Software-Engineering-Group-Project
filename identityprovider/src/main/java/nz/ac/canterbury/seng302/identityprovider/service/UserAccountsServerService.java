@@ -12,6 +12,7 @@ import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @GrpcService
@@ -223,7 +224,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setBio(user.getBio())
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
-                    .setCreated(user.getTimeCreated());
+                    .setCreated(user.getTimeCreated())
+                    .addAllRoles(user.getRoles());
         }
         return reply.build();
     }

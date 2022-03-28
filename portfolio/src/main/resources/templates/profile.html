@@ -5,7 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/styles/navbar.css}">
+    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
 </head>
 <body>
     <header th:replace="fragments/header :: header"> </header>
@@ -25,9 +28,10 @@
                 <p class="profile_body__content"><strong >Email </strong>  <p th:text="${user.email}" /> </p>
                 <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${date}" /> </p>
                 <p class="profile_body__content"><strong >Bio</strong><p th:text="${user.bio}" /> </p>
+                <p class="profile_body__content"><strong >Role</strong><p><span th:each="role, iterStat: ${user.rolesList}" th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"></span> </p> </p>
             </div>
+
         </div>
     </div>
-
 </body>
 </html>

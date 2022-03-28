@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Sprint
-@Table(name="SPRINTS")
+@Table(name="SPRINT")
 public class Sprint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

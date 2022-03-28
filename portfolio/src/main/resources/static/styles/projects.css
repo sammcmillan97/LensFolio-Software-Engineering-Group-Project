@@ -1,7 +1,7 @@
 :root {
     /* CSS variables */
     --color-primary: #FBAA60;
-    --color-secondary: #FBC490;
+    --color-secondary: #FADFC6FF;
     --color-tertiary: #F67B50;
     --color-complement: #F4EAE6;
     --color-accent: #A82810;
@@ -18,6 +18,11 @@ html {
     scrollbar-width: none; /* Firefox */
 }
 
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
 
 /******************** Project Cards ********************/
 
@@ -27,7 +32,7 @@ html {
     margin-bottom: 1rem;
 }
 
-.project, #new-project-button, .project__button-wrapper button {
+.project, #new-project-button, .project__button-wrapper button, .title_project_buttons button {
     padding-top: 0;
     padding-bottom: 0;
     border: 1px solid var(--color-accent);
@@ -99,34 +104,40 @@ html {
     font-size: 1.5rem;
 }
 
-#new-project-button:hover, .project__button-wrapper button:hover {
+#new-project-button:hover, .project__button-wrapper button:hover, .title_project_buttons button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
 
-/* The popup form - hidden by default */
-.edit-add-popup {
-    display: none;
+/******************** Add/Edit Project Form ********************/
+
+#add-edit__popup {
+    display: block;
+}
+
+/* The popup form */
+#add-edit__form {
+    display: block;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     border: 1px solid var(--color-accent);
-    background-color: #FADFC6FF;
+    background-color: var(--color-secondary);
     overflow: hidden;
     border-radius: 1.5rem;
     z-index: 9;
 }
 
 /* Add styles to the form container */
-.form-container {
+#add-edit__form {
     width: 600px;
     padding: 10px;
-    background-color: #FADFC6FF;
+    background-color: var(--color-secondary);
 }
 
  /*Full-width input fields*/
-.form-container .edit-input {
+#add-edit__form .edit-input {
     width: calc(100% - 30px);
     padding: 15px;
     margin: 5px 20px 25px 0;
@@ -137,13 +148,13 @@ html {
 }
 
 /* When the inputs get focus, do something */
-.form-container .edit-input:focus {
+#add-edit__form .edit-input:focus {
     background-color: #ddd;
     outline: none;
 }
 
 /* Set a style for the  button */
-.form-container .button {
+#add-edit__form button {
     background-color: var(--color-complement);
     color: black;
     padding: 16px 20px;
@@ -159,13 +170,13 @@ html {
 
 
  /*Add some hover effects to buttons */
-.form-container .button:hover, .open-button:hover {
+#add-edit__form button:hover {
      background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
      cursor: pointer;
 }
 
-.fullscreen-div {
-    display: none;
+#add-edit__overlay {
+    display: block;
     position: fixed;
     width: 100%;
     height: 100%;
@@ -184,4 +195,47 @@ html {
 
 .sprint__description {
     padding-bottom: 1rem;
+}
+
+.sprint__name {
+    margin: 0 10rem 0 0;
+    padding: 0;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.title_project_buttons button {
+    /* Position & Size */
+    margin-right: 1rem;
+    padding: 0px;
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.title_button_wrapper {
+    padding: 12px 10px 5px 10px;
+    margin: 32px;
+    align-items: baseline;
+    justify-content: start;
+}
+
+.title-project_description {
+    padding-left: 20px;
+    font-size: 1.2rem;
+}
+
+.header__paragraph {
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-top: 1px solid var(--color-primary);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    margin-bottom: 20px;
 }
