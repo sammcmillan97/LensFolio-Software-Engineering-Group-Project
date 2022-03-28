@@ -1,25 +1,30 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/planner.css">
     <link rel="stylesheet" href="/styles/main.css">
-    <script rel="script" src="/scripts/planner.js"></script>
     <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
     <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
-    <script>
 
+    <script type="text/javascript" th:inline="javascript">
+        console.log([[${project.getEndDateCalendarString}]])
+        console.log(([[${project.getStartDateCalendarString}]]))
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
+                validRange: {
+                    start: [[${project.getStartDateCalendarString}]],
+                    end: [[${project.getEndDateCalendarString}]]},
                 initialView: 'dayGridMonth'
             });
             calendar.render();
         });
-
     </script>
+
+
 </head>
 <body>
 <!-- Import the application's navigation bar. -->
@@ -36,7 +41,9 @@
     <div class="header__paragraph">
         <p class="title-project_description" th:text="${project.getDescription()}"/>
     </div>
+    <div class="calendar-container">
     <div id='calendar'></div>
+    </div>
 </div>
 </body>
 </html>
