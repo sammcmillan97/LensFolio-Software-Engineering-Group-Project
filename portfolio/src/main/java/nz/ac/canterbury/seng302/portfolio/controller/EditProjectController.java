@@ -48,7 +48,7 @@ public class EditProjectController {
         model.addAttribute("user", user);
 
         int id = Integer.parseInt(projectId);
-        Project project = new Project();
+        Project project;
 
         // If editing existing project
         if (id != -1) {
@@ -57,11 +57,12 @@ public class EditProjectController {
                 project = projectService.getProjectById(id);
             } catch (Exception ignored) {
                 // TODO
+                project = defaultProject;
             }
 
         // Otherwise, we are adding new project, so setup default values
         } else {
-            project = defaultProject;
+            project = new Project();
             // Set project name with current year
             Calendar cal = Calendar.getInstance();
             project.setName("Project " + cal.get(Calendar.YEAR));
