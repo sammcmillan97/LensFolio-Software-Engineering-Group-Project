@@ -1,30 +1,40 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/planner.css">
     <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
+
+    <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        let projectStartDate = [[${project.getStartDateCalendarString}]]
+        let projectEndDate = [[${project.getEndDateCalendarString}]]
+    </script>
     <script rel="script" src="/scripts/planner.js"></script>
+
+
 </head>
 <body>
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<div id="page-content">
+<div id="page-content" class="page__content">
     <!-- Populate the following div with projects and their details. -->
     <div class="header">
         <div class="title">
-            <p class="title-name" th:text="${project.getName}" />
-            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
+            <p class="title-name" th:text="${project.getName}"></p>
+            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}"></p>
         </div>
     </div>
     <div class="header__paragraph">
-        <p class="title-project_description" th:text="${project.getDescription()}"/>
+        <p class="title-project_description" th:text="${project.getDescription()}"></p>
     </div>
-    <div id="project-wrapper" class="flex-column">
-
+    <div class="calendar__container">
+        <div id='calendar'></div>
     </div>
 </div>
 </body>

@@ -72,6 +72,16 @@ public class Project {
         return new SimpleDateFormat("dd/MMM/yyyy").format(date);
     }
 
+    /**
+     * Gets the string form of the given date in
+     *
+     * @param date the date to convert
+     * @return the given date, as a string in format 01/Jan/2000
+     */
+    static String dateToCalenderString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    }
+
     /* Getters/Setters */
 
     public int getId(){
@@ -127,4 +137,12 @@ public class Project {
     public void setEndDateString(String date) {
         this.projectStartDate = Project.stringToDate(date);
     }
+
+    public String getStartDateCalendarString() {return  Project.dateToCalenderString((this.projectStartDate)); }
+
+    public String getEndDateCalendarString() {
+        Calendar tempEndDate = Calendar.getInstance();
+        tempEndDate.setTime(this.getEndDate());
+        tempEndDate.add(Calendar.DATE, 1);
+        return  Project.dateToCalenderString((tempEndDate.getTime())); }
 }
