@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
+import java.util.Calendar;
 
 
 /**
@@ -46,13 +48,30 @@ public class EditProjectController {
         model.addAttribute("user", user);
 
         int id = Integer.parseInt(projectId);
+        Project project = new Project();
 
-        Project project;
-        try {
-            project = projectService.getProjectById(id);
-        } catch (Exception ignored) {
-            // TODO
+        // If editing existing project
+        if (id != -1) {
+            // Try to find existing project
+            try {
+                project = projectService.getProjectById(id);
+            } catch (Exception ignored) {
+                // TODO
+            }
+
+        // Otherwise, we are adding new project, so setup default values
+        } else {
             project = defaultProject;
+            // Set project name with current year
+            Calendar cal = Calendar.getInstance();
+            project.setName("Project " + cal.get(Calendar.YEAR));
+
+            // Set project start date as current date
+            project.setStartDate(Date.from(cal.toInstant()));
+
+            // Set project end date as 8 months after start
+            cal.add(Calendar.MONTH, 8);
+            project.setEndDate(Date.from(cal.toInstant()));
         }
 
         /* Add project details to the model */
