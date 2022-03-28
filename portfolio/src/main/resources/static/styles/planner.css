@@ -1,12 +1,24 @@
-.fc-scrollgrid {
-    border-color: black;
-}
+/*.fc-scrollgrid {*/
+/*    border-color: black;*/
+/*}*/
 
-.fc-scroll-section {
-    border-color: black;
-}
+/*.fc-scroll-section {*/
+/*    border-color: black;*/
+/*}*/
 
-.fc .fc-cell-shaded,
-.fc .fc-day-disabled {
-    background: white;
-}
+/*.fc .fc-cell-shaded,*/
+/*.fc .fc-day-disabled {*/
+/*    background: white;*/
+/*}*/
+
+/*.page__content {*/
+/*    height: 100vh;*/
+/*    display:flex;*/
+/*    flex-direction:column;*/
+/*}*/
+/*.calendar__container {*/
+/*    display: flex;*/
+/*    flex: 1;*/
+/*    flex-direction: column;*/
+/*    height: 100%;*/
+/*}*/

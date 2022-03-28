@@ -7,48 +7,14 @@
     <link rel="stylesheet" href="/styles/planner.css">
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
-    <script rel="script" src="/scripts/calendar.js"></script>
+
     <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
 
     <script type="text/javascript" th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            let projectStartDate = [[${project.getStartDateCalendarString}]]
-            let projectEndDate = [[${project.getEndDateCalendarString}]]
-
-
-            let calculatedMonth = parseInt(projectEndDate.slice(5,7), 10) + 1;
-            if (calculatedMonth <= 9) {
-                calculatedMonth = "0" + calculatedMonth.toString()
-            } else {
-                calculatedMonth.toString()
-            }
-            let calculatedEndDate = projectEndDate.slice(0,5) + calculatedMonth + "-" + "00"
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                validRange: {
-                    start: projectStartDate.slice(0,8) + "01",
-                    end: calculatedEndDate
-                },
-                events: [
-
-                    {
-                        start: projectStartDate,
-                        end: projectEndDate,
-                        display: 'inverse-background',
-                        backgroundColor: "#CCCCCC"
-                    }
-
-                ],
-                initialView: 'dayGridMonth',
-                initialDate: [[${project.getStartDateCalendarString}]]
-                // selectConstraint: {
-                //     start: [[${project.getStartDateCalendarString}]],
-                //     end: [[${project.getEndDateCalendarString}]]
-                // }
-            });
-            calendar.render();
-        });
+        let projectStartDate = [[${project.getStartDateCalendarString}]]
+        let projectEndDate = [[${project.getEndDateCalendarString}]]
     </script>
+    <script rel="script" src="/scripts/planner.js"></script>
 
 
 </head>
@@ -56,19 +22,19 @@
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<div id="page-content">
+<div id="page-content" class="page__content">
     <!-- Populate the following div with projects and their details. -->
     <div class="header">
         <div class="title">
-            <p class="title-name" th:text="${project.getName}" />
-            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
+            <p class="title-name" th:text="${project.getName}"></p>
+            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}"></p>
         </div>
     </div>
     <div class="header__paragraph">
-        <p class="title-project_description" th:text="${project.getDescription()}"/>
+        <p class="title-project_description" th:text="${project.getDescription()}"></p>
     </div>
-    <div class="calendar-container">
-    <div id='calendar'></div>
+    <div class="calendar__container">
+        <div id='calendar'></div>
     </div>
 </div>
 </body>
