@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ChangePasswordResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -78,7 +79,12 @@ public class ChangePasswordController {
         if (changePasswordResponse.getIsSuccess()) {
             model.addAttribute("success", changePasswordResponse.getMessage());
         } else {
-            model.addAttribute("failure", changePasswordResponse.getValidationErrors(0).getErrorText());
+            StringBuilder failure = new StringBuilder();
+            for (ValidationError error: changePasswordResponse.getValidationErrorsList()) {
+                failure.append("\n");
+                failure.append(error.getErrorText());
+            }
+            model.addAttribute("failure", failure);
         }
         return "changePassword";
     }
