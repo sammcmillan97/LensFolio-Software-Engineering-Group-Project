@@ -17,7 +17,7 @@ public class Sprint {
     private Date sprintStartDate;
     private Date sprintEndDate;
 
-    protected Sprint() {}
+    public Sprint() {}
 
     public Sprint(int parentProjectId, String sprintName, int sprintNumber, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
         this.parentProjectId = parentProjectId;
@@ -53,6 +53,9 @@ public class Sprint {
     }
     public void setNumber(int number) {
         sprintNumber = number;
+    }
+    public String getLabel() {
+        return "Sprint " + sprintNumber;
     }
     public String getDescription(){
         return sprintDescription;
