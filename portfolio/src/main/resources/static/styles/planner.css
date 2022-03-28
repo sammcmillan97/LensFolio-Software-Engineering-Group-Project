@@ -5,3 +5,8 @@
 .fc-scroll-section {
     border-color: black;
 }
+
+.fc .fc-cell-shaded,
+.fc .fc-day-disabled {
+    background: white;
+}
