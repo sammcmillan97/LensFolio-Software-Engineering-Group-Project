@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 
-import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
@@ -13,10 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 @Controller
 public class EditUserController {
@@ -85,7 +80,7 @@ public class EditUserController {
         EditUserResponse editUserResponse;
 
         //some validation, could use more, same as register
-        if (email.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
+        if (email.isBlank() || firstName.isBlank() || lastName.isBlank()){
             //due to form resetting, you need to get the existing user again
             UserResponse user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);

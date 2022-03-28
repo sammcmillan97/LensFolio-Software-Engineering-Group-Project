@@ -45,7 +45,7 @@ public class ProfileController {
         UserResponse user = userService.getUserAccountById(id);
 
         model.addAttribute("user", user);
-        model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
+        model.addAttribute("name", user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
         model.addAttribute("date", getTimeSinceCreated(user.getCreated()));
         return "profile";
     }
