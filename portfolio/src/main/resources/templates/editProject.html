@@ -36,7 +36,7 @@
                 <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" required>
 
                 <button type="submit" id="project-form__save">Save Changes</button>
-                <a id="project-form__discard" th:href="@{/projects/{id}(id=${projectId})}">Discard</a>
+                <a id="project-form__discard" th:href="@{/projects}">Discard</a>
             </form>
         </div>
     </div>
