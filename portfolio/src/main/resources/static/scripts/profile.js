@@ -5,8 +5,8 @@ function openNav() {
     document.getElementById("site-navigation").classList.add("expanded");
     document.getElementById("page-content").classList.remove("expanded");
     document.getElementById("page-content").classList.add("constrict");
-    document.getElementsByTagName("header").item(0).classList.add("constrict")
-    document.getElementsByTagName("header").item(0).classList.remove("expanded")
+    document.getElementById("header").classList.add("constrict")
+    document.getElementById("header").classList.remove("expanded")
 
 }
 
@@ -15,8 +15,8 @@ function closeNav() {
     document.getElementById("site-navigation").classList.add("collapsed");
     document.getElementById("page-content").classList.remove("constrict");
     document.getElementById("page-content").classList.add("expanded");
-    document.getElementsByTagName("header").item(0).classList.add("expanded")
-    document.getElementsByTagName("header").item(0).classList.remove("constrict")
+    document.getElementById("header").classList.add("expanded")
+    document.getElementById("header").classList.remove("constrict")
 
 
 }
