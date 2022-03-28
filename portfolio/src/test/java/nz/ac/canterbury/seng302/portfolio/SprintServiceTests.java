@@ -1,9 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio;
 
-import nz.ac.canterbury.seng302.portfolio.entities.Sprint;
-import nz.ac.canterbury.seng302.portfolio.repositories.SprintRepository;
-import nz.ac.canterbury.seng302.portfolio.entities.Project;
-import nz.ac.canterbury.seng302.portfolio.repositories.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
+import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class ProjectsIntegrationTests {
+class SprintsIntegrationTests {
     @Autowired
     private SprintRepository sprintRepository;
     @Autowired
@@ -44,8 +45,8 @@ class ProjectsIntegrationTests {
         testProject1 = new Project("Project1", "Test Project 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         testProject1 = projectRepository.save(testProject1);
 
-        testSprint1 = new Sprint(testProject1.getId(), "Test Sprint 1", "Sprint 1", "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-        testSprint2 = new Sprint(testProject1.getId(), "Test Sprint 1", "Sprint 1", "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        testSprint1 = new Sprint(testProject1.getId(), "Test Sprint 1", 1, "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        testSprint2 = new Sprint(testProject1.getId(), "Test Sprint 1", 2, "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         testSprint1 = sprintRepository.save(testSprint1);
         testSprint2 = sprintRepository.save(testSprint2);
 
@@ -53,7 +54,7 @@ class ProjectsIntegrationTests {
         testProject2 = new Project("Project2", "Test Project 2", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         testProject2 = projectRepository.save(testProject2);
 
-        testSprint3 = new Sprint(testProject2.getId(), "Test Sprint 1", "Sprint 1", "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
+        testSprint3 = new Sprint(testProject2.getId(), "Test Sprint 1", 1, "Test sprint 1", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         testSprint3 = sprintRepository.save(testSprint3);
     }
 
