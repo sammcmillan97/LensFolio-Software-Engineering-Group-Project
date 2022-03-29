@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Header Bar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+</head>
+
+<body>
+    <header id="page-header" class="constrict" th:fragment="header">
+        <link rel="stylesheet" href="/styles/navbar.css">
+        <script rel="text/javascript" th:src="@{/scripts/navbar.js}"></script>
+        <ul>
+            <a><span style="font-size: 30px; cursor: pointer" onclick="toggleNavbarVisibility()">&#9776</span></a>
+            <li> <p th:text="${user.username}"></p></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
+                <div class="dropdown-content">
+                    <a th:href="@{/login}">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </header>
+</body>

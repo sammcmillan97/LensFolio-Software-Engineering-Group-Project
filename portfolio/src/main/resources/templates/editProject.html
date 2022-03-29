@@ -3,41 +3,42 @@
 <head>
     <title>Edit Project</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/main.css}" rel="stylesheet" />
-    <link th:href="@{/styles/form.css}" rel="stylesheet" />
+    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{/styles/addEditProject.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{/scripts/addEditProject.js}"></script>
 </head>
 <body>
-<div class="header">
-    <div class="title">
-        <div class="title-name">Edit Project</div>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
+
+    <!-- Page content -->
+    <div id="page-content" class="constrict">
+        <div id="project-form__wrapper">
+            <!-- Name, Date -->
+            <header class="project-form__header flex-column">
+                <h1 id="project__name" th:text="${projectName}"></h1>
+            </header>
+
+            <!-- Add/Edit Project Form -->
+            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${projectId})}" th:method="post">
+                <label for="project-form__name-field">Project Name *</label>
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${projectName}" th:value="${projectName}" required>
+
+                <label for="project-form__description-field">Project Description</label>
+                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
+
+                <label for="project-form__start-date-field">Project Start Date *</label>
+                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>
+
+                <label for="project-form__end-date-field">Project End Date *</label>
+                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" onchange="updateMaxStartDate()" required>
+
+                <button type="submit" id="project-form__save">Save Changes</button>
+                <a id="project-form__discard" th:href="@{/projects}">Discard</a>
+            </form>
+        </div>
     </div>
-</div>
-<div class="content">
-<form th:action="@{/edit-project}"
-      method="post">
-    <label for="projectName">Project Name</label> <br/>
-    <input id="projectName" type="text" th:name="projectName" th:value="*{projectName}">
-    <br/>
-    <div class="horizontal-group">
-    <div class="horizontal-group-element" >
-        <label for="projectStartDate">Project Start Date</label> <br/>
-        <input id="projectStartDate" type="text" th:name="projectStartDate" th:value="*{projectStartDate}">
-    </div>
-    <div class="horizontal-group-element" >
-        <label for="projectEndDate">Project End Date</label> <br/>
-        <input id="projectEndDate" type="text" th:name="projectEndDate" th:value="*{projectEndDate}">
-    </div>
-    </div>
-    <div>
-        <label for="projectDescription">Project Description</label> <br/>
-        <textarea class="description-input" id="projectDescription" th:name="projectDescription" th:text="*{projectDescription}"></textarea>
-    </div>
-    <br/>
-    <button class="cancel" type="button">
-        <a th:href="@{'/projects/'}">Cancel</a>
-    </button>
-    <button class="save" type="submit">Save</button>
-</form>
-</div>
 </body>
 </html>

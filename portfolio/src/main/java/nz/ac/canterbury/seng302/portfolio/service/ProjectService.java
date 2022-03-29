@@ -40,9 +40,9 @@ public class ProjectService {
         }
     }
 
-    public void saveProject(Project project) {
-        Project projectSaved = repository.save(project);
-
+    public Project saveProject(Project project) {
+        Project savedProject = repository.save(project);
+        return savedProject;
     }
 
     public void deleteProjectById(int id) throws Exception {

@@ -35,27 +35,30 @@ class IdentityproviderApplicationTests {
         testId = testUser.getUserId();
     }
 
+    //Tests that the findByUserId function works
     @Test
-    public void testGetById() {
-        assert Objects.equals(testUsername, repository.findByUserId(testId).getUsername());
+    void testGetById() {
+        assertEquals(testUsername, repository.findByUserId(testId).getUsername());
     }
 
+    //Tests that the findByUsername function works
     @Test
-    public void testGetByUsername() {
-        assert Objects.equals(testUsername, repository.findByUsername(testUsername).getUsername());
+    void testGetByUsername() {
+        assertEquals(testUsername, repository.findByUsername(testUsername).getUsername());
     }
 
+    //Tests that when the user is created, all fields are put in the right locations
     @Test
-    public void testAllFieldsInPlace() {
+    void testAllFieldsInPlace() {
         User testUser = repository.findByUserId(testId);
-        assert Objects.equals(testUser.getUsername(), testUsername);
-        assert Objects.equals(testUser.getFirstName(), testFirstName);
-        assert Objects.equals(testUser.getMiddleName(), testMiddleName);
-        assert Objects.equals(testUser.getLastName(), testLastName);
-        assert Objects.equals(testUser.getNickname(), testNickname);
-        assert Objects.equals(testUser.getBio(), testBio);
-        assert Objects.equals(testUser.getPersonalPronouns(), testPronouns);
-        assert Objects.equals(testUser.getEmail(), testEmail);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName, testUser.getFirstName());
+        assertEquals(testMiddleName, testUser.getMiddleName());
+        assertEquals(testLastName, testUser.getLastName());
+        assertEquals(testNickname, testUser.getNickname());
+        assertEquals(testBio, testUser.getBio());
+        assertEquals(testPronouns, testUser.getPersonalPronouns());
+        assertEquals(testEmail, testUser.getEmail());
         //as the password is stored encrypted, it needs to be checked differently
         assertTrue(testUser.checkPassword(testPassword));
     }

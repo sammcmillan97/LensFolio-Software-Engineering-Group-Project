@@ -7,12 +7,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.security.SecureRandom;
-import java.sql.Time;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.*;
 
 
 @Entity
@@ -33,7 +33,6 @@ public class User {
     @Size(max=64, message="First name must be less than 65 characters")
     private String firstName;
 
-    @NotBlank(message="Middle name cannot be empty")
     @Size(max=64, message="Middle name must be less than 65 characters")
     private String middleName;
 
@@ -59,6 +58,9 @@ public class User {
     @Size(min=8, message="Password must be at least 8 characters")
     @Size(max=64, message="Password must be less than 65 characters")
     private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<UserRole> roles = new HashSet<>();
 
     @Column(length = 1024)
     private Timestamp timeCreated;
@@ -86,6 +88,7 @@ public class User {
         this.email = email;
         this.password = encryptPassword(password);
         this.timeCreated = this.getCurrentTime();
+        this.addRole(UserRole.STUDENT);
     }
 
     /**
@@ -114,8 +117,10 @@ public class User {
         this.email = email;
         this.password = encryptPassword(password);
         this.timeCreated = timestamp;
+        this.addRole(UserRole.STUDENT);
     }
 
+    // Empty constructor is needed for JPA
     protected User() {
     }
 
@@ -201,6 +206,19 @@ public class User {
 
     public Timestamp getTimeCreated(){ return this.timeCreated; }
 
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void addRole(UserRole role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        this.roles.remove(role);
+    }
+
+
 
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
@@ -223,13 +241,15 @@ public class User {
     }
 
     /**
-     * Generate the current date given the system default zone id
-     * @return LocalDate
+     * Returns the current time
+     * @return A google.protobuf.Timestamp object representing the current time
      */
     private Timestamp getCurrentTime(){
         Instant time = Instant.now();
         return Timestamp.newBuilder().setSeconds(time.getEpochSecond())
                 .setNanos(time.getNano()).build();
     }
+
+
 
 }

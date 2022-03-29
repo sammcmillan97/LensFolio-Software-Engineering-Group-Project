@@ -52,7 +52,7 @@ public class SprintServiceTest {
     void whenNoSprints_testSaveSprintToSameProject() {
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(0);
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(1);
@@ -60,11 +60,11 @@ public class SprintServiceTest {
     //When there is one sprint in the database, test saving a sprint using sprint service.
     @Test
     void whenOneSprint_testSaveSprintToSameProject() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(1);
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(2);
@@ -72,17 +72,17 @@ public class SprintServiceTest {
     //When there are many sprints in the database, test saving a sprint using sprint service.
     @Test
     void whenManySprints_testSaveSprintToSameProject() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",3, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",4, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(4);
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",5, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(5);
@@ -90,12 +90,12 @@ public class SprintServiceTest {
     //When there is one sprint in a project in the database, test saving a sprint to a different project.
     @Test
     void whenOneSprint_testSaveSprintToDifferentProject() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(1);
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(2);
@@ -103,20 +103,20 @@ public class SprintServiceTest {
     //When there is many sprints in each project in the database, test saving sprints to each different project.
     @Test
     void whenManySprints_testSaveSprintToDifferentProject() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",3, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",4, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(4);
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",5, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",6, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(6);
@@ -131,7 +131,7 @@ public class SprintServiceTest {
     //When there is one sprint in the database, test retrieving all sprints using sprint service.
     @Test
     void whenOneSprintSaved_testGetAllSprints() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(1);
@@ -140,13 +140,13 @@ public class SprintServiceTest {
     //When there are many sprints in the database, test retrieving all sprints using sprint service.
     @Test
     void whenManySprintsSaved_testGetAllSprints() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",3, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",4, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(4);
@@ -167,7 +167,7 @@ public class SprintServiceTest {
     //When the sprint id does exist, test retrieving the sprint by its id.
     @Test
     void whenSprintIdExists_testGetSprintById() throws Exception {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
@@ -190,7 +190,7 @@ public class SprintServiceTest {
     //When one sprint is saved to the database, test retrieving sprints by parent project id.
     @Test
     void whenOneSprintSaved_testGetByParentProjectId() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(1);
@@ -200,13 +200,13 @@ public class SprintServiceTest {
     //When many sprints are saved to the database, test retrieving sprints by parent project id.
     @Test
     void whenManySprintsSaved_testGetByParentProjectId() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",3, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",4, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(4);
@@ -216,13 +216,13 @@ public class SprintServiceTest {
     //When many sprints are saved to many projects in the database, test retrieving sprints by parent project id.
     @Test
     void whenManySprintsSavedToDifferentProjects_testGetByParentProjectId() {
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",3, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint","Sprint 1", "Description",
+        sprintService.saveSprint(new Sprint(projects.get(1).getId(), "Test Sprint",4, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         assertThat(sprints.size()).isEqualTo(4);
