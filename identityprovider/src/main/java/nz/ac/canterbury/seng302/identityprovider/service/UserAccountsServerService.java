@@ -15,10 +15,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
+
+    private static final String USER_ID_FIELD = "userId";
+    private static final String USERNAME_FIELD = "username";
+    private static final String FIRST_NAME_FIELD = "firstName";
+    private static final String MIDDLE_NAME_FIELD = "middleName";
+    private static final String LAST_NAME_FIELD = "lastName";
+    private static final String NICKNAME_FIELD = "nickname";
+    private static final String BIO_FIELD = "bio";
+    private static final String EMAIL_FIELD = "email";
+    private static final String PRONOUNS_FIELD = "personalPronouns";
+    private static final String PASSWORD_FIELD = "password";
+    private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
 
     @Autowired
     private UserRepository repository;
@@ -53,7 +66,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 .orElse("NOT FOUND");
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
-
 
 
     /**
@@ -111,7 +123,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             @Override
             public void onCompleted() { //This is where to put the server's implementation after all messages are sent
                 if (metaData == null) {
-                     responseObserver.onError(new IllegalStateException());
+                    responseObserver.onError(new IllegalStateException());
                 } else {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
@@ -196,9 +208,23 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return response;
     }
 
+
+    /**
+     * If the user is authenticated as the user they want to change the password for, attempt to change their password
+     * @param request The request to change the user's password
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {
-        ChangePasswordResponse reply = changeUserPasswordHandler(request);
+        ChangePasswordResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = changeUserPasswordHandler(request);
+        } else {
+            reply = ChangePasswordResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Password change failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -240,9 +266,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as the user they want to edit, attempt to edit the user
+     * @param request The request to edit the user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
-        EditUserResponse reply = editUserHandler(request);
+        EditUserResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = editUserHandler(request);
+        } else {
+            reply = EditUserResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Edit user failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -293,9 +332,19 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as any valid user, attempt to get the information of the requested user
+     * @param request The request to get the user's information
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void getUserAccountById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
-        UserResponse reply = getUserAccountByIdHandler(request);
+        UserResponse reply;
+        if (isAuthenticated()) {
+            reply = getUserAccountByIdHandler(request);
+        } else {
+            reply = UserResponse.newBuilder().build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -332,6 +381,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * Attempt to register a user. Does not check authentication.
+     * @param request The request to register a user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void register(UserRegisterRequest request, StreamObserver<UserRegisterResponse> responseObserver) {
 
@@ -363,7 +417,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         String password = request.getPassword();
 
         if (repository.findByUsername(username) != null) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName(USERNAME_FIELD).build();
             reply.addValidationErrors(validationError);
         }
 
@@ -407,12 +461,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (username.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (username.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -427,11 +481,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (firstName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName("firstName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (firstName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName("firstName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -446,7 +500,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (middleName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName(MIDDLE_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -461,11 +515,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (lastName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName("lastName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (lastName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName("lastName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -480,7 +534,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (nickname.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName("nickname").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName(NICKNAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -495,7 +549,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (bio.length() > 1024) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName("bio").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName(BIO_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -510,7 +564,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (personalPronouns.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName("personalPronouns").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -525,15 +579,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (email.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         } else if (!email.contains("@")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (email.length() > 255) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -548,12 +602,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (password.length() < 8) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (password.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName("password").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -567,7 +621,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkUserExists(int userId) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (!repository.existsById(userId)) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("User does not exist").setFieldName("userId").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("User does not exist").setFieldName(USER_ID_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -585,17 +639,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
         User tempUser = repository.findByUserId(userId);
         if (Boolean.FALSE.equals(tempUser.checkPassword(currentPassword))) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Current password is incorrect").setFieldName("currentPassword").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Current password is incorrect").setFieldName(CURRENT_PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
     }
-
-
-
-
-
-
 
 
 

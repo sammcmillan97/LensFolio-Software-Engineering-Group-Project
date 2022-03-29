@@ -1,4 +1,114 @@
-/******************** Navigation bar ********************/
+:root {
+    font-size: 16px;
+
+    /* CSS variables */
+    --site-navigation-width: 200px;
+    --color-primary: #FBAA60;
+    --color-secondary: #FBC490;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/******************** Elements ********************/
+
+h1 {
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-size: 30px;
+    margin-block: unset;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-weight: 200;margin: 0;
+    background-color: rgba(251, 196, 144, 0.5); /* Secondary Colour */
+}
+
+h5 {
+    font-size: 1.5rem;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+/******************** Top Navigation bar ********************/
+
+#header {
+    margin: 0 0 0 var(--site-navigation-width);
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+    color: var(--color-complement);
+    list-style-type: none;
+}
+
+.header__list {
+    margin: 0;
+    padding: 0;
+
+}
+
+.header__item {
+    float: right;
+    padding-right: 10px;
+    list-style-type: none;
+}
+
+.header__item a, .header__dropdown_button {
+    display: inline-block;
+    color: var(--color-complement);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.header__item a:hover, .header__dropdown:hover .header__dropdown_button {
+    background-color: var(--color-complement);
+}
+
+.header__dropdown {
+    display: inline-block;
+    float: right;
+}
+
+.header__dropdown_content {
+    display: none;
+    position: absolute;
+    background-color: var(--color-secondary);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.header__dropdown_content a {
+    color: var(--color-complement);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.header__dropdown_content a:hover {
+    background-color: #f1f1f1;
+}
+
+.header__dropdown:hover .header__dropdown_content {
+    display: block;
+}
+
+
+
+/******************** Side Navigation bar ********************/
 
 #site-navigation {
     /* Position & size */
@@ -17,6 +127,15 @@
     /* Text */
     color: var(--color-complement);
     text-outline: var(--color-accent);
+}
+
+#site-navigation.expanded {
+    width: var(--site-navigation-width);
+    visibility: visible;
+}
+
+#site-navigation.collapsed {
+    visibility: hidden;
 }
 
 .site-navigation__list {
@@ -62,4 +181,20 @@
 
 .site-navigation__link:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+}
+
+
+/******************** Page content ********************/
+
+#page-content {
+    display: block;
+    padding: 1rem;
+}
+
+#page-content.constrict, #header.constrict{
+    margin-left: var(--site-navigation-width);
+}
+
+#page-content.expanded, #header.expanded {
+    margin-left: 0;
 }

@@ -43,8 +43,17 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
 
-        if (user != null && user.checkPassword(request.getPassword())) {
-
+        if (user == null) {
+            reply
+                    .setMessage("Log in attempt failed: username not registered")
+                    .setSuccess(false)
+                    .setToken("");
+        } else if (Boolean.FALSE.equals(user.checkPassword(request.getPassword()))) {
+            reply
+                    .setMessage("Log in attempt failed: password incorrect")
+                    .setSuccess(false)
+                    .setToken("");
+        } else {
             ArrayList<String> usersRoles = new ArrayList<>();
             for (UserRole role: user.getRoles()) {
                 if (role == UserRole.STUDENT) {
@@ -69,11 +78,6 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
                     .setToken(token)
                     .setUserId(user.getUserId())
                     .setUsername(user.getUsername());
-        } else {
-            reply
-                    .setMessage("Log in attempt failed: username or password incorrect")
-                    .setSuccess(false)
-                    .setToken("");
         }
 
         return reply.build();

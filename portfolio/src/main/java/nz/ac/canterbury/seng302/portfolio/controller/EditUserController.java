@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 
-import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 @Controller
 public class EditUserController {
@@ -109,21 +105,17 @@ public class EditUserController {
 
         //if edit user was successful
         if (editUserResponse.getIsSuccess()){
-            //generic model attribut that need to be set for the profile page
-            model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
-            Timestamp ts = user.getCreated();
-            Instant timeCreated = Instant.ofEpochSecond( ts.getSeconds() , ts.getNanos() );
-            LocalDate dateCreated = timeCreated.atZone( ZoneId.systemDefault() ).toLocalDate();
-            long months = ChronoUnit.MONTHS.between(dateCreated, LocalDate.now());
-            String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
-            model.addAttribute("date", formattedDate);
-            return "profile";
+            return "redirect:/profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("editMessage", "");
-            model.addAttribute("editMessage", editUserResponse.getMessage());
+            StringBuilder editMessage = new StringBuilder();
+            for (ValidationError error: editUserResponse.getValidationErrorsList()) {
+                editMessage.append("\n");
+                editMessage.append(error.getErrorText());
+            }
+            model.addAttribute("editMessage", editMessage);
             return "/editUser";
         }
     }
-
 }

@@ -3,146 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
+    <link rel="stylesheet" th:href="@{/css/editUser.css}">
+
 </head>
 <body>
-<div class="main">
-    <!--Link designed as button will take the user back to login-->
-    <a th:href="@{/profile}" class="button">Back</a>
+        <header th:replace="fragments/header :: header"> </header>
+        <nav th:replace="fragments/navbar :: nav"></nav>
 
-    <div style="text-align:center;">
-        <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
-    </div>
+        <div id="page-content" class="constrict">
+            <div class="container">
 
-    <p th:text="${editMessage}"></p>
-    <p th:text="${errorMessage}"></p>
-    <br>
+             <!-- form puts the params to the register controller-->
+            <form th:action="@{/editUser}" method="post">
 
-    <!-- form puts the params to the register controller-->
-    <form th:action="@{/editUser}" method="post">
-
-        <div>
-            <input type="hidden" th:name="username"  th:value="${user.username}" />
-            <label>Account Details *</label><br>
-            <input type="email" th:name="email" minlength="10" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@', and be at least 10 characters</label><br>
-            <br>
-            <label>Full Name *</label><br>
-            <input type="text" th:name="firstName" minlength="2" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required, must be at least 2 characters</label><br>
-            <input type="text" th:name="middleName" minlength="2" maxlength="64"  required th:value="${user.middleName}" class="required" /><label class="helper" >Middle name required, must be at least 2 characters</label><br>
-            <input type="text" th:name="lastName" minlength="2" maxlength="64" required th:value="${user.lastName}" class="required" /><label class="helper" >Last name required, must be at least 2 characters</label><br>
-            <br>
-            <label>Person Details</label><br>
-            <input type="text" th:name="nickname" maxlength="64" th:value="${user.nickname}"/><label class="helper">Nickname - optional</label><br>
-            <input type="text" th:name="pronouns" maxlength="64" th:value="${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
-            <br>
-            <label>Bio</label><label class="helper">Optional</label><br>
-            <textarea th:name="bio" maxlength="1024" th:value="${user.bio}"></textarea>
-            <br><br>
-
-            <input class="button" type="submit" value="Submit" />
+                <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
+                <div>
+                    <input type="hidden" th:name="username"  th:value="${user.username}" />
+                    <label>Account Details *</label><br>
+                    <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@'</label><br>
+                    <br>
+                    <label>Full Name *</label><br>
+                    <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
+                    <input type="text" th:name="middleName" minlength="1" maxlength="64" th:value="${user.middleName}" /><label class="helper" >Middle name optional</label><br>
+                    <input type="text" th:name="lastName" minlength="1" maxlength="64" required th:value="${user.lastName}" class="required" /><label class="helper" >Last name required</label><br>
+                    <br>
+                    <label>Person Details</label><br>
+                    <input type="text" th:name="nickname" maxlength="64" th:value="${user.nickname}"/><label class="helper">Nickname - optional</label><br>
+                    <input type="text" th:name="pronouns" maxlength="64" th:value="${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
+                    <br>
+                    <label>Bio</label><label class="helper">Optional</label><br>
+                    <textarea th:name="bio" maxlength="1024" th:text="${user.bio}"></textarea>
+                    <br>
+                    <div>
+                    <p th:text="${editMessage}"></p>
+                    <p th:text="${errorMessage}"></p>
+                    </div>
+                    <input class="button" type="submit" value="Submit" />
+                </div>
+            </form>
+            </div>
         </div>
-    </form>
-
-</div>
 </body>
 </html>
-
-<style>
-    html, body {
-        height: 100%;
-    }
-
-    html {
-        display: table;
-        margin: auto;
-    }
-
-    body {
-        display: table-cell;
-        vertical-align: middle;
-        font-family: "Calibri Light";
-    }
-
-    div {
-        padding: 20px;
-    }
-
-    input, textarea {
-        margin-left: 10px;
-        margin-bottom: 5px;
-        outline-color: white;
-    }
-
-    label.helper{
-        margin-left: 10px;
-        font-style: italic;
-        font-weight: normal;
-        color: #c8c8c8;
-    }
-
-    /* Selects any valid <input> */
-    input:valid, textarea {
-        border: none;
-        border-bottom: 2px solid lightgray;
-    }
-
-    input.required:valid {
-        outline-color: green;
-    }
-
-    /* Selects any invalid <input> */
-    input:invalid {
-        background-color: #fff5f5;
-        border: none;
-        border-bottom: 2px solid red;
-    }
-
-    input.button {
-        padding: 3px 10px 3px 10px;
-        margin-left: 0px;
-    }
-
-    button {
-        padding: 3px 10px 3px 10px;
-        margin-right: 5px;
-        margin-left: 20px;
-    }
-
-    h1 {
-        margin-top: -40px;
-    }
-
-    h2 {
-        margin-bottom: 0px;
-    }
-
-    h4 {
-        color: #333333;
-        font-size: small;
-        margin-bottom: 0;
-    }
-
-    h6 {
-        color: #444444;
-        font-size: smaller;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    p {
-        margin-left: 10px;
-        color: red;
-        margin-top: 20px;
-        margin-bottom: -20px;
-    }
-
-    a.button {
-        font-size: medium;
-        text-decoration: none;
-        background-color: #EEEEEE;
-        color: #333333;
-        padding: 4px 10px 4px 10px;
-        border-bottom: 1px solid lightgray;
-        border-radius: 3px;
-    }
-
-</style>

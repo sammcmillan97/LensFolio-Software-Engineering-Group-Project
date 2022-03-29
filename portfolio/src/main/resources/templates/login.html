@@ -7,33 +7,36 @@
     <link th:href="@{/css/loginPage.css}" rel="stylesheet"/>
 </head>
 <body>
-    <div class="container">
-        <div class="wrapper">
-            <div class="title"><span>Login</span></div>
-            <form th:action="@{/login}" method="post">
-                <div class="row">
+<div class="container">
+    <div class="wrapper">
+        <div class="title"><span>Login</span></div>
+        <p th:text="${loginMessage}" />
+        <form th:action="@{/login}" method="post">
+<!--            <p th:if="${error}" class="error">Incorrect UserName & Password</p>-->
+            <div class="row">
 
-                    <label>
-                        <input type="text" required placeholder="Username" th:name="username">
-                    </label>
-                </div>
-                <div class="row">
+                <label>
+                    <input type="text" required placeholder="Username" th:name="username">
+                </label>
+            </div>
+            <div class="row">
 
-                    <label>
-                        <input type="password" required placeholder="Password" th:name="password">
-                    </label>
-                </div>
-                <div class="row button">
-                    <input type="submit" value="Login">
-                </div>
-            </form>
-            <form th:action="@{/register}">
-                <div class="row button" style="padding-top: -100px">
+                <label>
+                    <input type="password" required placeholder="Password" th:name="password">
+                </label>
+            </div>
+            <div class="row button">
+                <input type="submit" value="Login">
+            </div>
+        </form>
+        <form th:action="@{/register}">
+            <div class="row button">
+                <label>
                     <input type="submit" value="Register">
-                </div>
-            </form>
-        </div>
+                </label>
+            </div>
+        </form>
     </div>
-    <p th:text="${loginMessage}" />
+</div>
 </body>
 </html>
