@@ -36,7 +36,7 @@
                 <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" th:placeholder="${sprintStartDate}" th:value="${sprintStartDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMinEndDate()" required>
 
                 <label for="sprint-form__end-date-field">Sprint End Date *</label>
-                <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" required>
+                <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="sprint-form__save">Save Changes</button>
                 <a id="sprint-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
