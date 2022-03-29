@@ -129,14 +129,16 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (user.getProfileImagePath() != null) {
             File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
+                user.setProfileImagePath(null);
+                repository.save(user);
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-
             } else {
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
             response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
         }
+
         return response;
     }
 
@@ -167,7 +169,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> userValidationErrors = checkUserExists(userId);
         reply.addAllValidationErrors(userValidationErrors);
 
-        if (userValidationErrors.size() == 0) {
+        if (userValidationErrors.isEmpty()) {
             reply.addAllValidationErrors(checkCurrentPassword(currentPassword, userId));
         }
 
@@ -266,8 +268,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
                     .setCreated(user.getTimeCreated())
-                    .setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath())
                     .addAllRoles(user.getRoles());
+            if (user.getProfileImagePath() != null) {
+                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+            } else {
+                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+            }
         }
         return reply.build();
     }
