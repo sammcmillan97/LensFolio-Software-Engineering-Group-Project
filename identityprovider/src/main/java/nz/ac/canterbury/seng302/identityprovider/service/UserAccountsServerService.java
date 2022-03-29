@@ -113,27 +113,33 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 if (metaData == null) {
                      responseObserver.onError(new IllegalStateException());
                 } else {
-                    // TODO authenticate user
-                    User user = repository.findByUserId(metaData.getUserId());
-                    if (user.getProfileImagePath() != null) {
-                        File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
-                        if (!oldPhoto.delete()) {
-                            responseObserver.onError(new FileNotFoundException());
+                    if (isAuthenticatedAsUser(metaData.getUserId())) {
+                        User user = repository.findByUserId(metaData.getUserId());
+
+                        if (user.getProfileImagePath() != null) {
+                            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+                            if (!oldPhoto.delete()) {
+                                responseObserver.onError(new FileNotFoundException());
+                            }
                         }
+                        user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
+                        String filepath = "src/main/resources/" + user.getProfileImagePath();
+                        File file = new File(filepath);
+                        try (OutputStream os = new FileOutputStream(file)) {
+                            os.write(fileContent);
+                            repository.save(user);
+                            FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                            responseObserver.onNext(response);
+                            responseObserver.onCompleted();
+                        } catch (Exception e) {
+                            responseObserver.onError(e);
+                        }
+                    } else {
+                        //not authenticated as user, illegal action
+                        responseObserver.onError(new IllegalStateException());
                     }
-                    user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
-                    String filepath = "src/main/resources/" + user.getProfileImagePath();
-                    File file = new File(filepath);
-                    try (OutputStream os = new FileOutputStream(file)) {
-                        os.write(fileContent);
-                        repository.save(user);
-                        FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
-                                .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
-                        responseObserver.onNext(response);
-                        responseObserver.onCompleted();
-                    } catch (Exception e) {
-                        responseObserver.onError(e);
-                    }
+
                 }
             }
 
