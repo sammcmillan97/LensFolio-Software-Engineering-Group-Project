@@ -104,36 +104,61 @@ public class EditProjectController {
         if (!role.contains("teacher")) {
             return "redirect:/projects";
         }
+
+        // Ensure request parameters represent a valid project
+        // Check id can be parsed
         int id;
-        //Validation
         try {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
             //TODO Add logging for error
             return "redirect:/projects";
         }
+
+        // Check required fields are not null
         if (projectName == null || projectEndDate == null || projectStartDate == null) {
             //TODO Add logging for error
             return "redirect:/projects/edit/" + projectId;
         }
-        int comp = projectEndDate.compareTo(projectStartDate);
-        //Check if projectEndDate is before or equal to projectStartDate.
-        if (!(comp > 0)) {
-            //TODO Add logging for error.
+
+        // Check that projectStartDate does not occur more than a year ago
+        Calendar yearAgoCal = Calendar.getInstance();
+        yearAgoCal.add(Calendar.YEAR, -1);
+
+        Calendar projectStartCal = Calendar.getInstance();
+        projectStartCal.setTime(projectEndDate);
+
+        if (projectStartCal.before(yearAgoCal)) {
+            // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId;
         }
 
-        Project savedProject;
-        //Try to find existing project and update if exists. Catch 'not found' error and save new project.
-        try {
-            Project existingProject = projectService.getProjectById(id);
-            existingProject.setName(projectName);
-            existingProject.setStartDate(projectStartDate);
-            existingProject.setEndDate(projectEndDate);
-            existingProject.setDescription(projectDescription);
-            savedProject = projectService.saveProject(existingProject);
+        // Ensure projectEndDate occurs after projectStartDate
+        Calendar projectEndCal = Calendar.getInstance();
+        projectEndCal.setTime(projectEndDate);
+        if (!projectEndCal.after(projectStartCal)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId;
+        }
 
-        } catch(Exception ignored) {
+        // If editing existing project
+        Project savedProject;
+        if (id > -1) {
+            try {
+                Project existingProject = projectService.getProjectById(id);
+                existingProject.setName(projectName);
+                existingProject.setStartDate(projectStartDate);
+                existingProject.setEndDate(projectEndDate);
+                existingProject.setDescription(projectDescription);
+                savedProject = projectService.saveProject(existingProject);
+
+            } catch(Exception ignored) {
+                //TODO Add logging for error.
+                return "redirect:/projects/edit/" + projectId;
+            }
+
+        // Otherwise, create a new project with given values
+        } else {
             Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
             savedProject = projectService.saveProject(newProject);
         }
