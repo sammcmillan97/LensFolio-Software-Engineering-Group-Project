@@ -63,8 +63,10 @@ public class EditSprintController {
             }
 
             Date endDate = sprint.getEndDate();
+            Calendar calDate = Calendar.getInstance();
+            calDate.setTime(endDate);
             // If min start date is on or before the current sprint's end date
-            if (!minStartDate.after(endDate)) {
+            if (!minStartDate.after(calDate)) {
                 minStartDate.setTime(endDate);
                 minStartDate.add(Calendar.DATE, 1);
             }
@@ -103,8 +105,10 @@ public class EditSprintController {
             }
 
             Date startDate = sprint.getStartDate();
-            // If max start date is after the current sprint's start date
-            if (maxEndDate.after(startDate)) {
+            Calendar startCal = Calendar.getInstance();
+            startCal.setTime(startDate);
+            // If max end date is after the current sprint's start date
+            if (maxEndDate.after(startCal)) {
                 maxEndDate.setTime(startDate);
                 maxEndDate.add(Calendar.DATE, -1);
             }
@@ -190,14 +194,22 @@ public class EditSprintController {
             sprint.setNumber(getNextSprintNumber(projectId));
             sprint.setName(sprint.getLabel());
 
-            // Set default start and end dates
+            // Get date boundaries for new sprint
             Calendar minStartDate = Calendar.getInstance();
-
+            Calendar maxEndDate = Calendar.getInstance();
             minStartDate.setTime(getMinSprintStartDate(projectId, sprint.getNumber()));
+            maxEndDate.setTime(getMaxSprintEndDate(projectId, sprint.getNumber()));
+
+            // Default start date is first available date
             sprint.setStartDate(minStartDate.getTime());
 
+            // Default end date is 3 weeks after start, or the project's end date
             minStartDate.add(Calendar.WEEK_OF_YEAR, 3);
-            sprint.setEndDate(minStartDate.getTime());
+            if (maxEndDate.before(minStartDate)) {
+                sprint.setEndDate(maxEndDate.getTime());
+            } else {
+                sprint.setEndDate(minStartDate.getTime());
+            }
         }
 
         // Add sprint details to model
@@ -207,7 +219,7 @@ public class EditSprintController {
         model.addAttribute("sprintStartDate", Project.dateToString(sprint.getStartDate(), "yyyy-MM-dd"));
         model.addAttribute("sprintEndDate", Project.dateToString(sprint.getEndDate(), "yyyy-MM-dd"));
 
-        // Add min sprint start and max sprint end dates to model
+        // Add date boundaries for sprint to model
         model.addAttribute("minSprintStartDate", Project.dateToString(getMinSprintStartDate(projectId, sprint.getNumber()), "yyyy-MM-dd"));
         model.addAttribute("maxSprintEndDate", Project.dateToString(getMaxSprintEndDate(projectId, sprint.getNumber()), "yyyy-MM-dd"));
 
