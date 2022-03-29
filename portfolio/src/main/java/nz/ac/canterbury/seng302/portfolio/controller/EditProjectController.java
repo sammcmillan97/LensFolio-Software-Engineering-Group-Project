@@ -30,6 +30,16 @@ public class EditProjectController {
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
+    private Calendar getCalendarDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.AM_PM, 0);
+        return cal;
+    }
+
     @GetMapping("/projects/edit/{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         String role = userAccountClientService.getRole(principal);
@@ -63,7 +73,7 @@ public class EditProjectController {
         } else {
             project = new Project();
             // Set project name with current year
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = getCalendarDay();
             project.setName("Project " + cal.get(Calendar.YEAR));
 
             // Set project start date as current date
@@ -82,7 +92,7 @@ public class EditProjectController {
         model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
 
         // A project can only be added up to a year ago
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = getCalendarDay();
         cal.add(Calendar.YEAR, -1);
         java.util.Date minStartDate = Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
@@ -122,10 +132,10 @@ public class EditProjectController {
         }
 
         // Check that projectStartDate does not occur more than a year ago
-        Calendar yearAgoCal = Calendar.getInstance();
+        Calendar yearAgoCal = getCalendarDay();
         yearAgoCal.add(Calendar.YEAR, -1);
 
-        Calendar projectStartCal = Calendar.getInstance();
+        Calendar projectStartCal = getCalendarDay();
         projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
@@ -134,7 +144,7 @@ public class EditProjectController {
         }
 
         // Ensure projectEndDate occurs after projectStartDate
-        Calendar projectEndCal = Calendar.getInstance();
+        Calendar projectEndCal = getCalendarDay();
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
             // TODO Add logging for error.
