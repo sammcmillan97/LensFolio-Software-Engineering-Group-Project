@@ -99,13 +99,29 @@ public class EditProjectController {
         if (!role.contains("teacher")) {
             return "redirect:/projects";
         }
-
-        int id = Integer.parseInt(projectId);
+        int id;
+        //Validation
+        try {
+            id = Integer.parseInt(projectId);
+        } catch (NumberFormatException e) {
+            //TODO Add logging for error
+            return "redirect:/projects";
+        }
+        if (projectName == null || projectEndDate == null || projectStartDate == null) {
+            //TODO Add logging for error
+            return "redirect:/projects/edit/" + projectId;
+        }
+        int comp = projectEndDate.compareTo(projectStartDate);
+        //Check if projectEndDate is before or equal to projectStartDate.
+        if (!(comp > 0)) {
+            //TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId;
+        }
 
         Project savedProject;
         //Try to find existing project and update if exists. Catch 'not found' error and save new project.
         try {
-            Project existingProject = projectService.getProjectById(Integer.parseInt(projectId));
+            Project existingProject = projectService.getProjectById(id);
             existingProject.setName(projectName);
             existingProject.setStartDate(projectStartDate);
             existingProject.setEndDate(projectEndDate);
