@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -243,12 +244,69 @@ public class EditSprintController {
             return "redirect:/projects";
         }
 
-        // Parse ids and dates from string
-        int sprintId = Integer.parseInt(sprintIdString);
-        int projectId = Integer.parseInt(projectIdString);
+        // Ensure request parameters represent a valid sprint.
+        // Check ids can be parsed
+        int sprintId;
+        int projectId;
+        try {
+            // Parse ids and dates from string
+            sprintId = Integer.parseInt(sprintIdString);
+            projectId = Integer.parseInt(projectIdString);
+        } catch (NumberFormatException e) {
+            //TODO Add logging for error
+            return "redirect:/projects";
+        }
 
-        //Date sprintStartDate = Project.stringToDate(sprintStartDateString);
-        //Date sprintEndDate = Project.stringToDate(sprintEndDateString);
+        // Get sprint number
+        int sprintNumber;
+        try {
+            // If editing existing sprint
+            if (sprintId > 0) {
+                Sprint sprint = sprintService.getSprintById(sprintId);
+                sprintNumber = sprint.getNumber();
+
+            // Otherwise, creating sprint so get next sprint number
+            } else {
+                sprintNumber = getNextSprintNumber(projectId);
+            }
+        } catch (Exception e) {
+            //TODO Add logging for error
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+        }
+
+        // Ensure required fields are not null
+        if (sprintName == null || sprintStartDate == null || sprintEndDate == null) {
+            //TODO Add logging for error
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+        }
+
+        // Ensure sprint dates are within bounds
+        Calendar sprintStartCal = Calendar.getInstance();
+        sprintStartCal.setTime(sprintStartDate);
+        Calendar sprintEndCal = Calendar.getInstance();
+        sprintEndCal.setTime(sprintEndDate);
+
+        // Check sprint starts after project start and all previous sprints
+        Calendar minSprintStart = Calendar.getInstance();
+        minSprintStart.setTime(getMinSprintStartDate(projectId, sprintNumber));
+        if (sprintStartCal.before(minSprintStart)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+        }
+
+        // Check sprint ends before project end and all following sprints
+        Calendar maxSprintEnd = Calendar.getInstance();
+        maxSprintEnd.setTime(getMaxSprintEndDate(projectId, sprintNumber));
+        if (sprintEndCal.after(maxSprintEnd)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+        }
+
+        // Ensure sprintEndDate occurs after sprintStartDate
+        if (!sprintEndCal.after(sprintStartCal)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+        }
 
         Sprint savedSprint;
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
