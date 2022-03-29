@@ -129,14 +129,16 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (user.getProfileImagePath() != null) {
             File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
+                user.setProfileImagePath(null);
+                repository.save(user);
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-
             } else {
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
             response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
         }
+
         return response;
     }
 
@@ -167,7 +169,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> userValidationErrors = checkUserExists(userId);
         reply.addAllValidationErrors(userValidationErrors);
 
-        if (userValidationErrors.size() == 0) {
+        if (userValidationErrors.isEmpty()) {
             reply.addAllValidationErrors(checkCurrentPassword(currentPassword, userId));
         }
 
