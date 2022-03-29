@@ -8,7 +8,7 @@ let calendar;
 document.addEventListener('DOMContentLoaded', function() {
 
     const fullMonthStartDate = calculateFullMonthStartDate(projectStartDate);
-    const fullMonthEndDate = calculateFullMonthEndDate(projectEndDate);
+    const fullMonthEndDate = calculateFullMonthEndDate(dayAfterProjectEndDate);
 
 
     calendarEl = document.getElementById('calendar');
@@ -18,18 +18,33 @@ document.addEventListener('DOMContentLoaded', function() {
             end: fullMonthEndDate
         },
         events: [
-
+            // Event to grey out dates not in project
             {
                 start: projectStartDate,
-                end: projectEndDate,
+                end: dayAfterProjectEndDate,
                 display: 'inverse-background',
                 backgroundColor: "#CCCCCC"
+            },
+            // Events for project start and end dates
+            {
+                title: projectName + " Starts",
+                start: projectStartDate,
+                end: projectStartDate,
+                display: 'background',
+                backgroundColor: "#F4EAE6"
+            }, {
+                title: projectName + " Ends",
+                start: projectEndDate,
+                end: projectEndDate,
+                display: 'background',
+                backgroundColor: "#F4EAE6"
             }
 
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate
     });
+    addSprintsToCalendar();
     calendar.render();
 });
 
@@ -71,4 +86,14 @@ function calculateFullMonthEndDate(endDate) {
 
     // Calculate and return the end date
     return endDate.slice(0,5) + month + "-" + "01";
+}
+
+/**
+ * Adds all the sprints in the list created by thymeleaf to the calendar
+ */
+function addSprintsToCalendar() {
+    for (let i = 0; i < sprints.length; i++) {
+        console.log(sprints[i])
+        calendar.addEvent(sprints[i]);
+    }
 }

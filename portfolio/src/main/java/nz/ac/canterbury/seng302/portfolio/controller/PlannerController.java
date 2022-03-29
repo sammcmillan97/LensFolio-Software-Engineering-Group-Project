@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,23 +39,24 @@ public class PlannerController {
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 8);
 
-
+        Project project = null;
         if (projectId == -1) {
             List<Project> projects = projectService.getAllProjects();
             if (projects.size() > 0) {
-                model.addAttribute("project", projects.get(0));
+                project = projects.get(0);
             } else {
-                Project project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
-                model.addAttribute("project", project);
+                project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
             }
         } else {
             try {
-                Project project = projectService.getProjectById(projectId);
-                model.addAttribute("project", project);
+                project = projectService.getProjectById(projectId);
             } catch (Exception ignored) {
 
             }
         }
+
+        model.addAttribute("project", project);
+        model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
 
 
         return "planner";
