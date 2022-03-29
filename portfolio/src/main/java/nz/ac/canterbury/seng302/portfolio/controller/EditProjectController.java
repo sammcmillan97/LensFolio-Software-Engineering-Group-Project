@@ -126,7 +126,7 @@ public class EditProjectController {
         yearAgoCal.add(Calendar.YEAR, -1);
 
         Calendar projectStartCal = Calendar.getInstance();
-        projectStartCal.setTime(projectEndDate);
+        projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
             // TODO Add logging for error.
@@ -143,7 +143,7 @@ public class EditProjectController {
 
         // If editing existing project
         Project savedProject;
-        if (id > -1) {
+        if (id > 0) {
             try {
                 Project existingProject = projectService.getProjectById(id);
                 existingProject.setName(projectName);
