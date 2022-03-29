@@ -35,7 +35,9 @@
             <br><label class="helper" >Must be filetype jpg, jpeg, or png, and will be cropped to 1:1 ratio</label><br>
             <p class="helper">Upload an image to see the preview</p><br><br>
             <p class="error" th:text="${deleteMessage}"></p>
-            <p class="error" th:name="errorMessage" th:text="@{errorMessage}"></p><br>
+            <p class="" th:text="${successMessage}"></p>
+            <p class="error" th:text="${errorMessage}"></p>
+            <p class="error" th:text="${error}"></p><br>
             <input class="button" type="submit" value="Save new Profile Picture" />
         </form><br>
 

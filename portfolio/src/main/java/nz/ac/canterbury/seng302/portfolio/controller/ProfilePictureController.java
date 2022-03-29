@@ -99,7 +99,7 @@ public class ProfilePictureController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        DeleteUserProfilePhotoResponse deleteUserProfilePhotoResponse;
+        DeleteUserProfilePhotoResponse deleteUserProfilePhotoResponse = null;
         deleteUserProfilePhotoResponse = userAccountClientService.deleteUserProfilePhoto(id);
 
         //Get the new version of user
@@ -117,14 +117,14 @@ public class ProfilePictureController {
             long months = ChronoUnit.MONTHS.between(dateCreated, LocalDate.now());
             String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
             model.addAttribute("date", formattedDate);
-            return "addProfilePicture";
+            model.addAttribute("successMessage", "Your profile picture has been successfully been removed");
+            return "/profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("deleteMessage", "");
             model.addAttribute("deleteMessage", deleteUserProfilePhotoResponse.getMessage());
             return "/addProfilePicture";
         }
-
     }
 
 }
