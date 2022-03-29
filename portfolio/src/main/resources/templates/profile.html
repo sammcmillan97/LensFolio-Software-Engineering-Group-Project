@@ -32,14 +32,14 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-transparent text-center">
                         <div class="container">
-                            <img th:src="@{/GenericUserIcon.jpg}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
-                            <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></img></a>
+                            <img th:src="${user.profileImagePath}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
+                            <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></a>
                         </div>
 
                         <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
                     </div>
                     <div class="card-body">
-                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}"></p> </p>
+                        <p class="mb-0"><strong class="pr-1">Nickname </strong>  <p th:text="${user.nickname}"></p>
                         <p class="mb-0"><strong class="pr-1">Username </strong>  <p th:text="${user.username}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
                         <p class="mb-0"><strong class="pr-1">Email </strong>  <p th:text="${user.email}" /> </p>

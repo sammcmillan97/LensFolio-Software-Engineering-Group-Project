@@ -26,7 +26,10 @@
                         <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
                         <!-- if user.image = null hide, else show th:style="${user.profileImagePath}==null ? 'display:none;' : 'z-index: 2;'-->
-                        <form th:action="@{/removeProfilePicture}" method="delete" ><img src="/deleteIcon.png" class="icon" width="25px" alt="deleteIcon"></form>
+<!--                        <form th:action="@{/removeProfilePicture}" th:method="delete" >-->
+<!--                            <input type="hidden" name="_method" value="delete">-->
+<!--                            <button ><img src="/deleteIcon.png" class="icon" width="25px" alt="deleteIcon"></button>-->
+<!--                        </form>-->
 
                         <div id="root"></div>
                     </row>
@@ -51,6 +54,7 @@
     let profileImageInput = document.getElementById("img-input");
 
     const MAX_PIXELS = 150;
+    const MAX_FILE_SIZE = 1 * 1024 * 1024; //1MB
     let excessWidth= 0;
     let excessHeight=0;
     let maxSize=0;
@@ -94,6 +98,12 @@
     }
 
     profileImageInput.onchange = function() {
+        //ensure that an image upload doesn't exceed 5MB
+        if(this.files[0].size > MAX_FILE_SIZE) {
+            alert("File is too big! Must be less than 1MB");
+            this.value = "";
+        }
+
         if (document.getElementById("root").childElementCount !== 0) {
             //delete canvas before new one is created
             let children = document.getElementById("root").childNodes;
