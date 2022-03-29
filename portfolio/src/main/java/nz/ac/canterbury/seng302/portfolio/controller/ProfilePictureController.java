@@ -58,6 +58,11 @@ public class ProfilePictureController {
                                     @RequestParam(name="fileType") String fileType,
                                     Model model) {
 
+        if (fileType == null) {
+            model.addAttribute("errorMessage", "Please select a profile before saving changes");
+            return "/addProfilePicture";
+        }
+
         //get userId using the Authentication Principle
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
@@ -99,7 +104,7 @@ public class ProfilePictureController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        DeleteUserProfilePhotoResponse deleteUserProfilePhotoResponse = null;
+        DeleteUserProfilePhotoResponse deleteUserProfilePhotoResponse ;
         deleteUserProfilePhotoResponse = userAccountClientService.deleteUserProfilePhoto(id);
 
         //Get the new version of user
@@ -118,7 +123,7 @@ public class ProfilePictureController {
             String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
             model.addAttribute("date", formattedDate);
             model.addAttribute("successMessage", "Your profile picture has been successfully been removed");
-            return "/profile";
+            return "redirect:/profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("deleteMessage", "");

@@ -34,7 +34,7 @@
             </div>
 
             <h4>Upload a new photo</h4>
-            <input type="file" id="img-input" th:name="image" accept=".jpg,.png,.jpeg">
+            <input type="file" id="img-input" required th:name="image" accept=".jpg,.png,.jpeg">
             <br><label class="helper" >Must be filetype jpg, jpeg, or png, will be cropped to 1:1 ratio</label><br>
             <p class="helper">Upload an image to see the preview</p><br>
             <p class="error" th:text="${deleteMessage}"></p>
