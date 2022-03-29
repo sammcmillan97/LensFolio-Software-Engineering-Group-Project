@@ -28,15 +28,34 @@ function updateMinEndDate() {
     let startDate = document.getElementById("project-form__start-date-field").valueAsNumber;
     startDate = new Date(startDate);
 
+    // Min end date is one day after start date
     let minEndDate = new Date();
-    minEndDate.setDate(startDate.getDate() + 1);
+    minEndDate.setTime(startDate.getTime() + (1 * 24 * 60 * 60 * 1000));
 
     document.getElementById("project-form__end-date-field").setAttribute('min', getDateString(minEndDate));
 }
+
+
+/**
+ * Updates the latest start date which a project may be given.
+ * A project may not start on or after the date on which it ends.
+ */
+function updateMaxStartDate() {
+    let endDate = document.getElementById("project-form__end-date-field").valueAsNumber;
+    endDate = new Date(endDate);
+
+    // Max start date is one day before end date
+    let maxStartDate = new Date();
+    maxStartDate.setTime(endDate.getTime() - (1 * 24 * 60 * 60 * 1000));
+
+    document.getElementById("project-form__start-date-field").setAttribute('max', getDateString(maxStartDate));
+}
+
 
 /**
  * Update the min end date of the project when the page loads
  */
 window.addEventListener('load', (event) => {
    updateMinEndDate();
+   updateMaxStartDate();
 });
