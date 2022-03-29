@@ -1,0 +1,176 @@
+:root {
+    /* CSS variables */
+    --color-primary: #FBAA60;
+    --color-secondary: #FADFC6FF;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+/* Hide scrollbar */
+html::-webkit-scrollbar {
+    /* Chrome, Safari, Opera */
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
+
+/******************** Project Cards ********************/
+
+.project, #new-project-button {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.project, #new-project-button, .project__button-wrapper button {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+}
+
+.project__details-wrapper {
+    position: relative;
+    padding: 0 2rem 0 2rem;
+}
+
+.project__name {
+    margin: 0 15rem 0 0;
+    padding: 0;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.project__name:hover {
+    color: var(--color-accent);
+}
+
+.project.collapsed {
+    height: 5rem;
+    padding-bottom: 0;
+}
+
+.project.expanded {
+    height: auto;
+    padding-bottom: 1.5rem;
+}
+
+.project.collapsed .project__details, .project.collapsed .project__sprints-wrapper {
+    visibility: hidden !important;
+}
+
+.project.expanded .project__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    visibility: visible;
+}
+
+.project.expanded .project__sprints-wrapper {
+    visibility: visible;
+}
+
+.project__date {
+    margin: 0;
+}
+
+.project__button-wrapper {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+}
+
+.project__button-wrapper button {
+    /* Position & Size */
+    margin-right: 1rem;
+    padding: 0;
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+#new-project-button {
+    /* Position & Size */
+    padding: 0;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
+}
+
+#new-project-button:hover, .project__button-wrapper button:hover{
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}
+
+
+/******************** Project Card Sprints ********************/
+
+.sprint, .new-sprint-button {
+    padding: 0 2rem 0 2rem;
+    border-top: 1px solid var(--color-accent);
+    background-color: var(--color-complement);
+}
+
+.sprint:last-child {
+    border-bottom: 1px solid var(--color-accent);
+}
+
+.sprint__name {
+    margin: 0 10rem 0 0;
+    padding: 0;
+    height: 3rem;
+    line-height: 3rem;
+
+    cursor: pointer;
+}
+
+.sprint__name:hover {
+    color: var(--color-accent);
+}
+
+.sprint.collapsed {
+    height: 3rem;
+}
+
+.sprint.expanded {
+    height: auto;
+}
+
+.sprint.collapsed .sprint__details {
+    visibility: hidden;
+}
+
+.sprint.expanded .sprint__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    visibility: visible;
+}
+
+.sprint__date {
+    margin: 0;
+}
+
+.new-sprint-button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}

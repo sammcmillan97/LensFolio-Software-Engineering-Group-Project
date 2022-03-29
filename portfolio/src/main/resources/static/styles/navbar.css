@@ -13,14 +13,6 @@
 
 /******************** Elements ********************/
 
-h1 {
-    text-align: center;
-    background-color: black;
-    color: white;
-    font-size: 30px;
-    margin-block: unset;
-}
-
 body {
     font-family: Arial, sans-serif;
     font-weight: 200;margin: 0;

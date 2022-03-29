@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio;
+package nz.ac.canterbury.seng302.portfolio.repository;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
@@ -41,7 +41,7 @@ public class ProjectRepositoryTests {
     }
 
     @Test
-    void findProjects() {
+    void findAllProjects() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Project project2 = new Project("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
         List<Project> projects = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ProjectRepositoryTests {
     }
 
     @Test
-    void updateSprint() {
+    void addProjectViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
 
         projectRepository.save(project1);
@@ -102,19 +102,6 @@ public class ProjectRepositoryTests {
         assertThat(retrievedProject.getDescription()).isEqualTo(project1.getDescription());
         assertThat(retrievedProject.getStartDateString()).isEqualTo(project1.getStartDateString());
         assertThat(retrievedProject.getEndDateString()).isEqualTo(project1.getEndDateString());
-
-//        Project newProject = new Project(project1.getId(), "Changed Project Name", project1.getDescription(), Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-//        projectRepository.save(newProject);
-
-        // Use original project id to fetch updated sprint to confirm it's using the same id
-        // Check that the project was updated correctly
-//        retrievedProject = projectRepository.findById(project1.getId());
-//        assertThat(retrievedProject).isNotNull();
-//        assertThat(retrievedProject.getId()).isEqualTo(newProject.getId());
-//        assertThat(retrievedProject.getName()).isEqualTo(newProject.getName());
-//        assertThat(retrievedProject.getDescription()).isEqualTo(newProject.getDescription());
-//        assertThat(retrievedProject.getStartDateString()).isEqualTo(newProject.getStartDateString());
-//        assertThat(retrievedProject.getEndDateString()).isEqualTo(newProject.getEndDateString());
 
     }
 }

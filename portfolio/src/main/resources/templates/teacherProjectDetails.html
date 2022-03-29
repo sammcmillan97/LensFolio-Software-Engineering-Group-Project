@@ -5,98 +5,69 @@
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/styles/projects.css">
-    <link rel="stylesheet" href="/styles/main.css">
-    <script rel="script" src="/scripts/projects.js"></script>
+    <link rel="stylesheet" href="/styles/projectDetails.css">
+    <script rel="script" src="/scripts/projectDetails.js"></script>
 </head>
 
 <body>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<!-- Import the application's navigation bar. -->
-<nav th:replace="fragments/navbar :: navbar"></nav>
-
-<!-- A pop-up form for adding/editing projects -->
-<div id="add-edit__popup" class="hidden">
-    <!-- Background page overlay -->
-    <div id="add-edit__overlay"></div>
-
-    <!-- Form -->
-    <form id="add-edit__form" th:action="@{/projects}" class="form-container" th:method="post">
-        <input type="hidden" id="add-edit__project-id" name="projectId"/>
-        <input type="hidden" id="add-edit__earliest-date-allowed"/>
-
-        <h1>Edit Project</h1>
-        <label for="add-edit__name-field"><b>Project Name</b></label>
-        <input type="text" id="add-edit__name-field" class="edit-input" name="projectName" required>
-
-        <label for="add-edit__description-field"><b>Project Description</b></label>
-        <textarea id="add-edit__description-field" class="edit-input" name="projectDescription"></textarea>
-
-        <label for="add-edit__start-date-field"><b>Project Start Date</b></label>
-        <input type="date" id="add-edit__start-date-field" class="edit-input" name="projectStartDate" onchange="updateMinEndDate()" required>
-
-        <label for="add-edit__end-date-field"><b>Project End Date</b></label>
-        <input type="date" id="add-edit__end-date-field" class="edit-input" name="projectEndDate" required>
-
-        <button type="submit" id="add-edit__save">Save Changes</button>
-        <button id="add-edit__discard" onclick="return closeAddEditForm()">Discard</button>
-    </form>
-</div>
-
-<!-- Page content -->
-<div id="page-content">
-    <!-- Populate the following div with projects and their details. -->
-    <div class="header">
-        <div class="title">
-            <p class="title-name" th:text="${project.getName}" />
-            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}" />
-        </div>
-        <div class="title_button_wrapper">
-            <div class="title_project_buttons flex-row">
-                <button class="project__edit" th:onclick="editProject([[${project.getId}]], [[${project.getName}]], [[${project.getDescription}]], [[${project.getStartDate}]], [[${project.getEndDate}]])">Edit</button>
-
-                <form action="#" th:action="@{/projects(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.') " th:method="delete" >
-                    <button type="submit">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="header__paragraph">
-        <p class="title-project_description" th:text="${project.getDescription()}"/>
-    </div>
-    <div id="project-wrapper" class="flex-column">
-
+    <!-- Page content -->
+    <div id="page-content" class="constrict">
         <!-- Project -->
-        <div class="project collapsed" th:each="sprint : ${sprints}">
-            <!-- Project Title -->
-            <h2 class="project__name" th:text="${sprint.getLabel}"></h2>
+        <div id="project">
+            <!-- Name, Date -->
+            <header class="project__header flex-column">
+                <h1 id="project__name" th:text="${project.getName}"></h1>
+                <h2 id="project__date" th:text="|${project.getStartDateString} - ${project.getEndDateString}|"></h2>
+            </header>
 
-            <!-- Edit and delete project buttons -->
+            <!-- Edit/Delete Project Buttons -->
             <div class="project__button-wrapper flex-row">
-                <button class="project__edit" th:onclick="openAddEditForm([[${project.getId}]], [[${project.getName}]], [[${project.getDescription}]], [[${project.getStartDate}]], [[${project.getEndDate}]])">Edit</button>
+                <form action="#" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="get">
+                    <button type="submit">Edit</button>
+                </form>
 
-                <form action="#" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.') " th:method="delete" >
+                <form action="#" th:action="@{/projects/delete/{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
                     <button type="submit">Delete</button>
                 </form>
             </div>
 
-            <div class="project__details">
-                <!-- Sprint Details -->
-                <h3 class="sprint__name" th:text="${sprint.getName}"></h3>
-                <div class="project__date-wrapper flex-row">
-                    <h4 class="project__date" th:text="${sprint.getStartDateString}"></h4>
-                    <h4>&nbsp;--->&nbsp;</h4>
-                    <h4 class="project__date" th:text="${sprint.getEndDateString}"></h4>
-                </div>
-                <p class="project__description" th:text="${sprint.getDescription}"></p>
-            </div>
+            <!-- Description -->
+            <p id="project__description" th:text="${project.getDescription()}"></p>
         </div>
 
-        <!-- New Project Button -->
-        <button id="new-project-button" onclick="addProject()">New Sprint</button>
+        <!-- Project Sprints -->
+        <div id="project__sprints-wrapper flex-column">
+            <div class="sprint" th:each="sprint : ${sprints}">
+                <h2 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h2>
+
+                <!-- Edit/Delete Sprint Buttons -->
+                <div class="sprint__button-wrapper flex-row">
+                    <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${sprint.getId})}" th:method="get">
+                        <button type="submit">Edit</button>
+                    </form>
+
+                    <form action="#" th:action="@{/projects/delete/{project}/{sprint}(project=${project.getId}, sprint=${sprint.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <!-- Sprint Details -->
+                <div class="sprint__details">
+                    <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
+                    <p class="sprint__description" th:text="${sprint.getDescription}"></p>
+                </div>
+            </div>
+
+            <!-- New Sprint Button -->
+            <a id="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
+        </div>
 
     </div>
-</div>
 </body>
 
 </html>

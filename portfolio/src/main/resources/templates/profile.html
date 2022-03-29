@@ -7,12 +7,13 @@
     <title>Profile</title>
     <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
-    <link rel="stylesheet" th:href="@{/styles/navbar.css}">
-    <script rel="text/javascript" th:src="@{/scripts/profile.js}"> </script>
 </head>
+
 <body>
-    <header th:replace="fragments/header :: header"> </header>
-    <nav th:replace="fragments/navbar :: nav"></nav>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
 
     <div id="page-content" class="constrict">
         <div class="container">
