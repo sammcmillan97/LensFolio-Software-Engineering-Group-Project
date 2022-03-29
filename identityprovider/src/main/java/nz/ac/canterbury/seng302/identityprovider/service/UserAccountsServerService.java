@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
@@ -21,6 +22,39 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     @Autowired
     private UserRepository repository;
+
+    /**
+     * Checks if the requesting user is authenticated.
+     * @return True if the requesting user is authenticated
+     */
+    private boolean isAuthenticated() {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        return authState.getIsAuthenticated();
+    }
+
+    /**
+     * Checks if the requesting user is authenticated as the claimed user.
+     * @param claimedId The id of the user that the requesting user claims to be
+     * @return True if the requesting user is authenticated as the claimed user
+     */
+    private boolean isAuthenticatedAsUser(int claimedId) {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        // The following line needs some explanation.
+        // authState.getClaimsList() gets a list of ClaimDTO objects - these are defined in authentication.proto
+        // .stream() turns the list into a stream, this is a nice way of processing collections in java
+        // .filter() filters the stream to only nameid claims - this is the user's claimed id
+        // .findFirst() gets the first nameid claim - there should only be one but we have to consider this possibility
+        // .map() takes the ClaimDTO object and converts it to the userId we want
+        // .orElse() takes care of the case that no nameid claims were found (like the case when the user is not logged in)
+        String authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+        return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
+    }
+
+
 
     /**
      * Allows user to upload their profile photo through bidirectional streaming.
@@ -110,12 +144,26 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         };
     }
 
+    /**
+     * Service for deleting a users profile photo with authentication
+     * @param request
+     * @param responseObserver
+     */
     @Override
     public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
-        // TODO authenticate user
-        DeleteUserProfilePhotoResponse response = deleteUserProfilePhotoHandler(request);
+        DeleteUserProfilePhotoResponse response;
+
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            response = deleteUserProfilePhotoHandler(request);
+        } else {
+            response = DeleteUserProfilePhotoResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage(false)
+                    .build();
+        }
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
     }
 
     /**
