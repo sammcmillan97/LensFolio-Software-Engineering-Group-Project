@@ -268,7 +268,7 @@ public class EditSprintController {
         int sprintNumber = sprintService.getSprintById(Integer.parseInt(sprintId)).getNumber();
         decrementSprintNumbersGreaterThan(Integer.parseInt(parentProjectId), sprintNumber);
         sprintService.deleteById(Integer.parseInt(sprintId));
-        return "redirect:/projects";
+        return "redirect:/projects/" + parentProjectId;
     }
 
 }
