@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 
 @Controller
 public class ProfilePictureController {
@@ -53,20 +53,22 @@ public class ProfilePictureController {
 
     @PostMapping("/addProfilePicture")
     public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
-                                    @RequestParam(name="fileContent") byte[] fileContent,
+                                    @RequestParam(name="fileContent") String base64FileContent,
                                     @RequestParam(name="username") String username,
                                     @RequestParam(name="fileType") String fileType,
                                     Model model) {
 
         //get userId using the Authentication Principle
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
         try {
-            userAccountClientService.uploadUserProfilePhoto(fileContent, id, fileType);
+            Base64.Decoder decoder = Base64.getDecoder();
+            byte[] decodedByte = decoder.decode(base64FileContent.split(",")[1]);
+            userAccountClientService.uploadUserProfilePhoto(decodedByte, id, fileType);
             // Generic attributes that need to be set for the profile page
             UserResponse user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);
@@ -77,7 +79,7 @@ public class ProfilePictureController {
             long months = ChronoUnit.MONTHS.between(dateCreated, LocalDate.now());
             String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
             model.addAttribute("date", formattedDate);
-            return "profile";
+            return "redirect:/profile";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e);
         }
