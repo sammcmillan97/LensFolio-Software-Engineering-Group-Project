@@ -2,9 +2,6 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 
 import com.google.protobuf.Timestamp;
-import io.grpc.StatusRuntimeException;
-import nz.ac.canterbury.seng302.portfolio.authentication.CookieUtil;
-import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -88,7 +84,7 @@ public class EditUserController {
         EditUserResponse editUserResponse;
 
         //some validation, could use more, same as register
-        if (email.isBlank() || firstName.isBlank() || middleName.isBlank() || lastName.isBlank()){
+        if (email.isBlank() || firstName.isBlank() || lastName.isBlank()){
             //due to form resetting, you need to get the existing user again
             UserResponse user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);
@@ -130,43 +126,4 @@ public class EditUserController {
         }
     }
 
-    /**
-     * Get mapping to open addProfilePicture page
-     * @param principal
-     * @param model
-     * @return the addProfilePicture page
-     */
-    @GetMapping("/addProfilePicture")
-    public String addProfilePicture(
-            @AuthenticationPrincipal AuthState principal,
-            Model model
-    ) {
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-
-        UserResponse user = userAccountClientService.getUserAccountById(id);
-        model.addAttribute("user", user);
-        return "addProfilePicture";
-    }
-
-
-
-    @PostMapping("/addProfilePicture")
-    public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
-                                    @RequestParam(name="username") String username,
-                                    @RequestParam(name="image") File image,
-                                    Model model) {
-
-        //get userId using the Authentication Principle
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-
-        return "profile";
-    }
 }
