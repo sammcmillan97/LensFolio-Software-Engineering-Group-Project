@@ -37,7 +37,14 @@ h5 {
 /******************** Page content ********************/
 
 #page-content {
-    margin-left: var(--site-navigation-width);
     display: block;
     padding: 1rem;
+}
+
+#page-content.constrict, header.constrict{
+    margin-left: var(--site-navigation-width);
+}
+
+#page-content.expanded, header.expanded {
+    margin-left: 0;
 }

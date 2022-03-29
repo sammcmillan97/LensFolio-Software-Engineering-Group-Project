@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class SprintService {
     @Autowired
     private SprintRepository repository;
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * Get list of all sprints
@@ -28,24 +32,38 @@ public class SprintService {
      * Get sprint by id
      */
     public Sprint getSprintById(Integer id) throws Exception {
-
         Optional<Sprint> sprint = repository.findById(id);
-        if(sprint!=null) {
+        if(sprint.isPresent()) {
             return sprint.get();
         }
         else
         {
-            throw new Exception("Project not found");
+            throw new Exception("Sprint not found");
         }
     }
 
     public List<Sprint> getByParentProjectId(int projectId) {
-        List<Sprint> list = repository.findByParentProjectId(projectId);
-        return list;
+        return repository.findByParentProjectId(projectId);
     }
 
-    public void saveSprint(Sprint sprint) {
-        Sprint sprintSaved = repository.save(sprint);
+    public Map<Integer, List<Sprint>> getAllByParentProjectId() {
+        List<Project> projects = projectService.getAllProjects();
 
+        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<Integer, List<Sprint>>();
+        for (Project project : projects) {
+            int projectId = project.getId();
+            sprintsByParentProject.put(projectId, getByParentProjectId(projectId));
+        }
+
+        return sprintsByParentProject;
+    }
+
+    public Sprint saveSprint(Sprint sprint) {
+        Sprint savedSprint = repository.save(sprint);
+        return savedSprint;
+    }
+
+    public void deleteById(int sprintId) {
+        repository.deleteById(sprintId);
     }
 }

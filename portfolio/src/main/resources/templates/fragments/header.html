@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Header Bar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+</head>
+
+<body>
+    <header th:fragment="header" id="header" class="constrict">
+        <link rel="stylesheet" href="/styles/navbar.css"/>
+        <script rel="script" src="/scripts/profile.js"></script>
+        <ul class="header__list">
+            <a>
+                <span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span>
+            </a>
+            <li class="header__item">
+                <p th:text="${user.username}"></p>
+            </li>
+            <li class="header__dropdown">
+                <a href="javascript:void(0)" class="header__dropdown_button"><img src="/GenericUserIcon.jpg" width="30px"></a>
+                <div class="header__dropdown_content">
+                    <a th:href="@{/login}">Logout</a>
+                    <a th:href="@{/editUser}">Edit User</a>
+                    <a th:href="@{/changePassword}">Change Password</a>
+                </div>
+            </li>
+        </ul>
+    </header>
+</body>

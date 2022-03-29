@@ -13,15 +13,16 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc.AuthenticationServiceImplBase;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
 
 @GrpcService
 public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
     @Autowired
     private UserRepository repository;
-
-    private static final String ROLE_OF_USER = "student"; // Puce teams may want to change this to "teacher" to test some functionality
 
     private final JwtTokenUtil jwtTokenService = JwtTokenUtil.getInstance();
 
@@ -42,10 +43,32 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
 
-        if (user != null && user.checkPassword(request.getPassword())) {
+        if (user == null) {
+            reply
+                    .setMessage("Log in attempt failed: username not registered")
+                    .setSuccess(false)
+                    .setToken("");
+        } else if (Boolean.FALSE.equals(user.checkPassword(request.getPassword()))) {
+            reply
+                    .setMessage("Log in attempt failed: password incorrect")
+                    .setSuccess(false)
+                    .setToken("");
+        } else {
+            ArrayList<String> usersRoles = new ArrayList<>();
+            for (UserRole role: user.getRoles()) {
+                if (role == UserRole.STUDENT) {
+                    usersRoles.add("student");
+                }
+                if (role == UserRole.TEACHER) {
+                    usersRoles.add("teacher");
+                }
+                if (role == UserRole.COURSE_ADMINISTRATOR) {
+                    usersRoles.add("courseadministrator");
+                }
+            }
 
             String token = jwtTokenService.generateTokenForUser(user.getUsername(), user.getUserId(),
-                    user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName(), ROLE_OF_USER);
+                    user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName(), String.join(",", usersRoles));
             reply
                     .setEmail(user.getEmail())
                     .setFirstName(user.getFirstName())
@@ -55,11 +78,6 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
                     .setToken(token)
                     .setUserId(user.getUserId())
                     .setUsername(user.getUsername());
-        } else {
-            reply
-                    .setMessage("Log in attempt failed: username or password incorrect")
-                    .setSuccess(false)
-                    .setToken("");
         }
 
         return reply.build();

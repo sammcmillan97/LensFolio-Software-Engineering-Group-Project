@@ -38,10 +38,12 @@
 
 </head>
 <body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
-<div id="page-content" class="page__content">
+<div id="page-content" class="constrict">
     <!-- Populate the following div with projects and their details. -->
     <div class="header">
         <div class="title">

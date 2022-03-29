@@ -4,6 +4,8 @@ import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +17,6 @@ import java.util.Optional;
 public class ProjectService {
     @Autowired
     private ProjectRepository repository;
-    @Autowired
-    private SprintService sprintService;
 
     /**
      * Get list of all projects
@@ -30,9 +30,8 @@ public class ProjectService {
      * Get project by id
      */
     public Project getProjectById(Integer id) throws Exception {
-
         Optional<Project> project = repository.findById(id);
-        if(project!=null) {
+        if(project.isPresent()) {
             return project.get();
         }
         else
@@ -41,38 +40,17 @@ public class ProjectService {
         }
     }
 
-    public void saveProject(Project project) {
-        Project projectSaved = repository.save(project);
-
+    public Project saveProject(Project project) {
+        Project savedProject = repository.save(project);
+        return savedProject;
     }
 
-    public void deleteProjectById(int id) {
-        repository.deleteById(id);
-    }
-
-    public String getSprintsAsJson(int projectId) {
-
-        List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
-
-        boolean firstLoop = true;
-        StringBuilder sprintsJson = new StringBuilder();
-        String currentSprint;
-        for (Sprint sprint: sprints) {
-            currentSprint = "";
-            currentSprint += "\"id\":\"" + sprint.getId() + '"';
-            currentSprint += ", \"title\":\"" + sprint.getLabel() + '"';
-            currentSprint += ", \"startDate\":\"" + sprint.getStartDateCalendarString() + '"';
-            currentSprint += ", \"endDate\":\"" + sprint.getDayAfterEndDateCalendarString() + '"';
-
-            currentSprint = "{" + currentSprint + "}";
-            if (firstLoop) {
-                sprintsJson.append(currentSprint);
-                firstLoop = false;
-            } else {
-                sprintsJson.append(", ").append(currentSprint);
-            }
-
+    public void deleteProjectById(int id) throws Exception {
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new Exception("No project found to delete");
         }
-        return "{" + sprintsJson + "}";
+
     }
 }
