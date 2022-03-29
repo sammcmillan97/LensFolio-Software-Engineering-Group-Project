@@ -35,6 +35,16 @@ public class EditSprintController {
 
     private Sprint defaultSprint = new Sprint(-1, "A Sprint", -1, "Here's a description", new Date(), new Date());
 
+    private Calendar getCalendarDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.AM_PM, 0);
+        return cal;
+    }
+
     /**
      * Gets the soonest available date occurring after all of a project's sprints that occur before a given sprint
      * @param projectId The parent project for which to find the next available date
@@ -52,7 +62,7 @@ public class EditSprintController {
         }
 
         // Set min start initially to one day after project start date
-        Calendar minStartDate = Calendar.getInstance();
+        Calendar minStartDate = getCalendarDay();
         minStartDate.setTime(parentProject.getStartDate());
 
         // If there are any sprints before the given sprint, set min start to one day after latest end
@@ -64,7 +74,7 @@ public class EditSprintController {
             }
 
             Date endDate = sprint.getEndDate();
-            Calendar calDate = Calendar.getInstance();
+            Calendar calDate = getCalendarDay();
             calDate.setTime(endDate);
             // If min start date is on or before the current sprint's end date
             if (!minStartDate.after(calDate)) {
@@ -94,7 +104,7 @@ public class EditSprintController {
         }
 
         // Set max end initially to project end date
-        Calendar maxEndDate = Calendar.getInstance();
+        Calendar maxEndDate = getCalendarDay();
         maxEndDate.setTime(parentProject.getEndDate());
 
         // If there are any sprints after the given sprint, set max end date to day before next sprint start date
@@ -106,7 +116,7 @@ public class EditSprintController {
             }
 
             Date startDate = sprint.getStartDate();
-            Calendar startCal = Calendar.getInstance();
+            Calendar startCal = getCalendarDay();
             startCal.setTime(startDate);
             // If max end date is after the current sprint's start date
             if (maxEndDate.after(startCal)) {
@@ -196,8 +206,8 @@ public class EditSprintController {
             sprint.setName(sprint.getLabel());
 
             // Get date boundaries for new sprint
-            Calendar minStartDate = Calendar.getInstance();
-            Calendar maxEndDate = Calendar.getInstance();
+            Calendar minStartDate = getCalendarDay();
+            Calendar maxEndDate = getCalendarDay();
             minStartDate.setTime(getMinSprintStartDate(projectId, sprint.getNumber()));
             maxEndDate.setTime(getMaxSprintEndDate(projectId, sprint.getNumber()));
 
@@ -281,13 +291,13 @@ public class EditSprintController {
         }
 
         // Ensure sprint dates are within bounds
-        Calendar sprintStartCal = Calendar.getInstance();
+        Calendar sprintStartCal = getCalendarDay();
         sprintStartCal.setTime(sprintStartDate);
-        Calendar sprintEndCal = Calendar.getInstance();
+        Calendar sprintEndCal = getCalendarDay();
         sprintEndCal.setTime(sprintEndDate);
 
         // Check sprint starts after project start and all previous sprints
-        Calendar minSprintStart = Calendar.getInstance();
+        Calendar minSprintStart = getCalendarDay();
         minSprintStart.setTime(getMinSprintStartDate(projectId, sprintNumber));
         if (sprintStartCal.before(minSprintStart)) {
             // TODO Add logging for error.
@@ -295,7 +305,7 @@ public class EditSprintController {
         }
 
         // Check sprint ends before project end and all following sprints
-        Calendar maxSprintEnd = Calendar.getInstance();
+        Calendar maxSprintEnd = getCalendarDay();
         maxSprintEnd.setTime(getMaxSprintEndDate(projectId, sprintNumber));
         if (sprintEndCal.after(maxSprintEnd)) {
             // TODO Add logging for error.
