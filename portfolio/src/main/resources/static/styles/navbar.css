@@ -13,11 +13,6 @@
 
 /******************** Elements ********************/
 
-h1 {
-    color: white;
-    font-size: 30px;
-}
-
 body {
     font-family: Arial, sans-serif;
     font-weight: 200;margin: 0;
@@ -40,26 +35,28 @@ h5 {
 
 /******************** Top Navigation bar ********************/
 
-#page-header {
+#header {
     margin: 0 0 0 var(--site-navigation-width);
-    padding: 0;
-}
-
-#page-header ul {
-    list-style-type: none;
-    margin: 0;
     padding: 0;
     overflow: hidden;
     background-color: black;
     color: var(--color-complement);
+    list-style-type: none;
 }
 
-#page-header li {
+.header__list {
+    margin: 0;
+    padding: 0;
+
+}
+
+.header__item {
     float: right;
     padding-right: 10px;
+    list-style-type: none;
 }
 
-#page-header li a, .dropbtn {
+.header__item a, .header__dropdown_button {
     display: inline-block;
     color: var(--color-complement);
     text-align: center;
@@ -67,15 +64,16 @@ h5 {
     text-decoration: none;
 }
 
-#page-header li a:hover, .dropdown:hover .dropbtn {
+.header__item a:hover, .header__dropdown:hover .header__dropdown_button {
     background-color: var(--color-complement);
 }
 
-#page-header li.dropdown {
+.header__dropdown {
     display: inline-block;
+    float: right;
 }
 
-.dropdown-content {
+.header__dropdown_content {
     display: none;
     position: absolute;
     background-color: var(--color-secondary);
@@ -84,7 +82,7 @@ h5 {
     z-index: 1;
 }
 
-.dropdown-content a {
+.header__dropdown_content a {
     color: var(--color-complement);
     padding: 12px 16px;
     text-decoration: none;
@@ -92,15 +90,14 @@ h5 {
     text-align: left;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1;}
+.header__dropdown_content a:hover {
+    background-color: #f1f1f1;
+}
 
-.dropdown:hover .dropdown-content {
+.header__dropdown:hover .header__dropdown_content {
     display: block;
 }
 
-.UserProfile {
-    padding-left: 50px;
-}
 
 
 /******************** Side Navigation bar ********************/
@@ -186,10 +183,10 @@ h5 {
     padding: 1rem;
 }
 
-#page-content.constrict, #page-header.constrict{
+#page-content.constrict, #header.constrict{
     margin-left: var(--site-navigation-width);
 }
 
-#page-content.expanded, #page-header.expanded {
+#page-content.expanded, #header.expanded {
     margin-left: 0;
 }

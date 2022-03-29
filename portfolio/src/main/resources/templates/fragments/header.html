@@ -8,16 +8,22 @@
 </head>
 
 <body>
-    <header id="page-header" class="constrict" th:fragment="header">
-        <link rel="stylesheet" href="/styles/navbar.css">
-        <script rel="text/javascript" th:src="@{/scripts/navbar.js}"></script>
-        <ul>
-            <a><span style="font-size: 30px; cursor: pointer" onclick="toggleNavbarVisibility()">&#9776</span></a>
-            <li> <p th:text="${user.username}"></p></li>
-            <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" width="30px"></a>
-                <div class="dropdown-content">
+    <header th:fragment="header" id="header" class="constrict">
+        <link rel="stylesheet" href="/styles/navbar.css"/>
+        <script rel="script" src="/scripts/profile.js"></script>
+        <ul class="header__list">
+            <a>
+                <span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span>
+            </a>
+            <li class="header__item">
+                <p th:text="${user.username}"></p>
+            </li>
+            <li class="header__dropdown">
+                <a href="javascript:void(0)" class="header__dropdown_button"><img src="/GenericUserIcon.jpg" width="30px"></a>
+                <div class="header__dropdown_content">
                     <a th:href="@{/login}">Logout</a>
+                    <a th:href="@{/editUser}">Edit User</a>
+                    <a th:href="@{/changePassword}">Change Password</a>
                 </div>
             </li>
         </ul>
