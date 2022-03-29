@@ -13,7 +13,7 @@
     <ul>
         <li> <p th:text="${user.username}"></p></li>
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn"><img src="/GenericUserIcon.jpg" class="croppedProfileIcon"></a>
+            <a href="javascript:void(0)" class="dropbtn"><img th:src="${user.profileImagePath}" class="profile-icon"></a>
             <div class="dropdown-content">
                 <a th:href="@{/editUser}">Edit User</a>
                 <a th:href="@{/addProfilePicture}">Edit Profile Picture</a>
@@ -32,7 +32,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-transparent text-center">
                         <div class="container">
-                            <img th:src="${user.profileImagePath}" style="z-index: 1;" class="croppedImage" alt="profilePhoto">
+                            <img th:src="${user.profileImagePath}" style="z-index: 1;" class="profile-image" alt="profilePhoto">
                             <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></a>
                         </div>
 
@@ -118,13 +118,13 @@
         margin-bottom: -12px;
     }
 
-    .croppedImage {
+    .profile-image {
         width:150px;
         height:150px;
         object-fit:cover;
     }
 
-    .croppedProfileIcon {
+    .profile-icon {
         width:30px;
         height:30px;
         object-fit:cover;

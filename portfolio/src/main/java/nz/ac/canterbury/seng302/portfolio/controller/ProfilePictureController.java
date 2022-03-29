@@ -46,6 +46,7 @@ public class ProfilePictureController {
 
         UserResponse user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
+        model.addAttribute("username", user.getUsername());
         return "addProfilePicture";
     }
 
@@ -54,7 +55,6 @@ public class ProfilePictureController {
     @PostMapping("/addProfilePicture")
     public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
                                     @RequestParam(name="fileContent") String base64FileContent,
-                                    @RequestParam(name="username") String username,
                                     @RequestParam(name="fileType") String fileType,
                                     Model model) {
 
@@ -87,7 +87,7 @@ public class ProfilePictureController {
         return "addProfilePicture";
     }
 
-    @DeleteMapping("/removeProfilePicture")
+    @PostMapping("/removeProfilePicture")
     public String removeProfilePicture(@AuthenticationPrincipal AuthState principal,
                                        @RequestParam(name="username") String username,
                                        Model model) {
