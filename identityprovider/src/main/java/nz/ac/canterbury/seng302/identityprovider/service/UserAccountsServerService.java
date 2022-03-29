@@ -266,8 +266,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
                     .setCreated(user.getTimeCreated())
-                    .setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath())
                     .addAllRoles(user.getRoles());
+            if (user.getProfileImagePath() != null) {
+                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+            } else {
+                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+            }
         }
         return reply.build();
     }
