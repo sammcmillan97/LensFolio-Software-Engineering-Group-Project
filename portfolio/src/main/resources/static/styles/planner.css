@@ -1,24 +1,11 @@
-/*.fc-scrollgrid {*/
-/*    border-color: black;*/
-/*}*/
+.calendar__container {
+    margin-top: 20px;
+    background-color: #F4EAE6;
+    border-radius: 5px;
+}
 
-/*.fc-scroll-section {*/
-/*    border-color: black;*/
-/*}*/
-
-/*.fc .fc-cell-shaded,*/
-/*.fc .fc-day-disabled {*/
-/*    background: white;*/
-/*}*/
-
-/*.page__content {*/
-/*    height: 100vh;*/
-/*    display:flex;*/
-/*    flex-direction:column;*/
-/*}*/
-/*.calendar__container {*/
-/*    display: flex;*/
-/*    flex: 1;*/
-/*    flex-direction: column;*/
-/*    height: 100%;*/
-/*}*/
+.fc-header-toolbar {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

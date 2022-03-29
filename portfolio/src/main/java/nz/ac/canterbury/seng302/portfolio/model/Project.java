@@ -1,9 +1,14 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
+import nz.ac.canterbury.seng302.portfolio.service.SprintService;
+import org.h2.util.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity // this is an entity, assumed to be in a table called Project
 @Table(name="PROJECT")
@@ -63,7 +68,7 @@ public class Project {
     }
 
     /**
-     * Gets the string form of the given date in
+     * Gets the string form of the given date in a readable format
      *
      * @param date the date to convert
      * @return the given date, as a string in format 01/Jan/2000
@@ -73,7 +78,7 @@ public class Project {
     }
 
     /**
-     * Gets the string form of the given date in
+     * Gets the string form of the given date in the FullCalendar format
      *
      * @param date the date to convert
      * @return the given date, as a string in format 01/Jan/2000
@@ -85,7 +90,7 @@ public class Project {
     /* Getters/Setters */
 
     public int getId(){
-        return  id;
+        return id;
     }
 
     public String getName() {
@@ -140,9 +145,13 @@ public class Project {
 
     public String getStartDateCalendarString() {return  Project.dateToCalenderString((this.projectStartDate)); }
 
-    public String getEndDateCalendarString() {
+    public String getDayAfterEndDateCalendarString() {
         Calendar tempEndDate = Calendar.getInstance();
         tempEndDate.setTime(this.getEndDate());
         tempEndDate.add(Calendar.DATE, 1);
-        return  Project.dateToCalenderString((tempEndDate.getTime())); }
+        return  Project.dateToCalenderString((tempEndDate.getTime()));
+    }
+
+    public String getEndDateCalendarString() {
+        return  Project.dateToCalenderString((this.projectEndDate)); }
 }

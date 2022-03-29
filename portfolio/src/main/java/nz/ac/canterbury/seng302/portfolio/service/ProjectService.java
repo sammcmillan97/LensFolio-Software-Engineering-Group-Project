@@ -2,9 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
-import org.hibernate.annotations.NotFound;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +15,8 @@ import java.util.Optional;
 public class ProjectService {
     @Autowired
     private ProjectRepository repository;
+    @Autowired
+    private SprintService sprintService;
 
     /**
      * Get list of all projects
@@ -47,5 +48,31 @@ public class ProjectService {
 
     public void deleteProjectById(int id) {
         repository.deleteById(id);
+    }
+
+    public String getSprintsAsJson(int projectId) {
+
+        List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
+
+        boolean firstLoop = true;
+        StringBuilder sprintsJson = new StringBuilder();
+        String currentSprint;
+        for (Sprint sprint: sprints) {
+            currentSprint = "";
+            currentSprint += "\"id\":\"" + sprint.getId() + '"';
+            currentSprint += ", \"title\":\"" + sprint.getLabel() + '"';
+            currentSprint += ", \"startDate\":\"" + sprint.getStartDateCalendarString() + '"';
+            currentSprint += ", \"endDate\":\"" + sprint.getDayAfterEndDateCalendarString() + '"';
+
+            currentSprint = "{" + currentSprint + "}";
+            if (firstLoop) {
+                sprintsJson.append(currentSprint);
+                firstLoop = false;
+            } else {
+                sprintsJson.append(", ").append(currentSprint);
+            }
+
+        }
+        return "{" + sprintsJson + "}";
     }
 }
