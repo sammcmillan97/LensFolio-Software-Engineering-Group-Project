@@ -5,8 +5,8 @@
     <title>Projects</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/styles/projects.css">
-    <script rel="script" src="/scripts/projects.js"></script>
+    <link rel="stylesheet" href="/styles/projectSummaries.css">
+    <script rel="script" src="/scripts/projectSummaries.js"></script>
 </head>
 
 <body>
@@ -16,31 +16,45 @@
     <nav th:replace="fragments/navbar :: navbar"></nav>
 
     <!-- Page content -->
-    <div id="page-content">
+    <div id="page-content" class="constrict">
         <!-- Populate the following div with projects and their details. -->
         <div id="project-wrapper" class="flex-column">
 
             <!-- Project -->
             <div class="project collapsed" th:each="project : ${projects}">
-                <!-- Project Title -->
-                <h2 class="project__name" th:text="${project.getName}"></h2>
+
+                <!-- Project Details -->
+                <div class="project__details-wrapper">
+                    <!-- Project Title -->
+                    <h2 class="project__name" th:text="${project.getName}"></h2>
+
+                    <div class="project__details">
+                        <div class="project__date-wrapper flex-row">
+                            <h4 class="project__date" th:text="|${project.getStartDateString} ---> ${project.getEndDateString}|"></h4>
+                        </div>
+                        <p class="project__description" th:text="${project.getDescription}"></p>
+                    </div>
+                </div>
+
+                <!-- Project Sprints -->
+                <div class="project__sprints-wrapper flex-column">
+                    <div class="sprint collapsed" th:each="sprint : ${sprints.get(project.getId)}">
+                        <h3 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h3>
+
+                        <div class="sprint__details">
+                            <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
+                            <p class="sprint__description" th:text="${sprint.getDescription}"></p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Edit and delete project buttons -->
                 <div class="project__button-wrapper flex-row">
-                    <form action="#" th:action="@{/projects/{id}(id=${project.getId})}" th:method="get" >
+                    <form action="#" th:action="@{/projects/{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">View</button>
                     </form>
                 </div>
 
-                <div class="project__details">
-                    <!-- Project Details -->
-                    <div class="project__date-wrapper flex-row">
-                        <h4 class="project__date" th:text="${project.getStartDateString}"></h4>
-                        <h4>&nbsp;--->&nbsp;</h4>
-                        <h4 class="project__date" th:text="${project.getEndDateString}"></h4>
-                    </div>
-                    <p class="project__description" th:text="${project.getDescription}"></p>
-                </div>
             </div>
         </div>
     </div>
