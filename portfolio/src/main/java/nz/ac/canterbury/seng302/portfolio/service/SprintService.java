@@ -32,20 +32,18 @@ public class SprintService {
      * Get sprint by id
      */
     public Sprint getSprintById(Integer id) throws Exception {
-
         Optional<Sprint> sprint = repository.findById(id);
-        if(sprint!=null) {
+        if(sprint.isPresent()) {
             return sprint.get();
         }
         else
         {
-            throw new Exception("Project not found");
+            throw new Exception("Sprint not found");
         }
     }
 
-    public List<Sprint> getByParentProjectId(int parentProjectId) {
-        List<Sprint> list = repository.findByParentProjectId(parentProjectId);
-        return list;
+    public List<Sprint> getByParentProjectId(int projectId) {
+        return repository.findByParentProjectId(projectId);
     }
 
     public Map<Integer, List<Sprint>> getAllByParentProjectId() {

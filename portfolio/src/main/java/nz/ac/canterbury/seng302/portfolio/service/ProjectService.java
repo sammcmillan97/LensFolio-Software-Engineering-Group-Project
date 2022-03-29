@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,6 @@ public class ProjectService {
      * Get project by id
      */
     public Project getProjectById(Integer id) throws Exception {
-
         Optional<Project> project = repository.findById(id);
         if(project.isPresent()) {
             return project.get();
@@ -45,7 +45,12 @@ public class ProjectService {
         return savedProject;
     }
 
-    public void deleteProjectById(int id) {
-        repository.deleteById(id);
+    public void deleteProjectById(int id) throws Exception {
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new Exception("No project found to delete");
+        }
+
     }
 }

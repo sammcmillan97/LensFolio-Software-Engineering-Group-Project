@@ -180,7 +180,11 @@ public class EditProjectController {
         }
 
         int id = Integer.parseInt(projectId);
-        projectService.deleteProjectById(id);
+        try {
+            projectService.deleteProjectById(id);
+        } catch (Exception e) {
+            //TODO log error.
+        }
         return "redirect:/projects";
     }
 
