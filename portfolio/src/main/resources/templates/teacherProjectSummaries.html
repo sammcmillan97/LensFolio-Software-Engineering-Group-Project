@@ -61,6 +61,10 @@
                     <form action="#" th:action="@{/projects/{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">View</button>
                     </form>
+
+                    <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+                        <button type="submit">Planner</button>
+                    </form>
                 </div>
 
             </div>

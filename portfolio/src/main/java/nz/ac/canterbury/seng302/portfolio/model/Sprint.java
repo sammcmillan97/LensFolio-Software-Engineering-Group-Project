@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Sprint
@@ -33,6 +34,16 @@ public class Sprint {
         return String.format(
                 "Sprint[id=%d, parentProjectId='%d', sprintName='%s', sprintLabel='%s', sprintStartDate='%s', sprintEndDate='%s', sprintDescription='%s']",
                 id, parentProjectId, sprintName, "Sprint " + sprintNumber, sprintStartDate, sprintEndDate, sprintDescription);
+    }
+
+    /**
+     * Gets the string form of the given date in the FullCalendar format
+     *
+     * @param date the date to convert
+     * @return the given date, as a string in format 01/Jan/2000
+     */
+    static String dateToCalenderString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
 
@@ -95,4 +106,12 @@ public class Sprint {
     public void setEndDateString(String date) {
         this.sprintStartDate = Project.stringToDate(date);
     }
+
+    public String getStartDateCalendarString() {return  Project.dateToString(this.sprintStartDate, "yyyy-MM-dd"); }
+
+    public String getDayAfterEndDateCalendarString() {
+        Calendar tempEndDate = Calendar.getInstance();
+        tempEndDate.setTime(this.getEndDate());
+        tempEndDate.add(Calendar.DATE, 1);
+        return  Project.dateToString(tempEndDate.getTime(), "yyyy-MM-dd"); }
 }

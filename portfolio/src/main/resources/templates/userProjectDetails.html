@@ -24,7 +24,12 @@
             <h1 id="project__name" th:text="${project.getName}"></h1>
             <h2 id="project__date" th:text="|${project.getStartDateString} - ${project.getEndDateString}|"></h2>
         </header>
-
+        <!-- Planner Button -->
+        <div class="project__button-wrapper flex-row">
+            <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+                <button type="submit">Planner</button>
+            </form>
+        </div>
         <!-- Description -->
         <p id="project__description" th:text="${project.getDescription()}"></p>
     </div>
