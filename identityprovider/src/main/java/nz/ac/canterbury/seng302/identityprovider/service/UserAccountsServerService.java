@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
@@ -17,12 +18,68 @@ import java.util.List;
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
 
+    private static final String USER_ID_FIELD = "userId";
+    private static final String USERNAME_FIELD = "username";
+    private static final String FIRST_NAME_FIELD = "firstName";
+    private static final String MIDDLE_NAME_FIELD = "middleName";
+    private static final String LAST_NAME_FIELD = "lastName";
+    private static final String NICKNAME_FIELD = "nickname";
+    private static final String BIO_FIELD = "bio";
+    private static final String EMAIL_FIELD = "email";
+    private static final String PRONOUNS_FIELD = "personalPronouns";
+    private static final String PASSWORD_FIELD = "password";
+    private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+
     @Autowired
     private UserRepository repository;
 
+    /**
+     * Checks if the requesting user is authenticated.
+     * @return True if the requesting user is authenticated
+     */
+    private boolean isAuthenticated() {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        return authState.getIsAuthenticated();
+    }
+
+    /**
+     * Checks if the requesting user is authenticated as the claimed user.
+     * @param claimedId The id of the user that the requesting user claims to be
+     * @return True if the requesting user is authenticated as the claimed user
+     */
+    private boolean isAuthenticatedAsUser(int claimedId) {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        // The following line needs some explanation.
+        // authState.getClaimsList() gets a list of ClaimDTO objects - these are defined in authentication.proto
+        // .stream() turns the list into a stream, this is a nice way of processing collections in java
+        // .filter() filters the stream to only nameid claims - this is the user's claimed id
+        // .findFirst() gets the first nameid claim - there should only be one but we have to consider this possibility
+        // .map() takes the ClaimDTO object and converts it to the userId we want
+        // .orElse() takes care of the case that no nameid claims were found (like the case when the user is not logged in)
+        String authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+        return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
+    }
+
+    /**
+     * If the user is authenticated as the user they want to change the password for, attempt to change their password
+     * @param request The request to change the user's password
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void changeUserPassword(ChangePasswordRequest request, StreamObserver<ChangePasswordResponse> responseObserver) {
-        ChangePasswordResponse reply = changeUserPasswordHandler(request);
+        ChangePasswordResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = changeUserPasswordHandler(request);
+        } else {
+            reply = ChangePasswordResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Password change failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -46,7 +103,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> userValidationErrors = checkUserExists(userId);
         reply.addAllValidationErrors(userValidationErrors);
 
-        if (userValidationErrors.size() == 0) {
+        if (userValidationErrors.isEmpty()) {
             reply.addAllValidationErrors(checkCurrentPassword(currentPassword, userId));
         }
 
@@ -63,9 +120,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as the user they want to edit, attempt to edit the user
+     * @param request The request to edit the user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void editUser(EditUserRequest request, StreamObserver<EditUserResponse> responseObserver) {
-        EditUserResponse reply = editUserHandler(request);
+        EditUserResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = editUserHandler(request);
+        } else {
+            reply = EditUserResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Edit user failed: Not authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -116,9 +186,19 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * If the user is authenticated as any valid user, attempt to get the information of the requested user
+     * @param request The request to get the user's information
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void getUserAccountById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
-        UserResponse reply = getUserAccountByIdHandler(request);
+        UserResponse reply;
+        if (isAuthenticated()) {
+            reply = getUserAccountByIdHandler(request);
+        } else {
+            reply = UserResponse.newBuilder().build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -150,6 +230,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * Attempt to register a user. Does not check authentication.
+     * @param request The request to register a user
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void register(UserRegisterRequest request, StreamObserver<UserRegisterResponse> responseObserver) {
 
@@ -181,7 +266,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         String password = request.getPassword();
 
         if (repository.findByUsername(username) != null) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName(USERNAME_FIELD).build();
             reply.addValidationErrors(validationError);
         }
 
@@ -225,12 +310,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (username.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (username.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName("username").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must be less than 65 characters").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -245,11 +330,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (firstName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName("firstName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (firstName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName("firstName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -264,7 +349,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (middleName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName("middleName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName(MIDDLE_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -279,11 +364,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (lastName.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName("lastName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (lastName.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName("lastName").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must be less than 65 characters").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -298,7 +383,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (nickname.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName("nickname").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Nickname must be less than 65 characters").setFieldName(NICKNAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -313,7 +398,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (bio.length() > 1024) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName("bio").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Bio must be less than 1025 characters").setFieldName(BIO_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -328,7 +413,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (personalPronouns.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName("personalPronouns").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -343,15 +428,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (email.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         } else if (!email.contains("@")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (email.length() > 255) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName("email").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be less than 256 characters").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -366,12 +451,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (password.length() < 8) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName("password").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
 
         if (password.length() > 64) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName("password").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -385,7 +470,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkUserExists(int userId) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (!repository.existsById(userId)) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("User does not exist").setFieldName("userId").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("User does not exist").setFieldName(USER_ID_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -403,18 +488,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         List<ValidationError> validationErrors = new ArrayList<>();
         User tempUser = repository.findByUserId(userId);
         if (Boolean.FALSE.equals(tempUser.checkPassword(currentPassword))) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Current password is incorrect").setFieldName("currentPassword").build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Current password is incorrect").setFieldName(CURRENT_PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
     }
-
-
-
-
-
-
-
-
 
 }

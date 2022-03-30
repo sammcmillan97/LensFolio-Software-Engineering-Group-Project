@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.profile_pic__row {
+    margin: auto;
+    justify-content: left;
+    flex-direction: column;
+    width: 50%;
+}
+
+.profile_pic__row img {
+    max-width: 100%;
+    height: auto;
+}
+
+.profile_pic__row h3 {
+    text-align: center;
+}
+
+.profile_body__row {
+    align-items: center;
+    justify-content: right;
+    flex-direction: column;
+    width: 50%;
+    padding-left: 30px;
+}
+
+.profile_body__content {
+    font-size: x-large;
+}

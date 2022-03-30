@@ -1,13 +1,19 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import org.springframework.beans.factory.annotation.Autowired;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import java.sql.Date;
+import java.util.Calendar;
 
 
 /**
@@ -15,37 +21,181 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class EditProjectController {
+    @Autowired
+    ProjectService projectService;
+    @Autowired
+    UserAccountClientService userAccountClientService;
+
     /* Create default project. TODO: use database to check for this*/
-    Project project = new Project("Project 2022", "", "04/Mar/2022",
+    Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
-    @GetMapping("/edit-project")
-    public String projectForm(Model model) {
+    private Calendar getCalendarDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.AM_PM, 0);
+        return cal;
+    }
+
+    @GetMapping("/projects/edit/{id}")
+    public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
+        // Add user details to model
+        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        model.addAttribute("user", user);
+
+        int id = Integer.parseInt(projectId);
+        Project project;
+
+        // If editing existing project
+        if (id != -1) {
+            // Try to find existing project
+            try {
+                project = projectService.getProjectById(id);
+            } catch (Exception ignored) {
+                // TODO
+                project = defaultProject;
+            }
+
+        // Otherwise, we are adding new project, so setup default values
+        } else {
+            project = new Project();
+            // Set project name with current year
+            Calendar cal = getCalendarDay();
+            project.setName("Project " + cal.get(Calendar.YEAR));
+
+            // Set project start date as current date
+            project.setStartDate(Date.from(cal.toInstant()));
+
+            // Set project end date as 8 months after start
+            cal.add(Calendar.MONTH, 8);
+            project.setEndDate(Date.from(cal.toInstant()));
+        }
+
         /* Add project details to the model */
+        model.addAttribute("projectId", project.getId());
         model.addAttribute("projectName", project.getName());
-        model.addAttribute("projectStartDate", project.getStartDateString());
-        model.addAttribute("projectEndDate", project.getEndDateString());
         model.addAttribute("projectDescription", project.getDescription());
+        model.addAttribute("projectStartDateString", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
+        model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
 
+        // A project can only be added up to a year ago
+        Calendar cal = getCalendarDay();
+        cal.add(Calendar.YEAR, -1);
+        java.util.Date minStartDate = Date.from(cal.toInstant());
+        model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
 
-        /* Return the name of the Thymeleaf template */
         return "editProject";
     }
 
-    @PostMapping("/edit-project")
+    @PostMapping("/projects/edit/{id}")
     public String projectSave(
             @AuthenticationPrincipal AuthState principal,
+            @PathVariable("id") String projectId,
             @RequestParam(value="projectName") String projectName,
-            @RequestParam(value="projectStartDate") String projectStartDate,
-            @RequestParam(value="projectEndDate") String projectEndDate,
+            @RequestParam(value="projectStartDate") Date projectStartDate,
+            @RequestParam(value="projectEndDate") Date projectEndDate,
             @RequestParam(value="projectDescription") String projectDescription,
             Model model
     ) {
-        project.setName(projectName);
-        project.setStartDateString(projectStartDate);
-        project.setEndDateString(projectEndDate);
-        project.setDescription(projectDescription);
-        return "redirect:/edit-project";
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
+        // Ensure request parameters represent a valid project
+        // Check id can be parsed
+        int id;
+        try {
+            id = Integer.parseInt(projectId);
+        } catch (NumberFormatException e) {
+            //TODO Add logging for error
+            return "redirect:/projects";
+        }
+
+        // Check required fields are not null
+        if (projectName == null || projectEndDate == null || projectStartDate == null) {
+            //TODO Add logging for error
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // Check that projectStartDate does not occur more than a year ago
+        Calendar yearAgoCal = getCalendarDay();
+        yearAgoCal.add(Calendar.YEAR, -1);
+
+        Calendar projectStartCal = getCalendarDay();
+        projectStartCal.setTime(projectStartDate);
+
+        if (projectStartCal.before(yearAgoCal)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // Ensure projectEndDate occurs after projectStartDate
+        Calendar projectEndCal = getCalendarDay();
+        projectEndCal.setTime(projectEndDate);
+        if (!projectEndCal.after(projectStartCal)) {
+            // TODO Add logging for error.
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // If editing existing project
+        Project savedProject;
+        if (id > 0) {
+            try {
+                Project existingProject = projectService.getProjectById(id);
+                existingProject.setName(projectName);
+                existingProject.setStartDate(projectStartDate);
+                existingProject.setEndDate(projectEndDate);
+                existingProject.setDescription(projectDescription);
+                savedProject = projectService.saveProject(existingProject);
+
+            } catch(Exception ignored) {
+                //TODO Add logging for error.
+                return "redirect:/projects/edit/" + projectId;
+            }
+
+        // Otherwise, create a new project with given values
+        } else {
+            Project newProject = new Project(projectName, projectDescription, projectStartDate, projectEndDate);
+            savedProject = projectService.saveProject(newProject);
+        }
+
+        return "redirect:/projects/" + savedProject.getId();
+    }
+
+    /**
+     * Delete endpoint for projects. Takes id parameter from http request and deletes the corresponding project from
+     * the database.
+     * @param projectId ID of the project to be deleted from the database.
+     * @return Redirects back to the GET mapping for /projects.
+     */
+    @DeleteMapping(value="/projects/delete/{id}")
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
+        String role = userAccountClientService.getRole(principal);
+        if (!role.contains("teacher")) {
+            return "redirect:/projects";
+        }
+
+        int id = Integer.parseInt(projectId);
+        try {
+            projectService.deleteProjectById(id);
+        } catch (Exception e) {
+            //TODO log error.
+        }
+        return "redirect:/projects";
     }
 
 }

@@ -41,16 +41,16 @@ public class BackdoorController {
         cal.add(Calendar.WEEK_OF_YEAR, 3);
         endDate = new Date(cal.getTimeInMillis());
 
-        Sprint sprint1 = new Sprint(project1.getId(), "Sprint Name", "Sprint 1", "This is a sprint", startDate, endDate);
-        Sprint sprint2 = new Sprint(project2.getId(), "Sprint Name", "Sprint 2", "This is a sprint", startDate, endDate);
+        Sprint sprint1 = new Sprint(project1.getId(), "Sprint Name", 1, "This is a sprint", startDate, endDate);
+        Sprint sprint2 = new Sprint(project2.getId(), "Sprint Name", 2, "This is a sprint", startDate, endDate);
 
         cal.add(Calendar.DAY_OF_MONTH, 1);
         startDate = new Date(cal.getTimeInMillis());
         cal.add(Calendar.WEEK_OF_YEAR, 3);
         endDate = new Date(cal.getTimeInMillis());
 
-        Sprint sprint3 = new Sprint(project1.getId(), "Sprint Name", "Sprint 3", "This is a sprint", startDate, endDate);
-        Sprint sprint4 = new Sprint(project2.getId(), "Sprint Name", "Sprint 4", "This is a sprint", startDate, endDate);
+        Sprint sprint3 = new Sprint(project1.getId(), "Sprint Name", 3, "This is a sprint", startDate, endDate);
+        Sprint sprint4 = new Sprint(project2.getId(), "Sprint Name", 4, "This is a sprint", startDate, endDate);
 
         List<Sprint> project1Sprints = new ArrayList<>();
         List<Sprint> project2Sprints = new ArrayList<>();

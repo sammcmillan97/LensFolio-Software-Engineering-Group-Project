@@ -11,15 +11,21 @@
     <!-- The application's navigation bar. -->
     <nav th:fragment="navbar" id="site-navigation">
         <link rel="stylesheet" href="/styles/navbar.css">
+        <script rel="text/javascript" th:src="@{/scripts/navbar.js}"></script>
         <ul class="site-navigation__list">
             <li class="site-navigation__item">
                 <h5>
-                    <a href="/" class="site-navigation__link">Home</a>
+                    <a href="/profile" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">Profile</a>
                 </h5>
             </li>
             <li class="site-navigation__item">
                 <h5>
-                    <a href="/projects" class="site-navigation__link active">Projects</a>
+                    <a href="/projects" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">Projects</a>
+                </h5>
+            </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">Planner</a>
                 </h5>
             </li>
         </ul>
