@@ -5,12 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/planner.css">
-    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/projectDetails.css"/>
     <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
 
     <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
 
-<!--    Define some variables that either need to be used in this page or require thymeleaf information-->
+    <!-- Define some variables that either need to be used in this page or require thymeleaf information -->
     <script type="text/javascript" th:inline="javascript">
         let projectStartDate = [[${project.getStartDateCalendarString}]]
         let projectEndDate = [[${project.getEndDateCalendarString}]]
@@ -20,7 +20,7 @@
         let sprintEventColours = ["#d4b9f0", "#a7e2f5"]
     </script>
 
-<!--    Save sprint information so it can be accessed by the calendar-->
+    <!-- Save sprint information, so it can be accessed by the calendar -->
     <script type="text/javascript" th:inline="javascript" th:each="sprint, iterInfo: ${sprints}">
         sprint = {id: [[${sprint.getId}]],
             title: [[${sprint.getLabel}]],
@@ -32,29 +32,31 @@
         }
         sprints.push(sprint);
     </script>
+
     <script rel="script" src="/scripts/planner.js"></script>
 
-
-
 </head>
-<body>
-<!-- Import the application's header bar. -->
-<header th:replace="fragments/header :: header"></header>
-<!-- Import the application's navigation bar. -->
-<nav th:replace="fragments/navbar :: navbar"></nav>
 
-<div id="page-content" class="constrict">
-    <!-- Populate the following div with projects and their details. -->
-    <div class="header">
-        <div class="title">
-            <p class="title-name" th:text="${project.getName}"></p>
-            <p class="title-date" th:text="${project.getStartDateString} + ' - ' + ${project.getEndDateString}"></p>
+<body>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
+
+    <div id="page-content" class="constrict">
+        <!-- Populate the following div with projects and their details. -->
+        <div id="project">
+            <!-- Name, Date -->
+            <header class="project__header flex-column">
+                <h1 id="project__name" th:text="${project.getName}"></h1>
+                <h2 id="project__date" th:text="|${project.getStartDateString} - ${project.getEndDateString}|"></h2>
+            </header>
+
+            <div id="calendar__container">
+                <div id="calendar"></div>
+            </div>
         </div>
     </div>
-    <div class="calendar__container">
-        <div id='calendar'></div>
-    </div>
-</div>
 
 </body>
 </html>

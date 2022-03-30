@@ -1,3 +1,8 @@
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
 .container {
     display: flex;
     flex-direction: row;
@@ -5,7 +10,8 @@
 
 .profile_pic__row {
     margin: auto;
-    justify-content: left;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     width: 50%;
 }
@@ -13,6 +19,14 @@
 .profile_pic__row img {
     max-width: 100%;
     height: auto;
+}
+
+.profile_pic__row .icon {
+    position: relative;
+    width: 30px;
+    margin: auto;
+    left: 75px;
+    bottom: 15px;
 }
 
 .profile_pic__row h3 {
@@ -27,6 +41,26 @@
     padding-left: 30px;
 }
 
-.profile_body__content {
+.profile_body__content strong{
     font-size: x-large;
+}
+
+.profile_body__content p {
+    font-size: 1rem;
+}
+
+.UserProfile {
+    padding-left: 50px;
+}
+
+.profile-image {
+    width:150px;
+    height:150px;
+    object-fit:cover;
+}
+
+.profile-icon {
+    width:30px;
+    height:30px;
+    object-fit:cover;
 }

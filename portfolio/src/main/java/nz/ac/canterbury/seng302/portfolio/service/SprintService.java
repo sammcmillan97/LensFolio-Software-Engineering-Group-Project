@@ -48,7 +48,7 @@ public class SprintService {
     public Map<Integer, List<Sprint>> getAllByParentProjectId() {
         List<Project> projects = projectService.getAllProjects();
 
-        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<Integer, List<Sprint>>();
+        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<>();
         for (Project project : projects) {
             int projectId = project.getId();
             sprintsByParentProject.put(projectId, getByParentProjectId(projectId));
