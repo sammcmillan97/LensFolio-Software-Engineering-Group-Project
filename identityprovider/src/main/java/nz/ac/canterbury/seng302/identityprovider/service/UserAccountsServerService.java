@@ -12,7 +12,6 @@ import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @GrpcService

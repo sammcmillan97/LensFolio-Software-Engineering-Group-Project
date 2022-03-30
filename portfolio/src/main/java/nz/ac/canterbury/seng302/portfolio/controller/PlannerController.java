@@ -54,7 +54,7 @@ public class PlannerController {
         }
 
 
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -91,7 +91,7 @@ public class PlannerController {
             endDate.add(Calendar.MONTH, 8);
             project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
         }
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

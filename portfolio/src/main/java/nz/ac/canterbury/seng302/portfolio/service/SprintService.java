@@ -24,8 +24,7 @@ public class SprintService {
      * Get list of all sprints
      */
     public List<Sprint> getAllSprints() {
-        List<Sprint> list = (List<Sprint>) repository.findAll();
-        return list;
+        return (List<Sprint>) repository.findAll();
     }
 
     /**
@@ -59,8 +58,7 @@ public class SprintService {
     }
 
     public Sprint saveSprint(Sprint sprint) {
-        Sprint savedSprint = repository.save(sprint);
-        return savedSprint;
+        return repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {

@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -31,8 +32,6 @@ public class EditSprintController {
     ProjectService projectService;
     @Autowired
     SprintService sprintService;
-
-    private Sprint defaultSprint = new Sprint(-1, "A Sprint", -1, "Here's a description", new Date(), new Date());
 
     /**
      * Method to return a calendar object representing the very beginning of a day
@@ -191,7 +190,7 @@ public class EditSprintController {
         }
 
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -220,8 +219,8 @@ public class EditSprintController {
             // Get date boundaries for new sprint
             Calendar minStartDate = getCalendarDay();
             Calendar maxEndDate = getCalendarDay();
-            minStartDate.setTime(getMinSprintStartDate(projectId, sprint.getNumber()));
-            maxEndDate.setTime(getMaxSprintEndDate(projectId, sprint.getNumber()));
+            minStartDate.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprint.getNumber())));
+            maxEndDate.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprint.getNumber())));
 
             // Default start date is first available date
             sprint.setStartDate(minStartDate.getTime());
@@ -322,7 +321,7 @@ public class EditSprintController {
 
         // Check sprint starts after project start and all previous sprints
         Calendar minSprintStart = getCalendarDay();
-        minSprintStart.setTime(getMinSprintStartDate(projectId, sprintNumber));
+        minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
             // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;
@@ -330,7 +329,7 @@ public class EditSprintController {
 
         // Check sprint ends before project end and all following sprints
         Calendar maxSprintEnd = getCalendarDay();
-        maxSprintEnd.setTime(getMaxSprintEndDate(projectId, sprintNumber));
+        maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
             // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;

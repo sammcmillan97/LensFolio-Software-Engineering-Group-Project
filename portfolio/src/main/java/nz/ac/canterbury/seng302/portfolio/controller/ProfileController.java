@@ -39,7 +39,7 @@ public class ProfileController {
             Model model
     ) {
 
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

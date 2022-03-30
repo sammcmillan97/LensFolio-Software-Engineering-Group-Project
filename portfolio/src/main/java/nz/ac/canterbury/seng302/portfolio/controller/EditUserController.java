@@ -32,7 +32,7 @@ public class EditUserController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -71,7 +71,7 @@ public class EditUserController {
                            Model model) {
 
         //get userId using the Authentication Principle
-        Integer id = Integer.valueOf(principal.getClaimsList().stream()
+        int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

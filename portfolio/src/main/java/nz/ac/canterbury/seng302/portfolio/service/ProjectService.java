@@ -22,8 +22,7 @@ public class ProjectService {
      * Get list of all projects
      */
     public List<Project> getAllProjects() {
-        List<Project> list = (List<Project>) repository.findAll();
-        return list;
+        return (List<Project>) repository.findAll();
     }
 
     /**
@@ -41,8 +40,7 @@ public class ProjectService {
     }
 
     public Project saveProject(Project project) {
-        Project savedProject = repository.save(project);
-        return savedProject;
+        return repository.save(project);
     }
 
     public void deleteProjectById(int id) throws Exception {
