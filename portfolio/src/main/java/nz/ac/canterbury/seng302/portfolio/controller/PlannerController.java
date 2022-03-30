@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
 import java.util.List;
@@ -76,7 +75,7 @@ public class PlannerController {
 
         List<Project> projects = projectService.getAllProjects();
         Project project = null;
-        if (projects.size() > 0) {
+        if (!projects.isEmpty()) {
             project = projects.get(0);
         } else {
             Calendar startDate = Calendar.getInstance();

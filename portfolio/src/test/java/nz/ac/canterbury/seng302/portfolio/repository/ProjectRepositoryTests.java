@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @DataJpaTest
-public class ProjectRepositoryTests {
+class ProjectRepositoryTests {
 
     @Autowired
     private DataSource dataSource;

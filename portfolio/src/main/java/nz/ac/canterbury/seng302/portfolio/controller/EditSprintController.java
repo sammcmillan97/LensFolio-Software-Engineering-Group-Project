@@ -8,7 +8,6 @@ import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,7 +68,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             // Skip sprints after the given sprint
-            if (!(sprint.getNumber() < sprintNumber)) {
+            if (sprint.getNumber() >= sprintNumber) {
                 continue;
             }
 
@@ -111,7 +110,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             // Skip sprints before the given sprint
-            if (!(sprintNumber < sprint.getNumber())) {
+            if (sprintNumber >= sprint.getNumber()) {
                 continue;
             }
 
@@ -142,7 +141,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             int sprintNumber = sprint.getNumber();
-            if (!(sprintNumber < nextSprintNumber)) {
+            if (sprintNumber >= nextSprintNumber) {
                 nextSprintNumber = sprintNumber + 1;
             }
         }
@@ -318,7 +317,6 @@ public class EditSprintController {
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
-        Sprint savedSprint;
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
         try {
             Sprint existingSprint = sprintService.getSprintById(sprintId);
@@ -326,11 +324,11 @@ public class EditSprintController {
             existingSprint.setStartDate(sprintStartDate);
             existingSprint.setEndDate(sprintEndDate);
             existingSprint.setDescription(sprintDescription);
-            savedSprint = sprintService.saveSprint(existingSprint);
+            sprintService.saveSprint(existingSprint);
 
         } catch(Exception ignored) {
             Sprint newSprint = new Sprint(projectId, sprintName, getNextSprintNumber(projectId), sprintDescription, sprintStartDate, sprintEndDate);
-            savedSprint = sprintService.saveSprint(newSprint);
+            sprintService.saveSprint(newSprint);
         }
 
         return "redirect:/projects/" + projectIdString;
