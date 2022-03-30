@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
 import java.util.List;
@@ -54,7 +53,7 @@ public class PlannerController {
         }
 
 
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -83,7 +82,7 @@ public class PlannerController {
 
         List<Project> projects = projectService.getAllProjects();
         Project project = null;
-        if (projects.size() > 0) {
+        if (!projects.isEmpty()) {
             project = projects.get(0);
         } else {
             Calendar startDate = Calendar.getInstance();
@@ -91,7 +90,7 @@ public class PlannerController {
             endDate.add(Calendar.MONTH, 8);
             project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
         }
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

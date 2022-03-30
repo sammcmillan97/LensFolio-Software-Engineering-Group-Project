@@ -41,7 +41,7 @@ public class ProjectSummariesController {
     @GetMapping("/projects")
     public String projects(@AuthenticationPrincipal AuthState principal, Model model) {
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -53,13 +53,12 @@ public class ProjectSummariesController {
         Map<Integer, List<Sprint>> sprints = sprintService.getAllByParentProjectId();
 
         /* Return the name of the Thymeleaf template
-        detects the role of the current user and returns appropriate page
-        System.out.println(role);*/
+        detects the role of the current user and returns appropriate page */
         String role = userAccountClientService.getRole(principal);
         if (role.contains("teacher")) {
 
             // Add default project if none exist
-            if (projects.size() < 1) {
+            if (projects.isEmpty()) {
                 Project defaultProject = new Project();
                 projectService.saveProject(defaultProject);
                 projects = projectService.getAllProjects();

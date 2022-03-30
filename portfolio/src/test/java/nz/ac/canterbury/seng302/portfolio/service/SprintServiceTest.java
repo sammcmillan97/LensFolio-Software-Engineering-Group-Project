@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class SprintServiceTest {
+class SprintServiceTest {
     @Autowired
     SprintService sprintService;
 
