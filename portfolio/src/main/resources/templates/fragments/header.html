@@ -19,7 +19,7 @@
                 <p th:text="${user.username}"></p>
             </li>
             <li class="header__dropdown">
-                <a href="javascript:void(0)" class="header__dropdown_button"><img src="/GenericUserIcon.jpg" width="30px"></a>
+                <a href="javascript:void(0)" class="header__dropdown_button"><img th:src="${user.profileImagePath}" width="30px"></a>
                 <div class="header__dropdown_content">
                     <a th:href="@{/login}">Logout</a>
                     <a th:href="@{/editUser}">Edit User</a>

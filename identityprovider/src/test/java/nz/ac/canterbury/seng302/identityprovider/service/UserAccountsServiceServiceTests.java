@@ -322,7 +322,42 @@ class UserAccountsServiceServiceTests {
         assertEquals(testPronouns, response.getPersonalPronouns());
         assertEquals(testEmail, response.getEmail());
         assertEquals(testCreated, response.getCreated());
+        assertEquals("http://localhost:8080/resources/profile-images/default/default.jpg", response.getProfileImagePath());
+        assertEquals(UserRole.STUDENT, response.getRoles(0));
+        assertEquals(1, response.getRolesCount());
     }
+
+    // Tests that getting roles succeeds when roles have been changed from their defaults
+    @Test
+    void getUserByIdRolesTest() {
+        User testUser = repository.findByUserId(testId);
+        testUser.addRole(UserRole.TEACHER);
+        testUser.removeRole(UserRole.STUDENT);
+        testUser.addRole(UserRole.COURSE_ADMINISTRATOR);
+        repository.save(testUser);
+        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
+                .setId(testId)
+                .build();
+        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertTrue(response.getRolesList().contains(UserRole.TEACHER));
+        assertTrue(response.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR));
+        assertEquals(2, response.getRolesCount());
+    }
+
+    // Tests that getting profile picture path succeeds when it is changed from default
+    @Test
+    void getUserByIdProfileImagePathTest() {
+        String testPath = "test.png";
+        User testUser = repository.findByUserId(testId);
+        testUser.setProfileImagePath(testPath);
+        repository.save(testUser);
+        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
+                .setId(testId)
+                .build();
+        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
+    }
+
 
     // Tests that creating user fails if no fields are entered
     @Test
