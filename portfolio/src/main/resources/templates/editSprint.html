@@ -1,43 +1,48 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Edit Sprint</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/main.css}" rel="stylesheet" />
-    <link th:href="@{/styles/form.css}" rel="stylesheet" />
+    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{/styles/addEditSprint.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
 </head>
+
 <body>
-<div class="header">
-    <div class="title">
-        <div class="title-name">Edit Sprint</div>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
+
+    <!-- Page content -->
+    <div id="page-content" class="constrict">
+        <div id="sprint-form__wrapper">
+            <!-- Name, Date -->
+            <header class="sprint-form__header flex-column">
+                <h1 id="sprint__name" th:text="${sprintName}"></h1>
+                <h2 id="sprint__label" th:text="${sprintLabel}"></h2>
+            </header>
+
+            <!-- Add/Edit Sprint Form -->
+            <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/{project}/{sprint}(project=${projectId}, sprint=${sprintId})}" th:method="post">
+                <label for="sprint-form__name-field">Sprint Name *</label>
+                <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" th:placeholder="${sprintName}" th:value="${sprintName}" required>
+
+                <label for="sprint-form__description-field">Sprint Description</label>
+                <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription" th:placeholder="${sprintDescription}" th:text="${sprintDescription}"></textarea>
+
+                <label for="sprint-form__start-date-field">Sprint Start Date *</label>
+                <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" th:placeholder="${sprintStartDate}" th:value="${sprintStartDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMinEndDate()" required>
+
+                <label for="sprint-form__end-date-field">Sprint End Date *</label>
+                <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMaxStartDate()" required>
+
+                <button type="submit" id="sprint-form__save">Save Changes</button>
+                <a id="sprint-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
+            </form>
+        </div>
     </div>
-</div>
-<div class="content">
-    <form th:action="@{/edit-sprint}"
-          method="post">
-        <label for="sprintName">Sprint Name</label> <br/>
-        <input id="sprintName" type="text" th:name="sprintName" th:value="*{sprintName}">
-        <br/>
-        <div class="horizontal-group">
-            <div class="horizontal-group-element" >
-                <label for="sprintStartDate">Sprint Start Date</label> <br/>
-                <input id="sprintStartDate" type="text" th:name="sprintStartDate" th:value="*{sprintStartDate}">
-            </div>
-            <div class="horizontal-group-element" >
-                <label for="sprintEndDate">Sprint End Date</label> <br/>
-                <input id="sprintEndDate" type="text" th:name="sprintEndDate" th:value="*{sprintEndDate}">
-            </div>
-        </div>
-        <div>
-            <label for="sprintDescription">Sprint Description</label> <br/>
-            <textarea class="description-input" id="sprintDescription" th:name="sprintDescription" th:text="*{sprintDescription}"></textarea>
-        </div>
-        <br/>
-        <button class="cancel" type="button">
-            <a th:href="@{'/details'}">Cancel</a>
-        </button>
-        <button class="save" type="submit">Save</button>
-    </form>
-</div>
 </body>
+
 </html>
