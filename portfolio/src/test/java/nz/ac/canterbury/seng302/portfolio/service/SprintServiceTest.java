@@ -51,7 +51,7 @@ public class SprintServiceTest {
     @Test
     void whenNoSprints_testSaveSprintToSameProject() {
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        assertThat(sprints.size()).isEqualTo(0);
+        assertThat(sprints.size()).isZero();
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprints = (List<Sprint>) sprintRepository.findAll();
@@ -125,8 +125,8 @@ public class SprintServiceTest {
     @Test
     void whenNoSprintSaved_testGetAllSprints() {
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        assertThat(sprints.size()).isEqualTo(0);
-        assertThat(sprintService.getAllSprints().size()).isEqualTo(0);
+        assertThat(sprints.size()).isZero();
+        assertThat(sprintService.getAllSprints().size()).isZero();
     }
     //When there is one sprint in the database, test retrieving all sprints using sprint service.
     @Test
@@ -156,7 +156,7 @@ public class SprintServiceTest {
     @Test
     void whenSprintIdNotExists_testGetSprintById() throws Exception {
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        assertThat(sprints.size()).isEqualTo(0);
+        assertThat(sprints.size()).isZero();
         Exception exception = assertThrows(Exception.class, () -> {
             sprintService.getSprintById(900000);
         });
@@ -183,9 +183,9 @@ public class SprintServiceTest {
     @Test
     void whenNoSprintSaved_testGetByParentProjectId() {
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        assertThat(sprints.size()).isEqualTo(0);
+        assertThat(sprints.size()).isZero();
         List<Sprint> sprintList = sprintService.getByParentProjectId(projects.get(0).getId());
-        assertThat(sprintList.size()).isEqualTo(0);
+        assertThat(sprintList.size()).isZero();
     }
     //When one sprint is saved to the database, test retrieving sprints by parent project id.
     @Test

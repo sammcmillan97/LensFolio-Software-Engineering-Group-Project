@@ -34,7 +34,7 @@ public class ProjectServiceTest {
     @Test
     void whenNoProjects_testSaveProject() {
         List<Project> projects = (List<Project>) projectRepository.findAll();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
         projectService.saveProject(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(1);
@@ -66,7 +66,7 @@ public class ProjectServiceTest {
     @Test
     void whenNoProjectSaved_testGetAllProjects() {
         List<Project> projects = projectService.getAllProjects();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
     }
     //Test getting all projects from the database when one project are saved.
     @Test
@@ -89,7 +89,7 @@ public class ProjectServiceTest {
     @Test
     void whenProjectIdNotExists_testGetProjectById() throws Exception {
         List<Project> projects = (List<Project>) projectRepository.findAll();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
         Exception exception = assertThrows(Exception.class, () -> {
             projectService.getProjectById(900000);
         });
@@ -114,7 +114,7 @@ public class ProjectServiceTest {
     @Test
     void whenNoProjectExists_testDeleteProjectById() {
         List<Project> projects = (List<Project>) projectRepository.findAll();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
         Exception exception = assertThrows(Exception.class, () -> {
             projectService.deleteProjectById(90000);
         });
@@ -131,7 +131,7 @@ public class ProjectServiceTest {
         int projectId = projects.get(0).getId();
         projectService.deleteProjectById(projectId);
         projects = (List<Project>) projectRepository.findAll();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
     }
     //Test deleting a project from the database when many projects are saved.
     @Test
@@ -153,7 +153,7 @@ public class ProjectServiceTest {
     @Test
     void whenFirstProjectSaved_testNotHasIdZero() throws Exception {
         List<Project> projects = (List<Project>) projectRepository.findAll();
-        assertThat(projects.size()).isEqualTo(0);
+        assertThat(projects.size()).isZero();
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         projects = (List<Project>) projectRepository.findAll();
         assertThat(projects.size()).isEqualTo(1);
