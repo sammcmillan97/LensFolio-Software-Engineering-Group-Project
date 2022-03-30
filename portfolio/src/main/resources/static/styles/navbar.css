@@ -91,10 +91,11 @@ h5 {
 }
 
 .header__dropdown_content a:hover {
-    background-color: #f1f1f1;
+    background-color: #F67B50;
 }
 
 .header__dropdown:hover .header__dropdown_content {
+    right: 0;
     display: block;
 }
 

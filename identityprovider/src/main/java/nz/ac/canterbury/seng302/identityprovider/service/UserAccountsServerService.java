@@ -8,11 +8,13 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserAccountServiceGrpc.UserAccountServiceImplBase;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
+import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @GrpcService
@@ -64,6 +66,148 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+
+    /**
+     * Allows user to upload their profile photo through bidirectional streaming.
+     * Takes a StreamObserver that the client has created and uses it
+     * to build a new StreamObserver the client can use to upload the photo.
+     * Photo should be sent over the StreamObserver like so:
+     *  - metadata first
+     *  - actual data split into chunks of max. 2^16 (65536)
+     *  - call onCompleted()
+     * @param responseObserver a StreamObserver that the client has created
+     * @return a StreamObserver that the server has created for the client to use
+     */
+    @Override
+    public StreamObserver<UploadUserProfilePhotoRequest> uploadUserProfilePhoto(StreamObserver<FileUploadStatusResponse> responseObserver) {
+        return new StreamObserver<>() {
+            ProfilePhotoUploadMetadata metaData;
+            byte[] fileContent = new byte[0];
+
+            @Override
+            public void onNext(UploadUserProfilePhotoRequest request) { //This is where we put the server's implementation after receiving each message
+                if (request.hasMetaData()) {
+                    if (metaData == null) {
+                        metaData = request.getMetaData();
+                        FileUploadStatusResponse response;
+                        if (fileContent.length == 0) {
+                            response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.PENDING).setMessage("Pending").build();
+                        } else {
+                            response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                        }
+                        responseObserver.onNext(response);
+                    } else {
+                        responseObserver.onError(new IllegalArgumentException());
+                    }
+                } else {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+                    try {
+                        output.write(fileContent);
+                        output.write(request.getFileContent().toByteArray());
+                    } catch (IOException e) {
+                        responseObserver.onError(e);
+                    }
+
+                    fileContent = output.toByteArray();
+                }
+                FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
+                        .setStatus(FileUploadStatus.IN_PROGRESS).setMessage("In progress").build();
+                responseObserver.onNext(response);
+
+            }
+
+            @Override
+            public void onCompleted() { //This is where to put the server's implementation after all messages are sent
+                if (metaData == null) {
+                    responseObserver.onError(new IllegalStateException());
+                } else {
+                    if (isAuthenticatedAsUser(metaData.getUserId())) {
+                        User user = repository.findByUserId(metaData.getUserId());
+
+                        if (user.getProfileImagePath() != null) {
+                            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+                            if (!oldPhoto.delete()) {
+                                responseObserver.onError(new FileNotFoundException());
+                            }
+                        }
+                        user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
+                        String filepath = "src/main/resources/" + user.getProfileImagePath();
+                        File file = new File(filepath);
+                        try (OutputStream os = new FileOutputStream(file)) {
+                            os.write(fileContent);
+                            repository.save(user);
+                            FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
+                                    .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                            responseObserver.onNext(response);
+                            responseObserver.onCompleted();
+                        } catch (Exception e) {
+                            responseObserver.onError(e);
+                        }
+                    } else {
+                        //not authenticated as user, illegal action
+                        responseObserver.onError(new IllegalStateException());
+                    }
+
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwableError) {
+                // Client should never throw an error, so server does not need to handle them.
+            }
+        };
+    }
+
+    /**
+     * Service for deleting a users profile photo with authentication
+     * @param request
+     * @param responseObserver
+     */
+    @Override
+    public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
+        DeleteUserProfilePhotoResponse response;
+
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            response = deleteUserProfilePhotoHandler(request);
+        } else {
+            response = DeleteUserProfilePhotoResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage(false)
+                    .build();
+        }
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+
+    }
+
+    /**
+     * Handler for deleting user's photo. If the photo exists, try to delete it.
+     * @param request A DeleteUserProfilePhotoRequest according to user_accounts.proto
+     * @return A DeleteUserProfilePhotoResponse with success true if the photo was deleted, or did not exist in the first place.
+     */
+    DeleteUserProfilePhotoResponse deleteUserProfilePhotoHandler(DeleteUserProfilePhotoRequest request) {
+        DeleteUserProfilePhotoResponse response;
+        User user = repository.findByUserId(request.getUserId());
+        if (user.getProfileImagePath() != null) {
+            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+            if (oldPhoto.delete()) {
+                user.setProfileImagePath(null);
+                repository.save(user);
+                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+            } else {
+                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
+            }
+        } else {
+            response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+        }
+
+        return response;
+    }
+
+
     /**
      * If the user is authenticated as the user they want to change the password for, attempt to change their password
      * @param request The request to change the user's password
@@ -83,6 +227,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
+
 
     /**
      * Handler for password change requests.
@@ -226,6 +371,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setEmail(user.getEmail())
                     .setCreated(user.getTimeCreated())
                     .addAllRoles(user.getRoles());
+            if (user.getProfileImagePath() != null) {
+                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+            } else {
+                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+            }
         }
         return reply.build();
     }
