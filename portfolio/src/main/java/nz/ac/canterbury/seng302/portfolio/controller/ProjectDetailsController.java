@@ -31,16 +31,15 @@ public class ProjectDetailsController {
     /**
      * The Get mapping for displaying the details of a specific project through the project details page. Will display a
      * different page based on if the current user is a teacher or student.
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @param id The ID of the project being displayed
      * @return The project page displaying the selected projects details
-     * @throws Exception
      */
     @GetMapping("/projects/{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

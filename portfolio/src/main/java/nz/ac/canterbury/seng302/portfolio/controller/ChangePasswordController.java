@@ -46,10 +46,10 @@ public class ChangePasswordController {
 
     /**
      * Post request to change user password
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param oldPassword User's current password
      * @param newPassword User's new password
-     * @param model
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return change password page
      */
     @PostMapping("/changePassword")

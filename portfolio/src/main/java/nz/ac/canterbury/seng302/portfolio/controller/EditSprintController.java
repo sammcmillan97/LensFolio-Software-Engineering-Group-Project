@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -31,8 +32,6 @@ public class EditSprintController {
     ProjectService projectService;
     @Autowired
     SprintService sprintService;
-
-    private Sprint defaultSprint = new Sprint(-1, "A Sprint", -1, "Here's a description", new Date(), new Date());
 
     /**
      * Method to return a calendar object representing the very beginning of a day
@@ -173,12 +172,11 @@ public class EditSprintController {
 
     /**
      * The get mapping to return the page to edit a sprint of a certain Project ID
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param parentProjectId The Project ID of parent project of the sprint being displayed
      * @param sprintId The Sprint ID of the sprint being displayed
-     * @param model
+     * @param model ThymeLeaf model
      * @return The edit sprint page
-     * @throws Exception
      */
     @GetMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
@@ -191,7 +189,7 @@ public class EditSprintController {
         }
 
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -220,8 +218,8 @@ public class EditSprintController {
             // Get date boundaries for new sprint
             Calendar minStartDate = getCalendarDay();
             Calendar maxEndDate = getCalendarDay();
-            minStartDate.setTime(getMinSprintStartDate(projectId, sprint.getNumber()));
-            maxEndDate.setTime(getMaxSprintEndDate(projectId, sprint.getNumber()));
+            minStartDate.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprint.getNumber())));
+            maxEndDate.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprint.getNumber())));
 
             // Default start date is first available date
             sprint.setStartDate(minStartDate.getTime());
@@ -252,14 +250,14 @@ public class EditSprintController {
 
     /**
      * The post mapping to edit a sprint ID
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param projectIdString The parent project ID of the sprint that is being edited
      * @param sprintIdString The ID of the sprint that is being edited
      * @param sprintName The name of the sprint being edited
      * @param sprintStartDate The start date of the sprint being edited
      * @param sprintEndDate The end date of the sprint being edited
      * @param sprintDescription The description of the sprint being edited
-     * @param model
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The edit sprints page
      */
     @PostMapping("/projects/edit/{parentProjectId}/{sprintId}")
@@ -322,7 +320,7 @@ public class EditSprintController {
 
         // Check sprint starts after project start and all previous sprints
         Calendar minSprintStart = getCalendarDay();
-        minSprintStart.setTime(getMinSprintStartDate(projectId, sprintNumber));
+        minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
             // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;
@@ -330,7 +328,7 @@ public class EditSprintController {
 
         // Check sprint ends before project end and all following sprints
         Calendar maxSprintEnd = getCalendarDay();
-        maxSprintEnd.setTime(getMaxSprintEndDate(projectId, sprintNumber));
+        maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
             // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;
@@ -361,11 +359,10 @@ public class EditSprintController {
 
     /**
      * The delete mapping for deleting sprints from a project
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param parentProjectId The parent project ID of the sprint being deleted
      * @param sprintId The sprint ID of the sprint being delted
      * @return The projects page
-     * @throws Exception
      */
     @DeleteMapping(value="/projects/delete/{parentProjectId}/{sprintId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,

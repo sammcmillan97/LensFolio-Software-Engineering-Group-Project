@@ -35,13 +35,13 @@ public class ProjectSummariesController {
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
      * database. If no projects exist in the database a default project is created.
-     * @param model Allows addition of objects to the projects html page.
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The projects html page with relevant projects data.
      */
     @GetMapping("/projects")
     public String projects(@AuthenticationPrincipal AuthState principal, Model model) {
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)

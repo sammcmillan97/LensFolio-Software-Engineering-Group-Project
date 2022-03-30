@@ -46,10 +46,10 @@ public class EditProjectController {
 
     /**
      * Get mapping to return the edit projects page
-     * @param principal
-     * @param projectId
-     * @param model
-     * @return edit project page
+     * @param principal Authentication principal storing current user information
+     * @param projectId The project ID of the project being displayed
+     * @param model ThymeLeaf model
+     * @return Edit project page
      */
     @GetMapping("/projects/edit/{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
@@ -113,14 +113,14 @@ public class EditProjectController {
 
     /**
      * Post mapping to edit details of a project on the edit project page
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param projectId The project ID to be edited
      * @param projectName The project name to be edited
      * @param projectStartDate The project start date to be edited
      * @param projectEndDate The project end date to be edited
      * @param projectDescription The project description to be edited
-     * @param model
-     * @return
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Edit project page
      */
     @PostMapping("/projects/edit/{id}")
     public String projectSave(

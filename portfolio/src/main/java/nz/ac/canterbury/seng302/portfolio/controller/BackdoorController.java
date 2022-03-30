@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Controller for controlling backdoor requests (ADMIN AND TESTING PURPOSES ONLY)
+ */
 @Controller
 public class BackdoorController {
 
@@ -22,6 +25,11 @@ public class BackdoorController {
     @Autowired
     SprintService sprintService;
 
+    /**
+     * Get request to add a default projects and sprints
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Projects page
+     */
     @GetMapping(value="/projects/all")
     public String addEntitiesForDemo(Model model) {
 
@@ -49,15 +57,15 @@ public class BackdoorController {
         cal.add(Calendar.WEEK_OF_YEAR, 3);
         endDate = new Date(cal.getTimeInMillis());
 
-        Sprint sprint3 = new Sprint(project1.getId(), "Sprint Name", 3, "This is a sprint", startDate, endDate);
-        Sprint sprint4 = new Sprint(project2.getId(), "Sprint Name", 4, "This is a sprint", startDate, endDate);
+        Sprint sprint3 = new Sprint(project1.getId(), "Sprint Name", 1, "This is a sprint", startDate, endDate);
+        Sprint sprint4 = new Sprint(project2.getId(), "Sprint Name", 2, "This is a sprint", startDate, endDate);
 
         List<Sprint> project1Sprints = new ArrayList<>();
         List<Sprint> project2Sprints = new ArrayList<>();
 
         project1Sprints.add(sprint1);
-        project1Sprints.add(sprint3);
-        project2Sprints.add(sprint2);
+        project1Sprints.add(sprint2);
+        project2Sprints.add(sprint3);
         project2Sprints.add(sprint4);
 
         sprintService.saveSprint(sprint1);

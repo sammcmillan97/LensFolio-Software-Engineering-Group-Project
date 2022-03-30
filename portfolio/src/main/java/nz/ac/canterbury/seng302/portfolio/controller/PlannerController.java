@@ -35,7 +35,7 @@ public class PlannerController {
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
      * from the database
-     * @param model Allows addition of objects to the planner html page.
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The planner html page with relevant project and sprint data.
      */
     @GetMapping("/planner/{id}")
@@ -53,7 +53,7 @@ public class PlannerController {
         }
 
 
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -72,8 +72,8 @@ public class PlannerController {
 
     /**
      * The default get mapping for displaying the planner page. Will display the first project on the list of projects,
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The planner page
      */
     @GetMapping("/planner")
@@ -90,7 +90,7 @@ public class PlannerController {
             endDate.add(Calendar.MONTH, 8);
             project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
         }
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
