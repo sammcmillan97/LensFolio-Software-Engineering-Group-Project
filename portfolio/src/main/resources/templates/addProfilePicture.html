@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="/styles/stylesheet.css">
 </head>
 <body>
-
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
     <nav th:replace="fragments/navbar :: navbar"></nav>
 
-    <div class="content">
+    <div id="page-content" class="constrict">
         <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
             <!--HIDDEN-->
             <input type="hidden" th:name="fileContent" th:value="null" id="fileContent"/>
@@ -160,8 +162,8 @@
         color: dimgrey;
     }
 
-    div.content {
-        margin-left: 200px;
+    #page-content {
+        padding: 20px;
     }
 
     h1 {
@@ -171,14 +173,6 @@
 
     h4 {
         margin-bottom: 5px;
-    }
-
-    .content {
-        border: #F67B50 solid 2px;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 5px;
-        width: auto;
     }
 
     #profile-image-display {
