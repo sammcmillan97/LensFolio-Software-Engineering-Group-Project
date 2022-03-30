@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
-
+/**
+ * The controller for handling the backend of the register page
+ */
 @Controller
 public class RegisterController {
 
@@ -108,7 +110,10 @@ public class RegisterController {
         }
     }
 
-
+    /**
+     * Get mapping for displaying the register page
+     * @return
+     */
     @GetMapping("/register")
     public String register() {
         return "register";
