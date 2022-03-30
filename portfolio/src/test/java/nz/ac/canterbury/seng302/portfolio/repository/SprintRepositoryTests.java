@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @DataJpaTest
-public class SprintRepositoryTests {
+class SprintRepositoryTests {
 
     @Autowired
     private DataSource dataSource;

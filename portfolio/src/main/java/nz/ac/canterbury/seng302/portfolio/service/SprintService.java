@@ -24,8 +24,7 @@ public class SprintService {
      * Get list of all sprints
      */
     public List<Sprint> getAllSprints() {
-        List<Sprint> list = (List<Sprint>) repository.findAll();
-        return list;
+        return (List<Sprint>) repository.findAll();
     }
 
     /**
@@ -49,7 +48,7 @@ public class SprintService {
     public Map<Integer, List<Sprint>> getAllByParentProjectId() {
         List<Project> projects = projectService.getAllProjects();
 
-        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<Integer, List<Sprint>>();
+        Map<Integer, List<Sprint>> sprintsByParentProject = new HashMap<>();
         for (Project project : projects) {
             int projectId = project.getId();
             sprintsByParentProject.put(projectId, getByParentProjectId(projectId));
@@ -59,8 +58,7 @@ public class SprintService {
     }
 
     public Sprint saveSprint(Sprint sprint) {
-        Sprint savedSprint = repository.save(sprint);
-        return savedSprint;
+        return repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {

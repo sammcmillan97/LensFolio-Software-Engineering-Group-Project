@@ -8,7 +8,6 @@ import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,10 @@ public class EditSprintController {
 
     private Sprint defaultSprint = new Sprint(-1, "A Sprint", -1, "Here's a description", new Date(), new Date());
 
+    /**
+     * Method to return a calendar object representing the very beginning of a day
+     * @return Calendar object
+     */
     private Calendar getCalendarDay() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -69,7 +72,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             // Skip sprints after the given sprint
-            if (!(sprint.getNumber() < sprintNumber)) {
+            if (sprint.getNumber() >= sprintNumber) {
                 continue;
             }
 
@@ -111,7 +114,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             // Skip sprints before the given sprint
-            if (!(sprintNumber < sprint.getNumber())) {
+            if (sprintNumber >= sprint.getNumber()) {
                 continue;
             }
 
@@ -142,7 +145,7 @@ public class EditSprintController {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             int sprintNumber = sprint.getNumber();
-            if (!(sprintNumber < nextSprintNumber)) {
+            if (sprintNumber >= nextSprintNumber) {
                 nextSprintNumber = sprintNumber + 1;
             }
         }
@@ -168,6 +171,15 @@ public class EditSprintController {
         }
     }
 
+    /**
+     * The get mapping to return the page to edit a sprint of a certain Project ID
+     * @param principal
+     * @param parentProjectId The Project ID of parent project of the sprint being displayed
+     * @param sprintId The Sprint ID of the sprint being displayed
+     * @param model
+     * @return The edit sprint page
+     * @throws Exception
+     */
     @GetMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
                              @PathVariable("parentProjectId") String parentProjectId,
@@ -238,6 +250,18 @@ public class EditSprintController {
         return "editSprint";
     }
 
+    /**
+     * The post mapping to edit a sprint ID
+     * @param principal
+     * @param projectIdString The parent project ID of the sprint that is being edited
+     * @param sprintIdString The ID of the sprint that is being edited
+     * @param sprintName The name of the sprint being edited
+     * @param sprintStartDate The start date of the sprint being edited
+     * @param sprintEndDate The end date of the sprint being edited
+     * @param sprintDescription The description of the sprint being edited
+     * @param model
+     * @return The edit sprints page
+     */
     @PostMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintSave(
             @AuthenticationPrincipal AuthState principal,
@@ -318,7 +342,6 @@ public class EditSprintController {
             return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
-        Sprint savedSprint;
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
         try {
             Sprint existingSprint = sprintService.getSprintById(sprintId);
@@ -326,16 +349,24 @@ public class EditSprintController {
             existingSprint.setStartDate(sprintStartDate);
             existingSprint.setEndDate(sprintEndDate);
             existingSprint.setDescription(sprintDescription);
-            savedSprint = sprintService.saveSprint(existingSprint);
+            sprintService.saveSprint(existingSprint);
 
         } catch(Exception ignored) {
             Sprint newSprint = new Sprint(projectId, sprintName, getNextSprintNumber(projectId), sprintDescription, sprintStartDate, sprintEndDate);
-            savedSprint = sprintService.saveSprint(newSprint);
+            sprintService.saveSprint(newSprint);
         }
 
         return "redirect:/projects/" + projectIdString;
     }
 
+    /**
+     * The delete mapping for deleting sprints from a project
+     * @param principal
+     * @param parentProjectId The parent project ID of the sprint being deleted
+     * @param sprintId The sprint ID of the sprint being delted
+     * @return The projects page
+     * @throws Exception
+     */
     @DeleteMapping(value="/projects/delete/{parentProjectId}/{sprintId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,

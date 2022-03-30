@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Calendar;
 import java.util.List;
@@ -70,13 +69,20 @@ public class PlannerController {
 
         return "planner";
     }
+
+    /**
+     * The default get mapping for displaying the planner page. Will display the first project on the list of projects,
+     * @param principal
+     * @param model
+     * @return The planner page
+     */
     @GetMapping("/planner")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model) {
 
         List<Project> projects = projectService.getAllProjects();
         Project project = null;
-        if (projects.size() > 0) {
+        if (!projects.isEmpty()) {
             project = projects.get(0);
         } else {
             Calendar startDate = Calendar.getInstance();

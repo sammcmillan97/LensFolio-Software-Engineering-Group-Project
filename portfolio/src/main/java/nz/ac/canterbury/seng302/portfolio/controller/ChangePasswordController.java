@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+/**
+ * Controller for the change user password page
+ */
 @Controller
 public class ChangePasswordController {
 
@@ -22,7 +24,7 @@ public class ChangePasswordController {
     private UserAccountClientService userAccountClientService;
 
     /**
-     * Get mapping to return security setting page
+     * Get mapping to return change password page
      * @param principal
      * @param model
      * @return change password page

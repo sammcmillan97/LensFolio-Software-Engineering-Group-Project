@@ -2,10 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +20,7 @@ public class ProjectService {
      * Get list of all projects
      */
     public List<Project> getAllProjects() {
-        List<Project> list = (List<Project>) repository.findAll();
-        return list;
+        return (List<Project>) repository.findAll();
     }
 
     /**
@@ -41,8 +38,7 @@ public class ProjectService {
     }
 
     public Project saveProject(Project project) {
-        Project savedProject = repository.save(project);
-        return savedProject;
+        return repository.save(project);
     }
 
     public void deleteProjectById(int id) throws Exception {
