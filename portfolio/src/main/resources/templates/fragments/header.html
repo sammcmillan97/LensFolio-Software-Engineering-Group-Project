@@ -8,12 +8,12 @@
 </head>
 
 <body>
-    <header th:fragment="header" id="header" class="constrict">
+    <header th:fragment="header" id="page-header" class="constrict">
         <link rel="stylesheet" href="/styles/navbar.css"/>
-        <script rel="script" src="/scripts/profile.js"></script>
+        <script rel="script" src="/scripts/navbar.js"></script>
         <ul class="header__list">
             <a>
-                <span style="font-size: 30px; cursor: pointer" onclick="clickEvent()">&#9776</span>
+                <span style="font-size: 30px; cursor: pointer" onclick="toggleNavbarVisibility()">&#9776</span>
             </a>
             <li class="header__item">
                 <p th:text="${user.username}"></p>

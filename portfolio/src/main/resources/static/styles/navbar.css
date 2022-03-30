@@ -35,7 +35,7 @@ h5 {
 
 /******************** Top Navigation bar ********************/
 
-#header {
+#page-header {
     margin: 0 0 0 var(--site-navigation-width);
     padding: 0;
     overflow: hidden;
@@ -184,10 +184,10 @@ h5 {
     padding: 1rem;
 }
 
-#page-content.constrict, #header.constrict{
+#page-content.constrict, #page-header.constrict{
     margin-left: var(--site-navigation-width);
 }
 
-#page-content.expanded, #header.expanded {
+#page-content.expanded, #page-header.expanded {
     margin-left: 0;
 }
