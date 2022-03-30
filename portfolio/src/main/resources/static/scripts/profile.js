@@ -1,31 +1,36 @@
-let navOpen = false;
-
-function openNav() {
-    document.getElementById("site-navigation").classList.remove("collapsed");
-    document.getElementById("site-navigation").classList.add("expanded");
-    document.getElementById("page-content").classList.remove("expanded");
-    document.getElementById("page-content").classList.add("constrict");
-    document.getElementById("header").classList.add("constrict")
-    document.getElementById("header").classList.remove("expanded")
-
+function hideElement(element) {
+    element.classList.add("hidden");
 }
 
-function closeNav() {
-    document.getElementById("site-navigation").classList.remove("expanded");
-    document.getElementById("site-navigation").classList.add("collapsed");
-    document.getElementById("page-content").classList.remove("constrict");
-    document.getElementById("page-content").classList.add("expanded");
-    document.getElementById("header").classList.add("expanded")
-    document.getElementById("header").classList.remove("constrict")
-
-
-}
-function clickEvent() {
-    if (navOpen === true) {
-        navOpen = false;
-        openNav();
-    } else {
-        navOpen = true;
-        closeNav();
+/**
+ * Hide Nickname field if empty
+ */
+window.addEventListener('load', (event) => {
+    let nick = document.getElementById("profile__user-nickname");
+    if (nick.textContent == "") {
+        let ancestor = nick.closest("div.profile_body__content");
+        hideElement(ancestor);
     }
-}
+});
+
+/**
+ * Hide Pronouns field if empty
+ */
+window.addEventListener('load', (event) => {
+    let pronouns = document.getElementById("profile__user-pronouns");
+    if (pronouns.textContent == "") {
+        let ancestor = pronouns.closest("div.profile_body__content");
+        hideElement(ancestor);
+    }
+});
+
+/**
+ * Hide Bio field if empty
+ */
+window.addEventListener('load', (event) => {
+    let biography = document.getElementById("profile__user-biography");
+    if (biography.textContent == "") {
+        let ancestor = biography.closest("div.profile_body__content");
+        hideElement(ancestor);
+    }
+});

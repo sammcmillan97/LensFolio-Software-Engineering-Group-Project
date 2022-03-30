@@ -18,19 +18,19 @@
     <div id="page-content" class="constrict">
         <div class="container">
 
-            <div class="profile_pic__row">
+            <div class="profile_pic__row flex-column">
                 <img th:src="${user.profileImagePath}" style="z-index: 1;" class="profile-image" alt="profilePhoto">
                 <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></a>
                 <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
             </div>
 
             <div class="profile_body__row">
-                <p class="profile_body__content"><strong >Nickname </strong>  <p th:text="${user.nickname}" /> </p>
+                <div class="profile_body__content"><strong >Nickname </strong>  <p id="profile__user-nickname" th:text="${user.nickname}" /> </div>
                 <p class="profile_body__content"><strong >Username </strong>  <p th:text="${user.username}" /> </p>
-                <p class="profile_body__content"><strong >Pronouns </strong> <p th:text="${user.personalPronouns}" /> </p>
+                <div class="profile_body__content"><strong >Pronouns </strong> <p id="profile__user-pronouns" th:text="${user.personalPronouns}" /> </div>
                 <p class="profile_body__content"><strong >Email </strong>  <p th:text="${user.email}" /> </p>
                 <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${date}" /> </p>
-                <p class="profile_body__content"><strong >Bio</strong><p th:text="${user.bio}" /> </p>
+                <div class="profile_body__content"><strong >Bio</strong><p id="profile__user-biography" th:text="${user.bio}" /> </div>
                 <p class="profile_body__content"><strong >Role</strong><p><span th:each="role, iterStat: ${user.rolesList}" th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"></span> </p> </p>
             </div>
 
