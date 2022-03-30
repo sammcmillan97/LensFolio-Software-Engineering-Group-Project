@@ -69,6 +69,13 @@ public class PlannerController {
 
         return "planner";
     }
+
+    /**
+     * The default get mapping for displaying the planner page. Will display the first project on the list of projects,
+     * @param principal
+     * @param model
+     * @return The planner page
+     */
     @GetMapping("/planner")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model) {

@@ -34,6 +34,10 @@ public class EditSprintController {
 
     private Sprint defaultSprint = new Sprint(-1, "A Sprint", -1, "Here's a description", new Date(), new Date());
 
+    /**
+     * Method to return a calendar object representing the very beginning of a day
+     * @return Calendar object
+     */
     private Calendar getCalendarDay() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -167,6 +171,15 @@ public class EditSprintController {
         }
     }
 
+    /**
+     * The get mapping to return the page to edit a sprint of a certain Project ID
+     * @param principal
+     * @param parentProjectId The Project ID of parent project of the sprint being displayed
+     * @param sprintId The Sprint ID of the sprint being displayed
+     * @param model
+     * @return The edit sprint page
+     * @throws Exception
+     */
     @GetMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
                              @PathVariable("parentProjectId") String parentProjectId,
@@ -237,6 +250,18 @@ public class EditSprintController {
         return "editSprint";
     }
 
+    /**
+     * The post mapping to edit a sprint ID
+     * @param principal
+     * @param projectIdString The parent project ID of the sprint that is being edited
+     * @param sprintIdString The ID of the sprint that is being edited
+     * @param sprintName The name of the sprint being edited
+     * @param sprintStartDate The start date of the sprint being edited
+     * @param sprintEndDate The end date of the sprint being edited
+     * @param sprintDescription The description of the sprint being edited
+     * @param model
+     * @return The edit sprints page
+     */
     @PostMapping("/projects/edit/{parentProjectId}/{sprintId}")
     public String sprintSave(
             @AuthenticationPrincipal AuthState principal,
@@ -334,6 +359,14 @@ public class EditSprintController {
         return "redirect:/projects/" + projectIdString;
     }
 
+    /**
+     * The delete mapping for deleting sprints from a project
+     * @param principal
+     * @param parentProjectId The parent project ID of the sprint being deleted
+     * @param sprintId The sprint ID of the sprint being delted
+     * @return The projects page
+     * @throws Exception
+     */
     @DeleteMapping(value="/projects/delete/{parentProjectId}/{sprintId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,

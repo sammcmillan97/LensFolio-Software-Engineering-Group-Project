@@ -30,6 +30,10 @@ public class EditProjectController {
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
+    /**
+     * Method to return a calendar object representing the very beginning of a day
+     * @return Calendar object
+     */
     private Calendar getCalendarDay() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -40,6 +44,13 @@ public class EditProjectController {
         return cal;
     }
 
+    /**
+     * Get mapping to return the edit projects page
+     * @param principal
+     * @param projectId
+     * @param model
+     * @return edit project page
+     */
     @GetMapping("/projects/edit/{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         String role = userAccountClientService.getRole(principal);
@@ -100,6 +111,17 @@ public class EditProjectController {
         return "editProject";
     }
 
+    /**
+     * Post mapping to edit details of a project on the edit project page
+     * @param principal
+     * @param projectId The project ID to be edited
+     * @param projectName The project name to be edited
+     * @param projectStartDate The project start date to be edited
+     * @param projectEndDate The project end date to be edited
+     * @param projectDescription The project description to be edited
+     * @param model
+     * @return
+     */
     @PostMapping("/projects/edit/{id}")
     public String projectSave(
             @AuthenticationPrincipal AuthState principal,

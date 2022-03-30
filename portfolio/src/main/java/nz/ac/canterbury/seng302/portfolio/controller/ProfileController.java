@@ -18,6 +18,9 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+/**
+ * The controller for handling backend of the profile page
+ */
 @Controller
 public class ProfileController {
 
