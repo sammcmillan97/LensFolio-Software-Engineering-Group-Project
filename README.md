@@ -14,15 +14,15 @@ Across this project there are many technologies and dependencies in use, but her
 - [Protobuf](https://developers.google.com/protocol-buffers/docs/javatutorial) - The protocol the gRPC uses for communication, this is also used for specifying contracts that different modules must comply with
 - [Thymeleaf](https://www.thymeleaf.org/) - Templating engine used to render HTML for the browser, from the server (as opposed to having a separate client application such as a VueJS app)
 - [Gradle](https://gradle.org/) - Gradle is a build automation tool that greatly simplifies getting applications up and running, it even manages our dependencies for us!
-- [Full Calendar](https://fullcalendar.io/docs) - Used in portfolio module for creating monthly planner.
+- [Full Calendar](https://fullcalendar.io/) - Used in portfolio module for creating monthly planner.
 
 ## Project structure
 
 Inside this repository, you will see a number of directories, here's what each one is for:
 
-- `systemd/` - This folder includes the systemd service files that will be present on your VM when you receive that (sprint 2), these are provided just for your reference, and can be safely ignored.
-- `runner/` - These are the bash scripts used by the VM to execute your application. The `.gitlab-ci.yml` file is set up to copy these files to the VM when deploying, so you can keep your deployment scripts inside this code repo, rather than just saved on your VM. If none of the previous two sentences made any sense to you, don't worry - you'll find out more about that in sprint 2.
-- `shared/` - Here we have a Java class library project - that is, not a project that is 'run' per se, but rather it contains (initially) some `.proto` contracts that are used to generate Java classes and stubs that the following modules will import and build on.
+- `systemd/` - This folder includes the systemd service files that are present on our VM
+- `runner/` - These are the bash scripts used by the VM to execute the application. The `.gitlab-ci.yml` file is set up to copy these files to the VM when deploying, so they can be kept inside this code repo, rather than just saved on the VM. 
+- `shared/` - Here we have a Java class library project - that is, not a project that is 'run' per se, but rather it contains some `.proto` contracts that are used to generate Java classes and stubs that the following modules will import and build on.
 - `identityprovider/` - This is the first main code project in the repo. The Identity Provider (IdP) is built with Spring Boot, and uses gRPC to communicate with other modules. The IdP is where we will store user information (such as usernames, passwords, names, ids, etc.), and manage authentication. By having a separate IdP rather than, for example, building the authentication and user information into the Portfolio module, we are able to share this user information and authentication over multiple different software modules (i.e other applications within the LENS ecosystem). At the moment there are only two modules, the IdP and the Portfolio, so it may seem a little unnecessary to separate them out, but when you begin adding more modules, it will make a lot more sense. The IdP does not have any form of user interface, and at this stage should be kept as such. You can find more info about the importance of the IdP [below](#the-lens-authentication-dance)
 - `portfolio/` - Following on from the IdP, the Portfolio module is another fully fledged Java application running Spring Boot. It also uses gRPC to communicate with other modules, and is initially configured to be able to log in and check authentication with the IdP (albeit with just a dummy user account at the moment, you'll be implementing some real user functionality). Because we've already implemented much of the background authentication configuration (in the way the LENS expects), **you should think twice before modifying anything in the `Authentication`  package** - more on this [below](#the-lens-authentication-dance). The Portfolio module uses Thymeleaf for server-side rendering of HTML.
 
@@ -95,11 +95,6 @@ Everything should now be up and running, so you can load up your preferred web b
 ## User Manual
 [User manual](https://eng-git.canterbury.ac.nz/seng302-2022/team-400/-/wikis/User-Manual) - Link to user manual within GitLab wiki.
 
-# The LENS Authentication Dance
-Given that the applications you are building this year will (hopefully!) one day be integrated into the wider LENS ecosystem, it is important that they perform authentication in the way that LENS modules are expected to. LENS expects modules to conform to its SSO (Single Sign On) authentication scheme. So to save you the trouble of guessing exactly which way you need to configure your authentication (because there are many different options), we've done a lot of the set up for you already.
-
-___While it's important for you all to understand what authentication steps are happening in your application - if the following explanation is a bit daunting, don't stress, it'll make more sense as time goes on and you develop further on the app.___
-
 ## The IdentityProvider (IdP)
 In order for multiple software modules to share the same user accounts and authentication information, there must be a single source of truth somewhere that they all rely on - the IdP is this source of truth. In the case of your applications, users must first register an account and log in with the IdP before they may proceed - in this way, we are creating from scratch a 'new identity' for each user of the application.
 
@@ -132,6 +127,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## References
 - [GitLab Wiki](https://eng-git.canterbury.ac.nz/seng302-2022/team-400/-/wikis/home)
 - [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
-- [Spring JPA docs](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- [Spring JPA Docs](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
 - [Thymeleaf Docs](https://www.thymeleaf.org/documentation.html)
+- [Full Calendar Docs](https://fullcalendar.io/docs)
 - [Learn resources](https://learn.canterbury.ac.nz/course/view.php?id=13269&section=9)
