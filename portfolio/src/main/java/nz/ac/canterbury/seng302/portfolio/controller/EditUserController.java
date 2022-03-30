@@ -23,8 +23,8 @@ public class EditUserController {
 
     /**
      * Get mapping to open editUser page
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model ThymeLeaf model
      * @return the editUser page
      */
     @GetMapping("/editUser")
@@ -47,7 +47,7 @@ public class EditUserController {
     /**
      * Edit user post mapping,
      * called when user submits an edit user request
-     * @param principal
+     * @param principal Authentication principal storing current user information
      * @param email (updated)
      * @param firstName (updated)
      * @param middleName (updated)
@@ -55,7 +55,7 @@ public class EditUserController {
      * @param nickname (updated)
      * @param pronouns (updated)
      * @param bio (updated)
-     * @param model (updated)
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return editUser page if unsuccessful, or profile page if successful
      */
     @PostMapping("/editUser")

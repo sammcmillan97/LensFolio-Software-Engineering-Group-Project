@@ -27,7 +27,7 @@ public class LoginController {
 
     /**
      * Gets the mapping to the login page html and renders it
-     * @param response
+     * @param response Login response
      * @return the mapping to the login html page.
      */
     @GetMapping("/login")

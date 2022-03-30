@@ -1,14 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
-import org.h2.util.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 @Entity // this is an entity, assumed to be in a table called Project
 @Table(name="PROJECT")

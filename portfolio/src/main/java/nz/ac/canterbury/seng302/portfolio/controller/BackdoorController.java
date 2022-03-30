@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Controller for controlling backdoor requests (ADMIN AND TESTING PURPOSES ONLY)
+ */
 @Controller
 public class BackdoorController {
 
@@ -22,6 +25,11 @@ public class BackdoorController {
     @Autowired
     SprintService sprintService;
 
+    /**
+     * Get request to add a default projects and sprints
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Projects page
+     */
     @GetMapping(value="/projects/all")
     public String addEntitiesForDemo(Model model) {
 

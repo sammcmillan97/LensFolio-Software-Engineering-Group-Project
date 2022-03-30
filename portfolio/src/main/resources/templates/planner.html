@@ -20,13 +20,13 @@
         let sprintEventColours = ["#d4b9f0", "#a7e2f5"]
     </script>
 
-<!--    Save sprint information so it can be accessed by the calendar-->
+<!--    Save sprint information, so it can be accessed by the calendar-->
     <script type="text/javascript" th:inline="javascript" th:each="sprint, iterInfo: ${sprints}">
         sprint = {id: [[${sprint.getId}]],
             title: [[${sprint.getLabel}]],
             start: [[${sprint.getStartDateCalendarString}]],
             end: [[${sprint.getDayAfterEndDateCalendarString}]],
-            // Set colour of the sprint. Repeats colours in the list specified above
+            // Set colour of the sprint. Repeat colours in the list specified above
             color: sprintEventColours[ [[${iterInfo.index}]] % sprintEventColours.length]
             // LEAVE SPACE HERE!!!    ^ WILL BREAK PROGRAM IF REMOVED
         }
