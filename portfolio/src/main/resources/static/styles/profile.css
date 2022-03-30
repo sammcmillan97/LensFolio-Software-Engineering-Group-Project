@@ -30,3 +30,25 @@
 .profile_body__content {
     font-size: x-large;
 }
+
+.UserProfile {
+    padding-left: 50px;
+}
+
+.icon {
+    width: 30px;
+    margin-left: -20px;
+    margin-bottom: -12px;
+}
+
+.profile-image {
+    width:150px;
+    height:150px;
+    object-fit:cover;
+}
+
+.profile-icon {
+    width:30px;
+    height:30px;
+    object-fit:cover;
+}
