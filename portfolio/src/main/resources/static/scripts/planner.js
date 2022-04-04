@@ -92,8 +92,8 @@ function calculateFullMonthEndDate(endDate) {
  * Adds all the sprints in the list created by thymeleaf to the calendar
  */
 function addSprintsToCalendar() {
-    for (let i = 0; i < sprints.length; i++) {
-        console.log(sprints[i])
-        calendar.addEvent(sprints[i]);
+    for (let sprint of sprints) {
+        console.log(sprint)
+        calendar.addEvent(sprint);
     }
 }
