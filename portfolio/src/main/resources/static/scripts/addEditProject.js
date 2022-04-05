@@ -30,7 +30,7 @@ function updateMinEndDate() {
 
     // Min end date is one day after start date
     let minEndDate = new Date();
-    minEndDate.setTime(startDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+    minEndDate.setTime(startDate.getTime() + (24 * 60 * 60 * 1000));
 
     document.getElementById("project-form__end-date-field").setAttribute('min', getDateString(minEndDate));
 }
@@ -39,14 +39,23 @@ function updateMinEndDate() {
 /**
  * Updates the latest start date which a project may be given.
  * A project may not start on or after the date on which it ends.
+ * It must also start before any sprints
  */
 function updateMaxStartDate() {
     let endDate = document.getElementById("project-form__end-date-field").valueAsNumber;
     endDate = new Date(endDate);
 
-    // Max start date is one day before end date
+
     let maxStartDate = new Date();
-    maxStartDate.setTime(endDate.getTime() - (1 * 24 * 60 * 60 * 1000));
+    if (projectHasSprints && projectFirstSprintStartDate !== null) {
+        // Max start date is the day the first sprint starts
+        projectFirstSprintStartDate = new Date(projectFirstSprintStartDate)
+        maxStartDate.setTime(projectFirstSprintStartDate);
+    } else {
+        // Max start date is one day before end date
+        maxStartDate.setTime(endDate.getTime() - (24 * 60 * 60 * 1000));
+    }
+
 
     document.getElementById("project-form__start-date-field").setAttribute('max', getDateString(maxStartDate));
 }

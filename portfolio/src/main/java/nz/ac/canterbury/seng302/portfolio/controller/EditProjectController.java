@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
@@ -14,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -23,6 +27,8 @@ import java.util.Calendar;
 public class EditProjectController {
     @Autowired
     ProjectService projectService;
+    @Autowired
+    SprintService sprintService;
     @Autowired
     UserAccountClientService userAccountClientService;
 
@@ -59,7 +65,7 @@ public class EditProjectController {
         }
 
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -101,6 +107,21 @@ public class EditProjectController {
         model.addAttribute("projectDescription", project.getDescription());
         model.addAttribute("projectStartDateString", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
         model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
+
+        List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
+        if (! projectSprints.isEmpty()) {
+            model.addAttribute("projectHasSprints", true);
+            java.util.Date firstSprintStartDate = null;
+            for (Sprint s: projectSprints) {
+                if (Objects.equals(s.getLabel(), "Sprint 1")) {
+                    firstSprintStartDate = s.getStartDate();
+                }
+            }
+            model.addAttribute("projectFirstSprintStartDate", firstSprintStartDate);
+        } else {
+            model.addAttribute("projectHasSprints", true);
+            model.addAttribute("projectFirstSprintStartDate", null);
+        }
 
         // A project can only be added up to a year ago
         Calendar cal = getCalendarDay();
