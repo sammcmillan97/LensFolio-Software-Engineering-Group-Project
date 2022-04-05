@@ -46,7 +46,7 @@
         <!-- Project Sprints -->
         <div id="project__sprints-wrapper flex-column">
             <div class="sprint" th:each="sprint : ${sprints}">
-                <h2 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h2>
+                <h2 class="sprint__name" th:text="|${sprint.getLabel} - ${sprint.getName}|"></h2>
 
                 <!-- Edit/Delete Sprint Buttons -->
                 <div class="sprint__button-wrapper flex-row">

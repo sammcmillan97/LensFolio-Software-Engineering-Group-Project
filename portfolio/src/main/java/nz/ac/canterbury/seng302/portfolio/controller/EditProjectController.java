@@ -114,21 +114,28 @@ public class EditProjectController {
         java.util.Date minStartDate = Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
 
-        // Check if the project has any sprints and figure out the start date of the earliest sprint
+        // Check if the project has any sprints
         List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
         if (! projectSprints.isEmpty()) {
-            model.addAttribute("projectHasSprints", true);
-            // Find the first sprint - sprint labelled with "Sprint 1" will always be the earliest sprint
+            // Find the first sprint start date and last sprint end date
             java.util.Date firstSprintStartDate = null;
+            java.util.Date lastSprintEndDate = null;
             for (Sprint s: projectSprints) {
-                if (Objects.equals(s.getLabel(), "Sprint 1")) {
+                // Find the earliest sprint
+                if (Objects.equals(s.getNumber(), 1)) {
                     firstSprintStartDate = s.getStartDate();
                 }
+                // Find the last sprint
+                if (Objects.equals(s.getNumber(), projectSprints.size())) {
+                    lastSprintEndDate = s.getEndDate();
+                }
             }
+            // Add the attributes to the model
+            model.addAttribute("projectHasSprints", true);
             model.addAttribute("projectFirstSprintStartDate", firstSprintStartDate);
+            model.addAttribute("projectLastSprintEndDate", lastSprintEndDate);
         } else {
             model.addAttribute("projectHasSprints", false);
-            model.addAttribute("projectFirstSprintStartDate", null);
         }
 
         return "editProject";

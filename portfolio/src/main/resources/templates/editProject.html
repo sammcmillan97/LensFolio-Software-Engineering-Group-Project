@@ -7,8 +7,16 @@
     <link th:href="@{/styles/addEditProject.css}" rel="stylesheet" />
     <script rel="script" th:src="@{/scripts/addEditProject.js}"></script>
     <script th:inline="javascript">
-        let projectHasSprints = [[${projectHasSprints}]];
-        let projectFirstSprintStartDate = [[${projectFirstSprintStartDate}]]
+        let projectFirstSprintStartDate
+        let projectLastSprintEndDate
+        if ([[${projectHasSprints}]]) {
+            projectFirstSprintStartDate = new Date([[${projectFirstSprintStartDate}]])
+            projectLastSprintEndDate = new Date([[${projectLastSprintEndDate}]])
+        } else {
+            projectFirstSprintStartDate = null
+            projectLastSprintEndDate = null
+        }
+
     </script>
 </head>
 <body>
