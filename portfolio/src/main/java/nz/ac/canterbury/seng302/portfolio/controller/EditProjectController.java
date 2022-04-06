@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
@@ -14,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -23,6 +27,8 @@ import java.util.Calendar;
 public class EditProjectController {
     @Autowired
     ProjectService projectService;
+    @Autowired
+    SprintService sprintService;
     @Autowired
     UserAccountClientService userAccountClientService;
 
@@ -59,7 +65,7 @@ public class EditProjectController {
         }
 
         // Add user details to model
-        Integer userId = Integer.valueOf(principal.getClaimsList().stream()
+        int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
@@ -107,6 +113,30 @@ public class EditProjectController {
         cal.add(Calendar.YEAR, -1);
         java.util.Date minStartDate = Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
+
+        // Check if the project has any sprints
+        List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
+        if (! projectSprints.isEmpty()) {
+            // Find the first sprint start date and last sprint end date
+            java.util.Date firstSprintStartDate = null;
+            java.util.Date lastSprintEndDate = null;
+            for (Sprint s: projectSprints) {
+                // Find the earliest sprint
+                if (Objects.equals(s.getNumber(), 1)) {
+                    firstSprintStartDate = s.getStartDate();
+                }
+                // Find the last sprint
+                if (Objects.equals(s.getNumber(), projectSprints.size())) {
+                    lastSprintEndDate = s.getEndDate();
+                }
+            }
+            // Add the attributes to the model
+            model.addAttribute("projectHasSprints", true);
+            model.addAttribute("projectFirstSprintStartDate", firstSprintStartDate);
+            model.addAttribute("projectLastSprintEndDate", lastSprintEndDate);
+        } else {
+            model.addAttribute("projectHasSprints", false);
+        }
 
         return "editProject";
     }
