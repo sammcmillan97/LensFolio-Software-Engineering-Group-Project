@@ -81,7 +81,7 @@ task cucumberCli() {
             args = [
                     '--plugin', 'pretty',
                     '--plugin', 'html:target/cucumber-report.html',
-                    '--glue', 'com.accounting.cucumber',
+                    '--glue', 'nz/ac/canterbury/seng302/portfolio/cucumber',
                     'src/test/resources']
         }
     }
