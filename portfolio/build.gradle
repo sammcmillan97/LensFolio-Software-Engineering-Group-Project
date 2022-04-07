@@ -8,6 +8,12 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'application'
+    id 'se.thinkcode.cucumber-runner' version '0.0.8'
+}
+
+ext {
+    junitVersion = '5.7.2'
+    cucumberVersion = '7.2.3'
 }
 
 group = 'nz.ac.canterbury.seng302'
@@ -46,8 +52,13 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    //Cucumber dependencies
-    testImplementation 'io.cucumber:cucumber-java:7.2.3'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+    testImplementation "org.junit.vintage:junit-vintage-engine:${junitVersion}"
 }
 
 application {
@@ -61,31 +72,29 @@ configurations {
     }
 }
 
-sourceSets {
-    test {
-        resources.srcDirs = ['src/test/resources']
-        java.srcDirs = ['src/test/java', 'src/main/java']
-        runtimeClasspath = project.sourceSets.main.compileClasspath +
-                project.sourceSets.test.compileClasspath +
-                fileTree("src/test/resources/test") +
-                project.sourceSets.test.output + project.sourceSets.main.output
-    }
-}
-
-task cucumber() {
+task cucumberCli() {
     dependsOn assemble, testClasses
     doLast {
         javaexec {
             main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.test.output
-            args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.accounting.cucumber',
+                    'src/test/resources']
         }
     }
 }
 
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
+cucumber {
+    main = 'io.cucumber.core.cli.Main'
+}
+
+test {
     useJUnitPlatform()
-    // force the test task to run Cucumber too
-    finalizedBy cucumber
+
+
+
+    systemProperties(project.gradle.startParameter.systemPropertiesArgs)
 }
