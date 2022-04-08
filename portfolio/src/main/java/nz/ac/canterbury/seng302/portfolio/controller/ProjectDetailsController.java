@@ -59,8 +59,7 @@ public class ProjectDetailsController {
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page
         System.out.println(role);*/
-        String role = userAccountClientService.getRole(principal);
-        if (role.contains("teacher")) {
+        if (userAccountClientService.isTeacher(principal)) {
             return "teacherProjectDetails";
 
         } else {

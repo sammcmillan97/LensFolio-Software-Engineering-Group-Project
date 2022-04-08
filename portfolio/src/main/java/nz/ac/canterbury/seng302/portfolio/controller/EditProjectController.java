@@ -53,8 +53,7 @@ public class EditProjectController {
      */
     @GetMapping("/projects/edit/{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -132,8 +131,7 @@ public class EditProjectController {
             @RequestParam(value="projectDescription") String projectDescription,
             Model model
     ) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -206,8 +204,7 @@ public class EditProjectController {
      */
     @DeleteMapping(value="/projects/delete/{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 

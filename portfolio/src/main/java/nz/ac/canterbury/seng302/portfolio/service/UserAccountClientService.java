@@ -132,12 +132,17 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
-    public String getRole(AuthState principal) {
+    private String getRole(AuthState principal) {
         return principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("role"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("NOT FOUND");
+    }
+
+    public boolean isTeacher(AuthState principal) { // TODO Needs some manual testing
+        String roles = getRole(principal);
+        return roles.contains("teacher") || roles.contains("admin");
     }
 
 }
