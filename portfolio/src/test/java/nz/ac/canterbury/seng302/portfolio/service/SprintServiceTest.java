@@ -171,7 +171,6 @@ class SprintServiceTest {
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
-        assertThat(sprintId).isNotNull();
         Sprint sprint = sprintService.getSprintById(sprintId);
         assertThat(sprint.getName()).isEqualTo("Test Sprint");
         assertThat(sprint.getLabel()).isEqualTo("Sprint 1");
