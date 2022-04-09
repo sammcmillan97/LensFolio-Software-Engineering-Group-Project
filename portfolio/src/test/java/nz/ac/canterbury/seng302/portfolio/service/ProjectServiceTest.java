@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class ProjectServiceTest {
+class ProjectServiceTest {
     @Autowired
     ProjectService projectService;
 
@@ -103,7 +103,6 @@ public class ProjectServiceTest {
         projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Project> projects = (List<Project>) projectRepository.findAll();
         int projectId = projects.get(0).getId();
-        assertThat(projectId).isNotNull();
         Project project = projectService.getProjectById(projectId);
         assertThat(project.getName()).isEqualTo("Project Name");
         assertThat(project.getDescription()).isEqualTo("Test Project");
