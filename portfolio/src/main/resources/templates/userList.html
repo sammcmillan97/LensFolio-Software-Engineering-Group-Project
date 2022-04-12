@@ -4,12 +4,35 @@
     <meta charset="UTF-8">
     <title>List of Users</title>
     <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" href="/styles/userList.css">
 </head>
 <body>
 <!-- Import the application's header bar. -->
 <header th:replace="fragments/header :: header"></header>
 <!-- Import the application's navigation bar. -->
 <nav th:replace="fragments/navbar :: navbar"></nav>
-This be the list of users, arrr
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <table>
+        <thead>
+            <tr>
+                <th> Username </th>
+                <th> Name </th>
+                <th> Alias </th>
+                <th> Roles </th>
+            </tr>
+        </thead>
+        <tbody>
+            <div th:each="listedUser : ${users}">
+                <tr>
+                    <td><span th:text="${listedUser.getUsername}"> Username </span></td>
+                    <td><span th:text="${listedUser.getFirstName} + ' ' + ${listedUser.getLastName}"> Name </span></td>
+                    <td><span th:text="${listedUser.getNickname}"> Alias </span></td>
+                    <td><div th:each="listedUserRole : ${listedUser.getRolesList}"><span th:text="${listedUserRole}"> Role </span></div></td>
+                </tr>
+            </div>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

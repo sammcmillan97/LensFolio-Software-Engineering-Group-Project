@@ -10,12 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
+
 @Controller
 public class UserListController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    private ArrayList<UserResponse> users;
     /**
      * Gets the mapping to the list of users page html and renders it
      * @param principal The authentication state of the user
@@ -32,6 +35,11 @@ public class UserListController {
                 .orElse("-100"));
         UserResponse user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
+        users = new ArrayList<>();
+        users.add(userAccountClientService.getUserAccountById(1));
+        users.add(userAccountClientService.getUserAccountById(2));
+        users.add(userAccountClientService.getUserAccountById(3));
+        model.addAttribute("users", users);
         return "userList";
     }
 
