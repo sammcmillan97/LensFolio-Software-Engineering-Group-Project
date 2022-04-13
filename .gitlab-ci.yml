@@ -70,6 +70,9 @@ deploy-staging-identityprovider:
   artifacts:
     paths:
       - identityprovider/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/test
   only:
     - dev
 
@@ -87,6 +90,9 @@ deploy-staging-portfolio:
   artifacts:
     paths:
       - portfolio/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/test
   only:
     - dev
 
@@ -104,6 +110,9 @@ deploy-production-identityprovider:
   artifacts:
     paths:
       - identityprovider/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
     - master
@@ -122,6 +131,9 @@ deploy-production-portfolio:
   artifacts:
     paths:
       - portfolio/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
     - master
