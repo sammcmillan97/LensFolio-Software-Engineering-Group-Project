@@ -111,7 +111,7 @@ deploy-production-identityprovider:
     paths:
       - identityprovider/build/libs
   environment:
-    name: staging
+    name: production
     url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
@@ -132,7 +132,7 @@ deploy-production-portfolio:
     paths:
       - portfolio/build/libs
   environment:
-    name: staging
+    name: production
     url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
