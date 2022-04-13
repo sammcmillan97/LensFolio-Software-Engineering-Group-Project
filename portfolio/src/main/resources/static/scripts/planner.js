@@ -42,7 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         ],
         initialView: 'dayGridMonth',
-        initialDate: projectStartDate
+        initialDate: projectStartDate,
+        //editable: (user == "TEACHER") ? true:false,
+        editable: true,
+        //disallow dragging entire event
+        eventStartEditable: false,
+        //allow resizing of start/end date
+        eventResizableFromStart: true,
+        eventResizableFromEnd: true
     });
     addSprintsToCalendar();
     calendar.render();
