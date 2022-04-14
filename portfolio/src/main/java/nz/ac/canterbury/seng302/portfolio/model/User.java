@@ -30,6 +30,11 @@ public class User {
     private Timestamp created;
     private String profileImagePath;
 
+    /**
+     * Create a user based on a UserResponse from the identity provider.
+     * They contain the same data, so it is a simple translation.
+     * @param source The UserResponse to create a user from.
+     */
     public User(UserResponse source) {
         username = source.getUsername();
         firstName = source.getFirstName();
