@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -60,7 +61,7 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
@@ -97,7 +98,7 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);

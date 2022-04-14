@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -45,7 +46,7 @@ public class ProfileController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        UserResponse user = userService.getUserAccountById(id);
+        User user = userService.getUserAccountById(id);
 
         model.addAttribute("user", user);
         model.addAttribute("name", user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());

@@ -25,10 +25,10 @@
         <tbody>
             <div th:each="listedUser : ${users}">
                 <tr>
-                    <td><span th:text="${listedUser.getUsername}"> Username </span></td>
-                    <td><span th:text="${listedUser.getFirstName} + ' ' + ${listedUser.getLastName}"> Name </span></td>
-                    <td><span th:text="${listedUser.getNickname}"> Alias </span></td>
-                    <td><div th:each="listedUserRole : ${listedUser.getRolesList}"><span th:text="${listedUserRole}"> Role </span></div></td>
+                    <td><span th:text="${listedUser.username}"> Username </span></td>
+                    <td><span th:text="${listedUser.firstName} + ' ' + ${listedUser.lastName}"> Name </span></td>
+                    <td><span th:text="${listedUser.nickname}"> Alias </span></td>
+                    <td><div th:each="role, iterStat : ${listedUser.roles}"><span th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"> Role </span></div></td>
                 </tr>
             </div>
         </tbody>
