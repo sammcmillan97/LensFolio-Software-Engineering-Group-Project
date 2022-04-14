@@ -9,9 +9,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Representation of a user for use in portfolio.
@@ -94,6 +92,26 @@ public class User {
 
     public Collection<UserRole> getRoles() {
         return roles;
+    }
+
+    /**
+     * Gets roles in string form. Useful for display on the website.
+     * Each role is split into capitalised words.
+     * For example, COURSE_ADMINISTRATOR becomes Course Administrator
+     * @return The roles in string form
+     */
+    public Collection<String> getRoleStrings() {
+        ArrayList<String> roleStrings = new ArrayList<>();
+        for (UserRole role : roles) {
+            switch(role) {
+                case STUDENT -> roleStrings.add("Student");
+                case TEACHER -> roleStrings.add("Teacher");
+                case COURSE_ADMINISTRATOR -> roleStrings.add("Course Administrator");
+                case UNRECOGNIZED -> roleStrings.add("Unrecognised Role"); // This case should never occur
+            }
+        }
+        roleStrings.sort(Comparator.naturalOrder()); // Ensure the roles are always returned in the same order
+        return roleStrings;
     }
 
     public Timestamp getCreated() {

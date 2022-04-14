@@ -16,8 +16,8 @@
     <table>
         <thead>
             <tr>
-                <th> Username </th>
                 <th> Name </th>
+                <th> Username </th>
                 <th> Alias </th>
                 <th> Roles </th>
             </tr>
@@ -25,10 +25,10 @@
         <tbody>
             <div th:each="listedUser : ${users}">
                 <tr>
+                    <td><span th:text="${listedUser.fullName}"> Name </span></td>
                     <td><span th:text="${listedUser.username}"> Username </span></td>
-                    <td><span th:text="${listedUser.firstName} + ' ' + ${listedUser.lastName}"> Name </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
-                    <td><div th:each="role, iterStat : ${listedUser.roles}"><span th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"> Role </span></div></td>
+                    <td><div th:each="role, iterStat : ${listedUser.roleStrings}"><div th:text="${role} + ${!iterStat.last ? ', ' : ''}"> Role </div></div></td>
                 </tr>
             </div>
         </tbody>
