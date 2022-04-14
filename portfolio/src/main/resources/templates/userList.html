@@ -28,7 +28,7 @@
                     <td><span th:text="${listedUser.fullName}"> Name </span></td>
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
-                    <td><div th:each="role, iterStat : ${listedUser.roleStrings}"><div th:text="${role} + ${!iterStat.last ? ', ' : ''}"> Role </div></div></td>
+                    <td><div th:each="role: ${listedUser.roleStrings}"><div id="role-button" th:text="${role}"> Role </div></div></td>
                 </tr>
             </div>
         </tbody>
