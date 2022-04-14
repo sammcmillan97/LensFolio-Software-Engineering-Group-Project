@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Representation of a user for use in portfolio.
@@ -59,6 +60,20 @@ public class User {
 
     public String getLastName() {
         return lastName;
+    }
+
+    /**
+     * Calculates the full name of a user.
+     * This is their first, middle then last name.
+     * If they have no middle name simply give their first then last name.
+     * @return The full name of a user.
+     */
+    public String getFullName() {
+        if (!Objects.equals(middleName, "")) {
+            return firstName + " " + middleName + " " + lastName;
+        } else {
+            return firstName + " " + lastName;
+        }
     }
 
     public String getNickname() {
