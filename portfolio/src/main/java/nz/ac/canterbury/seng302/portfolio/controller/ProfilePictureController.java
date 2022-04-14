@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -43,7 +44,7 @@ public class ProfilePictureController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
         return "addProfilePicture";
@@ -74,7 +75,7 @@ public class ProfilePictureController {
             byte[] decodedByte = decoder.decode(base64FileContent.split(",")[1]);
             userAccountClientService.uploadUserProfilePhoto(decodedByte, id, fileType);
             // Generic attributes that need to be set for the profile page
-            UserResponse user = userAccountClientService.getUserAccountById(id);
+            User user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);
             model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
             Timestamp ts = user.getCreated();
@@ -107,7 +108,7 @@ public class ProfilePictureController {
         deleteUserProfilePhotoResponse = userAccountClientService.deleteUserProfilePhoto(id);
 
         //Get the new version of user
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("username", username);
 

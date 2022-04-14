@@ -22,7 +22,7 @@ public class User {
     private String personalPronouns;
     private String email;
     private Collection<UserRole> roles;
-    private Timestamp timeCreated;
+    private Timestamp created;
     private String profileImagePath;
 
     public User(UserResponse source) {
@@ -35,7 +35,7 @@ public class User {
         personalPronouns = source.getPersonalPronouns();
         email = source.getEmail();
         roles = source.getRolesList();
-        timeCreated = source.getCreated();
+        created = source.getCreated();
         profileImagePath = source.getProfileImagePath();
     }
 
@@ -75,8 +75,8 @@ public class User {
         return roles;
     }
 
-    public Timestamp getTimeCreated() {
-        return timeCreated;
+    public Timestamp getCreated() {
+        return created;
     }
 
     public String getProfileImagePath() {

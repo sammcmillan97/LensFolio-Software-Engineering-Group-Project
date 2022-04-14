@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -18,7 +19,7 @@ public class UserListController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
-    private ArrayList<UserResponse> users;
+    private ArrayList<User> users;
     /**
      * Gets the mapping to the list of users page html and renders it
      * @param principal The authentication state of the user
@@ -33,7 +34,7 @@ public class UserListController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         users = new ArrayList<>();
         users.add(userAccountClientService.getUserAccountById(1));
