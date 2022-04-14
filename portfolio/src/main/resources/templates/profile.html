@@ -29,7 +29,7 @@
                 <p class="profile_body__content"><strong >Username </strong>  <p th:text="${user.username}" /> </p>
                 <div class="profile_body__content"><strong >Pronouns </strong> <p id="profile__user-pronouns" th:text="${user.personalPronouns}" /> </div>
                 <p class="profile_body__content"><strong >Email </strong>  <p th:text="${user.email}" /> </p>
-                <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${date}" /> </p>
+                <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${user.memberSince}" /> </p>
                 <div class="profile_body__content"><strong >Bio</strong><p id="profile__user-biography" th:text="${user.bio}" /> </div>
                 <p class="profile_body__content"><strong >Role</strong><p><span th:each="role, iterStat: ${user.roles}" th:text="${#strings.capitalize(#strings.toLowerCase(role))} + ${!iterStat.last ? ', ' : ''}"></span> </p> </p>
             </div>

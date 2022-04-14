@@ -4,7 +4,13 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Representation of a user for use in portfolio.
@@ -81,5 +87,43 @@ public class User {
 
     public String getProfileImagePath() {
         return profileImagePath;
+    }
+
+    /**
+     * Gets the date of user creation, with the months/years since creation added to the end.
+     * For use when displaying the date on the website.
+     * Example:
+     * Member Since: 14 March 2021 (1 year 1 month)
+     * @return A string representation of the date since creation
+     */
+    public String getMemberSince() {
+        Instant timeCreated = Instant.ofEpochSecond( created.getSeconds() , created.getNanos() );
+        LocalDate localDateCreated = timeCreated.atZone( ZoneId.systemDefault() ).toLocalDate();
+        Date dateCreated = java.util.Date.from(localDateCreated.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMMM yyyy");
+        String formattedDate = "Member Since: " + dateFormat.format(dateCreated) + " ";
+        long totalMonths = ChronoUnit.MONTHS.between(localDateCreated, LocalDate.now());
+
+        long months = totalMonths % 12;
+        long years = Math.floorDiv(totalMonths, 12);
+
+        formattedDate += "(";
+        if (years > 0) {
+            String yearPlural = " years";
+            if (years == 1) {
+                yearPlural = " year";
+            }
+            formattedDate += years + yearPlural + " ";
+        }
+
+        String monthPlural = " months";
+        if(months == 1) {
+            monthPlural = " month";
+        }
+        formattedDate += months + monthPlural + ")";
+
+        return formattedDate;
     }
 }
