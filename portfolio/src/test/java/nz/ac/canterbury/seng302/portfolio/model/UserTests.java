@@ -15,21 +15,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class UserTests {
 
-    private final String testUsername = "test user";
-    private final String testFirstName = "test fname";
-    private final String testMiddleName = "test mname";
-    private final String testLastName = "test lname";
-    private final String testNickname = "test nname";
-    private final String testBio = "test bio";
-    private final String testPronouns = "test/tester";
-    private final String testEmail = "test@email.com";
-    private final String testProfileImagePath = "test/image/path";
-    private Timestamp testCreated = Timestamp.newBuilder().build();
-
-    User createDefaultUser() {
+    @Test
+    void testCreateUser() {
         ArrayList<UserRole> roles = new ArrayList<>();
         roles.add(UserRole.STUDENT);
         roles.add(UserRole.COURSE_ADMINISTRATOR);
+        String testUsername = "test user";
+        String testFirstName = "test fname";
+        String testMiddleName = "test mname";
+        String testLastName = "test lname";
+        String testNickname = "test nname";
+        String testBio = "test bio";
+        String testPronouns = "test/tester";
+        String testEmail = "test@email.com";
+        String testProfileImagePath = "test/image/path";
+        Timestamp testCreated = Timestamp.newBuilder().build();
         UserResponse source = UserResponse.newBuilder()
                 .setUsername(testUsername)
                 .setFirstName(testFirstName)
@@ -42,12 +42,7 @@ class UserTests {
                 .setBio(testBio)
                 .setNickname(testNickname)
                 .addAllRoles(roles).build();
-        return new User(source);
-    }
-
-    @Test
-    void testCreateUser() {
-        User testUser = createDefaultUser();
+        User testUser = new User(source);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName, testUser.getFirstName());
         assertEquals(testMiddleName, testUser.getMiddleName());
@@ -61,6 +56,30 @@ class UserTests {
         assertEquals(2, testUser.getRoles().size());
         assertTrue(testUser.getRoles().contains(UserRole.STUDENT));
         assertTrue(testUser.getRoles().contains(UserRole.COURSE_ADMINISTRATOR));
+    }
+
+    @Test
+    void testGetFullNameNoMiddleName() {
+        String testFirstName = "fname";
+        String testLastName = "lname";
+        UserResponse source = UserResponse.newBuilder()
+                .setFirstName(testFirstName)
+                .setLastName(testLastName).build();
+        User testUser = new User(source);
+        assertEquals(testFirstName + " " + testLastName, testUser.getFullName());
+    }
+
+    @Test
+    void testGetFullNameWithMiddleName() {
+        String testFirstName = "fname";
+        String testMiddleName = "mname";
+        String testLastName = "lname";
+        UserResponse source = UserResponse.newBuilder()
+                .setFirstName(testFirstName)
+                .setMiddleName(testMiddleName)
+                .setLastName(testLastName).build();
+        User testUser = new User(source);
+        assertEquals(testFirstName + " " + testMiddleName + " " + testLastName, testUser.getFullName());
     }
 
 }
