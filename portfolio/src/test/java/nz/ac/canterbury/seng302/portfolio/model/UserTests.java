@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class UserTests {
 
+    // Test that creating a User from a UserResponse puts all the fields in the correct places.
     @Test
     void testCreateUser() {
         ArrayList<UserRole> roles = new ArrayList<>();
@@ -58,6 +59,7 @@ class UserTests {
         assertTrue(testUser.getRoles().contains(UserRole.COURSE_ADMINISTRATOR));
     }
 
+    // Test that when a middle name is missing the full name renders correctly
     @Test
     void testGetFullNameNoMiddleName() {
         String testFirstName = "fname";
@@ -69,6 +71,7 @@ class UserTests {
         assertEquals(testFirstName + " " + testLastName, testUser.getFullName());
     }
 
+    // Test that when a middle name is present the full name renders correctly
     @Test
     void testGetFullNameWithMiddleName() {
         String testFirstName = "fname";
@@ -80,6 +83,32 @@ class UserTests {
                 .setLastName(testLastName).build();
         User testUser = new User(source);
         assertEquals(testFirstName + " " + testMiddleName + " " + testLastName, testUser.getFullName());
+    }
+
+    // Test that when no roles are present no roles are returned from getRoleStrings
+    @Test
+    void testGetRoleStringsWithNoRoles() {
+        UserResponse source = UserResponse.newBuilder().build();
+        User testUser = new User(source);
+        assertEquals(0, testUser.getRoleStrings().size());
+    }
+
+    // Test that when all roles are present all roles are returned from getRoleStrings
+    @Test
+    void testGetRoleStringsWithAllRoles() {
+        ArrayList<UserRole> roles = new ArrayList<>();
+        roles.add(UserRole.STUDENT);
+        roles.add(UserRole.TEACHER);
+        roles.add(UserRole.COURSE_ADMINISTRATOR);
+        UserResponse source = UserResponse.newBuilder()
+                .addAllRoles(roles).build();
+        User testUser = new User(source);
+        assertEquals(3, testUser.getRoleStrings().size());
+        ArrayList<String> expectedRoles = new ArrayList<>();
+        expectedRoles.add("Course Administrator");
+        expectedRoles.add("Student");
+        expectedRoles.add("Teacher");
+        assertEquals(expectedRoles, testUser.getRoleStrings());
     }
 
 }
