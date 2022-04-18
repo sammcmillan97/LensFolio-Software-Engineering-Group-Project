@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ChangePasswordResponse;
@@ -39,7 +40,7 @@ public class ChangePasswordController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         return "changePassword";
     }
@@ -66,7 +67,7 @@ public class ChangePasswordController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
 
         ChangePasswordResponse changePasswordResponse;

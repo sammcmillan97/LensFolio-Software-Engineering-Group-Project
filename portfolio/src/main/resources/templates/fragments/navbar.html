@@ -25,7 +25,12 @@
             </li>
             <li class="site-navigation__item">
                 <h5>
-                    <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">Planner</a>
+                    <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/planner') ? 'active':''}">Planner</a>
+                </h5>
+            </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a href="/userList" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">List of Users</a>
                 </h5>
             </li>
         </ul>

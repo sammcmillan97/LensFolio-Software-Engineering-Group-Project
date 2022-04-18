@@ -1,0 +1,27 @@
+/*  Table styling adapted from https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l */
+
+th, td {
+    padding: 12px 15px;
+}
+
+thead tr {
+    background-color: #F67B50;
+    color: #ffffff;
+    text-align: left;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+tbody tr:nth-of-type(even) {
+    background-color: #F4EAE6;
+}
+
+tbody tr:last-of-type {
+    border-bottom: 2px solid #F67B50;
+}
