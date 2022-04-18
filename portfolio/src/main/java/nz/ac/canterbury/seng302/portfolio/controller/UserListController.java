@@ -35,7 +35,7 @@ public class UserListController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
 
-        Iterable<User> users = userAccountClientService.getPaginatedUsers(0, 100, "id");
+        Iterable<User> users = userAccountClientService.getPaginatedUsers(0, 100, "id").getUsers();
         model.addAttribute("users", users);
         return "userList";
     }
