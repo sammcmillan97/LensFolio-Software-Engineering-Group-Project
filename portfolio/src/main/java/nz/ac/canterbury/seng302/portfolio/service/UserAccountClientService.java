@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
@@ -34,19 +35,14 @@ public class UserAccountClientService {
         return result;
     }
 
-    public Iterable<User> getPaginatedUsers(int offset, int limit, String orderBy) {
+    public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy) {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(offset)
                 .setLimit(limit)
                 .setOrderBy(orderBy)
                 .build();
         PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
-        ArrayList<User> users = new ArrayList<>();
-        for(UserResponse userResponse: response.getUsersList()) {
-            User user = new User(userResponse);
-            users.add(user);
-        }
-        return users;
+        return new UserListResponse(response);
     }
 
     /**
