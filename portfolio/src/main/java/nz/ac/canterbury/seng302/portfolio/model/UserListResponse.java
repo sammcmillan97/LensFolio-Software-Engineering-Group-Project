@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.PaginatedUsersResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is returned from the method getPaginatedUsers in UserAccountClientService.
@@ -13,8 +14,8 @@ import java.util.ArrayList;
  */
 public class UserListResponse {
 
-    ArrayList<User> users;
-    int resultSetSize;
+    private ArrayList<User> users;
+    private int resultSetSize;
 
     /**
      * Create a list of users based on a PaginatedUsersResponse from the identity provider.
@@ -30,7 +31,7 @@ public class UserListResponse {
         resultSetSize = source.getResultSetSize();
     }
 
-    public Iterable<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
