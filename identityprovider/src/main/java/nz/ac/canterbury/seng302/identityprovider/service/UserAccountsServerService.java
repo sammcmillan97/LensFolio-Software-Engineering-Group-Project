@@ -66,6 +66,30 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+    @Override
+    public void getPaginatedUsers(GetPaginatedUsersRequest request, StreamObserver<PaginatedUsersResponse> responseObserver) {
+        PaginatedUsersResponse reply;
+        if (isAuthenticated()) {
+            reply = getPaginatedUsersHandler(request);
+        } else {
+            reply = PaginatedUsersResponse.newBuilder().build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+
+    PaginatedUsersResponse getPaginatedUsersHandler(GetPaginatedUsersRequest request) {
+        PaginatedUsersResponse.Builder reply = PaginatedUsersResponse.newBuilder();
+        Iterable<User> users = repository.findAll();
+        ArrayList<UserResponse> userResponseList = new ArrayList<>();
+        for(User user: users) {
+            userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+        }
+        reply.addAllUsers(userResponseList);
+        reply.setResultSetSize(userResponseList.size());
+        return reply.build();
+    }
 
     /**
      * Allows user to upload their profile photo through bidirectional streaming.

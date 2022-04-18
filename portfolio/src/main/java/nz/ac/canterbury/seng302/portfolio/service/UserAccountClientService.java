@@ -31,8 +31,22 @@ public class UserAccountClientService {
             result.add(Arrays.copyOfRange(source, start, end));
             start += chunksize;
         }
-
         return result;
+    }
+
+    public Iterable<User> getPaginatedUsers(int offset, int limit, String orderBy) {
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy(orderBy)
+                .build();
+        PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
+        ArrayList<User> users = new ArrayList<>();
+        for(UserResponse userResponse: response.getUsersList()) {
+            User user = new User(userResponse);
+            users.add(user);
+        }
+        return users;
     }
 
     /**
