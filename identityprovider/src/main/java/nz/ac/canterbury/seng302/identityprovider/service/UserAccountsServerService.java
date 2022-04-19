@@ -592,6 +592,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
+        boolean validPronouns = pronounsMatcher.find();
+
+        if (!validPronouns && !personalPronouns.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must contain a /").setFieldName(PRONOUNS_FIELD).build();
+            validationErrors.add(validationError);
+        }
+
         if (personalPronouns.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);

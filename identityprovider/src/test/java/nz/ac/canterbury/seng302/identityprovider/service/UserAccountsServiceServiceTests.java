@@ -178,7 +178,7 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
-                .setPersonalPronouns("a".repeat(64))
+                .setPersonalPronouns("a/" + "a".repeat(62))
                 .setEmail("a@a." + "a".repeat(251))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
@@ -193,7 +193,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("a".repeat(64), testUser.getLastName());
         assertEquals("a".repeat(64), testUser.getNickname());
         assertEquals("a".repeat(1024), testUser.getBio());
-        assertEquals("a".repeat(64), testUser.getPersonalPronouns());
+        assertEquals("a/" + "a".repeat(62), testUser.getPersonalPronouns());
         assertEquals("a@a." + "a".repeat(251), testUser.getEmail());
     }
 
@@ -207,8 +207,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(65))
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
-                .setPersonalPronouns("a".repeat(65))
-                .setEmail("a@a.a".repeat(256))
+                .setPersonalPronouns("a/" + "a".repeat(63))
+                .setEmail("a@a." + "a".repeat(252))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
         assertEquals("Edit user failed: Validation failed", response.getMessage());
@@ -390,7 +390,7 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
-                .setPersonalPronouns("a".repeat(64))
+                .setPersonalPronouns("a/" + "a".repeat(62))
                 .setEmail("a@a." + "a".repeat(251))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
@@ -409,8 +409,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(65))
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
-                .setPersonalPronouns("a".repeat(65))
-                .setEmail("a@a.a".repeat(256))
+                .setPersonalPronouns("a/" + "a".repeat(63))
+                .setEmail("a@a." + "a".repeat(252))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
