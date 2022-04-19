@@ -179,7 +179,7 @@ class UserAccountsServiceServiceTests {
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
                 .setPersonalPronouns("a".repeat(64))
-                .setEmail("@".repeat(255))
+                .setEmail("a@a." + "a".repeat(251))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
         assertEquals("Edit user succeeded", response.getMessage());
@@ -194,7 +194,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("a".repeat(64), testUser.getNickname());
         assertEquals("a".repeat(1024), testUser.getBio());
         assertEquals("a".repeat(64), testUser.getPersonalPronouns());
-        assertEquals("@".repeat(255), testUser.getEmail());
+        assertEquals("a@a." + "a".repeat(251), testUser.getEmail());
     }
 
     // Tests that if fields are too long, the request is rejected
@@ -208,7 +208,7 @@ class UserAccountsServiceServiceTests {
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
                 .setPersonalPronouns("a".repeat(65))
-                .setEmail("@".repeat(256))
+                .setEmail("a@a.a".repeat(256))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
         assertEquals("Edit user failed: Validation failed", response.getMessage());
@@ -391,7 +391,7 @@ class UserAccountsServiceServiceTests {
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
                 .setPersonalPronouns("a".repeat(64))
-                .setEmail("@".repeat(255))
+                .setEmail("a@a." + "a".repeat(251))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt succeeded", response.getMessage());
@@ -410,7 +410,7 @@ class UserAccountsServiceServiceTests {
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
                 .setPersonalPronouns("a".repeat(65))
-                .setEmail("@".repeat(256))
+                .setEmail("a@a.a".repeat(256))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
@@ -458,7 +458,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
     }
 
-    // Tests that an email that does not contain @ is rejected
+    // Tests that an email that does not contain @ and . is rejected
     @Test
     void userRegisterBadEmailTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
@@ -470,7 +470,7 @@ class UserAccountsServiceServiceTests {
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
-                .setEmail("bad email")
+                .setEmail("bad@email")
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());

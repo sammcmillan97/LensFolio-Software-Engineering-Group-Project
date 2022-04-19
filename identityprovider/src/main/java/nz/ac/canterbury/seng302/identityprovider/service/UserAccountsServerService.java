@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
@@ -605,10 +607,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Matcher emailMatcher = emailPattern.matcher(email);
+        boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
-        } else if (!email.contains("@")) {
+        } else if (!validEmail) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
