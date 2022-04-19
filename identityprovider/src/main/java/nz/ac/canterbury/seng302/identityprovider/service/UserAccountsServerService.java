@@ -83,8 +83,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         PaginatedUsersResponse.Builder reply = PaginatedUsersResponse.newBuilder();
         Iterable<User> users = repository.findAll();
         ArrayList<UserResponse> userResponseList = new ArrayList<>();
+        int count = 0;
         for(User user: users) {
-            userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+            if (count >= request.getOffset() && count < request.getLimit() + request.getOffset()) {
+                userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+            }
+            count += 1;
         }
         reply.addAllUsers(userResponseList);
         reply.setResultSetSize(userResponseList.size());
