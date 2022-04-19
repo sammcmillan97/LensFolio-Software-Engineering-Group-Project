@@ -20,7 +20,7 @@
                 <div>
                     <input type="hidden" th:name="username"  th:value="${user.username}" />
                     <label>Account Details *</label><br>
-                    <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@'</label><br>
+                    <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required</label><br>
                     <br>
                     <label>Full Name *</label><br>
                     <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
