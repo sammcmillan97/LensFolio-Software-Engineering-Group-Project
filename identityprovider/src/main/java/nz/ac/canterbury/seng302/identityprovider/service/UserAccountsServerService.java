@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
+import net.bytebuddy.description.field.FieldDescription;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
@@ -14,8 +15,7 @@ import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,12 +87,97 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         ArrayList<UserResponse> userResponseList = new ArrayList<>();
         int count = 0;
         for(User user: users) {
+            userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+        }
+        String order = request.getOrderBy().substring(0, request.getOrderBy().length() - 1);
+        Comparator<UserResponse> comparator = switch (order) {
+            case ("name") -> new Comparator<UserResponse>() {
+                @Override
+                public int compare(UserResponse o1, UserResponse o2) {
+                    String o1FullName;
+                    if (!Objects.equals(o1.getMiddleName(), "")) {
+                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
+                    } else {
+                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
+                    }
+                    String o2FullName;
+                    if (!Objects.equals(o2.getMiddleName(), "")) {
+                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
+                    } else {
+                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
+                    }
+                    return o1FullName.compareTo(o2FullName);
+                }
+            };
+            case ("username") -> new Comparator<UserResponse>() {
+                @Override
+                public int compare(UserResponse o1, UserResponse o2) {
+                    return o1.getUsername().compareTo(o2.getUsername());
+                }
+            };
+            case ("alias") -> new Comparator<UserResponse>() {
+                @Override
+                public int compare(UserResponse o1, UserResponse o2) {
+                    return o1.getNickname().compareTo(o2.getNickname());
+                }
+            };
+            case ("roles") -> new Comparator<UserResponse>() {
+                @Override
+                public int compare(UserResponse o1, UserResponse o2) {
+                    int o1RolePoints = 0;
+                    Integer o2RolePoints = 0;
+                    if (o1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+                        o1RolePoints += 4;
+                    }
+                    if (o1.getRolesList().contains(UserRole.TEACHER)) {
+                        o1RolePoints += 2;
+                    }
+                    if (o1.getRolesList().contains(UserRole.STUDENT)) {
+                        o1RolePoints += 1;
+                    }
+                    if (o2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+                        o2RolePoints += 4;
+                    }
+                    if (o2.getRolesList().contains(UserRole.TEACHER)) {
+                        o2RolePoints += 2;
+                    }
+                    if (o2.getRolesList().contains(UserRole.STUDENT)) {
+                        o2RolePoints += 1;
+                    }
+                    return o2RolePoints.compareTo(o1RolePoints);
+                }
+            };
+            default -> new Comparator<>() {
+                @Override
+                public int compare(UserResponse o1, UserResponse o2) {
+                    String o1FullName;
+                    if (!Objects.equals(o1.getMiddleName(), "")) {
+                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
+                    } else {
+                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
+                    }
+                    String o2FullName;
+                    if (!Objects.equals(o2.getMiddleName(), "")) {
+                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
+                    } else {
+                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
+                    }
+                    return o1FullName.compareTo(o2FullName);
+                }
+            };
+        };
+        userResponseList.sort(comparator);
+        ArrayList<UserResponse> paginatedUserResponseList = new ArrayList<>();
+        for(UserResponse user: userResponseList) {
             if (count >= request.getOffset() && count < request.getLimit() + request.getOffset()) {
-                userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+                paginatedUserResponseList.add(user);
             }
             count += 1;
         }
-        reply.addAllUsers(userResponseList);
+        if(request.getOrderBy().endsWith("D")) {
+            Collections.reverse(paginatedUserResponseList);
+        }
+        reply.addAllUsers(paginatedUserResponseList);
         reply.setResultSetSize(userResponseList.size());
         return reply.build();
     }
