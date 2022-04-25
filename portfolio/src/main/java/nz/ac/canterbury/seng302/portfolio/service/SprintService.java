@@ -6,10 +6,7 @@ import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
 
@@ -63,5 +60,31 @@ public class SprintService {
 
     public void deleteById(int sprintId) {
         repository.deleteById(sprintId);
+    }
+
+    public void updateStartDate(int sprintId, Date newDate) throws Exception {
+        List<Sprint> sprints = getAllSprints();
+        Sprint sprintToChange = getSprintById(sprintId);
+        Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
+        Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
+        boolean inAnotherSprint = false;
+
+        for (Sprint sprint :sprints) {
+            if ((newDate.compareTo(sprint.getStartDate()) > 0 && newDate.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
+                inAnotherSprint = true;
+                break;
+            }
+        }
+
+        if (newDate.compareTo(sprintToChange.getEndDate()) > 0) {
+            throw new Exception("Sprint start date must not be after end date");
+        } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
+            throw new Exception(("Sprint start date must be within project dates"));
+        } else if (inAnotherSprint) {
+            throw new Exception(("Sprint start date must not be within another sprint"));
+        } else {
+            sprintToChange.setStartDate(newDate);
+            saveSprint(sprintToChange);
+        }
     }
 }

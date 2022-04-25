@@ -245,7 +245,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-10"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Date.valueOf("2022-04-10"));
+        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-10 00:00:00"));
     }
 
     //When sprint exists and its start date is changed to before the current date, and the new date is not within project
@@ -294,7 +294,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-20"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Date.valueOf("2022-04-20"));
+        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-20 00:00:00"));
     }
 
     //When sprint exists and its start date is changed to after the current date, and the new date is after the sprint's
@@ -304,7 +304,7 @@ class SprintServiceTest {
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        int sprintId = sprints.get(1).getId();
+        int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
             sprintService.updateStartDate(sprintId, Date.valueOf("2022-06-20"));
