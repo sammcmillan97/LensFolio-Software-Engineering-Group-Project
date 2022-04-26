@@ -74,7 +74,7 @@ public class UserListController {
      * @param page A string representing a page number
      * @return Whether the provided string is a valid page number
      */
-    private boolean goodPage(String page) {
+    public boolean goodPage(String page) {
         try {
             return Integer.parseInt(page) >= 1;
         } catch (NumberFormatException e) {
