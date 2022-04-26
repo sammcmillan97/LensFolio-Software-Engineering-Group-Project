@@ -52,6 +52,9 @@ public class UserListController {
         UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10 * pageInt, "nameA");
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
+        if (maxPage == 0) { // If no users are present, one empty page should still display (although this should never happen)
+            maxPage = 1;
+        }
         if (pageInt > maxPage) {
             return "redirect:/userList/" + maxPage;
         }
