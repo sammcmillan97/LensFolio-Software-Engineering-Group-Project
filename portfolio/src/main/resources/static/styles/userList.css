@@ -25,3 +25,14 @@ tbody tr:nth-of-type(even) {
 tbody tr:last-of-type {
     border-bottom: 2px solid #F67B50;
 }
+
+ /* Pagination styling adapted from w3schools https://www.w3schools.com/howto/howto_css_pagination.asp */
+.pagination a, div {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+
+.pagination a:hover {background-color: #F4EAE6;}
