@@ -168,6 +168,44 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail, testUser.getEmail());
     }
 
+    // Tests that editing a user fails if names contain special characters
+    @Test
+    void editUserBadNamesTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName("??")
+                .setMiddleName("{{{##}}}")
+                .setLastName("Ma8ter")
+                .setNickname("")
+                .setBio("")
+                .setPersonalPronouns("")
+                .setEmail("a@a.a")
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+
+        assertEquals(3, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name must not contain special characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Middle name must not contain special characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name must not contain special characters", response.getValidationErrors(2).getErrorText());
+        assertEquals("Edit user failed: Validation failed", response.getMessage());
+
+        assertFalse(response.getIsSuccess());
+
+        // Check user hasn't been changed
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName, testUser.getFirstName());
+        assertEquals(testMiddleName, testUser.getMiddleName());
+        assertEquals(testLastName, testUser.getLastName());
+        assertEquals(testNickname, testUser.getNickname());
+        assertEquals(testBio, testUser.getBio());
+        assertEquals(testPronouns, testUser.getPersonalPronouns());
+        assertEquals(testEmail, testUser.getEmail());
+    }
+
     // Tests the max field length
     @Test
     void editUserLongFieldsTest() {
@@ -376,6 +414,30 @@ class UserAccountsServiceServiceTests {
         assertEquals("Email is required", response.getValidationErrors(3).getErrorText());
         assertEquals("password", response.getValidationErrors(4).getFieldName());
         assertEquals("Password must be at least 8 characters", response.getValidationErrors(4).getErrorText());
+        assertFalse(response.getIsSuccess());
+    }
+
+    // Tests that creating user fails if nonames contain special characters
+    @Test
+    void userRegisterBadNamesTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setFirstName("I999")
+                .setMiddleName("|||")
+                .setLastName(";;;")
+                .setEmail("a@a.a")
+                .setPassword("password")
+                .setUsername("test")
+                .build();
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(3, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name must not contain special characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Middle name must not contain special characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name must not contain special characters", response.getValidationErrors(2).getErrorText());
+
         assertFalse(response.getIsSuccess());
     }
 
