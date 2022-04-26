@@ -37,8 +37,8 @@ class SprintServiceTest {
     //Initialise the database with projects before each test.
     @BeforeEach
     void storeProjects() {
-        projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-9"), Date.valueOf("2022-05-16")));
-        projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-9"), Date.valueOf("2022-05-16")));
+        projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
+        projectRepository.save(new Project("Project Name", "Test Project", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
         projects = (List<Project>)projectRepository.findAll();
     }
     //Refresh the database after each test.
@@ -243,7 +243,7 @@ class SprintServiceTest {
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
-        sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-10"));
+        sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-10"), Date.valueOf("2022-05-16"));
         Sprint sprint = sprintRepository.findById(sprintId);
         assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-10 00:00:00"));
     }
@@ -258,7 +258,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateStartDate(sprintId, Date.valueOf("2022-03-10"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-03-10"), Date.valueOf("2022-05-16"));
         });
         String expectedMessage = "Sprint start date must be within project dates";
         String actualMessage = exception.getMessage();
@@ -277,7 +277,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(1).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-20"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-20"), Date.valueOf("2022-07-16"));
         });
         String expectedMessage = "Sprint start date must not be within another sprint";
         String actualMessage = exception.getMessage();
@@ -292,7 +292,7 @@ class SprintServiceTest {
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
-        sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-20"));
+        sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-20"), Date.valueOf("2022-05-16"));
         Sprint sprint = sprintRepository.findById(sprintId);
         assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-20 00:00:00"));
     }
@@ -307,28 +307,27 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateStartDate(sprintId, Date.valueOf("2022-06-20"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-06-20"), Date.valueOf("2022-05-16"));
         });
         String expectedMessage = "Sprint start date must not be after end date";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
-//----------------------------------------------------------
 
-    //When sprint exists and its start date is changed to before the current date, and the new date is within project
-    // boundaries and not within another sprint, test sprint start date is changed.
+    //When sprint exists and its end date is changed to after the current date, and the new date is within project
+    // boundaries and not within another sprint, test sprint end date is changed.
     @Test
-    void whenSprintEndDateChangedToDateAfterCurrentAndNotInAnotherSprintAndWithinProjectDates_testSprintStartDateChanged() throws Exception {
+    void whenSprintEndDateChangedToDateAfterCurrentAndNotInAnotherSprintAndWithinProjectDates_testSprintEndDateChanged() throws Exception {
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
-        sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-20"));
+        sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-05-20 00:00:00"));
+        assertThat(sprint.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-20 00:00:00"));
     }
 
-    //When sprint exists and its start date is changed to before the current date, and the new date is not within project
+    //When sprint exists and its end date is changed to after the current date, and the new date is not within project
     // boundaries and not within another sprint, test exception is thrown.
     @Test
     void whenSprintEndDateChangedToDateAfterCurrentAndNotInAnotherSprintAndNotWithinProjectDates_testExceptionThrown() {
@@ -338,47 +337,47 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateEndDate(sprintId, Date.valueOf("2024-03-10"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-15"), Date.valueOf("2024-03-10"));
         });
         String expectedMessage = "Sprint end date must be within project dates";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    //When sprint exists and its start date is changed to before the current date, and the new date is within project
+    //When sprint exists and its end date is changed to after the current date, and the new date is within project
     // boundaries and within another sprint, test exception is thrown.
     @Test
     void whenSprintEndDateChangedToDateAfterCurrentAndInAnotherSprint_testExceptionThrown() {
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",2, "Description",
-                Date.valueOf("2022-05-16"), Date.valueOf("2022-07-16")));
+                Date.valueOf("2022-05-16"), Date.valueOf("2022-06-15")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
-        int sprintId = sprints.get(1).getId();
+        int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-25"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-15"), Date.valueOf("2022-05-25"));
         });
         String expectedMessage = "Sprint end date must not be within another sprint";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
     //---------------------------------------------
-    //When sprint exists and its start date is changed to after the current date, and the new date is before the sprints
-    // end date (so within project boundaries and not within another sprint), test sprint start date is changed.
+    //When sprint exists and its end date is changed to before the current date, and the new date is after the sprints
+    // start date (so within project boundaries and not within another sprint), test sprint end date is changed.
     @Test
     void whenSprintEndDateChangedToDateBeforeCurrentAndNotBeforeStartDate_testSprintEndDateChanged() throws Exception {
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         List<Sprint> sprints = (List<Sprint>) sprintRepository.findAll();
         int sprintId = sprints.get(0).getId();
-        sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-05"));
+        sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-15"), Date.valueOf("2022-05-05"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-05-05 00:00:00"));
+        assertThat(sprint.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-05 00:00:00"));
     }
 
-    //When sprint exists and its start date is changed to after the current date, and the new date is after the sprint's
-    // end date, exception is thrown.
+    //When sprint exists and its end date is changed to before the current date, and the new date is before the sprint's
+    // start date, test exception is thrown.
     @Test
     void whenSprintEndDateChangedToDateBeforeCurrentAndBeforeStartDate_testExceptionThrown() {
         sprintService.saveSprint(new Sprint(projects.get(0).getId(), "Test Sprint",1, "Description",
@@ -387,10 +386,11 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
 
         Exception exception = assertThrows(Exception.class, () -> {
-            sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-05"));
+            sprintService.resizeSprint(sprintId, Date.valueOf("2022-04-15"), Date.valueOf("2022-03-05"));
         });
-        String expectedMessage = "Sprint end date must not be before start date";
+        String expectedMessage = "Sprint start date must not be after end date";
         String actualMessage = exception.getMessage();
+        System.out.println(actualMessage);
         assertTrue(actualMessage.contains(expectedMessage));
     }
 }

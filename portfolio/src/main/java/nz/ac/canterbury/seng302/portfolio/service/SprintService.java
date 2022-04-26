@@ -62,7 +62,7 @@ public class SprintService {
         repository.deleteById(sprintId);
     }
 
-    public void updateStartDate(int sprintId, Date newDate) throws Exception {
+    public void resizeSprint(int sprintId, Date newStart, Date newEnd) throws Exception {
         List<Sprint> sprints = getAllSprints();
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
@@ -70,20 +70,22 @@ public class SprintService {
         boolean inAnotherSprint = false;
 
         for (Sprint sprint :sprints) {
-            if ((newDate.compareTo(sprint.getStartDate()) > 0 && newDate.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
-                inAnotherSprint = true;
-                break;
+            if ((newStart.compareTo(sprint.getStartDate()) > 0 && newStart.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
+                throw new Exception(("Sprint start date must not be within another sprint"));
+            } else if ((newEnd.compareTo(sprint.getStartDate()) > 0 && newEnd.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
+                throw new Exception(("Sprint end date must not be within another sprint"));
             }
         }
 
-        if (newDate.compareTo(sprintToChange.getEndDate()) > 0) {
+        if (newStart.compareTo(newEnd) > 0) {
             throw new Exception("Sprint start date must not be after end date");
-        } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
+        } else if (newStart.compareTo(projectStartDate) < 0 || newStart.compareTo(projectEndDate) > 0) {
             throw new Exception(("Sprint start date must be within project dates"));
-        } else if (inAnotherSprint) {
-            throw new Exception(("Sprint start date must not be within another sprint"));
+        } else if (newEnd.compareTo(projectStartDate) < 0 || newEnd.compareTo(projectEndDate) > 0) {
+            throw new Exception(("Sprint end date must be within project dates"));
         } else {
-            sprintToChange.setStartDate(newDate);
+            sprintToChange.setStartDate(newStart);
+            sprintToChange.setEndDate(newEnd);
             saveSprint(sprintToChange);
         }
     }
