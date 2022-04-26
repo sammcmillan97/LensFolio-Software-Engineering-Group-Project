@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
-import net.bytebuddy.description.field.FieldDescription;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
@@ -587,6 +586,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
+     * Checks if a name is valid. Checks against a list of reasonable characters that could appear in names.
+     * @param name The name to check
+     * @return True if the name is valid
+     */
+    private boolean isBadName(String name) {
+        Pattern namePattern = Pattern.compile("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
+        Matcher nameMatcher = namePattern.matcher(name);
+        return !nameMatcher.matches();
+    }
+
+    /**
      * Checks that the first name is within the length requirements
      * @param firstName the first name to check
      * @return A list of validation errors found when checking the first name
@@ -597,11 +607,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (firstName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (isBadName(firstName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain special characters").setFieldName(FIRST_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
         if (firstName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
+
         return validationErrors;
     }
 
@@ -613,6 +627,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkMiddleName(String middleName) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        if (!Objects.equals(middleName, "") && isBadName(middleName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must not contain special characters").setFieldName(MIDDLE_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        }
         if (middleName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName(MIDDLE_NAME_FIELD).build();
             validationErrors.add(validationError);
@@ -630,6 +648,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (lastName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (isBadName(lastName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain special characters").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (lastName.length() > 64) {
