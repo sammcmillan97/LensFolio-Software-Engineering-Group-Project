@@ -19,21 +19,19 @@ public class UserListController {
     private UserAccountClientService userAccountClientService;
 
     /**
-     * Gets the mapping to the list of users page html and renders it
-     * @param principal The authentication state of the user
-     * @param model The model of the html page for the list of users
-     * @return The mapping to the list of users html page.
+     * Redirects to the first page of the user list.
+     * @return The mapping to the html for the first page of the list of users.
      */
     @GetMapping("/userList")
-    public String userList(@AuthenticationPrincipal AuthState principal,
-                           Model model) {
+    public String userList() {
         return "redirect:/userList/1";
     }
 
     /**
-     * Gets the mapping to the list of users page html and renders it
+     * Gets the mapping to a page of the list of users html and renders it
      * @param principal The authentication state of the user
      * @param model The model of the html page for the list of users
+     * @param page The exact page of the user list we are on. Starts at 1 and increases from there.
      * @return The mapping to the list of users html page.
      */
     @GetMapping("/userList/{page}")
@@ -66,6 +64,13 @@ public class UserListController {
         return "userList";
     }
 
+    /**
+     * Checks whether a string is a valid positive integer.
+     * This is the same as checking if it corresponds to a valid page number.
+     * This will still accept values that are too big like 9999999999999999999 - these are filtered out at a later step.
+     * @param page A string representing a page number
+     * @return Whether the provided string is a valid page number
+     */
     private boolean goodPage(String page) {
         try {
             return Integer.parseInt(page) >= 1;
