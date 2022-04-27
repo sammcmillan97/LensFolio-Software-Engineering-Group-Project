@@ -49,7 +49,7 @@ public class UserListController {
             return "redirect:/userList/1";
         }
         int pageInt = Integer.parseInt(page);
-        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10 * pageInt, "nameA");
+        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, "nameA");
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
         if (maxPage == 0) { // If no users are present, one empty page should still display (although this should never happen)
