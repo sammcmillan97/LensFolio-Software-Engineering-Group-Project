@@ -67,6 +67,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+    /**
+     * Service for getting a paginated list of userResponses for use in the portfolio module.
+     * Checks if the current user is authenticated and can make the request then call the handler.
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @param responseObserver The observer to send the response over
+     */
     @Override
     public void getPaginatedUsers(GetPaginatedUsersRequest request, StreamObserver<PaginatedUsersResponse> responseObserver) {
         PaginatedUsersResponse reply;
@@ -79,19 +85,30 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         responseObserver.onCompleted();
     }
 
-
+    /**
+     * The handler for handling get paginated users request. Will take all User data from the DB as a list of users convert
+     * to user responses, sort, paginate and order as requested. Then return the list of user responses
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @return paginatedUserResponseList a list of user responses and the size of the original list of users before pagination
+     */
     PaginatedUsersResponse getPaginatedUsersHandler(GetPaginatedUsersRequest request) {
         PaginatedUsersResponse.Builder reply = PaginatedUsersResponse.newBuilder();
+        //Get all users from the DB
         Iterable<User> users = repository.findAll();
         ArrayList<UserResponse> userResponseList = new ArrayList<>();
         int count = 0;
+        //Create user response list
         for(User user: users) {
             userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
         }
+        //Removes A or D off the end of the requested orderBy string e.g. "nameA" or "rolesD"
+        //A: ascending list order and D: descending list order
         String order = request.getOrderBy().substring(0, request.getOrderBy().length() - 1);
+        //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (order) {
             case ("name") -> new Comparator<UserResponse>() {
                 @Override
+                //Compare method for ordering by name
                 public int compare(UserResponse o1, UserResponse o2) {
                     String o1FullName;
                     if (!Objects.equals(o1.getMiddleName(), "")) {
@@ -110,18 +127,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             };
             case ("username") -> new Comparator<UserResponse>() {
                 @Override
+                // Compare method for ordering by username
                 public int compare(UserResponse o1, UserResponse o2) {
                     return o1.getUsername().compareTo(o2.getUsername());
                 }
             };
             case ("alias") -> new Comparator<UserResponse>() {
                 @Override
+                //compare method for ordering by alias
                 public int compare(UserResponse o1, UserResponse o2) {
                     return o1.getNickname().compareTo(o2.getNickname());
                 }
             };
             case ("roles") -> new Comparator<UserResponse>() {
                 @Override
+                //Compare method for ordering by roles
+                //Converts each role into a point system so Course_admin > teacher + student > teacher > student
                 public int compare(UserResponse o1, UserResponse o2) {
                     int o1RolePoints = 0;
                     Integer o2RolePoints = 0;
@@ -148,6 +169,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             };
             default -> new Comparator<>() {
                 @Override
+                //Default compare method uses sort by name
                 public int compare(UserResponse o1, UserResponse o2) {
                     String o1FullName;
                     if (!Objects.equals(o1.getMiddleName(), "")) {
@@ -165,7 +187,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 }
             };
         };
+        //Calls the sort method
         userResponseList.sort(comparator);
+        //Paginates the data
         ArrayList<UserResponse> paginatedUserResponseList = new ArrayList<>();
         for(UserResponse user: userResponseList) {
             if (count >= request.getOffset() && count < request.getLimit() + request.getOffset()) {
@@ -173,10 +197,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             }
             count += 1;
         }
+        //If orderBy string ends with D reverse order so list is descending
         if(request.getOrderBy().endsWith("D")) {
             Collections.reverse(paginatedUserResponseList);
         }
+        //Add final sorted, paginated and ordered list
         reply.addAllUsers(paginatedUserResponseList);
+        //Add size of original list for pagination purposes
         reply.setResultSetSize(userResponseList.size());
         return reply.build();
     }
