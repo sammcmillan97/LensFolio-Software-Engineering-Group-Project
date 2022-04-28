@@ -41,6 +41,20 @@ class UserAccountsServiceServiceTests {
         testCreated = testUser.getTimeCreated();
     }
 
+    @Test
+    void getPaginatedUsersSortByName(){
+        User testUser2 = repository.save(new User("Adam", "Adam", "", "Adam", "A", "", "test/tester", "Test@emai.com", "password"));
+        User testUser3 = repository.save(new User("Bruce", "Bruce", "Bruce", "Bruce", "B", "", "test/tester", "Test@email.com", "password"));
+        User testUser4 = repository.save(new User("123", "Adam", "", "Adama", "3", "", "test/tester", "Test@email.com", "password"));
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("nameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("Adam", response.getUsersList().get(0).getLastName());
+    }
+
     //Tests that the password change fails if the new password is too short
     @Test
     void changePasswordEmptyPasswordTest() {
