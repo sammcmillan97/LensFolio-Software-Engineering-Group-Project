@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -105,6 +108,15 @@ public class PlannerController {
         return "planner";
     }
 
-
+    @PostMapping("/planner/editSprint/{sprintId}")
+    public String planner(@AuthenticationPrincipal AuthState principal,
+                          Model model,
+                          @PathVariable String sprintId,
+                          @RequestParam Date startDate,
+                          @RequestParam Date endDate) {
+//        System.out.println(startDate);
+//        System.out.println(endDate);
+        return "redirect:/planner";
+    }
 
 }

@@ -49,7 +49,31 @@ document.addEventListener('DOMContentLoaded', function() {
         eventStartEditable: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
-        eventResizableFromEnd: true
+        eventResizableFromEnd: true,
+
+        //Listens to sprint drag/drop
+        eventResize: function( eventDropInfo ) {
+            //Create form to post data from calender
+            let form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', `/planner/editSprint/${eventDropInfo.oldEvent.id}`);
+
+            //Add inputs to form
+            let startInput = document.createElement('input');
+            startInput.setAttribute('type', 'hidden');
+            startInput.setAttribute('name', 'startDate');
+            startInput.setAttribute('value', `${eventDropInfo.event.start}`);
+            form.appendChild(startInput);
+            let endInput = document.createElement('input');
+            endInput.setAttribute('type', 'hidden');
+            endInput.setAttribute('name', 'endDate');
+            endInput.setAttribute('value', `${eventDropInfo.event.start}`);
+            form.appendChild(endInput);
+
+            //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
     addSprintsToCalendar();
     calendar.render();
@@ -104,3 +128,4 @@ function addSprintsToCalendar() {
         calendar.addEvent(sprint);
     }
 }
+
