@@ -103,7 +103,7 @@ public class SprintService {
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
             throw new Exception(("Sprint end date must be within project dates"));
         } else {
-            sprintToChange.setEndDateCalendar(newDate);
+            sprintToChange.setEndDate(newDate);
             saveSprint(sprintToChange);
         }
     }

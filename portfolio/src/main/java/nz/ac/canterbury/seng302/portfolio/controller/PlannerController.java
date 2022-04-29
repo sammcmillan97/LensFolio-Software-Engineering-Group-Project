@@ -130,7 +130,10 @@ public class PlannerController {
                           @RequestParam Date endDate) {
         try {
             sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
-            sprintService.updateEndDate(Integer.parseInt(sprintId), endDate);
+            Calendar tempEndDate = Calendar.getInstance();
+            tempEndDate.setTime(endDate);
+            tempEndDate.add(Calendar.DATE, -1);
+            sprintService.updateEndDate(Integer.parseInt(sprintId), tempEndDate.getTime());
             sprintUpdated = true;
             sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
         } catch ( Exception e ) {
