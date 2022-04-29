@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import com.sun.xml.bind.v2.TODO;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Controller for the project planner page
@@ -34,6 +37,9 @@ public class PlannerController {
     private SprintService sprintService;
     @Autowired
     private UserAccountClientService userService;
+
+    private boolean sprintUpdated = false;
+    private String sprintDate;
 
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
@@ -69,6 +75,9 @@ public class PlannerController {
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
 
+        if (sprintUpdated) {
+            model.addAttribute("recentUpdate", sprintDate);
+        }
 
         return "planner";
     }
@@ -105,6 +114,11 @@ public class PlannerController {
         model.addAttribute("user", user);
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
+
+        if (sprintUpdated) {
+            model.addAttribute("recentUpdate", sprintDate);
+        }
+
         return "planner";
     }
 
@@ -114,8 +128,14 @@ public class PlannerController {
                           @PathVariable String sprintId,
                           @RequestParam Date startDate,
                           @RequestParam Date endDate) {
-//        System.out.println(startDate);
-//        System.out.println(endDate);
+        try {
+            sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
+            sprintService.updateEndDate(Integer.parseInt(sprintId), endDate);
+            sprintUpdated = true;
+            sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
+        } catch ( Exception e ) {
+            sprintUpdated = false;
+        }
         return "redirect:/planner";
     }
 

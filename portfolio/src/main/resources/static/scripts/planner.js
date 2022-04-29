@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         //Listens to sprint drag/drop
         eventResize: function( eventDropInfo ) {
-            //Create form to post data from calender
+            //Create form to post data from calendar
             let form = document.createElement('form');
             form.setAttribute('method', 'post');
             form.setAttribute('action', `/planner/editSprint/${eventDropInfo.oldEvent.id}`);
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let endInput = document.createElement('input');
             endInput.setAttribute('type', 'hidden');
             endInput.setAttribute('name', 'endDate');
-            endInput.setAttribute('value', `${eventDropInfo.event.start}`);
+            endInput.setAttribute('value', `${eventDropInfo.event.end}`);
             form.appendChild(endInput);
 
             //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
@@ -77,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     addSprintsToCalendar();
     calendar.render();
+    if (paginationDate) {
+        calendar.gotoDate(paginationDate);
+    }
 });
 
 /**

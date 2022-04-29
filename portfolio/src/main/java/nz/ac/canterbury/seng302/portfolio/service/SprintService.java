@@ -103,36 +103,8 @@ public class SprintService {
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
             throw new Exception(("Sprint end date must be within project dates"));
         } else {
-            sprintToChange.setEndDate(newDate);
+            sprintToChange.setEndDateCalendar(newDate);
             saveSprint(sprintToChange);
         }
     }
-
- /*   public void updateEnd(int sprintId, Date newEnd) throws Exception {
-        List<Sprint> sprints = getAllSprints();
-        Sprint sprintToChange = getSprintById(sprintId);
-        Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
-        Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
-        boolean inAnotherSprint = false;
-
-        for (Sprint sprint :sprints) {
-            if ((newStart.compareTo(sprint.getStartDate()) > 0 && newStart.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
-                throw new Exception(("Sprint start date must not be within another sprint"));
-            } else if ((newEnd.compareTo(sprint.getStartDate()) > 0 && newEnd.compareTo(sprint.getEndDate()) < 0) && sprint.getId() != sprintToChange.getId()) {
-                throw new Exception(("Sprint end date must not be within another sprint"));
-            }
-        }
-
-        if (newStart.compareTo(newEnd) > 0) {
-            throw new Exception("Sprint start date must not be after end date");
-        } else if (newStart.compareTo(projectStartDate) < 0 || newStart.compareTo(projectEndDate) > 0) {
-            throw new Exception(("Sprint start date must be within project dates"));
-        } else if (newEnd.compareTo(projectStartDate) < 0 || newEnd.compareTo(projectEndDate) > 0) {
-            throw new Exception(("Sprint end date must be within project dates"));
-        } else {
-            sprintToChange.setStartDate(newStart);
-            sprintToChange.setEndDate(newEnd);
-            saveSprint(sprintToChange);
-        }
-    }*/
 }
