@@ -41,11 +41,25 @@ class UserAccountsServiceServiceTests {
         testCreated = testUser.getTimeCreated();
     }
 
+    //Method for adding users to be used in the 'getPaginatedUser' tests
+    public void addUsers() {
+        repository.deleteAll();
+        User testUser1 = new User("test1", "Adam", "", "Adam", "A", "", "test/tester", "Test@emai.com", "password");
+        User testUser2 = new User("test2", "Bruce", "Bruce", "Bruce", "B", "", "test/tester", "Test@email.com", "password");
+        User testUser3 = new User("test3", "Adam", "", "Adama", "3", "", "test/tester", "Test@email.com", "password");
+        testUser1.addRole(UserRole.COURSE_ADMINISTRATOR);
+        testUser2.addRole(UserRole.TEACHER);
+        testUser2.addRole(UserRole.STUDENT);
+        testUser3.addRole(UserRole.STUDENT);
+        repository.save(testUser1);
+        repository.save(testUser2);
+        repository.save(testUser3);
+    }
+
+    //Tests that sort by name works correctly on the get paginated users service
     @Test
     void getPaginatedUsersSortByName(){
-        User testUser2 = repository.save(new User("Adam", "Adam", "", "Adam", "A", "", "test/tester", "Test@emai.com", "password"));
-        User testUser3 = repository.save(new User("Bruce", "Bruce", "Bruce", "Bruce", "B", "", "test/tester", "Test@email.com", "password"));
-        User testUser4 = repository.save(new User("123", "Adam", "", "Adama", "3", "", "test/tester", "Test@email.com", "password"));
+        addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
@@ -53,6 +67,118 @@ class UserAccountsServiceServiceTests {
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("Adam", response.getUsersList().get(0).getLastName());
+        assertEquals("Adam", response.getUsersList().get(0).getFirstName());
+        assertEquals("Bruce", response.getUsersList().get(response.getUsersList().size() - 1).getFirstName());
+    }
+
+    //Tests that sort by username works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByUsername(){
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test1", response.getUsersList().get(0).getUsername());
+        assertEquals("test3", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+    //Tests that sort by alias works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByAlias() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("aliasA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("3", response.getUsersList().get(0).getNickname());
+        assertEquals("B", response.getUsersList().get(response.getUsersList().size() - 1).getNickname());
+    }
+
+    //Tests that sort by role works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByRoles() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("rolesA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test1", response.getUsersList().get(0).getUsername());
+        assertEquals("test3", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+    //Tests that sort in descending order works on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByUsernameDescending() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("usernameD")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test3", response.getUsersList().get(0).getUsername());
+        assertEquals("test1", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+
+    //Tests that when the offset is greater than number of users in the repository the list returned
+    //to by the get paginated users service is zero
+    @Test
+    void getPaginatedUsersOffsetGreaterThanListSize() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(3)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(0, response.getUsersList().size());
+    }
+
+    //Tests that the offset works as intended by the get paginated users service
+    @Test
+    void getPaginatedUsersOffsetIsOne() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(1)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(2, response.getUsersList().size());
+    }
+
+    //Tests that when the limit is zero the list returned by the get paginated users list is zero
+    @Test
+    void getPaginatedUsersLimitIsZero() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(0)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(0, response.getUsersList().size());
+    }
+
+    //Tests that the limit feature works as intended on the get paginated user service
+    @Test
+    void getPaginatedUsersLimitIsOne() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(1)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(1, response.getUsersList().size());
     }
 
     //Tests that the password change fails if the new password is too short
