@@ -127,7 +127,8 @@ public class PlannerController {
                           Model model,
                           @PathVariable String sprintId,
                           @RequestParam Date startDate,
-                          @RequestParam Date endDate) {
+                          @RequestParam Date endDate,
+                          @RequestParam Date paginationDate) {
         try {
             sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
             Calendar tempEndDate = Calendar.getInstance();
@@ -135,7 +136,7 @@ public class PlannerController {
             tempEndDate.add(Calendar.DATE, -1);
             sprintService.updateEndDate(Integer.parseInt(sprintId), tempEndDate.getTime());
             sprintUpdated = true;
-            sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
+            sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
         } catch ( Exception e ) {
             sprintUpdated = false;
         }

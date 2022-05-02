@@ -70,6 +70,21 @@ document.addEventListener('DOMContentLoaded', function() {
             endInput.setAttribute('value', `${eventDropInfo.event.end}`);
             form.appendChild(endInput);
 
+            if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
+                form.appendChild(pagDate);
+            } else {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
+                form.appendChild(pagDate);
+            }
+
+
             //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
             document.body.appendChild(form);
             form.submit();
