@@ -11,22 +11,37 @@ import javax.persistence.*;
 public class PortfolioUser {
 
     @Id
-    private final int id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
+    private int userId;
     private String userListSortType;
 
     /**
      * Create a portfolio user.
-     * @param id This should be the same as the user's id from the identity provider.
+     * @param userId This should be the same as the user's id from the identity provider.
      * @param userListSortType The sorting type used in the user list page. Should be set to a default.
      */
-    public PortfolioUser(int id, String userListSortType) {
-        this.id = id;
+    public PortfolioUser(int userId, String userListSortType) {
+        this.userId = userId;
         this.userListSortType = userListSortType;
+    }
+
+    // Empty constructor is needed for JPA
+    protected PortfolioUser() {
     }
 
     public int getId() {
         return id;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
 
     public String getUserListSortType() {
         return userListSortType;
