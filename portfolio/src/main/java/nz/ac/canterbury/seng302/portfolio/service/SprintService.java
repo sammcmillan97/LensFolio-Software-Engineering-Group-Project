@@ -71,14 +71,14 @@ public class SprintService {
 
         for (Sprint sprint :sprints) {
             if ((sprint.getNumber() < sprintToChange.getNumber()) && (newDate.compareTo(sprint.getEndDate()) <= 0)) {
-                throw new Exception(("Sprint must not be within another sprint"));
+                throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
             }
         }
 
         if (newDate.compareTo(sprintToChange.getEndDate()) > 0) {
-            throw new Exception("Sprint start date must not be after end date");
+            throw new UnsupportedOperationException("Sprint start date must not be after end date");
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
-            throw new Exception(("Sprint start date must be within project dates"));
+            throw new UnsupportedOperationException(("Sprint start date must be within project dates"));
         } else {
             sprintToChange.setStartDate(newDate);
             saveSprint(sprintToChange);
@@ -94,14 +94,14 @@ public class SprintService {
 
         for (Sprint sprint :sprints) {
             if ((sprint.getNumber() > sprintToChange.getNumber()) && (newDate.compareTo(sprint.getStartDate()) >= 0)) {
-                throw new Exception(("Sprint must not be within another sprint"));
+                throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
             }
         }
 
         if (newDate.compareTo(sprintToChange.getStartDate()) < 0) {
-            throw new Exception("Sprint end date must not be before start date");
+            throw new UnsupportedOperationException("Sprint end date must not be before start date");
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
-            throw new Exception(("Sprint end date must be within project dates"));
+            throw new UnsupportedOperationException(("Sprint end date must be within project dates"));
         } else {
             sprintToChange.setEndDate(newDate);
             saveSprint(sprintToChange);
