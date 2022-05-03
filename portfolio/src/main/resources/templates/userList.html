@@ -13,6 +13,13 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 <!-- Page content -->
 <div id="page-content" class="constrict">
+    <div class="pagination">
+        <a th:href="'/userList/' + ${firstPage}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'/userList/' + ${nextPage}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage}">&raquo;</a>
+    </div>
     <table>
         <thead>
             <tr>
@@ -33,6 +40,13 @@
             </div>
         </tbody>
     </table>
+    <div class="pagination">
+        <a th:href="'/userList/' + ${firstPage}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'/userList/' + ${nextPage}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage}">&raquo;</a>
+    </div>
 </div>
 </body>
 </html>
