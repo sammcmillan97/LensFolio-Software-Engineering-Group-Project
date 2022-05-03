@@ -18,11 +18,9 @@ public class PortfolioUserService {
      */
     public PortfolioUser getUserById(int id) {
         PortfolioUser user = repository.findByUserId(id);
-        if(user == null) {
+        if(user != null) {
             return user;
-        }
-        else
-        {
+        } else {
             PortfolioUser newUser = new PortfolioUser(id, "default"); // TODO change default to the true default
             repository.save(newUser);
             return newUser;

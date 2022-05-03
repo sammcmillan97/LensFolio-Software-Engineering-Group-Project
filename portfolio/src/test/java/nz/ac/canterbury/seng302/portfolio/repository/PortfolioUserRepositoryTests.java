@@ -33,6 +33,7 @@ class PortfolioUserRepositoryTests {
         portfolioUserRepository.deleteAll();
     }
 
+    // Test that the database has connected correctly
     @Test
     void injectedComponentsAreNotNull() {
         assertThat(dataSource).isNotNull();
@@ -41,6 +42,7 @@ class PortfolioUserRepositoryTests {
         assertThat(portfolioUserRepository).isNotNull();
     }
 
+    // Test that a full list of users can be retrieved from the database
     @Test
     void findAllUsers() {
         PortfolioUser user1 = new PortfolioUser(1, "test sort type");
@@ -56,6 +58,7 @@ class PortfolioUserRepositoryTests {
         assertThat(retrievedUsers.get(1).getUserListSortType()).isEqualTo(users.get(1).getUserListSortType());
     }
 
+    // Test a specific user can be retrieved from the database
     @Test
     void findUserById() {
         PortfolioUser user1 = new PortfolioUser(1, "test sort type");
