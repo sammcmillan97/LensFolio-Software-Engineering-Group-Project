@@ -31,6 +31,7 @@ function convertTextToList(rolesListText) {
 function isAdmin() {
     let isTeacherOrAdmin = false;
     let rolesListText = document.getElementById("user__rolesList").textContent;
+    document.getElementById("user__rolesList").hidden = true;
     let rolesList = convertTextToList(rolesListText);
     const arrayLength = rolesList.length;
     for (let i = 0; i < arrayLength; i++) {
