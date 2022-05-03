@@ -23,10 +23,18 @@
     <table>
         <thead>
             <tr>
-                <th> Name </th>
-                <th> Username </th>
-                <th> Alias </th>
-                <th> Roles </th>
+                <th>
+                    <a th:href="'/userlist/' + ${currentPage} + '?sortType=name'">Name</a>
+                </th>
+                <th>
+                    <a th:href="'/userlist/' + ${currentPage} + '?sortType=username'">Username</a>
+                </th>
+                <th>
+                    <a th:href="'/userlist/' + ${currentPage} + '?sortType=alias'">Alias</a>
+                </th>
+                <th>
+                    <a th:href="'/userlist/' + ${currentPage} + '?sortType=role'">Roles</a>
+                </th>
             </tr>
         </thead>
         <tbody>

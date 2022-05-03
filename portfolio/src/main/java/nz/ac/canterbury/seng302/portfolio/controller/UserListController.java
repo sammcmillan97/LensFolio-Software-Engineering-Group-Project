@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -11,12 +12,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserListController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
+
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * Redirects to the first page of the user list.
@@ -37,7 +42,9 @@ public class UserListController {
     @GetMapping("/userList/{page}")
     public String userListPage(@AuthenticationPrincipal AuthState principal,
                                Model model,
-                               @PathVariable("page") String page) {
+                               @PathVariable("page") String page,
+                               @RequestParam(name = "sortType") String sortType)
+                               {
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -49,7 +56,7 @@ public class UserListController {
             return "redirect:/userList/1";
         }
         int pageInt = Integer.parseInt(page);
-        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, "nameA");
+        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, );
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
         if (maxPage == 0) { // If no users are present, one empty page should still display (although this should never happen)

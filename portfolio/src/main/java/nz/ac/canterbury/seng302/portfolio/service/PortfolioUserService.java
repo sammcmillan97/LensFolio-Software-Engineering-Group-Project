@@ -50,4 +50,5 @@ public class PortfolioUserService {
         user.setUserListSortType(userListSortType);
         repository.save(user);
     }
+
 }
