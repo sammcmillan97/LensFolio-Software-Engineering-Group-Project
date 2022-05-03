@@ -3,6 +3,46 @@ let calendarEl;
 let calendar;
 
 /**
+ * Helper function to convert string of roles to a list
+ * @param rolesListText
+ * @returns {*[]}
+ */
+function convertTextToList(rolesListText) {
+    let roles = [];
+    let role = '';
+    const arrayLength = rolesListText.length;
+    for (let i = 1; i < arrayLength; i++) {
+        if (rolesListText[i] === ',' || rolesListText[i] === ']'){
+            roles.push(role);
+            role = '';
+        } else if (rolesListText[i] === ' '){
+            //do nothing
+        } else {
+            role += rolesListText[i];
+        }
+    }
+    return roles;
+}
+
+/**
+ * Helper function to determine whether a user roles list contains admin or teacher
+ * @returns {boolean}
+ */
+function isAdmin() {
+    let isTeacherOrAdmin = false;
+    let rolesListText = document.getElementById("user__rolesList").textContent;
+    document.getElementById("user__rolesList").hidden = true;
+    let rolesList = convertTextToList(rolesListText);
+    const arrayLength = rolesList.length;
+    for (let i = 0; i < arrayLength; i++) {
+        if (rolesList[i] === "TEACHER" || rolesList[i] === "ADMIN") {
+            isTeacherOrAdmin = true;
+        }
+    }
+    return isTeacherOrAdmin;
+}
+
+/**
  * Adds an event listener to the page loading to create the calendar and set it to the project dates
  */
 document.addEventListener('DOMContentLoaded', function() {
@@ -43,8 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
-        //editable: (user == "TEACHER") ? true:false,
-        editable: true,
+        //true when user is TEACHER or ADMIN
+        editable: (isAdmin()),
         //disallow dragging entire event
         eventStartEditable: false,
         //allow resizing of start/end date
