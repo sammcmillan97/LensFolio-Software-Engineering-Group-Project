@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.service;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
@@ -108,11 +109,12 @@ public class UserAccountClientService {
         return userStub.editUser(editUserRequest);
     }
 
-    public UserResponse getUserAccountById(final int userId)  {
+    public User getUserAccountById(final int userId)  {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(userId)
                 .build();
-        return userStub.getUserAccountById(getUserByIdRequest);
+        UserResponse response = userStub.getUserAccountById(getUserByIdRequest);
+        return new User(response);
     }
 
     public UserRegisterResponse register(final String username, final String password, final String firstName,

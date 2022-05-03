@@ -16,8 +16,8 @@
     <table>
         <thead>
             <tr>
-                <th> Username </th>
                 <th> Name </th>
+                <th> Username </th>
                 <th> Alias </th>
                 <th> Roles </th>
             </tr>
@@ -25,10 +25,10 @@
         <tbody>
             <div th:each="listedUser : ${users}">
                 <tr>
-                    <td><span th:text="${listedUser.getUsername}"> Username </span></td>
-                    <td><span th:text="${listedUser.getFirstName} + ' ' + ${listedUser.getLastName}"> Name </span></td>
-                    <td><span th:text="${listedUser.getNickname}"> Alias </span></td>
-                    <td><div th:each="listedUserRole : ${listedUser.getRolesList}"><span th:text="${listedUserRole}"> Role </span></div></td>
+                    <td><span th:text="${listedUser.fullName}"> Name </span></td>
+                    <td><span th:text="${listedUser.username}"> Username </span></td>
+                    <td><span th:text="${listedUser.nickname}"> Alias </span></td>
+                    <td><div th:each="role: ${listedUser.roleStrings}"><div id="role-button" th:text="${role}"> Role </div></div></td>
                 </tr>
             </div>
         </tbody>
