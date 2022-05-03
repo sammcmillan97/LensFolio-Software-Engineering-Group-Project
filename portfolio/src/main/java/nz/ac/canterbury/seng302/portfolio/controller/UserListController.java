@@ -17,8 +17,7 @@ public class UserListController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
-
-    private ArrayList<UserResponse> users;
+    
     /**
      * Gets the mapping to the list of users page html and renders it
      * @param principal The authentication state of the user
@@ -35,6 +34,7 @@ public class UserListController {
                 .orElse("-100"));
         UserResponse user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
+        ArrayList<UserResponse> users;
         users = new ArrayList<>();
         users.add(userAccountClientService.getUserAccountById(1));
         users.add(userAccountClientService.getUserAccountById(2));
