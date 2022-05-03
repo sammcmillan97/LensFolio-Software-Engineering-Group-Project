@@ -34,13 +34,9 @@ public class UserListController {
                 .orElse("-100"));
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
-        ArrayList<User> users;
-        users = new ArrayList<>();
-        users.add(userAccountClientService.getUserAccountById(1));
-        users.add(userAccountClientService.getUserAccountById(2));
-        users.add(userAccountClientService.getUserAccountById(3));
+
+        Iterable<User> users = userAccountClientService.getPaginatedUsers(0, 9999, "nameA").getUsers();
         model.addAttribute("users", users);
         return "userList";
     }
-
 }

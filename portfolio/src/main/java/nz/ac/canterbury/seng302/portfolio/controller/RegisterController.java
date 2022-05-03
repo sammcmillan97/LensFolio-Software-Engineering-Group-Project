@@ -108,6 +108,8 @@ public class RegisterController {
             model.addAttribute("validationErrors", userRegisterResponse.getValidationErrorsList());
             return "register";
         }
+
+
     }
 
     /**

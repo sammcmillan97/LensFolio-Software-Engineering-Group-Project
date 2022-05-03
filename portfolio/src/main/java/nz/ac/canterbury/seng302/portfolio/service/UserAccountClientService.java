@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
@@ -31,8 +32,24 @@ public class UserAccountClientService {
             result.add(Arrays.copyOfRange(source, start, end));
             start += chunksize;
         }
-
         return result;
+    }
+
+    /**
+     * Creates a request to be sent to the IDP for requesting a paginated list of user responses
+     * @param offset The number of users to be sliced from the orignal list of users from the DB
+     * @param limit The max number of users to be returned in the list
+     * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles" Ends with "A" or "D" for descending or Ascending
+     * @return A list of paginated, sorted and ordered user responses
+     */
+    public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy) {
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy(orderBy)
+                .build();
+        PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
+        return new UserListResponse(response);
     }
 
     /**
