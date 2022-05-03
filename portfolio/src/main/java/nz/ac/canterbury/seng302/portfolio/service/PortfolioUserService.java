@@ -21,7 +21,8 @@ public class PortfolioUserService {
         if(user != null) {
             return user;
         } else {
-            PortfolioUser newUser = new PortfolioUser(id, "default"); // TODO change default to the true default
+            // Ascending by name (nameA) is the default user list sort type
+            PortfolioUser newUser = new PortfolioUser(id, "nameA");
             repository.save(newUser);
             return newUser;
         }
