@@ -89,10 +89,52 @@ document.addEventListener('DOMContentLoaded', function() {
         eventStartEditable: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
-        eventResizableFromEnd: true
+        eventResizableFromEnd: true,
+
+        //Listens to sprint drag/drop
+        eventResize: function( eventDropInfo ) {
+            //Create form to post data from calendar
+            let form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
+
+            //Add inputs to form
+            let startInput = document.createElement('input');
+            startInput.setAttribute('type', 'hidden');
+            startInput.setAttribute('name', 'startDate');
+            startInput.setAttribute('value', `${eventDropInfo.event.start}`);
+            form.appendChild(startInput);
+            let endInput = document.createElement('input');
+            endInput.setAttribute('type', 'hidden');
+            endInput.setAttribute('name', 'endDate');
+            endInput.setAttribute('value', `${eventDropInfo.event.end}`);
+            form.appendChild(endInput);
+
+            if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
+                form.appendChild(pagDate);
+            } else {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
+                form.appendChild(pagDate);
+            }
+
+
+            //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
     addSprintsToCalendar();
     calendar.render();
+    if (paginationDate) {
+        calendar.gotoDate(paginationDate);
+    }
 });
 
 /**
@@ -144,3 +186,4 @@ function addSprintsToCalendar() {
         calendar.addEvent(sprint);
     }
 }
+
