@@ -644,4 +644,88 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
+    /**
+     * Service that allows authenticated users to add additional roles to a user
+     * @param request
+     * @param responseObserver
+     */
+    public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = addRoleToUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of add role to user
+     * this allows for testing
+     * @param request
+     * @return
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        try {
+            User user = repository.findByUserId(userId);
+            user.addRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true);
+        } catch(Exception e) {
+            reply.setIsSuccess(false);
+        }
+        return reply.build();
+    }
+
+    /**
+     * Service that allows authenticated users to remove roles from a user
+     * @param request
+     * @param responseObserver
+     */
+    public void removeRoleFromUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticatedAsUser(request.getUserId())) {
+            reply = removeRoleFromUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of removing a role from user
+     * this allows for testing
+     * @param request
+     * @return
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse removeRoleFromUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        try {
+            User user = repository.findByUserId(userId);
+            user.removeRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true);
+        } catch(Exception e) {
+            reply.setIsSuccess(false);
+        }
+        return reply.build();
+    }
+
 }
