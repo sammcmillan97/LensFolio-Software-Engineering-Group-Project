@@ -77,6 +77,7 @@ public class PlannerController {
 
         if (sprintUpdated) {
             model.addAttribute("recentUpdate", sprintDate);
+            sprintUpdated = false;
         }
 
         return "planner";
@@ -117,6 +118,7 @@ public class PlannerController {
 
         if (sprintUpdated) {
             model.addAttribute("recentUpdate", sprintDate);
+            sprintUpdated = false;
         }
 
         return "planner";
