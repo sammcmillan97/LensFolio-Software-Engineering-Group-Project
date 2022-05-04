@@ -25,12 +25,19 @@ public class UserListController {
 
     /**
      * Redirects to the first page of the user list.
+     * @param principal The authentication state of the user
      * @return The mapping to the html for the first page of the list of users.
      */
     @GetMapping("/userList")
-    public String userList() {
-        return "redirect:/userList/1";
+    public String userList(@AuthenticationPrincipal AuthState principal) {
+        int id = Integer.parseInt(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+        return "redirect:/userList/1?sortType=" + portfolioUserService.getUserListSortType(id);
     }
+
 
     /**
      * Gets the mapping to a page of the list of users html and renders it
@@ -40,7 +47,7 @@ public class UserListController {
      * @return The mapping to the list of users html page.
      */
     @GetMapping("/userList/{page}")
-    public String userListPage(@AuthenticationPrincipal AuthState principal,
+    public String userListSortedPage(@AuthenticationPrincipal AuthState principal,
                                Model model,
                                @PathVariable("page") String page,
                                @RequestParam(name = "sortType") String sortType)
@@ -56,7 +63,8 @@ public class UserListController {
             return "redirect:/userList/1";
         }
         int pageInt = Integer.parseInt(page);
-        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, );
+        portfolioUserService.setUserListSortType(id, sortType);
+        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, sortType);
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
         if (maxPage == 0) { // If no users are present, one empty page should still display (although this should never happen)
@@ -71,6 +79,7 @@ public class UserListController {
         model.addAttribute("currentPage", pageInt);
         model.addAttribute("nextPage", pageInt == maxPage ? pageInt : pageInt + 1);
         model.addAttribute("lastPage", maxPage);
+        model.addAttribute("sortType", sortType);
         return "userList";
     }
 
