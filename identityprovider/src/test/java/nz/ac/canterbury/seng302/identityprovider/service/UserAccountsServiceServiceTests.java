@@ -4,10 +4,14 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -644,9 +648,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -666,9 +670,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -676,6 +680,10 @@ class UserAccountsServiceServiceTests {
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        List<ValidationError> errors = response.getValidationErrorsList();
+        for(ValidationError error: errors) {
+            System.out.println(error.getErrorText());
+        }
         assertEquals(1, response.getValidationErrorsCount());
         assertEquals("email", response.getValidationErrors(0).getFieldName());
         assertEquals("Email must be valid", response.getValidationErrors(0).getErrorText());
@@ -688,9 +696,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(":seven:")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -710,9 +718,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -724,9 +732,9 @@ class UserAccountsServiceServiceTests {
         int newTestId = response.getNewUserId();
         User testUser = repository.findByUserId(newTestId);
         assertEquals(testUsername + "2", testUser.getUsername());
-        assertEquals(testFirstName + "2", testUser.getFirstName());
-        assertEquals(testMiddleName + "2", testUser.getMiddleName());
-        assertEquals(testLastName + "2", testUser.getLastName());
+        assertEquals(testFirstName + "a", testUser.getFirstName());
+        assertEquals(testMiddleName + "a", testUser.getMiddleName());
+        assertEquals(testLastName + "a", testUser.getLastName());
         assertEquals(testNickname + "2", testUser.getNickname());
         assertEquals(testBio + "2", testUser.getBio());
         assertEquals(testPronouns + "2", testUser.getPersonalPronouns());

@@ -189,6 +189,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         };
         //Calls the sort method
         userResponseList.sort(comparator);
+        //If orderBy string ends with D reverse order so list is descending
+        if(request.getOrderBy().endsWith("D")) {
+            Collections.reverse(userResponseList);
+        }
         //Paginates the data
         ArrayList<UserResponse> paginatedUserResponseList = new ArrayList<>();
         for(UserResponse user: userResponseList) {
@@ -196,10 +200,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 paginatedUserResponseList.add(user);
             }
             count += 1;
-        }
-        //If orderBy string ends with D reverse order so list is descending
-        if(request.getOrderBy().endsWith("D")) {
-            Collections.reverse(paginatedUserResponseList);
         }
         //Add final sorted, paginated and ordered list
         reply.addAllUsers(paginatedUserResponseList);
