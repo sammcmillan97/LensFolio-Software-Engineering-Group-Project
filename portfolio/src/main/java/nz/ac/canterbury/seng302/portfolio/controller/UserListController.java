@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashSet;
+
 @Controller
 public class UserListController {
 
@@ -60,7 +62,10 @@ public class UserListController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         if (!goodPage(page)) {
-            return "redirect:/userList/1";
+            return "redirect:/userList";
+        }
+        if (!goodSortType(sortType)) {
+            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
         }
         int pageInt = Integer.parseInt(page);
         portfolioUserService.setUserListSortType(id, sortType);
@@ -71,7 +76,7 @@ public class UserListController {
             maxPage = 1;
         }
         if (pageInt > maxPage) {
-            return "redirect:/userList/" + maxPage;
+            return "redirect:/userList/" + maxPage + "?sortType=" + sortType;
         }
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
@@ -96,6 +101,25 @@ public class UserListController {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    /**
+     * Checks whether a string is a valid sort type.
+     * This is only if it ends in 'A' or 'D' (Ascending or descending)
+     * and if the rest of the string corresponds to a column name.
+     * @return Whether the provided string is a valid sort type
+     */
+    public boolean goodSortType(String sortType) {
+        HashSet<String> goodSortTypes = new HashSet<>();
+        goodSortTypes.add("nameA");
+        goodSortTypes.add("nameD");
+        goodSortTypes.add("usernameA");
+        goodSortTypes.add("usernameD");
+        goodSortTypes.add("aliasA");
+        goodSortTypes.add("aliasD");
+        goodSortTypes.add("rolesA");
+        goodSortTypes.add("rolesD");
+        return goodSortTypes.contains(sortType);
     }
 
 }
