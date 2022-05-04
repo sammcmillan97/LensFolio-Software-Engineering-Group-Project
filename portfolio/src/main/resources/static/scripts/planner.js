@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //Create form to post data from calendar
             let form = document.createElement('form');
             form.setAttribute('method', 'post');
-            form.setAttribute('action', `/planner/editSprint/${eventDropInfo.oldEvent.id}`);
+            form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
 
             //Add inputs to form
             let startInput = document.createElement('input');

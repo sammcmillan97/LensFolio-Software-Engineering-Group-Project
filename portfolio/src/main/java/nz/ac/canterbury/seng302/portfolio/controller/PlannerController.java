@@ -122,9 +122,10 @@ public class PlannerController {
         return "planner";
     }
 
-    @PostMapping("/planner/editSprint/{sprintId}")
+    @PostMapping("/planner/editSprint/{projectId}/{sprintId}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model,
+                          @PathVariable String projectId,
                           @PathVariable String sprintId,
                           @RequestParam Date startDate,
                           @RequestParam Date endDate,
@@ -140,7 +141,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             sprintUpdated = false;
         }
-        return "redirect:/planner";
+        return "redirect:/planner/" + projectId;
     }
 
 }
