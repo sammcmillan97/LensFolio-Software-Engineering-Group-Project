@@ -175,7 +175,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } else {
             response = DeleteUserProfilePhotoResponse.newBuilder()
                     .setIsSuccess(false)
-                    .setMessage(false)
+                    .setMessage("Delete profile picture failed: Not authenticated")
                     .build();
         }
         responseObserver.onNext(response);
@@ -370,6 +370,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setPersonalPronouns(user.getPersonalPronouns())
                     .setEmail(user.getEmail())
                     .setCreated(user.getTimeCreated())
+                    .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
                 reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
