@@ -647,9 +647,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Service that allows authenticated users to add additional roles to a user
-     * @param request
-     * @param responseObserver
+     * @param request The request to add the role from a user
+     * @param responseObserver The observer to send the response over
      */
+    @Override
     public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
         UserRoleChangeResponse reply;
         if (isAuthenticatedAsUser(request.getUserId())) {
@@ -666,8 +667,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     /**
      * Abstracted main functionality of add role to user
      * this allows for testing
-     * @param request
-     * @return
+     * @param request A add role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
      */
     @VisibleForTesting
     UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
@@ -689,9 +690,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Service that allows authenticated users to remove roles from a user
-     * @param request
-     * @param responseObserver
+     * @param request The request to remove the role from a user
+     * @param responseObserver The observer to send the response over
      */
+    @Override
     public void removeRoleFromUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
         UserRoleChangeResponse reply;
         if (isAuthenticatedAsUser(request.getUserId())) {
@@ -708,8 +710,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     /**
      * Abstracted main functionality of removing a role from user
      * this allows for testing
-     * @param request
-     * @return
+     * @param request A remove role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
      */
     @VisibleForTesting
     UserRoleChangeResponse removeRoleFromUserHandler(ModifyRoleOfUserRequest request) {
