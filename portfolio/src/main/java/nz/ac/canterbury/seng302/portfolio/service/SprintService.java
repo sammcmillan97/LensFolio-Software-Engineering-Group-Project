@@ -63,11 +63,11 @@ public class SprintService {
     }
 
     public void updateStartDate(int sprintId, Date newDate) throws Exception {
-        List<Sprint> sprints = getAllSprints();
-        sprints.sort(Comparator.comparing(Sprint::getNumber));
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
+        List<Sprint> sprints = getByParentProjectId(sprintToChange.getParentProjectId());
+        sprints.sort(Comparator.comparing(Sprint::getNumber));
 
         for (Sprint sprint :sprints) {
             if ((sprint.getNumber() < sprintToChange.getNumber()) && (newDate.compareTo(sprint.getEndDate()) <= 0)) {
@@ -86,11 +86,11 @@ public class SprintService {
     }
 
     public void updateEndDate(int sprintId, Date newDate) throws Exception {
-        List<Sprint> sprints = getAllSprints();
-        sprints.sort(Comparator.comparing(Sprint::getNumber));
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
+        List<Sprint> sprints = getByParentProjectId(sprintToChange.getParentProjectId());
+        sprints.sort(Comparator.comparing(Sprint::getNumber));
 
         for (Sprint sprint :sprints) {
             if ((sprint.getNumber() > sprintToChange.getNumber()) && (newDate.compareTo(sprint.getStartDate()) >= 0)) {
