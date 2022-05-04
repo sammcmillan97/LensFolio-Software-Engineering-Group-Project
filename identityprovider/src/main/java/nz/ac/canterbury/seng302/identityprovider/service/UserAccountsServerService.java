@@ -653,15 +653,20 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Override
     public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
         UserRoleChangeResponse reply;
-        if (isAuthenticatedAsUser(request.getUserId())) {
+        if (isAuthenticatedAsUser(request.getUserId())&&isAmin(request.getUserId())) {
             reply = addRoleToUserHandler(request);
         } else {
             reply = UserRoleChangeResponse.newBuilder()
                     .setIsSuccess(false)
+                    .setMessage("Unable to add role: Not authenticated")
                     .build();
         }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
+    }
+
+    private boolean isAmin(int userId) {
+        return true;
     }
 
     /**
@@ -681,7 +686,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             User user = repository.findByUserId(userId);
             user.addRole(role);
             repository.save(user);
-            reply.setIsSuccess(true);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully added");
         } catch(Exception e) {
             reply.setIsSuccess(false);
         }
@@ -701,6 +707,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } else {
             reply = UserRoleChangeResponse.newBuilder()
                     .setIsSuccess(false)
+                    .setMessage("Unable to remove role: Not authenticated")
                     .build();
         }
         responseObserver.onNext(reply);
@@ -724,7 +731,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             User user = repository.findByUserId(userId);
             user.removeRole(role);
             repository.save(user);
-            reply.setIsSuccess(true);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully removed");
         } catch(Exception e) {
             reply.setIsSuccess(false);
         }
