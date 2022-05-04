@@ -644,7 +644,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return validationErrors;
     }
 
-
     /**
      * Service that allows authenticated users to add additional roles to a user
      * @param request The request to add the role from a user
@@ -730,6 +729,5 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         return reply.build();
     }
-
 
 }

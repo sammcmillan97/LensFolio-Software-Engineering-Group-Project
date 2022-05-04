@@ -574,6 +574,5 @@ class UserAccountsServiceServiceTests {
         Set<UserRole> roleSet = new HashSet<>();
         roleSet.add(studentRole);
         assertEquals(roleSet, updatedUser.getRoles());
-        //assert that roles is [STUDENT]
     }
 }
