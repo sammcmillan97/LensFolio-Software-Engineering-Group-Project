@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.STUDENT;
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.TEACHER;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -29,6 +34,8 @@ class UserAccountsServiceServiceTests {
     private final String testPronouns = "test/tester";
     private final String testEmail = "test@email.com";
     private final String testPassword = "test password";
+    private final UserRole studentRole = STUDENT;
+    private final UserRole teacherRole = TEACHER;
 
     private int testId;
     private Timestamp testCreated;
@@ -323,7 +330,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail, response.getEmail());
         assertEquals(testCreated, response.getCreated());
         assertEquals("http://localhost:8080/resources/profile-images/default/default.jpg", response.getProfileImagePath());
-        assertEquals(UserRole.STUDENT, response.getRoles(0));
+        assertEquals(STUDENT, response.getRoles(0));
         assertEquals(1, response.getRolesCount());
     }
 
@@ -331,15 +338,15 @@ class UserAccountsServiceServiceTests {
     @Test
     void getUserByIdRolesTest() {
         User testUser = repository.findByUserId(testId);
-        testUser.addRole(UserRole.TEACHER);
-        testUser.removeRole(UserRole.STUDENT);
+        testUser.addRole(TEACHER);
+        testUser.removeRole(STUDENT);
         testUser.addRole(UserRole.COURSE_ADMINISTRATOR);
         repository.save(testUser);
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertTrue(response.getRolesList().contains(UserRole.TEACHER));
+        assertTrue(response.getRolesList().contains(TEACHER));
         assertTrue(response.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR));
         assertEquals(2, response.getRolesCount());
     }
@@ -533,4 +540,39 @@ class UserAccountsServiceServiceTests {
         assertTrue(testUser.checkPassword(testPassword + "2"));
     }
 
+    //Tests that role can be added to a user
+    @Test
+    void addRoleToUserTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        roleSet.add(teacherRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be removed from a user
+    @Test
+    void removeRoleFromUserTest() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(teacherRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
 }
