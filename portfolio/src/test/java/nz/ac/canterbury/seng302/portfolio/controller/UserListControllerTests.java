@@ -39,16 +39,16 @@ class UserListControllerTests {
 
     @Test
     void testGoodSortTypeOnUsernameA() {
-        assertTrue(controller.goodSortType("usernameA"));
+        assertTrue(controller.isGoodSortType("usernameA"));
     }
 
     @Test
     void testBadSortTypeOnUsernameC() {
-        assertFalse(controller.goodSortType("usernameC"));
+        assertFalse(controller.isGoodSortType("usernameC"));
     }
 
     @Test
     void testBadSortTypeOnRandom() {
-        assertFalse(controller.goodSortType("random"));
+        assertFalse(controller.isGoodSortType("random"));
     }
 }

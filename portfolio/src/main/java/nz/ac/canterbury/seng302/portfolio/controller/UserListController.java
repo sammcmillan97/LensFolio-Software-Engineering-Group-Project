@@ -52,7 +52,8 @@ public class UserListController {
     public String userListSortedPage(@AuthenticationPrincipal AuthState principal,
                                Model model,
                                @PathVariable("page") String page,
-                               @RequestParam(name = "sortType") String sortType)
+                               @RequestParam(name = "sortType", required = false) String sortType,
+                               @RequestParam(name = "isAscending", required = false) String isAscending)
                                {
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
@@ -64,10 +65,18 @@ public class UserListController {
         if (!goodPage(page)) {
             return "redirect:/userList";
         }
-        if (!goodSortType(sortType)) {
+        if (!isGoodSortType(sortType) && !isGoodIsAscending(isAscending)) {
+            // TODO update once methods are done
+            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
+        } else if (!isGoodSortType(sortType)) {
+            // TODO
+            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
+        } else if (!isGoodIsAscending(sortType)) {
+            // TODO
             return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
         }
         int pageInt = Integer.parseInt(page);
+        // TODO
         portfolioUserService.setUserListSortType(id, sortType);
         UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, sortType);
         Iterable<User> users = response.getUsers();
@@ -105,21 +114,28 @@ public class UserListController {
 
     /**
      * Checks whether a string is a valid sort type.
-     * This is only if it ends in 'A' or 'D' (Ascending or descending)
-     * and if the rest of the string corresponds to a column name.
+     * This is only if it corresponds to a column name.
      * @return Whether the provided string is a valid sort type
      */
-    public boolean goodSortType(String sortType) {
+    public boolean isGoodSortType(String sortType) {
         HashSet<String> goodSortTypes = new HashSet<>();
-        goodSortTypes.add("nameA");
-        goodSortTypes.add("nameD");
-        goodSortTypes.add("usernameA");
-        goodSortTypes.add("usernameD");
-        goodSortTypes.add("aliasA");
-        goodSortTypes.add("aliasD");
-        goodSortTypes.add("rolesA");
-        goodSortTypes.add("rolesD");
+        goodSortTypes.add("name");
+        goodSortTypes.add("username");
+        goodSortTypes.add("alias");
+        goodSortTypes.add("roles");
         return goodSortTypes.contains(sortType);
+    }
+
+    /**
+     * Checks whether a string is a valid boolean for deciding whether to sort in ascending or descending order.
+     * This is only if it is the string 'true' or 'false'
+     * @return Whether the provided string is a valid type for deciding whether to sort in ascending or descending order.
+     */
+    public boolean isGoodIsAscending(String isAscending) {
+        HashSet<String> goodAscendingTypes = new HashSet<>();
+        goodAscendingTypes.add("true");
+        goodAscendingTypes.add("false");
+        return goodAscendingTypes.contains(isAscending);
     }
 
 }
