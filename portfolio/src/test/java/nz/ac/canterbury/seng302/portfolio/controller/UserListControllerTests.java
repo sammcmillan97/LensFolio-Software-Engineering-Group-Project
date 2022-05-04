@@ -36,4 +36,19 @@ class UserListControllerTests {
     void testGoodPageOnLarge() {
         assertTrue(controller.goodPage("999999"));
     }
+
+    @Test
+    void testGoodSortTypeOnUsernameA() {
+        assertTrue(controller.goodSortType("usernameA"));
+    }
+
+    @Test
+    void testBadSortTypeOnUsernameC() {
+        assertFalse(controller.goodSortType("usernameC"));
+    }
+
+    @Test
+    void testBadSortTypeOnRandom() {
+        assertFalse(controller.goodSortType("random"));
+    }
 }
