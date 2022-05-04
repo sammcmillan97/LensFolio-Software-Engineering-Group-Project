@@ -26,6 +26,7 @@
     <script type="text/javascript" th:inline="javascript" th:each="sprint, iterInfo: ${sprints}">
         sprint = {id: [[${sprint.getId}]],
             title: [[${sprint.getLabel}]],
+            eventType: 'Sprint',
             start: [[${sprint.getStartDateCalendarString}]],
             end: [[${sprint.getDayAfterEndDateCalendarString}]],
             // Set colour of the sprint. Repeats colours in the list specified above

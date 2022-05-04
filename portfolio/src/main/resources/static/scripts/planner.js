@@ -91,8 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResizableFromStart: true,
         eventResizableFromEnd: true,
 
+        eventOverlap: function( stillEvent, movingEvent) {
+            if (stillEvent.display === 'background' || stillEvent.display === 'inverse-background') {
+                return true;
+            } else {
+                return (stillEvent.eventType === 'Sprint' && movingEvent.eventType === 'Sprint');
+            }
+        },
+
         //Listens to sprint drag/drop
         eventResize: function( eventDropInfo ) {
+
             //Create form to post data from calendar
             let form = document.createElement('form');
             form.setAttribute('method', 'post');
