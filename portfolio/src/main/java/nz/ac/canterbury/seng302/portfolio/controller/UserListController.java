@@ -65,13 +65,13 @@ public class UserListController {
         if (!goodPage(page)) {
             return "redirect:/userList";
         }
-        if (!isGoodSortType(sortType) && !isGoodIsAscending(isAscending)) {
+        if (!isGoodSortType(sortType) && !isGoodAscending(isAscending)) {
             // TODO update once methods are done
             return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
         } else if (!isGoodSortType(sortType)) {
             // TODO
             return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
-        } else if (!isGoodIsAscending(sortType)) {
+        } else if (!isGoodAscending(sortType)) {
             // TODO
             return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
         }
@@ -131,7 +131,7 @@ public class UserListController {
      * This is only if it is the string 'true' or 'false'
      * @return Whether the provided string is a valid type for deciding whether to sort in ascending or descending order.
      */
-    public boolean isGoodIsAscending(String isAscending) {
+    public boolean isGoodAscending(String isAscending) {
         HashSet<String> goodAscendingTypes = new HashSet<>();
         goodAscendingTypes.add("true");
         goodAscendingTypes.add("false");

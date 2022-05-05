@@ -45,24 +45,25 @@ class PortfolioUserRepositoryTests {
     // Test that a full list of users can be retrieved from the database
     @Test
     void findAllUsers() {
-        PortfolioUser user1 = new PortfolioUser(1, "test sort type");
-        PortfolioUser user2 = new PortfolioUser(2, "test sort type 2");
+        PortfolioUser user1 = new PortfolioUser(1, "test sort type", true);
+        PortfolioUser user2 = new PortfolioUser(2, "test sort type 2", false);
         List<PortfolioUser> users = new ArrayList<>();
         users.add(user1);
         users.add(user2);
         portfolioUserRepository.saveAll(users);
         List<PortfolioUser> retrievedUsers = StreamSupport.stream(portfolioUserRepository.findAll().spliterator(), false).toList();
-        assertThat(retrievedUsers.get(0).getUserId()).isEqualTo(users.get(0).getUserId());
-        assertThat(retrievedUsers.get(0).getUserListSortType()).isEqualTo(users.get(0).getUserListSortType());
-        assertThat(retrievedUsers.get(1).getUserId()).isEqualTo(users.get(1).getUserId());
-        assertThat(retrievedUsers.get(1).getUserListSortType()).isEqualTo(users.get(1).getUserListSortType());
+        for (int i = 0; i < users.size(); i++) {
+            assertThat(retrievedUsers.get(0).getUserId()).isEqualTo(users.get(0).getUserId());
+            assertThat(retrievedUsers.get(0).getUserListSortType()).isEqualTo(users.get(0).getUserListSortType());
+            assertThat(retrievedUsers.get(0).isUserListSortAscending()).isEqualTo(users.get(0).isUserListSortAscending());
+        }
     }
 
     // Test a specific user can be retrieved from the database
     @Test
     void findUserById() {
-        PortfolioUser user1 = new PortfolioUser(1, "test sort type");
-        PortfolioUser user2 = new PortfolioUser(2, "test sort type 2");
+        PortfolioUser user1 = new PortfolioUser(1, "test sort type", false);
+        PortfolioUser user2 = new PortfolioUser(2, "test sort type 2", true);
         List<PortfolioUser> users = new ArrayList<>();
         users.add(user1);
         users.add(user2);
@@ -72,6 +73,7 @@ class PortfolioUserRepositoryTests {
         assertThat(retrievedUser).isNotNull();
         assertThat(retrievedUser.getUserId()).isEqualTo(users.get(0).getUserId());
         assertThat(retrievedUser.getUserListSortType()).isEqualTo(users.get(0).getUserListSortType());
+        assertThat(retrievedUser.isUserListSortAscending()).isEqualTo(users.get(0).isUserListSortAscending());
 
     }
 

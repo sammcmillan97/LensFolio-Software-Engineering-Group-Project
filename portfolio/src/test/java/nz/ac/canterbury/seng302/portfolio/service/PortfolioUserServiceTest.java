@@ -54,11 +54,11 @@ class PortfolioUserServiceTest {
         assertEquals(1, users.size());
     }
 
-    //Test that getting the default user list sort type works (should be by name ascending, or 'nameA')
+    //Test that getting the default user list sort type works (should be by name)
     @Test
     void getUserListSortTypeTest() {
         String resultSortType = service.getUserListSortType(3);
-        assertEquals("nameA", resultSortType);
+        assertEquals("name", resultSortType);
     }
 
     //Test that setting the user list sort type works
@@ -69,4 +69,20 @@ class PortfolioUserServiceTest {
         String resultSortType = service.getUserListSortType(3);
         assertEquals(testSortType, resultSortType);
     }
+
+    //Test that getting the default user list sort type works (should be ascending)
+    @Test
+    void getUserListIsSortAscendingTest() {
+        boolean resultSortType = service.isUserListSortAscending(3);
+        assertTrue(resultSortType);
+    }
+
+    //Test that setting the user list sort type works
+    @Test
+    void setUserListIsSortAscendingTest() {
+        service.setUserListSortAscending(3, false);
+        boolean resultSortType = service.isUserListSortAscending(3);
+        assertFalse(resultSortType);
+    }
+
 }
