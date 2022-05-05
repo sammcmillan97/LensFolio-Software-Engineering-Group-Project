@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.*;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 
@@ -67,6 +70,146 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+    /**
+     * Service for getting a paginated list of userResponses for use in the portfolio module.
+     * Checks if the current user is authenticated and can make the request then call the handler.
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void getPaginatedUsers(GetPaginatedUsersRequest request, StreamObserver<PaginatedUsersResponse> responseObserver) {
+        PaginatedUsersResponse reply;
+        if (isAuthenticated()) {
+            reply = getPaginatedUsersHandler(request);
+        } else {
+            reply = PaginatedUsersResponse.newBuilder().build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * The handler for handling get paginated users request. Will take all User data from the DB as a list of users convert
+     * to user responses, sort, paginate and order as requested. Then return the list of user responses
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @return paginatedUserResponseList a list of user responses and the size of the original list of users before pagination
+     */
+    PaginatedUsersResponse getPaginatedUsersHandler(GetPaginatedUsersRequest request) {
+        PaginatedUsersResponse.Builder reply = PaginatedUsersResponse.newBuilder();
+        //Get all users from the DB
+        Iterable<User> users = repository.findAll();
+        ArrayList<UserResponse> userResponseList = new ArrayList<>();
+        int count = 0;
+        //Create user response list
+        for(User user: users) {
+            userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+        }
+        //Removes A or D off the end of the requested orderBy string e.g. "nameA" or "rolesD"
+        //A: ascending list order and D: descending list order
+        String order = request.getOrderBy().substring(0, request.getOrderBy().length() - 1);
+        //Sorting the list based on the requested order string
+        Comparator<UserResponse> comparator = switch (order) {
+            case ("name") -> new Comparator<UserResponse>() {
+                @Override
+                //Compare method for ordering by name
+                public int compare(UserResponse o1, UserResponse o2) {
+                    String o1FullName;
+                    if (!Objects.equals(o1.getMiddleName(), "")) {
+                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
+                    } else {
+                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
+                    }
+                    String o2FullName;
+                    if (!Objects.equals(o2.getMiddleName(), "")) {
+                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
+                    } else {
+                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
+                    }
+                    return o1FullName.compareTo(o2FullName);
+                }
+            };
+            case ("username") -> new Comparator<UserResponse>() {
+                @Override
+                // Compare method for ordering by username
+                public int compare(UserResponse o1, UserResponse o2) {
+                    return o1.getUsername().compareTo(o2.getUsername());
+                }
+            };
+            case ("alias") -> new Comparator<UserResponse>() {
+                @Override
+                //compare method for ordering by alias
+                public int compare(UserResponse o1, UserResponse o2) {
+                    return o1.getNickname().compareTo(o2.getNickname());
+                }
+            };
+            case ("roles") -> new Comparator<UserResponse>() {
+                @Override
+                //Compare method for ordering by roles
+                //Converts each role into a point system so Course_admin > teacher + student > teacher > student
+                public int compare(UserResponse o1, UserResponse o2) {
+                    int o1RolePoints = 0;
+                    Integer o2RolePoints = 0;
+                    if (o1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+                        o1RolePoints += 4;
+                    }
+                    if (o1.getRolesList().contains(UserRole.TEACHER)) {
+                        o1RolePoints += 2;
+                    }
+                    if (o1.getRolesList().contains(UserRole.STUDENT)) {
+                        o1RolePoints += 1;
+                    }
+                    if (o2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+                        o2RolePoints += 4;
+                    }
+                    if (o2.getRolesList().contains(UserRole.TEACHER)) {
+                        o2RolePoints += 2;
+                    }
+                    if (o2.getRolesList().contains(UserRole.STUDENT)) {
+                        o2RolePoints += 1;
+                    }
+                    return o2RolePoints.compareTo(o1RolePoints);
+                }
+            };
+            default -> new Comparator<>() {
+                @Override
+                //Default compare method uses sort by name
+                public int compare(UserResponse o1, UserResponse o2) {
+                    String o1FullName;
+                    if (!Objects.equals(o1.getMiddleName(), "")) {
+                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
+                    } else {
+                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
+                    }
+                    String o2FullName;
+                    if (!Objects.equals(o2.getMiddleName(), "")) {
+                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
+                    } else {
+                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
+                    }
+                    return o1FullName.compareTo(o2FullName);
+                }
+            };
+        };
+        //Calls the sort method
+        userResponseList.sort(comparator);
+        //If orderBy string ends with D reverse order so list is descending
+        if(request.getOrderBy().endsWith("D")) {
+            Collections.reverse(userResponseList);
+        }
+        //Paginates the data
+        ArrayList<UserResponse> paginatedUserResponseList = new ArrayList<>();
+        for(UserResponse user: userResponseList) {
+            if (count >= request.getOffset() && count < request.getLimit() + request.getOffset()) {
+                paginatedUserResponseList.add(user);
+            }
+            count += 1;
+        }
+        //Add final sorted, paginated and ordered list
+        reply.addAllUsers(paginatedUserResponseList);
+        //Add size of original list for pagination purposes
+        reply.setResultSetSize(userResponseList.size());
+        return reply.build();
+    }
 
     /**
      * Allows user to upload their profile photo through bidirectional streaming.
@@ -474,6 +617,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
+     * Checks if a name is valid. Checks against a list of reasonable characters that could appear in names.
+     * @param name The name to check
+     * @return True if the name is valid
+     */
+    private boolean isBadName(String name) {
+        Pattern namePattern = Pattern.compile("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
+        Matcher nameMatcher = namePattern.matcher(name);
+        return !nameMatcher.matches();
+    }
+
+    /**
      * Checks that the first name is within the length requirements
      * @param firstName the first name to check
      * @return A list of validation errors found when checking the first name
@@ -484,11 +638,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (firstName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (isBadName(firstName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain special characters").setFieldName(FIRST_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
         if (firstName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
+
         return validationErrors;
     }
 
@@ -500,6 +658,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkMiddleName(String middleName) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        if (!Objects.equals(middleName, "") && isBadName(middleName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must not contain special characters").setFieldName(MIDDLE_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        }
         if (middleName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName(MIDDLE_NAME_FIELD).build();
             validationErrors.add(validationError);
@@ -517,6 +679,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (lastName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (isBadName(lastName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain special characters").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (lastName.length() > 64) {
@@ -564,6 +729,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
+        boolean validPronouns = pronounsMatcher.find();
+
+        if (!validPronouns && !personalPronouns.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must contain a /").setFieldName(PRONOUNS_FIELD).build();
+            validationErrors.add(validationError);
+        }
+
         if (personalPronouns.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);
@@ -579,10 +753,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Matcher emailMatcher = emailPattern.matcher(email);
+        boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
-        } else if (!email.contains("@")) {
+        } else if (!validEmail) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }

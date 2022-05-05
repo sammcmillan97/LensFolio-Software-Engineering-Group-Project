@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Users</title>
+    <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" href="/styles/userList.css">
+</head>
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div class="pagination">
+        <a th:href="'/userList/' + ${firstPage} + '?sortType=' + ${sortType}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage} + '?sortType=' + ${sortType}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'/userList/' + ${nextPage} + '?sortType=' + ${sortType}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage} + '?sortType=' + ${sortType}">&raquo;</a>
+    </div>
+    <table>
+        <thead>
+            <tr class="sort-header">
+                <th>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'nameA' ? 'nameD' : 'nameA')"
+                       th:text="'Name' + (${sortType} == 'nameA' ? '&#9660;' : '') + (${sortType} == 'nameD' ? '&#9650;' : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'usernameA' ? 'usernameD' : 'usernameA')"
+                       th:text="'Username' + (${sortType} == 'usernameA' ? '&#9660;' : '') + (${sortType} == 'usernameD' ? '&#9650;' : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'aliasA' ? 'aliasD' : 'aliasA')"
+                       th:text="'Alias' + (${sortType} == 'aliasA' ? '&#9660;' : '') + (${sortType} == 'aliasD' ? '&#9650;' : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'rolesA' ? 'rolesD' : 'rolesA')"
+                       th:text="'Roles' + (${sortType} == 'rolesA' ? '&#9660;' : '') + (${sortType} == 'rolesD' ? '&#9650;' : '')"></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <div th:each="listedUser : ${users}">
+                <tr>
+                    <td><span th:text="${listedUser.fullName}"> Name </span></td>
+                    <td><span th:text="${listedUser.username}"> Username </span></td>
+                    <td><span th:text="${listedUser.nickname}"> Alias </span></td>
+                    <td><div th:each="role: ${listedUser.roleStrings}"><div id="role-button" th:text="${role}"> Role </div></div></td>
+                </tr>
+            </div>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <a th:href="'/userList/' + ${firstPage} + '?sortType=' + ${sortType}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage} + '?sortType=' + ${sortType}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'/userList/' + ${nextPage} + '?sortType=' + ${sortType}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage} + '?sortType=' + ${sortType}">&raquo;</a>
+    </div>
+</div>
+</body>
+</html>

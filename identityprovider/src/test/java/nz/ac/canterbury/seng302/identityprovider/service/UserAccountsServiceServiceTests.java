@@ -4,10 +4,14 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +50,146 @@ class UserAccountsServiceServiceTests {
         User testUser = repository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
         testId = testUser.getUserId();
         testCreated = testUser.getTimeCreated();
+    }
+
+    //Method for adding users to be used in the 'getPaginatedUser' tests
+    public void addUsers() {
+        repository.deleteAll();
+        User testUser1 = new User("test1", "Adam", "", "Adam", "A", "", "test/tester", "Test@emai.com", "password");
+        User testUser2 = new User("test2", "Bruce", "Bruce", "Bruce", "B", "", "test/tester", "Test@email.com", "password");
+        User testUser3 = new User("test3", "Adam", "", "Adama", "3", "", "test/tester", "Test@email.com", "password");
+        testUser1.addRole(UserRole.COURSE_ADMINISTRATOR);
+        testUser2.addRole(UserRole.TEACHER);
+        testUser2.addRole(UserRole.STUDENT);
+        testUser3.addRole(UserRole.STUDENT);
+        repository.save(testUser1);
+        repository.save(testUser2);
+        repository.save(testUser3);
+    }
+
+    //Tests that sort by name works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByName(){
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("nameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("Adam", response.getUsersList().get(0).getLastName());
+        assertEquals("Adam", response.getUsersList().get(0).getFirstName());
+        assertEquals("Bruce", response.getUsersList().get(response.getUsersList().size() - 1).getFirstName());
+    }
+
+    //Tests that sort by username works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByUsername(){
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test1", response.getUsersList().get(0).getUsername());
+        assertEquals("test3", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+    //Tests that sort by alias works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByAlias() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("aliasA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("3", response.getUsersList().get(0).getNickname());
+        assertEquals("B", response.getUsersList().get(response.getUsersList().size() - 1).getNickname());
+    }
+
+    //Tests that sort by role works correctly on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByRoles() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("rolesA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test1", response.getUsersList().get(0).getUsername());
+        assertEquals("test3", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+    //Tests that sort in descending order works on the get paginated users service
+    @Test
+    void getPaginatedUsersSortByUsernameDescending() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("usernameD")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals("test3", response.getUsersList().get(0).getUsername());
+        assertEquals("test1", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
+    }
+
+
+    //Tests that when the offset is greater than number of users in the repository the list returned
+    //to by the get paginated users service is zero
+    @Test
+    void getPaginatedUsersOffsetGreaterThanListSize() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(3)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(0, response.getUsersList().size());
+    }
+
+    //Tests that the offset works as intended by the get paginated users service
+    @Test
+    void getPaginatedUsersOffsetIsOne() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(1)
+                .setLimit(9999)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(2, response.getUsersList().size());
+    }
+
+    //Tests that when the limit is zero the list returned by the get paginated users list is zero
+    @Test
+    void getPaginatedUsersLimitIsZero() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(0)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(0, response.getUsersList().size());
+    }
+
+    //Tests that the limit feature works as intended on the get paginated user service
+    @Test
+    void getPaginatedUsersLimitIsOne() {
+        addUsers();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(1)
+                .setOrderBy("usernameA")
+                .build();
+        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
+        assertEquals(1, response.getUsersList().size());
     }
 
     //Tests that the password change fails if the new password is too short
@@ -175,6 +319,44 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail, testUser.getEmail());
     }
 
+    // Tests that editing a user fails if names contain special characters
+    @Test
+    void editUserBadNamesTest() {
+        EditUserRequest editUserRequest = EditUserRequest.newBuilder()
+                .setUserId(testId)
+                .setFirstName("??")
+                .setMiddleName("{{{##}}}")
+                .setLastName("Ma8ter")
+                .setNickname("")
+                .setBio("")
+                .setPersonalPronouns("")
+                .setEmail("a@a.a")
+                .build();
+        EditUserResponse response = userService.editUserHandler(editUserRequest);
+
+        assertEquals(3, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name must not contain special characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Middle name must not contain special characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name must not contain special characters", response.getValidationErrors(2).getErrorText());
+        assertEquals("Edit user failed: Validation failed", response.getMessage());
+
+        assertFalse(response.getIsSuccess());
+
+        // Check user hasn't been changed
+        User testUser = repository.findByUserId(testId);
+        assertEquals(testUsername, testUser.getUsername());
+        assertEquals(testFirstName, testUser.getFirstName());
+        assertEquals(testMiddleName, testUser.getMiddleName());
+        assertEquals(testLastName, testUser.getLastName());
+        assertEquals(testNickname, testUser.getNickname());
+        assertEquals(testBio, testUser.getBio());
+        assertEquals(testPronouns, testUser.getPersonalPronouns());
+        assertEquals(testEmail, testUser.getEmail());
+    }
+
     // Tests the max field length
     @Test
     void editUserLongFieldsTest() {
@@ -185,8 +367,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
-                .setPersonalPronouns("a".repeat(64))
-                .setEmail("@".repeat(255))
+                .setPersonalPronouns("a/" + "a".repeat(62))
+                .setEmail("a@a." + "a".repeat(251))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
         assertEquals("Edit user succeeded", response.getMessage());
@@ -200,8 +382,8 @@ class UserAccountsServiceServiceTests {
         assertEquals("a".repeat(64), testUser.getLastName());
         assertEquals("a".repeat(64), testUser.getNickname());
         assertEquals("a".repeat(1024), testUser.getBio());
-        assertEquals("a".repeat(64), testUser.getPersonalPronouns());
-        assertEquals("@".repeat(255), testUser.getEmail());
+        assertEquals("a/" + "a".repeat(62), testUser.getPersonalPronouns());
+        assertEquals("a@a." + "a".repeat(251), testUser.getEmail());
     }
 
     // Tests that if fields are too long, the request is rejected
@@ -214,8 +396,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(65))
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
-                .setPersonalPronouns("a".repeat(65))
-                .setEmail("@".repeat(256))
+                .setPersonalPronouns("a/" + "a".repeat(63))
+                .setEmail("a@a." + "a".repeat(252))
                 .build();
         EditUserResponse response = userService.editUserHandler(editUserRequest);
         assertEquals("Edit user failed: Validation failed", response.getMessage());
@@ -330,7 +512,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail, response.getEmail());
         assertEquals(testCreated, response.getCreated());
         assertEquals("http://localhost:8080/resources/profile-images/default/default.jpg", response.getProfileImagePath());
-        assertEquals(STUDENT, response.getRoles(0));
+        assertEquals(UserRole.STUDENT, response.getRoles(0));
         assertEquals(1, response.getRolesCount());
     }
 
@@ -338,15 +520,15 @@ class UserAccountsServiceServiceTests {
     @Test
     void getUserByIdRolesTest() {
         User testUser = repository.findByUserId(testId);
-        testUser.addRole(TEACHER);
-        testUser.removeRole(STUDENT);
+        testUser.addRole(UserRole.TEACHER);
+        testUser.removeRole(UserRole.STUDENT);
         testUser.addRole(UserRole.COURSE_ADMINISTRATOR);
         repository.save(testUser);
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertTrue(response.getRolesList().contains(TEACHER));
+        assertTrue(response.getRolesList().contains(UserRole.TEACHER));
         assertTrue(response.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR));
         assertEquals(2, response.getRolesCount());
     }
@@ -386,6 +568,30 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
     }
 
+    // Tests that creating user fails if nonames contain special characters
+    @Test
+    void userRegisterBadNamesTest() {
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
+                .setFirstName("I999")
+                .setMiddleName("|||")
+                .setLastName(";;;")
+                .setEmail("a@a.a")
+                .setPassword("password")
+                .setUsername("test")
+                .build();
+        UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
+        assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        assertEquals(3, response.getValidationErrorsCount());
+        assertEquals("firstName", response.getValidationErrors(0).getFieldName());
+        assertEquals("First name must not contain special characters", response.getValidationErrors(0).getErrorText());
+        assertEquals("middleName", response.getValidationErrors(1).getFieldName());
+        assertEquals("Middle name must not contain special characters", response.getValidationErrors(1).getErrorText());
+        assertEquals("lastName", response.getValidationErrors(2).getFieldName());
+        assertEquals("Last name must not contain special characters", response.getValidationErrors(2).getErrorText());
+
+        assertFalse(response.getIsSuccess());
+    }
+
     // Tests the max length for each field
     @Test
     void userRegisterLongFieldsTest() {
@@ -397,8 +603,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
                 .setBio("a".repeat(1024))
-                .setPersonalPronouns("a".repeat(64))
-                .setEmail("@".repeat(255))
+                .setPersonalPronouns("a/" + "a".repeat(62))
+                .setEmail("a@a." + "a".repeat(251))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt succeeded", response.getMessage());
@@ -416,8 +622,8 @@ class UserAccountsServiceServiceTests {
                 .setLastName("a".repeat(65))
                 .setNickname("a".repeat(65))
                 .setBio("a".repeat(1025))
-                .setPersonalPronouns("a".repeat(65))
-                .setEmail("@".repeat(256))
+                .setPersonalPronouns("a/" + "a".repeat(63))
+                .setEmail("a@a." + "a".repeat(252))
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
@@ -449,9 +655,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -465,22 +671,26 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
     }
 
-    // Tests that an email that does not contain @ is rejected
+    // Tests that an email that does not contain @ and . is rejected
     @Test
     void userRegisterBadEmailTest() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
-                .setEmail("bad email")
+                .setEmail("bad@email")
                 .build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
+        List<ValidationError> errors = response.getValidationErrorsList();
+        for(ValidationError error: errors) {
+            System.out.println(error.getErrorText());
+        }
         assertEquals(1, response.getValidationErrorsCount());
         assertEquals("email", response.getValidationErrors(0).getFieldName());
         assertEquals("Email must be valid", response.getValidationErrors(0).getErrorText());
@@ -493,9 +703,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(":seven:")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -515,9 +725,9 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
-                .setFirstName(testFirstName + "2")
-                .setMiddleName(testMiddleName + "2")
-                .setLastName(testLastName + "2")
+                .setFirstName(testFirstName + "a")
+                .setMiddleName(testMiddleName + "a")
+                .setLastName(testLastName + "a")
                 .setNickname(testNickname + "2")
                 .setBio(testBio + "2")
                 .setPersonalPronouns(testPronouns + "2")
@@ -529,9 +739,9 @@ class UserAccountsServiceServiceTests {
         int newTestId = response.getNewUserId();
         User testUser = repository.findByUserId(newTestId);
         assertEquals(testUsername + "2", testUser.getUsername());
-        assertEquals(testFirstName + "2", testUser.getFirstName());
-        assertEquals(testMiddleName + "2", testUser.getMiddleName());
-        assertEquals(testLastName + "2", testUser.getLastName());
+        assertEquals(testFirstName + "a", testUser.getFirstName());
+        assertEquals(testMiddleName + "a", testUser.getMiddleName());
+        assertEquals(testLastName + "a", testUser.getLastName());
         assertEquals(testNickname + "2", testUser.getNickname());
         assertEquals(testBio + "2", testUser.getBio());
         assertEquals(testPronouns + "2", testUser.getPersonalPronouns());
