@@ -104,66 +104,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
             case ("name") -> //Compare method for ordering by name
-                    (o1, o2) -> {
-                        String o1FullName;
-                        if (!Objects.equals(o1.getMiddleName(), "")) {
-                            o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
-                        } else {
-                            o1FullName = o1.getFirstName() + " " + o1.getLastName();
-                        }
-                        String o2FullName;
-                        if (!Objects.equals(o2.getMiddleName(), "")) {
-                            o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
-                        } else {
-                            o2FullName = o2.getFirstName() + " " + o2.getLastName();
-                        }
-                        return o1FullName.compareTo(o2FullName);
-                    };
+                    this::paginatedUsersNameSort;
             case ("username") -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
             case ("alias") -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
             case ("roles") -> //Compare method for ordering by roles
-                    //Converts each role into a point system so Course_admin > teacher + student > teacher > student
-                    (o1, o2) -> {
-                        int o1RolePoints = 0;
-                        Integer o2RolePoints = 0;
-                        if (o1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
-                            o1RolePoints += 4;
-                        }
-                        if (o1.getRolesList().contains(UserRole.TEACHER)) {
-                            o1RolePoints += 2;
-                        }
-                        if (o1.getRolesList().contains(UserRole.STUDENT)) {
-                            o1RolePoints += 1;
-                        }
-                        if (o2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
-                            o2RolePoints += 4;
-                        }
-                        if (o2.getRolesList().contains(UserRole.TEACHER)) {
-                            o2RolePoints += 2;
-                        }
-                        if (o2.getRolesList().contains(UserRole.STUDENT)) {
-                            o2RolePoints += 1;
-                        }
-                        return o2RolePoints.compareTo(o1RolePoints);
-                    };
+                    this::paginatedUsersRolesSort;
             default -> //Default compare method uses sort by name
-                    (o1, o2) -> {
-                        String o1FullName;
-                        if (!Objects.equals(o1.getMiddleName(), "")) {
-                            o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
-                        } else {
-                            o1FullName = o1.getFirstName() + " " + o1.getLastName();
-                        }
-                        String o2FullName;
-                        if (!Objects.equals(o2.getMiddleName(), "")) {
-                            o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
-                        } else {
-                            o2FullName = o2.getFirstName() + " " + o2.getLastName();
-                        }
-                        return o1FullName.compareTo(o2FullName);
-                    };
+                    this::paginatedUsersNameSort;
         };
         //Calls the sort method
         userResponseList.sort(comparator);
@@ -184,6 +133,47 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         //Add size of original list for pagination purposes
         reply.setResultSetSize(userResponseList.size());
         return reply.build();
+    }
+
+    int paginatedUsersNameSort(UserResponse user1, UserResponse user2) {
+        String user1FullName;
+        if (!Objects.equals(user1.getMiddleName(), "")) {
+            user1FullName = user1.getFirstName() + " " + user1.getMiddleName() + " " + user1.getLastName();
+        } else {
+            user1FullName = user1.getFirstName() + " " + user1.getLastName();
+        }
+        String user2FullName;
+        if (!Objects.equals(user2.getMiddleName(), "")) {
+            user2FullName = user2.getFirstName() + " " + user2.getMiddleName() + " " + user2.getLastName();
+        } else {
+            user2FullName = user2.getFirstName() + " " + user2.getLastName();
+        }
+        return user1FullName.compareTo(user2FullName);
+    }
+
+    //Converts each role into a point system so Course_admin > teacher + student > teacher > student
+    int paginatedUsersRolesSort(UserResponse user1, UserResponse user2) {
+        int user1RolePoints = 0;
+        Integer user2RolePoints = 0;
+        if (user1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user1RolePoints += 4;
+        }
+        if (user1.getRolesList().contains(UserRole.TEACHER)) {
+            user1RolePoints += 2;
+        }
+        if (user1.getRolesList().contains(UserRole.STUDENT)) {
+            user1RolePoints += 1;
+        }
+        if (user2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user2RolePoints += 4;
+        }
+        if (user2.getRolesList().contains(UserRole.TEACHER)) {
+            user2RolePoints += 2;
+        }
+        if (user2.getRolesList().contains(UserRole.STUDENT)) {
+            user2RolePoints += 1;
+        }
+        return user2RolePoints.compareTo(user1RolePoints);
     }
 
     /**
