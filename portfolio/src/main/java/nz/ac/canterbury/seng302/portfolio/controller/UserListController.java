@@ -97,6 +97,7 @@ public class UserListController {
         model.addAttribute("lastPage", maxPage);
         model.addAttribute("sortType", sortType);
         model.addAttribute("isAscending", isAscending);
+        model.addAttribute("sortingSuffix", sortingSuffix(sortType, isAscending));
         return "userList";
     }
 
