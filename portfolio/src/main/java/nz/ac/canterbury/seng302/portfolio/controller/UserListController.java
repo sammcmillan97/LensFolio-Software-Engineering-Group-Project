@@ -74,7 +74,7 @@ public class UserListController {
             if (!isGoodAscending(isAscending)) {
                 isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
             }
-            return "redirect:/userList/" + page + "?sortType=" + sortingSuffix(sortType, isAscending);
+            return "redirect:/userList/" + page + sortingSuffix(sortType, isAscending);
         }
         int pageInt = Integer.parseInt(page);
         portfolioUserService.setUserListSortType(id, sortType);

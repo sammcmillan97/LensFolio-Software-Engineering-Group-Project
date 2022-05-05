@@ -28,16 +28,16 @@
                        th:text="'Name' + (${sortType} == 'name' ? (${isAscending} ? '&#9660;' : '&#9650;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'usernameA' ? 'usernameD' : 'usernameA')"
-                       th:text="'Username' + (${sortType} == 'usernameA' ? '&#9660;' : '') + (${sortType} == 'usernameD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=username&isAscending=' + (${sortType} == 'username' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Username' + (${sortType} == 'username' ? (${isAscending} ? '&#9660;' : '&#9650;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'aliasA' ? 'aliasD' : 'aliasA')"
-                       th:text="'Alias' + (${sortType} == 'aliasA' ? '&#9660;' : '') + (${sortType} == 'aliasD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=alias&isAscending=' + (${sortType} == 'alias' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Alias' + (${sortType} == 'alias' ? (${isAscending} ? '&#9660;' : '&#9650;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'rolesA' ? 'rolesD' : 'rolesA')"
-                       th:text="'Roles' + (${sortType} == 'rolesA' ? '&#9660;' : '') + (${sortType} == 'rolesD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9660;' : '&#9650;') : '')"></a>
                 </th>
             </tr>
         </thead>
