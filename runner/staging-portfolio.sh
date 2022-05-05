@@ -1,6 +1,6 @@
 fuser -k 9501/tcp || true
 export $(cat staging-portfolio/.env | xargs -d '\n')
-SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE java -jar staging-portfolio/libs/portfolio-0.0.1-SNAPSHOT.jar \
+SPRING_PROFILES_ACTIVE=deploy java -jar staging-portfolio/libs/portfolio-0.0.1-SNAPSHOT.jar \
     --server.port=9501 \
     --spring.application.name=portfolio \
     --grpc.client.identity-provider-grpc-server.address=static://127.0.0.1:9500 \
