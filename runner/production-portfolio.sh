@@ -7,3 +7,4 @@ SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE java -jar production-portfolio/li
     --grpc.client.identity-provider-grpc-server.enableKeepAlive=true \
     --grpc.client.identity-provider-grpc-server.keepAliveWithoutCalls=true \
     --grpc.client.identity-provider-grpc-server.negotiationType=plaintext 
+env
