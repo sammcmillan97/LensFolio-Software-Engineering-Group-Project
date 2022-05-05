@@ -1,5 +1,5 @@
 fuser -k 9501/tcp || true
-
+export $(cat staging-portfolio/.env | xargs -d '\n')
 java -jar staging-portfolio/libs/portfolio-0.0.1-SNAPSHOT.jar \
     --server.port=9501 \
     --spring.application.name=portfolio \
