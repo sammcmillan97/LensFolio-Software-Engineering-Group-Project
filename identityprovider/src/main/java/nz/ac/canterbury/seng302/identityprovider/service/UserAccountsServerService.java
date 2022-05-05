@@ -135,6 +135,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * Sorts two users by their full name.
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which full name is greater, or 0 if they are the same.
+     */
     int paginatedUsersNameSort(UserResponse user1, UserResponse user2) {
         String user1FullName;
         if (!Objects.equals(user1.getMiddleName(), "")) {
@@ -151,7 +157,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return user1FullName.compareTo(user2FullName);
     }
 
-    //Converts each role into a point system so Course_admin > teacher + student > teacher > student
+    /**
+     * Sorts two users by their roles. Roles are sorted by a points system, for example:
+     * Course admin > teacher + student > teacher > student
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which roles are greater, or 0 if they are the same.
+     */
     int paginatedUsersRolesSort(UserResponse user1, UserResponse user2) {
         int user1RolePoints = 0;
         Integer user2RolePoints = 0;
