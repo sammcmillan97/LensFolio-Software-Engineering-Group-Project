@@ -688,7 +688,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             user.addRole(role);
             repository.save(user);
             reply.setIsSuccess(true)
-                    .setMessage("Role successfully removed");
+                    .setMessage("Role successfully added");
         }
         return reply.build();
     }

@@ -550,9 +550,26 @@ class UserAccountsServiceServiceTests {
         UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
         User updatedUser = repository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
+        assertEquals("Role successfully added", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
         roleSet.add(studentRole);
         roleSet.add(teacherRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void addRoleToUserTwiceTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(studentRole)
+                .build();
+        UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to add role. User already has given role", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
@@ -571,6 +588,39 @@ class UserAccountsServiceServiceTests {
         UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
         User updatedUser = repository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Role successfully removed", response.getMessage());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void removeRoleTeacherFromStudentTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to remove role. User doesn't have given role", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void removeRoleStudentFromStudentTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(studentRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to remove role. User only has one role", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
         roleSet.add(studentRole);
         assertEquals(roleSet, updatedUser.getRoles());
