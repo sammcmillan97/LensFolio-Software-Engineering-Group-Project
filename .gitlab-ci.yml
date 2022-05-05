@@ -67,7 +67,7 @@ deploy-staging-identityprovider:
     - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
     - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
     - touch /home/gitlab-runner/staging-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nermDATABASE_URL=db2.csse.canterbury.ac.nz/seng302-2022-team400-identityprovider-test \nDATABASE_USERNAME=$STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$STAGING_IDENTITY_PASSWORD" > /home/gitlab-runner/staging-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=db2.csse.canterbury.ac.nz/seng302-2022-team400-identityprovider-test \nDATABASE_USERNAME=$STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$STAGING_IDENTITY_PASSWORD" > /home/gitlab-runner/staging-identityprovider/.env
     - sudo systemctl restart staging-identityprovider
   artifacts:
     paths:
