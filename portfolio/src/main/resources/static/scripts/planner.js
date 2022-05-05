@@ -58,14 +58,22 @@ document.addEventListener('DOMContentLoaded', function() {
             end: fullMonthEndDate
         },
         events: [
-            // Event to grey out dates not in project
             {
-                start: projectStartDate,
-                end: dayAfterProjectEndDate,
-                display: 'inverse-background',
+                name: 'Project',
+                start: fullMonthStartDate,
+                end: projectStartDate,
+                display: 'background',
                 backgroundColor: "#CCCCCC"
             },
-            // Events for project start and end dates
+
+            {
+                name: 'Project',
+                start: dayAfterProjectEndDate,
+                end: fullMonthEndDate,
+                display: 'background',
+                backgroundColor: "#CCCCCC"
+            },
+
             {
                 title: projectName + " Starts",
                 start: projectStartDate,
@@ -92,53 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResizableFromEnd: true,
 
         eventOverlap: function( stillEvent, movingEvent) {
-            if (stillEvent.display === 'background' || stillEvent.display === 'inverse-background') {
-                return true;
-            } else {
-                return (stillEvent.eventType === 'Sprint' && movingEvent.eventType === 'Sprint');
-            }
+            return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
         },
 
         //Listens to sprint drag/drop
-        eventResize: function( eventDropInfo ) {
-
-            //Create form to post data from calendar
-            let form = document.createElement('form');
-            form.setAttribute('method', 'post');
-            form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
-
-            //Add inputs to form
-            let startInput = document.createElement('input');
-            startInput.setAttribute('type', 'hidden');
-            startInput.setAttribute('name', 'startDate');
-            startInput.setAttribute('value', `${eventDropInfo.event.start}`);
-            form.appendChild(startInput);
-            let endInput = document.createElement('input');
-            endInput.setAttribute('type', 'hidden');
-            endInput.setAttribute('name', 'endDate');
-            endInput.setAttribute('value', `${eventDropInfo.event.end}`);
-            form.appendChild(endInput);
-
-            if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
-                let pagDate = document.createElement('input');
-                pagDate.setAttribute('type', 'hidden');
-                pagDate.setAttribute('name', 'paginationDate');
-                pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
-                form.appendChild(pagDate);
-            } else {
-                let pagDate = document.createElement('input');
-                pagDate.setAttribute('type', 'hidden');
-                pagDate.setAttribute('name', 'paginationDate');
-                pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
-                form.appendChild(pagDate);
-            }
-
-
-            //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
-            document.body.appendChild(form);
-            form.submit();
+        eventResize: function (eventDropInfo) {
+            resizeSprint( eventDropInfo );
         }
     });
+    
     addSprintsToCalendar();
     calendar.render();
     if (paginationDate) {
@@ -196,3 +166,40 @@ function addSprintsToCalendar() {
     }
 }
 
+function resizeSprint( eventDropInfo ) {
+
+    //Create form to post data from calendar
+    let form = document.createElement('form');
+    form.setAttribute('method', 'post');
+    form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
+
+    //Add inputs to form
+    let startInput = document.createElement('input');
+    startInput.setAttribute('type', 'hidden');
+    startInput.setAttribute('name', 'startDate');
+    startInput.setAttribute('value', `${eventDropInfo.event.start}`);
+    form.appendChild(startInput);
+    let endInput = document.createElement('input');
+    endInput.setAttribute('type', 'hidden');
+    endInput.setAttribute('name', 'endDate');
+    endInput.setAttribute('value', `${eventDropInfo.event.end}`);
+    form.appendChild(endInput);
+
+    if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
+        form.appendChild(pagDate);
+    } else {
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
+        form.appendChild(pagDate);
+    }
+
+    //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+    document.body.appendChild(form);
+    form.submit();
+}
