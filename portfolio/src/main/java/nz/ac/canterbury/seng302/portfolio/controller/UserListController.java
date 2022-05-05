@@ -79,8 +79,9 @@ public class UserListController {
         int pageInt = Integer.parseInt(page);
         portfolioUserService.setUserListSortType(id, sortType);
         // We can safely parse the boolean as it has already been checked to see if it is either true or false
-        portfolioUserService.setUserListSortAscending(id, Boolean.parseBoolean(isAscending));
-        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, sortType);
+        boolean sortAscending = Boolean.parseBoolean(isAscending);
+        portfolioUserService.setUserListSortAscending(id, sortAscending);
+        UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, sortType, sortAscending);
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
         if (maxPage == 0) { // If no users are present, one empty page should still display (although this should never happen)
