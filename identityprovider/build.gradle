@@ -37,6 +37,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     runtimeOnly "com.h2database:h2"
 
+    // MariaDB
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+
     //password encryption
     implementation 'org.springframework.security:spring-security-crypto'
 
