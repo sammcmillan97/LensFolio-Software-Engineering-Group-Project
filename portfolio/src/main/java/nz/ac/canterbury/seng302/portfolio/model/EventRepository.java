@@ -9,4 +9,5 @@ import java.util.List;
 public interface EventRepository extends CrudRepository<Event, Integer> {
     List<Event> findByEventName(String eventName);
     Event findById(int id);
+    List<Event> findByEventParentProjectId(int eventParentProjectId);
 }
