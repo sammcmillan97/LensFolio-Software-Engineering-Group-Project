@@ -37,9 +37,10 @@ public class UserListController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        return "redirect:/userList/1?sortType=" + portfolioUserService.getUserListSortType(id);
+        String sortType = portfolioUserService.getUserListSortType(id);
+        String isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
+        return "redirect:/userList/1" + sortingSuffix(sortType, isAscending);
     }
-
 
     /**
      * Gets the mapping to a page of the list of users html and renders it
@@ -65,19 +66,20 @@ public class UserListController {
         if (!goodPage(page)) {
             return "redirect:/userList";
         }
-        if (!isGoodSortType(sortType) && !isGoodAscending(isAscending)) {
-            // TODO update once methods are done
-            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
-        } else if (!isGoodSortType(sortType)) {
-            // TODO
-            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
-        } else if (!isGoodAscending(sortType)) {
-            // TODO
-            return "redirect:/userList/" + page + "?sortType=" + portfolioUserService.getUserListSortType(id);
+        // If either sort parameter is wrong, redirect to a page where the wrong sort parameters are replaced by previous values.
+        if (!isGoodSortType(sortType) || !isGoodAscending(isAscending)) {
+            if (!isGoodSortType(sortType)) {
+                sortType = portfolioUserService.getUserListSortType(id);
+            }
+            if (!isGoodAscending(isAscending)) {
+                isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
+            }
+            return "redirect:/userList/" + page + "?sortType=" + sortingSuffix(sortType, isAscending);
         }
         int pageInt = Integer.parseInt(page);
-        // TODO
         portfolioUserService.setUserListSortType(id, sortType);
+        // We can safely parse the boolean as it has already been checked to see if it is either true or false
+        portfolioUserService.setUserListSortAscending(id, Boolean.parseBoolean(isAscending));
         UserListResponse response = userAccountClientService.getPaginatedUsers(10 * pageInt - 10, 10, sortType);
         Iterable<User> users = response.getUsers();
         int maxPage = (response.getResultSetSize() - 1) / 10 + 1;
@@ -85,7 +87,7 @@ public class UserListController {
             maxPage = 1;
         }
         if (pageInt > maxPage) {
-            return "redirect:/userList/" + maxPage + "?sortType=" + sortType;
+            return "redirect:/userList/" + maxPage + sortingSuffix(sortType, isAscending);
         }
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
@@ -94,6 +96,7 @@ public class UserListController {
         model.addAttribute("nextPage", pageInt == maxPage ? pageInt : pageInt + 1);
         model.addAttribute("lastPage", maxPage);
         model.addAttribute("sortType", sortType);
+        model.addAttribute("isAscending", isAscending);
         return "userList";
     }
 
@@ -136,6 +139,17 @@ public class UserListController {
         goodAscendingTypes.add("true");
         goodAscendingTypes.add("false");
         return goodAscendingTypes.contains(isAscending);
+    }
+
+    /**
+     * Returns a suffix for sorting in the url for the user list page.
+     * Is of the form ?sortType=x&isAscending=y, where sortType is x and isAscending is y.
+     * @param sortType The sort type for sorting the user list
+     * @param isAscending Whether the user list should be sorted in ascending order
+     * @return The url suffix for sorting
+     */
+    public String sortingSuffix(String sortType, String isAscending) {
+        return "?sortType=" + sortType + "&isAscending=" + isAscending;
     }
 
 }

@@ -57,4 +57,9 @@ class UserListControllerTests {
         assertFalse(controller.isGoodAscending("random"));
     }
 
+    @Test
+    void testSortingSuffix() {
+        assertEquals("?sortType=x&isAscending=y", controller.sortingSuffix("x", "y"));
+    }
+
 }
