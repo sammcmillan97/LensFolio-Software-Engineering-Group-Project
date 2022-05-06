@@ -7,10 +7,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
 
@@ -23,13 +20,17 @@ public class EventService {
 
     /**
      * Get a list of all events
+     * @return the list of all existing events
      */
     public List<Event> getAllEvents() {
         return (List<Event>) eventRepository.findAll();
     }
 
     /**
-     * Get event by id
+     * Get the event by id
+     * @param eventId the id of the event
+     * @return the event which has the required id
+     * @throws Exception when event is not found
      */
     public Event getEventById(Integer eventId) throws Exception {
         Optional<Event> event = eventRepository.findById(eventId);
@@ -42,6 +43,8 @@ public class EventService {
 
     /**
      * Get event by parent project id
+     * @param projectId the id of the project
+     * @return the list of events by the project id
      */
     public List<Event> getByEventParentProjectId(int projectId) {
         return eventRepository.findByEventParentProjectId(projectId);
@@ -67,10 +70,58 @@ public class EventService {
     public Event saveEvent(Event event) {
         return eventRepository.save(event);
     }
+
     /**
      * Delete the event by id
+     * @param eventId the id of the event
      */
     public void deleteEventById(int eventId) {
         eventRepository.deleteById(eventId);
+    }
+
+    /**
+     * Update the start date of the event
+     * @param eventId the id of the event to be updated
+     * @param newStartDate the new date the start date should be updated to
+     * @throws Exception when the date is changed to a date outside the scope
+     */
+    public void updateStartDate(int eventId, Date newStartDate) throws Exception {
+        Event eventToChange = getEventById(eventId);
+        Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
+        Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
+        List<Event> events = getByEventParentProjectId(eventToChange.getEventParentProjectId());
+        events.sort(Comparator.comparing(Event::getEventNumber));
+
+        if (newStartDate.compareTo(eventToChange.getEventEndDate()) > 0) {
+            throw new UnsupportedOperationException("Event start date must not be after end date");
+        } else if (newStartDate.compareTo(projectStartDate) < 0 || newStartDate.compareTo(projectEndDate) > 0) {
+            throw new UnsupportedOperationException("Event start date must be within project dates");
+        } else {
+            eventToChange.setEventStartDate(newStartDate);
+            saveEvent(eventToChange);
+        }
+    }
+
+    /**
+     * Updates the end date of the event
+     * @param eventId the id of the event to be updated
+     * @param newEndDate the new end date it should be updated to
+     * @throws Exception when the date it should update to is outside the scope
+     */
+    public void updateEndDate(int eventId, Date newEndDate) throws Exception {
+        Event eventToChange = getEventById(eventId);
+        Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
+        Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
+        List<Event> events = getByEventParentProjectId(eventToChange.getEventParentProjectId());
+        events.sort(Comparator.comparing(Event::getEventNumber));
+
+        if (newEndDate.compareTo(eventToChange.getEventStartDate()) < 0) {
+            throw new UnsupportedOperationException("Event end date must not be before start date");
+        } else if (newEndDate.compareTo(projectStartDate) < 0 || newEndDate.compareTo(projectEndDate) > 0) {
+            throw new UnsupportedOperationException("Event end date must be within project dates");
+        } else {
+            eventToChange.setEventEndDate(newEndDate);
+            saveEvent(eventToChange);
+        }
     }
 }
