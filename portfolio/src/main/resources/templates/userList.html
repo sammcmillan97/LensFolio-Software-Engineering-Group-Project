@@ -39,8 +39,8 @@
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'rolesA' ? 'rolesD' : 'rolesA')"
                        th:text="'Roles' + (${sortType} == 'rolesA' ? '&#9660;' : '') + (${sortType} == 'rolesD' ? '&#9650;' : '')"></a>
                 </th>
+                <!-- Make this column only visible to TEACHER/COURSE_ADMINISTRATOR-->
                 <th>
-                    <!-- Make this column only visible to TEACHER/COURSE_ADMINISTRATOR-->
                     Add role
                 </th>
             </tr>
@@ -52,6 +52,7 @@
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
                     <td>
+                        <--ONLY SHOW AS LINK IF USER IS ADMIN-->
                         <div th:each="role: ${listedUser.roleStrings}">
                             <div id="role-button">
                                 <a th:href="'/removeRole/' + ${listedUser.id} + '?roleType=' + ${role}" th:text="${role}"></a>
@@ -60,7 +61,7 @@
                         <div id="user__userId" th:text="${listedUser.id}"></div>
                     </td>
                     <td>
-                        <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT-->
+                        <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT??-->
                         <div class="addRoleButton">
                             <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=STUDENT'">+ Student</a>
                         </div>
