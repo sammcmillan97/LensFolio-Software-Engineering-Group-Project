@@ -5,10 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.DeleteUserProfilePhotoResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -127,12 +124,24 @@ public class UserListController {
         return goodSortTypes.contains(sortType);
     }
 
-    @PostMapping("/removeRole")
-    public String removeProfilePicture(@AuthenticationPrincipal AuthState principal,
+    @PostMapping("/removeRole/{userId}")
+    public String removeRole(@AuthenticationPrincipal AuthState principal,
+                                       @PathVariable("userId") int userId,
                                        @RequestParam(name="role") UserRole role,
-                                       @RequestParam(name="username") String username,
                                        Model model) {
-        return null;
+        UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
+        model.addAttribute("message", response.getMessage());
+        return "redirect:/userList";
+    }
+
+    @PostMapping("/addRole/{userId}")
+    public String addRole(@AuthenticationPrincipal AuthState principal,
+                                       @PathVariable("userId") int userId,
+                                       @RequestParam(name="role") UserRole role,
+                                       Model model) {
+        UserRoleChangeResponse response = userAccountClientService.removeRole(userId, role);
+        model.addAttribute("message", response.getMessage());
+        return "redirect:/userList";
     }
 
 }
