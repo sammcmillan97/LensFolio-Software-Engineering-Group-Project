@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <link rel="stylesheet" th:href="@{./styles/stylesheet.css}">
-    <link rel="stylesheet" th:href="@{./styles/profile.css}">
+    <link rel="stylesheet" th:href="@{/styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/styles/profile.css}">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
 
             <div class="profile_pic__row flex-column">
                 <img th:src="${user.profileImagePath}" style="z-index: 1;" class="profile-image" alt="profilePhoto">
-                <a th:href="@{./addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></a>
+                <a th:href="@{/addProfilePicture}"><img src="/cameraIcon.png"  style="z-index: 2;" class="icon" alt="cameraIcon"></a>
                 <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
             </div>
 
