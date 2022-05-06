@@ -127,17 +127,17 @@ public class UserListController {
     @PostMapping("/removeRole/{userId}")
     public String removeRole(@AuthenticationPrincipal AuthState principal,
                                        @PathVariable("userId") int userId,
-                                       @RequestParam(name="role") UserRole role,
+                                       @RequestParam(name="roleType") UserRole role,
                                        Model model) {
         UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
         model.addAttribute("message", response.getMessage());
         return "redirect:/userList";
     }
 
-    @PostMapping("/addRole/{userId}")
+    @GetMapping("/addRole/{userId}")
     public String addRole(@AuthenticationPrincipal AuthState principal,
                                        @PathVariable("userId") int userId,
-                                       @RequestParam(name="role") UserRole role,
+                                       @RequestParam(name="roleType") UserRole role,
                                        Model model) {
         UserRoleChangeResponse response = userAccountClientService.removeRole(userId, role);
         model.addAttribute("message", response.getMessage());

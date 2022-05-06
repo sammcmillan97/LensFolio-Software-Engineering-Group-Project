@@ -52,7 +52,7 @@
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
                     <td>
-                        <--ONLY SHOW AS LINK IF USER IS ADMIN-->
+                        <!--ONLY SHOW AS LINK IF USER IS ADMIN-->
                         <div th:each="role: ${listedUser.roleStrings}">
                             <div id="role-button">
                                 <a th:href="'/removeRole/' + ${listedUser.id} + '?roleType=' + ${role}" th:text="${role}"></a>
