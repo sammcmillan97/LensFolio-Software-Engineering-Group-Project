@@ -8,4 +8,3 @@ SPRING_PROFILES_ACTIVE=deploy java -jar staging-portfolio/libs/portfolio-0.0.1-S
     --grpc.client.identity-provider-grpc-server.enableKeepAlive=true \
     --grpc.client.identity-provider-grpc-server.keepAliveWithoutCalls=true \
     --grpc.client.identity-provider-grpc-server.negotiationType=plaintext
-env

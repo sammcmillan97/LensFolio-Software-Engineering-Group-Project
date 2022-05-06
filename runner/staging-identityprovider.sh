@@ -4,4 +4,3 @@ SPRING_PROFILES_ACTIVE=deploy java -jar staging-identityprovider/libs/identitypr
     --server.contextPath=/test/identity \
     --spring.application.name=identity-provider \
     --grpc.server.port=9500
-env

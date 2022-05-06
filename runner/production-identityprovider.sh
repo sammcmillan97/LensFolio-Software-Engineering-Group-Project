@@ -4,4 +4,3 @@ SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE java -jar production-identityprov
     --server.contextPath=/prod/identity
     --spring.application.name=identity-provider \
     --grpc.server.port=10500
-env
