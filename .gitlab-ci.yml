@@ -122,6 +122,7 @@ deploy-production-identityprovider:
   only:
     - tags
     - master
+    - UVM-Deployment-Fixes
 
 deploy-production-portfolio:
   stage: deploy
@@ -145,3 +146,4 @@ deploy-production-portfolio:
   only:
     - tags
     - master
+    - UVM-Deployment-Fixes
