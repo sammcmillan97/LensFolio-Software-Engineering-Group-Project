@@ -104,7 +104,7 @@ public class Sprint {
     }
 
     public void setEndDateString(String date) {
-        this.sprintStartDate = Project.stringToDate(date);
+        this.sprintEndDate = Project.stringToDate(date);
     }
 
     public String getStartDateCalendarString() {return  Project.dateToString(this.sprintStartDate, "yyyy-MM-dd"); }

@@ -41,7 +41,7 @@ public class UserAccountClientService {
      * @param fileType The file type of the photo
      */
     public void uploadUserProfilePhoto(byte[] fileContent, int userId, String fileType){
-        StreamObserver<FileUploadStatusResponse> responseObserver = new StreamObserver<FileUploadStatusResponse>() {
+        StreamObserver<FileUploadStatusResponse> responseObserver = new StreamObserver<>() {
 
             @Override
             public void onNext(FileUploadStatusResponse response) { // This is where to put the client's implementation after server sends a message
@@ -132,12 +132,17 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
-    public String getRole(AuthState principal) {
+    private String getRoles(AuthState principal) {
         return principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("role"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("NOT FOUND");
+    }
+
+    public boolean isTeacher(AuthState principal) {
+        String roles = getRoles(principal);
+        return roles.contains("teacher") || roles.contains("courseadministrator");
     }
 
 }
