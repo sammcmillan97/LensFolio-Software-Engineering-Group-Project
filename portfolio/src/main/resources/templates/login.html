@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link th:href="@{/styles/loginPage.css}" rel="stylesheet"/>
+    <link th:href="@{~/styles/loginPage.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
     <div class="wrapper">
         <div class="title"><span>Login</span></div>
         <p th:text="${loginMessage}" />
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{~/login}" method="post">
 <!--            <p th:if="${error}" class="error">Incorrect UserName & Password</p>-->
             <div class="row">
 
@@ -29,7 +29,7 @@
                 <input type="submit" value="Login">
             </div>
         </form>
-        <form th:action="@{/register}">
+        <form th:action="@{~/register}">
             <div class="row button">
                 <label>
                     <input type="submit" value="Register">
