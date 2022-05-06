@@ -47,3 +47,18 @@ tbody tr:last-of-type {
 }
 
 .sort-header a:hover {background-color: #FBAA60;}
+
+.addRoleButton {
+    font-size: small;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 2px;
+    padding-right: 4px; /* Needed to make the buttons look better, due to kerning issues with display: inline */
+    margin: 4px;
+    display: inline;
+}
+
+a {
+    color: black;
+}

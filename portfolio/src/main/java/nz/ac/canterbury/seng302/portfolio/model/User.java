@@ -29,6 +29,7 @@ public class User {
     private Collection<UserRole> roles;
     private Timestamp created;
     private String profileImagePath;
+    private int id;
 
     /**
      * Create a user based on a UserResponse from the identity provider.
@@ -47,6 +48,7 @@ public class User {
         roles = source.getRolesList();
         created = source.getCreated();
         profileImagePath = source.getProfileImagePath();
+        id = source.getId();
     }
 
     public String getUsername() {
@@ -98,6 +100,8 @@ public class User {
     public Collection<UserRole> getRoles() {
         return roles;
     }
+
+    public int getId(){return id;}
 
     /**
      * Gets roles in string form. Useful for display on the website.

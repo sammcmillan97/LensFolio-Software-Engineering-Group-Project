@@ -1,19 +1,24 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import nz.ac.canterbury.seng302.shared.identityprovider.DeleteUserProfilePhotoResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 
 @Controller
@@ -120,6 +125,14 @@ public class UserListController {
         goodSortTypes.add("rolesA");
         goodSortTypes.add("rolesD");
         return goodSortTypes.contains(sortType);
+    }
+
+    @PostMapping("/removeRole")
+    public String removeProfilePicture(@AuthenticationPrincipal AuthState principal,
+                                       @RequestParam(name="role") UserRole role,
+                                       @RequestParam(name="username") String username,
+                                       Model model) {
+        return null;
     }
 
 }

@@ -39,6 +39,10 @@
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'rolesA' ? 'rolesD' : 'rolesA')"
                        th:text="'Roles' + (${sortType} == 'rolesA' ? '&#9660;' : '') + (${sortType} == 'rolesD' ? '&#9650;' : '')"></a>
                 </th>
+                <th>
+                    <!-- Make this column only visible to TEACHER/COURSE_ADMINISTRATOR-->
+                    Add role
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -47,7 +51,26 @@
                     <td><span th:text="${listedUser.fullName}"> Name </span></td>
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
-                    <td><div th:each="role: ${listedUser.roleStrings}"><div id="role-button" th:text="${role}"> Role </div></div></td>
+                    <td>
+                        <div th:each="role: ${listedUser.roleStrings}">
+                            <div id="role-button">
+                                <a th:href="'/removeRole/' + ${listedUser.id} + '?roleType=' + ${role}" th:text="${role}"></a>
+                            </div>
+                        </div>
+                        <div id="user__userId" th:text="${listedUser.id}"></div>
+                    </td>
+                    <td>
+                        <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT-->
+                        <div class="addRoleButton">
+                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=STUDENT'">+ Student</a>
+                        </div>
+                        <div class="addRoleButton">
+                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=TEACHER'">+ Teacher</a>
+                        </div>
+                        <div class="addRoleButton">
+                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=COURSE_ADMINISTRATOR'">+ Course Administrator</a>
+                        </div>
+                    </td>
                 </tr>
             </div>
         </tbody>
