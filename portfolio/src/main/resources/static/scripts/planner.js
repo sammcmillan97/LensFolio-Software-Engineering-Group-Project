@@ -106,13 +106,16 @@ document.addEventListener('DOMContentLoaded', function() {
         //Listens to sprint drag/drop
         eventResize: function (eventDropInfo) {
             resizeSprint( eventDropInfo );
-        }
+        },
     });
-    
+
     addSprintsToCalendar();
     calendar.render();
     if (paginationDate) {
         calendar.gotoDate(paginationDate);
+        changeText('Changes Saved');
+    } else {
+        changeText('No Changes Made')
     }
 });
 
@@ -202,4 +205,29 @@ function resizeSprint( eventDropInfo ) {
     //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
     document.body.appendChild(form);
     form.submit();
+}
+
+function moveChoiceTo(elem_choice, direction) {
+
+    let span = elem_choice.parentNode,
+        td = span.parentNode;
+
+    if (direction === -1 && span.previousElementSibling) {
+        td.insertBefore(span, span.previousElementSibling);
+    } else if (direction === 1 && span.nextElementSibling) {
+        td.insertBefore(span, span.nextElementSibling.nextElementSibling)
+    }
+}
+
+function changeText(text) {
+    let con = document.createElement('div');
+    let h = document.createElement('h2');
+    con.classList.add('update');
+    h.classList.add('update-text');
+    h.innerText = text;
+    h.setAttribute('id', 'yeet')
+    con.appendChild(h);
+    let cal = document.getElementById('calendar');
+    cal.appendChild(con);
+    moveChoiceTo(document.getElementById('yeet'), -1)
 }
