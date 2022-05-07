@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Event
 @Table(name="EVENT")
-public class Event {
+public class Event implements ImportantDate{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int eventId;
@@ -14,6 +14,10 @@ public class Event {
     private int eventNumber;
     private Date eventStartDate;
     private Date eventEndDate;
+    @Transient
+    private String type;
+    @Transient
+    private String inside;
 
     public Event() {}
 
@@ -74,4 +78,19 @@ public class Event {
         this.eventEndDate = eventEndDate;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getInside() {
+        return inside;
+    }
+
+    public void setInside(String inside) {
+        this.inside = inside;
+    }
 }

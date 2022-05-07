@@ -87,7 +87,7 @@ html {
 
 /********************Sprints ********************/
 
-.sprint, #new-sprint-button {
+.sprint, .new-sprint-button, .new-event-button {
     display: block;
     position: relative;
 
@@ -138,9 +138,10 @@ html {
     margin: 0;
 }
 
-#new-sprint-button {
+.new-sprint-button, .new-event-button {
     padding: 0;
     height: 3rem;
+    width: 100%;
     line-height: 3rem;
 
     font-size: 1.5rem;
@@ -148,8 +149,19 @@ html {
     color: initial;
     text-align: center;
 }
+.new-sprint-button {
+    margin-right: 0.5rem;
+}
 
-.sprint__button-wrapper button:hover, #new-sprint-button:hover {
+.new-event-button {
+    margin-left: 0.5rem;
+}
+
+.sprint__button-wrapper button:hover, .new-sprint-button:hover, .new-event-button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
+}
+
+#new-buttons {
+    justify-content: space-evenly;
 }
