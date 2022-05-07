@@ -2,12 +2,11 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 @Entity // this is an entity, assumed to be in a table called Sprint
 @Table(name="SPRINT")
-public class Sprint {
+public class Sprint implements ImportantDate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -17,6 +16,10 @@ public class Sprint {
     private String sprintDescription;
     private Date sprintStartDate;
     private Date sprintEndDate;
+    @Transient
+    private Map<Event, Integer> eventsInside = new HashMap<>();
+    @Transient
+    private String type;
 
     public Sprint() {}
 
@@ -120,5 +123,21 @@ public class Sprint {
         tempEndDate.setTime(newEndDate);
         tempEndDate.add(Calendar.DATE, -1);
         this.sprintEndDate = tempEndDate.getTime();
+    }
+
+    public Map<Event, Integer> getEventsInside() {
+        return eventsInside;
+    }
+
+    public void addEventsInside(Event key, Integer inside) {
+        eventsInside.put(key, inside);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
