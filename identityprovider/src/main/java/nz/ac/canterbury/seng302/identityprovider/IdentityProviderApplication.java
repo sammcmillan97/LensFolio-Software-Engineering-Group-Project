@@ -27,6 +27,8 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     @Bean
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
+            if (repository.count() != 0)
+                return;
             // save a few users
             repository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "he/him", "jack@gmail.com", "password"));
             repository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", "she/her", "coco@gmail.com", "password"));
