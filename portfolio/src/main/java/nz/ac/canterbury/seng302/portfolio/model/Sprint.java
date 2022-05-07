@@ -114,4 +114,11 @@ public class Sprint {
         tempEndDate.setTime(this.getEndDate());
         tempEndDate.add(Calendar.DATE, 1);
         return  Project.dateToString(tempEndDate.getTime(), "yyyy-MM-dd"); }
+
+    public void setEndDateCalendar(Date newEndDate) {
+        Calendar tempEndDate = Calendar.getInstance();
+        tempEndDate.setTime(newEndDate);
+        tempEndDate.add(Calendar.DATE, -1);
+        this.sprintEndDate = tempEndDate.getTime();
+    }
 }
