@@ -59,7 +59,7 @@ public class ProfilePictureController {
 
         if (fileType == null) {
             model.addAttribute("errorMessage", "Please select a profile before saving changes");
-            return "/addProfilePicture";
+            return "addProfilePicture";
         }
 
         //get userId using the Authentication Principle
@@ -122,12 +122,12 @@ public class ProfilePictureController {
             String formattedDate = "Member Since: " + dateCreated + " (" + months + " months)";
             model.addAttribute("date", formattedDate);
             model.addAttribute("successMessage", "Your profile picture has been successfully been removed");
-            return "redirect:/profile";
+            return "redirect:profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("deleteMessage", "");
             model.addAttribute("deleteMessage", deleteUserProfilePhotoResponse.getMessage());
-            return "/addProfilePicture";
+            return "addProfilePicture";
         }
     }
 

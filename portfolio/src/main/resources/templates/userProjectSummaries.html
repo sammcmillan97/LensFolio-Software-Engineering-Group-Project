@@ -4,9 +4,9 @@
 <head>
     <title>Projects</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles/stylesheet.css}">
-    <link rel="stylesheet" th:href="@{/styles/projectSummaries.css}">
-    <script rel="script" th:src="@{/scripts/projectSummaries.js}"></script>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/projectSummaries.css}">
+    <script rel="script" th:src="@{scripts/projectSummaries.js}"></script>
 </head>
 
 <body>
@@ -50,10 +50,10 @@
 
                 <!-- view project and planner  buttons -->
                 <div class="project__button-wrapper flex-row">
-                    <form action="#" th:action="@{/projects/{id}(id=${project.getId})}" th:method="get">
+                    <form action="#" th:action="@{projects/{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">View</button>
                     </form>
-                    <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+                    <form action="#" th:action="@{planner/{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">Planner</button>
                     </form>
                 </div>

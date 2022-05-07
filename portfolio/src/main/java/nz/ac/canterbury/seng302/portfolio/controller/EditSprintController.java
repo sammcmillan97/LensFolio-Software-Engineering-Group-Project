@@ -185,7 +185,7 @@ public class EditSprintController {
                              Model model) throws Exception {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
-            return "redirect:/projects";
+            return "redirect:projects";
         }
 
         // Add user details to model
@@ -273,7 +273,7 @@ public class EditSprintController {
     ) {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
-            return "redirect:/projects";
+            return "redirect:projects";
         }
 
         // Ensure request parameters represent a valid sprint.
@@ -286,7 +286,7 @@ public class EditSprintController {
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
             //TODO Add logging for error
-            return "redirect:/projects";
+            return "redirect:projects";
         }
 
         // Get sprint number
@@ -303,13 +303,13 @@ public class EditSprintController {
             }
         } catch (Exception e) {
             //TODO Add logging for error
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure required fields are not null
         if (sprintName == null || sprintStartDate == null || sprintEndDate == null) {
             //TODO Add logging for error
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure sprint dates are within bounds
@@ -323,7 +323,7 @@ public class EditSprintController {
         minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Check sprint ends before project end and all following sprints
@@ -331,13 +331,13 @@ public class EditSprintController {
         maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure sprintEndDate occurs after sprintStartDate
         if (!sprintEndCal.after(sprintStartCal)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:projects/edit/" + projectId + "/" + sprintId;
         }
 
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
@@ -354,7 +354,7 @@ public class EditSprintController {
             sprintService.saveSprint(newSprint);
         }
 
-        return "redirect:/projects/" + projectIdString;
+        return "redirect:projects/" + projectIdString;
     }
 
     /**
@@ -370,13 +370,13 @@ public class EditSprintController {
                                     @PathVariable("sprintId") String sprintId) throws Exception {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
-            return "redirect:/projects";
+            return "redirect:projects";
         }
 
         int sprintNumber = sprintService.getSprintById(Integer.parseInt(sprintId)).getNumber();
         decrementSprintNumbersGreaterThan(Integer.parseInt(parentProjectId), sprintNumber);
         sprintService.deleteById(Integer.parseInt(sprintId));
-        return "redirect:/projects/" + parentProjectId;
+        return "redirect:projects/" + parentProjectId;
     }
 
 }
