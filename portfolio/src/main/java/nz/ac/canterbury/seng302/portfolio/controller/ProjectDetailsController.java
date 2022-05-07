@@ -1,9 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.ImportantDate;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.*;
 import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
@@ -35,6 +32,8 @@ public class ProjectDetailsController {
     @Autowired
     private EventService eventService;
     @Autowired
+    private EventRepository eventRepository;
+    @Autowired
     private UserAccountClientService userAccountClientService;
 
     /**
@@ -64,7 +63,8 @@ public class ProjectDetailsController {
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         model.addAttribute("sprints", sprintList);
 
-        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", 1, Date.valueOf("2022-05-18"), Date.valueOf("2022-05-22")));
+        eventRepository.deleteAll();
+        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", 1, Date.valueOf("2022-05-1"), Date.valueOf("2022-05-4")));
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "xmas", 2, Date.valueOf("2022-06-01"), Date.valueOf("2022-06-05")));
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-06-04"), Date.valueOf("2022-06-25")));
 
@@ -85,6 +85,8 @@ public class ProjectDetailsController {
                 } else if ((event.getEventEndDate().after(sprint.getStartDate()) || event.getEventEndDate().equals(sprint.getStartDate())) && (event.getEventEndDate().before(sprint.getEndDate()) || event.getEventEndDate().equals(sprint.getEndDate()))) {
                     sprint.addEventsInside(event, 2);
                     completed++;
+                } else if (event.getEventStartDate().before(sprint.getStartDate()) && event.getEventEndDate().after(sprint.getEndDate())) {
+                    sprint.addEventsInside(event, 3);
                 }
 
             }
@@ -92,7 +94,9 @@ public class ProjectDetailsController {
                 removeList.add(event);
             }
         }
-        eventList.remove(removeList);
+        for (Event event: removeList) {
+            eventList.remove(event);
+        }
 
         int sprintCounter = 0;
         int eventCounter = 0;

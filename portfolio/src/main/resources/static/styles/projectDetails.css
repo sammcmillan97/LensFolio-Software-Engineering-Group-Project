@@ -25,7 +25,7 @@ html {
 
 /******************** Project Details ********************/
 
-#project, .project__button-wrapper button, .sprint__button-wrapper button {
+#project, .project__button-wrapper button, .sprint__button-wrapper button, .event__button-wrapper button {
     position: relative;
 
     padding-top: 0;
@@ -87,7 +87,7 @@ html {
 
 /********************Sprints ********************/
 
-.sprint, .new-sprint-button, .new-event-button {
+.sprint, .event, .new-sprint-button, .new-event-button {
     display: block;
     position: relative;
 
@@ -98,24 +98,24 @@ html {
     margin-top: 1rem;
 }
 
-.sprint:last-child {
+.sprint:last-child, .event:last-child {
     border-bottom: 1px solid var(--color-accent);
 }
 
-.sprint__name {
+.sprint__name, .event__name {
     margin: 0 10rem 0 0;
     padding: 0;
     height: 5rem;
     line-height: 5rem;
 }
 
-.sprint__button-wrapper {
+.sprint__button-wrapper, .event__button-wrapper {
     position: absolute;
     top: 1rem;
     right: 0;
 }
 
-.sprint__button-wrapper button {
+.sprint__button-wrapper button, .event__button-wrapper button {
     /* Position & Size */
     margin-right: 1rem;
     padding: 0;
@@ -129,12 +129,12 @@ html {
 }
 
 
-.sprint .sprint__details {
+.sprint .sprint__details, .event, .event__details {
     border-top: 1px solid var(--color-accent);
     padding-top: 1rem;
 }
 
-.sprint__date {
+.sprint__date, .event__start-date, .event__end-date {
     margin: 0;
 }
 
@@ -157,7 +157,7 @@ html {
     margin-left: 0.5rem;
 }
 
-.sprint__button-wrapper button:hover, .new-sprint-button:hover, .new-event-button:hover {
+.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint-button:hover, .new-event-button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
