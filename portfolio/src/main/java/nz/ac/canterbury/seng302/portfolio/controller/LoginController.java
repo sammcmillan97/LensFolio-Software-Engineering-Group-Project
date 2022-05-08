@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.authentication.CookieUtil;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ public class LoginController {
     @Autowired
     private AuthenticateClientService authenticateClientService;
 
+    @Value("${WEB_CONTEXT}")
+    private String WEB_CONTEXT;
+
     /**
      * Gets the mapping to the login page html and renders it
      * @param response Login response
@@ -36,7 +40,7 @@ public class LoginController {
                 response,
                 "lens-session-token"
         );
-        return "/login";
+        return WEB_CONTEXT + "/login";
     }
 
     @RequestMapping("/")
@@ -45,7 +49,7 @@ public class LoginController {
                 response,
                 "lens-session-token"
         );
-        return "/login";
+        return WEB_CONTEXT + "/login";
     }
 
     /**
@@ -79,7 +83,7 @@ public class LoginController {
             loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
         } catch (StatusRuntimeException e){
             model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-            return "/login";
+            return WEB_CONTEXT + "/login";
         }
         if (loginReply.getSuccess()) {
             var domain = request.getHeader("host");
@@ -91,10 +95,10 @@ public class LoginController {
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
-            return "redirect:/profile";
+            return "redirect:" + WEB_CONTEXT + "/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());
-            return "/login";
+            return WEB_CONTEXT + "/login";
         }
     }
 
