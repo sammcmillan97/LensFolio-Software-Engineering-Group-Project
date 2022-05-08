@@ -111,9 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addSprintsToCalendar();
     calendar.render();
+    let today = new Date();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     if (paginationDate) {
         calendar.gotoDate(paginationDate);
-        changeText('Changes Saved');
+        changeText('Changes Saved (last change made - ' + time + ')');
     } else {
         changeText('No Changes Made')
     }
@@ -225,9 +227,9 @@ function changeText(text) {
     con.classList.add('update');
     h.classList.add('update-text');
     h.innerText = text;
-    h.setAttribute('id', 'yeet')
+    h.setAttribute('id', 'text-change')
     con.appendChild(h);
     let cal = document.getElementById('calendar');
     cal.appendChild(con);
-    moveChoiceTo(document.getElementById('yeet'), -1)
+    moveChoiceTo(document.getElementById('text-change'), -1)
 }
