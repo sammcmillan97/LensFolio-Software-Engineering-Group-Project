@@ -41,9 +41,8 @@
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
                        th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
-                <!-- Make this column only visible to TEACHER/COURSE_ADMINISTRATOR-->
                 <th th:if="${isAdmin}">
-                    Add role
+                    <div>Add role</div>
                 </th>
             </tr>
         </thead>

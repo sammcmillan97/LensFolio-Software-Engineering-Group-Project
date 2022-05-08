@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 
 @Controller
@@ -95,7 +90,13 @@ public class UserListController {
         if (pageInt > maxPage) {
             return "redirect:/userList/" + maxPage + sortingSuffix(sortType, isAscending);
         }
-        model.addAttribute("isAdmin", false);
+       // Below code is just begging to be added as a method somewhere...
+       String role = principal.getClaimsList().stream()
+               .filter(claim -> claim.getType().equals("role"))
+               .findFirst()
+               .map(ClaimDTO::getValue)
+               .orElse("NOT FOUND");
+        model.addAttribute("isAdmin", role.contains("teacher") || role.contains("courseadministrator"));
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);
@@ -177,7 +178,6 @@ public class UserListController {
                                         @RequestParam(name="roleType") UserRole role,
                                         @RequestParam(name="url") String url,
                                         Model model) {
-        System.out.println(role.getDescriptorForType());
         UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
         model.addAttribute("message", response.getMessage());
         return "redirect:" + url;
