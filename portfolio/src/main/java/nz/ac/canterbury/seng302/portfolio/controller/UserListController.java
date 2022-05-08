@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 @Controller
 public class UserListController {
@@ -164,9 +165,19 @@ public class UserListController {
     @PostMapping("/removeRole")
     public String removeRole(
                                         @RequestParam(name="userId") int userId,
-                                        @RequestParam(name="roleType") UserRole role,
+                                        @RequestParam(name="roleType") String roleString,
                                         @RequestParam(name="url") String url,
                                         Model model) {
+        UserRole role;
+        if (Objects.equals(roleString, "STUDENT")) {
+            role = UserRole.STUDENT;
+        } else if (Objects.equals(roleString, "TEACHER")) {
+            role = UserRole.TEACHER;
+        } else if (Objects.equals(roleString, "COURSE ADMINISTRATOR")) {
+            role = UserRole.COURSE_ADMINISTRATOR;
+        } else {
+            role = UserRole.UNRECOGNIZED;
+        }
         UserRoleChangeResponse response = userAccountClientService.removeRole(userId, role);
         model.addAttribute("message", response.getMessage());
         return "redirect:" + url;
@@ -181,6 +192,7 @@ public class UserListController {
         UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
         model.addAttribute("message", response.getMessage());
         return "redirect:" + url;
+
     }
 
 }

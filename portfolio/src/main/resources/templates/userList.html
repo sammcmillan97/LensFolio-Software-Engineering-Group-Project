@@ -56,7 +56,13 @@
                         <!--ONLY SHOW AS LINK IF USER IS ADMIN-->
                         <div th:each="role: ${listedUser.roleStrings}">
                             <div id="role-button">
-                                <a th:href="'/removeRole/' + ${listedUser.id} + '?roleType=' + ${role}" th:text="${role}"></a>
+                                <div th:text="${role}"></div>
+                                <form th:if="${isAdmin}" th:action="@{/removeRole}"  method="post">
+                                    <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
+                                    <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                                    <input type="hidden" th:name="roleType"  th:value="${#strings.toUpperCase(role)}" />
+                                    <button class="button" type="submit"> X </button>
+                                </form>
                             </div>
                         </div>
                     </td>
