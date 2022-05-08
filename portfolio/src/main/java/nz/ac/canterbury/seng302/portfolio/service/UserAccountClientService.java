@@ -166,6 +166,7 @@ public class UserAccountClientService {
      * @return response
      */
     public UserRoleChangeResponse addRole(int userId, UserRole role) {
+        System.out.println("User Account Client Service: Add role, method called");
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(userId)
                 .setRole(role)

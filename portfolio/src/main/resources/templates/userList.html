@@ -62,15 +62,27 @@
                     </td>
                     <td>
                         <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT??-->
-                        <div class="addRoleButton">
-                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=STUDENT'">+ Student</a>
-                        </div>
-                        <div class="addRoleButton">
-                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=TEACHER'">+ Teacher</a>
-                        </div>
-                        <div class="addRoleButton">
-                            <a th:href="'/addRole/' + ${listedUser.id} + '?roleType=COURSE_ADMINISTRATOR'">+ Course Administrator</a>
-                        </div>
+                        <form th:action="@{/addRole}"  method="post">
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
+                            <input type="hidden" th:name="roleType"  th:value="STUDENT" /><br>
+                            <button class="button" type="submit">
+                                + Student
+                            </button>
+                        </form>
+                        <form th:action="@{/addRole}"  method="post">
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
+                            <input type="hidden" th:name="roleType"  th:value="TEACHER" /><br>
+                            <button class="button" type="submit">
+                                + Teacher
+                            </button>
+                        </form>
+                        <form th:action="@{/addRole}"  method="post">
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
+                            <input type="hidden" th:name="roleType"  th:value="COURSE_ADMINISTRATOR" /><br>
+                            <button class="button" type="submit">
+                                + Course Administrator
+                            </button>
+                        </form>
                     </td>
                 </tr>
             </div>

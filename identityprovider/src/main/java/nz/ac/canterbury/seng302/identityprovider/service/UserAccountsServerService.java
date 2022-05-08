@@ -830,9 +830,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @Override
     public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        System.out.println("User Account Server Service: Add role to user, method called");
         UserRoleChangeResponse reply;
-        if (isAdmin(getAuthStateUserId())) {
+        if (isAuthenticated() && isAdmin(getAuthStateUserId())) {
             reply = addRoleToUserHandler(request);
+            System.out.println("User Account Server Service: reply built");
         } else {
             reply = UserRoleChangeResponse.newBuilder()
                     .setIsSuccess(false)
@@ -851,6 +853,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @VisibleForTesting
     UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
+        System.out.println("User Account Server Service: Add role to user handler, method called");
         UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
 
         int userId = request.getUserId();
@@ -927,16 +930,16 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return true if is admin, else false
      */
     private boolean isAdmin(int userId) {
+        System.out.println("User Account Server Service: isAdmin, method called");
         boolean hasAdminRole = false;
         User user = repository.findByUserId(userId);
         Set<UserRole> roles;
         roles = user.getRoles();
         Iterator<UserRole> rolesIterator = roles.iterator();
-        while (rolesIterator.hasNext()){
-            if (rolesIterator.next()==TEACHER || rolesIterator.next()==COURSE_ADMINISTRATOR){
-                hasAdminRole = true;
-            }
+        if (roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR)){
+            hasAdminRole = true;
         }
+        System.out.println(hasAdminRole);
         return hasAdminRole;
     }
 
@@ -945,12 +948,19 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return
      */
     private int getAuthStateUserId() {
-        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
-        String authenticatedId = authState.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("NOT FOUND");
+        System.out.println("User Account Server Service: getAuthStateUserId, method called");
+        String authenticatedId = null;
+        try {
+            AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+            authenticatedId = authState.getClaimsList().stream()
+                    .filter(claim -> claim.getType().equals("nameid"))
+                    .findFirst()
+                    .map(ClaimDTO::getValue)
+                    .orElse("NOT FOUND");
+        } catch (Exception e) {
+            System.out.println("GetAuthStateUserId error: " + e);
+        }
+
         return Integer.parseInt(authenticatedId);
     }
 
