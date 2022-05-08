@@ -164,7 +164,7 @@ public class EditProjectController {
     ) {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
-            return "redirect:projects";
+            return "redirect:/projects";
         }
 
         // Ensure request parameters represent a valid project
@@ -174,13 +174,13 @@ public class EditProjectController {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
             //TODO Add logging for error
-            return "redirect:projects";
+            return "redirect:/projects";
         }
 
         // Check required fields are not null
         if (projectName == null || projectEndDate == null || projectStartDate == null) {
             //TODO Add logging for error
-            return "redirect:projects/edit/" + projectId;
+            return "redirect:/projects/edit/" + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -192,7 +192,7 @@ public class EditProjectController {
 
         if (projectStartCal.before(yearAgoCal)) {
             // TODO Add logging for error.
-            return "redirect:projects/edit/" + projectId;
+            return "redirect:/projects/edit/" + projectId;
         }
 
         // Ensure projectEndDate occurs after projectStartDate
@@ -200,7 +200,7 @@ public class EditProjectController {
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
             // TODO Add logging for error.
-            return "redirect:projects/edit/" + projectId;
+            return "redirect:/projects/edit/" + projectId;
         }
 
         // If editing existing project
@@ -216,7 +216,7 @@ public class EditProjectController {
 
             } catch(Exception ignored) {
                 //TODO Add logging for error.
-                return "redirect:projects/edit/" + projectId;
+                return "redirect:/projects/edit/" + projectId;
             }
 
         // Otherwise, create a new project with given values
@@ -225,7 +225,7 @@ public class EditProjectController {
             savedProject = projectService.saveProject(newProject);
         }
 
-        return "redirect:projects/" + savedProject.getId();
+        return "redirect:/projects/" + savedProject.getId();
     }
 
     /**
@@ -238,7 +238,7 @@ public class EditProjectController {
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
-            return "redirect:projects";
+            return "redirect:/projects";
         }
 
         int id = Integer.parseInt(projectId);
@@ -247,7 +247,7 @@ public class EditProjectController {
         } catch (Exception e) {
             //TODO log error.
         }
-        return "redirect:projects";
+        return "redirect:/projects";
     }
 
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
-    <link rel="stylesheet" th:href="@{styles/editUser.css}">
+    <link rel="stylesheet" th:href="@{/styles/editUser.css}">
 
 </head>
 <body>
@@ -14,7 +14,7 @@
             <div class="container">
 
              <!-- form puts the params to the register controller-->
-            <form th:action="@{editUser}" method="post">
+            <form th:action="@{/editUser}" method="post">
 
                 <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
                 <div>

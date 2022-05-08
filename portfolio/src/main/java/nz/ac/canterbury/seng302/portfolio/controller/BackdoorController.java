@@ -73,7 +73,7 @@ public class BackdoorController {
         sprintService.saveSprint(sprint3);
         sprintService.saveSprint(sprint4);
 
-        return "redirect:projects";
+        return "redirect:/projects";
 
     }
 }

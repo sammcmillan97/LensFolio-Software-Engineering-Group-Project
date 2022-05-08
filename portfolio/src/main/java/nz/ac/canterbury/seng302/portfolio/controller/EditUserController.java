@@ -107,7 +107,7 @@ public class EditUserController {
 
         //if edit user was successful
         if (editUserResponse.getIsSuccess()){
-            return "redirect:profile";
+            return "redirect:/profile";
         } else {
             //if edit user was unsuccessful
             model.addAttribute("editMessage", "");
@@ -117,7 +117,7 @@ public class EditUserController {
                 editMessage.append(error.getErrorText());
             }
             model.addAttribute("editMessage", editMessage);
-            return "editUser";
+            return "/editUser";
         }
     }
 }
