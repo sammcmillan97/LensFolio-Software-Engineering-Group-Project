@@ -104,96 +104,23 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         for(User user: users) {
             userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
         }
-        //Removes A or D off the end of the requested orderBy string e.g. "nameA" or "rolesD"
-        //A: ascending list order and D: descending list order
-        String order = request.getOrderBy().substring(0, request.getOrderBy().length() - 1);
         //Sorting the list based on the requested order string
-        Comparator<UserResponse> comparator = switch (order) {
-            case ("name") -> new Comparator<UserResponse>() {
-                @Override
-                //Compare method for ordering by name
-                public int compare(UserResponse o1, UserResponse o2) {
-                    String o1FullName;
-                    if (!Objects.equals(o1.getMiddleName(), "")) {
-                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
-                    } else {
-                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
-                    }
-                    String o2FullName;
-                    if (!Objects.equals(o2.getMiddleName(), "")) {
-                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
-                    } else {
-                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
-                    }
-                    return o1FullName.compareTo(o2FullName);
-                }
-            };
-            case ("username") -> new Comparator<UserResponse>() {
-                @Override
-                // Compare method for ordering by username
-                public int compare(UserResponse o1, UserResponse o2) {
-                    return o1.getUsername().compareTo(o2.getUsername());
-                }
-            };
-            case ("alias") -> new Comparator<UserResponse>() {
-                @Override
-                //compare method for ordering by alias
-                public int compare(UserResponse o1, UserResponse o2) {
-                    return o1.getNickname().compareTo(o2.getNickname());
-                }
-            };
-            case ("roles") -> new Comparator<UserResponse>() {
-                @Override
-                //Compare method for ordering by roles
-                //Converts each role into a point system so Course_admin > teacher + student > teacher > student
-                public int compare(UserResponse o1, UserResponse o2) {
-                    int o1RolePoints = 0;
-                    Integer o2RolePoints = 0;
-                    if (o1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
-                        o1RolePoints += 4;
-                    }
-                    if (o1.getRolesList().contains(UserRole.TEACHER)) {
-                        o1RolePoints += 2;
-                    }
-                    if (o1.getRolesList().contains(UserRole.STUDENT)) {
-                        o1RolePoints += 1;
-                    }
-                    if (o2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
-                        o2RolePoints += 4;
-                    }
-                    if (o2.getRolesList().contains(UserRole.TEACHER)) {
-                        o2RolePoints += 2;
-                    }
-                    if (o2.getRolesList().contains(UserRole.STUDENT)) {
-                        o2RolePoints += 1;
-                    }
-                    return o2RolePoints.compareTo(o1RolePoints);
-                }
-            };
-            default -> new Comparator<>() {
-                @Override
-                //Default compare method uses sort by name
-                public int compare(UserResponse o1, UserResponse o2) {
-                    String o1FullName;
-                    if (!Objects.equals(o1.getMiddleName(), "")) {
-                        o1FullName = o1.getFirstName() + " " + o1.getMiddleName() + " " + o1.getLastName();
-                    } else {
-                        o1FullName = o1.getFirstName() + " " + o1.getLastName();
-                    }
-                    String o2FullName;
-                    if (!Objects.equals(o2.getMiddleName(), "")) {
-                        o2FullName = o2.getFirstName() + " " + o2.getMiddleName() + " " + o2.getLastName();
-                    } else {
-                        o2FullName = o2.getFirstName() + " " + o2.getLastName();
-                    }
-                    return o1FullName.compareTo(o2FullName);
-                }
-            };
+        Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
+            case ("name") -> //Compare method for ordering by name
+                    this::paginatedUsersNameSort;
+            case ("username") -> // Compare method for ordering by username
+                    Comparator.comparing(UserResponse::getUsername);
+            case ("alias") -> //compare method for ordering by alias
+                    Comparator.comparing(UserResponse::getNickname);
+            case ("roles") -> //Compare method for ordering by roles
+                    this::paginatedUsersRolesSort;
+            default -> //Default compare method uses sort by name
+                    this::paginatedUsersNameSort;
         };
         //Calls the sort method
         userResponseList.sort(comparator);
-        //If orderBy string ends with D reverse order so list is descending
-        if(request.getOrderBy().endsWith("D")) {
+        //If request is descending need to reverse
+        if(!request.getIsAscendingOrder()) {
             Collections.reverse(userResponseList);
         }
         //Paginates the data
@@ -209,6 +136,59 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         //Add size of original list for pagination purposes
         reply.setResultSetSize(userResponseList.size());
         return reply.build();
+    }
+
+    /**
+     * Sorts two users by their full name.
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which full name is greater, or 0 if they are the same.
+     */
+    int paginatedUsersNameSort(UserResponse user1, UserResponse user2) {
+        String user1FullName;
+        if (!Objects.equals(user1.getMiddleName(), "")) {
+            user1FullName = user1.getFirstName() + " " + user1.getMiddleName() + " " + user1.getLastName();
+        } else {
+            user1FullName = user1.getFirstName() + " " + user1.getLastName();
+        }
+        String user2FullName;
+        if (!Objects.equals(user2.getMiddleName(), "")) {
+            user2FullName = user2.getFirstName() + " " + user2.getMiddleName() + " " + user2.getLastName();
+        } else {
+            user2FullName = user2.getFirstName() + " " + user2.getLastName();
+        }
+        return user1FullName.compareTo(user2FullName);
+    }
+
+    /**
+     * Sorts two users by their roles. Roles are sorted by a points system, for example:
+     * Course admin > teacher + student > teacher > student
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which roles are greater, or 0 if they are the same.
+     */
+    int paginatedUsersRolesSort(UserResponse user1, UserResponse user2) {
+        int user1RolePoints = 0;
+        Integer user2RolePoints = 0;
+        if (user1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user1RolePoints += 4;
+        }
+        if (user1.getRolesList().contains(UserRole.TEACHER)) {
+            user1RolePoints += 2;
+        }
+        if (user1.getRolesList().contains(UserRole.STUDENT)) {
+            user1RolePoints += 1;
+        }
+        if (user2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user2RolePoints += 4;
+        }
+        if (user2.getRolesList().contains(UserRole.TEACHER)) {
+            user2RolePoints += 2;
+        }
+        if (user2.getRolesList().contains(UserRole.STUDENT)) {
+            user2RolePoints += 1;
+        }
+        return user2RolePoints.compareTo(user1RolePoints);
     }
 
     /**

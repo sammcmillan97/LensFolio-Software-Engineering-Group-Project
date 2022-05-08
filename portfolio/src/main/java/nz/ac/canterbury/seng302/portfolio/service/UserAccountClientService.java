@@ -42,11 +42,12 @@ public class UserAccountClientService {
      * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles" Ends with "A" or "D" for descending or Ascending
      * @return A list of paginated, sorted and ordered user responses
      */
-    public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy) {
+    public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy, boolean isAscending) {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(offset)
                 .setLimit(limit)
                 .setOrderBy(orderBy)
+                .setIsAscendingOrder(isAscending)
                 .build();
         PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
         return new UserListResponse(response);

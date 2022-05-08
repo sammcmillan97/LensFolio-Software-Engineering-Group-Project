@@ -21,8 +21,8 @@ public class PortfolioUserService {
         if(user != null) {
             return user;
         } else {
-            // Ascending by name (nameA) is the default user list sort type
-            PortfolioUser newUser = new PortfolioUser(id, "nameA");
+            // Ascending by name is the default user list sort
+            PortfolioUser newUser = new PortfolioUser(id, "name", true);
             repository.save(newUser);
             return newUser;
         }
@@ -48,6 +48,29 @@ public class PortfolioUserService {
     public void setUserListSortType(int id, String userListSortType) {
         PortfolioUser user = getUserById(id);
         user.setUserListSortType(userListSortType);
+        repository.save(user);
+    }
+
+    /**
+     * Gets whether a user's user list sort is ascending. This is for the user list page.
+     * Creates a default user with that id if none exists.
+     * @param id The user's id from the identity provider
+     * @return Whether a user's user list sort is ascending
+     */
+    public boolean isUserListSortAscending(int id) {
+        PortfolioUser user = getUserById(id);
+        return user.isUserListSortAscending();
+    }
+
+    /**
+     * Sets whether a user's user list sort is ascending. This is for the user list page.
+     * Creates a default user with that id if none exists.
+     * @param id The user's id from the identity provider
+     * @param userListSortIsAscending Whether a user's user list sort should be ascending
+     */
+    public void setUserListSortAscending(int id, boolean userListSortIsAscending) {
+        PortfolioUser user = getUserById(id);
+        user.setUserListSortAscending(userListSortIsAscending);
         repository.save(user);
     }
 
