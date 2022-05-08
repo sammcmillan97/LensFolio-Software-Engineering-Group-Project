@@ -16,7 +16,9 @@
         let projectEndDate = [[${project.getEndDateCalendarString}]]
         let dayAfterProjectEndDate = [[${project.getDayAfterEndDateCalendarString}]]
         let projectName = [[${project.getName}]]
+        let projectId = [[${project.getId}]]
         let sprints = [];
+        let paginationDate = [[${recentUpdate}]];
         let sprintEventColours = ["#d4b9f0", "#a7e2f5"]
     </script>
 
@@ -50,6 +52,7 @@
             <header class="project__header flex-column">
                 <h1 id="project__name" th:text="${project.getName}"></h1>
                 <h2 id="project__date" th:text="|${project.getStartDateString} - ${project.getEndDateString}|"></h2>
+                <p id="user__rolesList" th:text="${user.getRolesList()}"></p>
             </header>
 
             <div id="calendar__container">

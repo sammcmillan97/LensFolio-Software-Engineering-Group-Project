@@ -3,6 +3,46 @@ let calendarEl;
 let calendar;
 
 /**
+ * Helper function to convert string of roles to a list
+ * @param rolesListText
+ * @returns {*[]}
+ */
+function convertTextToList(rolesListText) {
+    let roles = [];
+    let role = '';
+    const arrayLength = rolesListText.length;
+    for (let i = 1; i < arrayLength; i++) {
+        if (rolesListText[i] === ',' || rolesListText[i] === ']'){
+            roles.push(role);
+            role = '';
+        } else if (rolesListText[i] === ' '){
+            //do nothing
+        } else {
+            role += rolesListText[i];
+        }
+    }
+    return roles;
+}
+
+/**
+ * Helper function to determine whether a user roles list contains admin or teacher
+ * @returns {boolean}
+ */
+function isAdmin() {
+    let isTeacherOrAdmin = false;
+    let rolesListText = document.getElementById("user__rolesList").textContent;
+    document.getElementById("user__rolesList").hidden = true;
+    let rolesList = convertTextToList(rolesListText);
+    const arrayLength = rolesList.length;
+    for (let i = 0; i < arrayLength; i++) {
+        if (rolesList[i] === "TEACHER" || rolesList[i] === "ADMIN") {
+            isTeacherOrAdmin = true;
+        }
+    }
+    return isTeacherOrAdmin;
+}
+
+/**
  * Adds an event listener to the page loading to create the calendar and set it to the project dates
  */
 document.addEventListener('DOMContentLoaded', function() {
@@ -42,10 +82,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
         ],
         initialView: 'dayGridMonth',
-        initialDate: projectStartDate
+        initialDate: projectStartDate,
+        //true when user is TEACHER or ADMIN
+        editable: (isAdmin()),
+        //disallow dragging entire event
+        eventStartEditable: false,
+        //allow resizing of start/end date
+        eventResizableFromStart: true,
+        eventResizableFromEnd: true,
+
+        //Listens to sprint drag/drop
+        eventResize: function( eventDropInfo ) {
+            //Create form to post data from calendar
+            let form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
+
+            //Add inputs to form
+            let startInput = document.createElement('input');
+            startInput.setAttribute('type', 'hidden');
+            startInput.setAttribute('name', 'startDate');
+            startInput.setAttribute('value', `${eventDropInfo.event.start}`);
+            form.appendChild(startInput);
+            let endInput = document.createElement('input');
+            endInput.setAttribute('type', 'hidden');
+            endInput.setAttribute('name', 'endDate');
+            endInput.setAttribute('value', `${eventDropInfo.event.end}`);
+            form.appendChild(endInput);
+
+            if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
+                form.appendChild(pagDate);
+            } else {
+                let pagDate = document.createElement('input');
+                pagDate.setAttribute('type', 'hidden');
+                pagDate.setAttribute('name', 'paginationDate');
+                pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
+                form.appendChild(pagDate);
+            }
+
+
+            //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
     addSprintsToCalendar();
     calendar.render();
+    if (paginationDate) {
+        calendar.gotoDate(paginationDate);
+    }
 });
 
 /**
@@ -97,3 +186,4 @@ function addSprintsToCalendar() {
         calendar.addEvent(sprint);
     }
 }
+

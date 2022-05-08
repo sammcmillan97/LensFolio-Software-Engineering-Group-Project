@@ -61,4 +61,50 @@ public class SprintService {
     public void deleteById(int sprintId) {
         repository.deleteById(sprintId);
     }
+
+    public void updateStartDate(int sprintId, Date newDate) throws Exception {
+        Sprint sprintToChange = getSprintById(sprintId);
+        Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
+        Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
+        List<Sprint> sprints = getByParentProjectId(sprintToChange.getParentProjectId());
+        sprints.sort(Comparator.comparing(Sprint::getNumber));
+
+        for (Sprint sprint :sprints) {
+            if ((sprint.getNumber() < sprintToChange.getNumber()) && (newDate.compareTo(sprint.getEndDate()) <= 0)) {
+                throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
+            }
+        }
+
+        if (newDate.compareTo(sprintToChange.getEndDate()) > 0) {
+            throw new UnsupportedOperationException("Sprint start date must not be after end date");
+        } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
+            throw new UnsupportedOperationException(("Sprint start date must be within project dates"));
+        } else {
+            sprintToChange.setStartDate(newDate);
+            saveSprint(sprintToChange);
+        }
+    }
+
+    public void updateEndDate(int sprintId, Date newDate) throws Exception {
+        Sprint sprintToChange = getSprintById(sprintId);
+        Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
+        Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
+        List<Sprint> sprints = getByParentProjectId(sprintToChange.getParentProjectId());
+        sprints.sort(Comparator.comparing(Sprint::getNumber));
+
+        for (Sprint sprint :sprints) {
+            if ((sprint.getNumber() > sprintToChange.getNumber()) && (newDate.compareTo(sprint.getStartDate()) >= 0)) {
+                throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
+            }
+        }
+
+        if (newDate.compareTo(sprintToChange.getStartDate()) < 0) {
+            throw new UnsupportedOperationException("Sprint end date must not be before start date");
+        } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
+            throw new UnsupportedOperationException(("Sprint end date must be within project dates"));
+        } else {
+            sprintToChange.setEndDate(newDate);
+            saveSprint(sprintToChange);
+        }
+    }
 }
