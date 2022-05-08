@@ -26,8 +26,8 @@ public class LoginController {
     @Autowired
     private AuthenticateClientService authenticateClientService;
 
-    @Value("${WEB_CONTEXT}")
-    private String WEB_CONTEXT;
+//    @Value("${WEB_CONTEXT}" != "" ? "${WEB_CONTEXT}" : "")
+    private String WEB_CONTEXT = "/test/portfolio";
 
     /**
      * Gets the mapping to the login page html and renders it
