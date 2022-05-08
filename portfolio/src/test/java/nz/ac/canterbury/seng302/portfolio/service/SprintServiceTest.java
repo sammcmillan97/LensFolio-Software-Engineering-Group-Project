@@ -318,7 +318,7 @@ class SprintServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    //When  sprint exists and its start date is changed to the start date of another sprint, test and exception is
+    //When sprint exists and its start date is changed to the start date of another sprint, test and exception is
     //Thrown. Edge case.
     @Test
     void whenSprintStartDateChangedToEarlierDateAndIsStartDateOfAnotherSprint_testExceptionThrown() {
