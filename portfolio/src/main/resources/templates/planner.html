@@ -4,9 +4,9 @@
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
     <link rel="stylesheet" href="/styles/planner.css">
     <link rel="stylesheet" href="/styles/projectDetails.css"/>
-    <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
 
     <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
 
@@ -26,6 +26,7 @@
     <script type="text/javascript" th:inline="javascript" th:each="sprint, iterInfo: ${sprints}">
         sprint = {id: [[${sprint.getId}]],
             title: [[${sprint.getLabel}]],
+            eventType: 'Sprint',
             start: [[${sprint.getStartDateCalendarString}]],
             end: [[${sprint.getDayAfterEndDateCalendarString}]],
             // Set colour of the sprint. Repeats colours in the list specified above
