@@ -36,7 +36,7 @@ public class LoginController {
                 response,
                 "lens-session-token"
         );
-        return "/login";
+        return "login";
     }
 
     @RequestMapping("/")
@@ -45,7 +45,7 @@ public class LoginController {
                 response,
                 "lens-session-token"
         );
-        return "/login";
+        return "login";
     }
 
     /**
@@ -79,7 +79,7 @@ public class LoginController {
             loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
         } catch (StatusRuntimeException e){
             model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-            return "/login";
+            return "login";
         }
         if (loginReply.getSuccess()) {
             var domain = request.getHeader("host");
@@ -94,7 +94,7 @@ public class LoginController {
             return "redirect:/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());
-            return "/login";
+            return "login";
         }
     }
 
