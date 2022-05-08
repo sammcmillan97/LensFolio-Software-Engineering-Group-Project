@@ -5,6 +5,7 @@
     <title>List of Users</title>
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/userList.css">
+    <script rel="script" src="/scripts/userList.js"></script>
 </head>
 <body>
 <!-- Import the application's header bar. -->
@@ -13,6 +14,7 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 <!-- Page content -->
 <div id="page-content" class="constrict">
+    <p id="user__rolesList" th:text="${user.getRoles()}"></p>
     <div class="pagination">
         <a th:href="'/userList/' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
         <a th:href="'/userList/' + ${previousPage} + ${sortingSuffix}">&lt;</a>
@@ -40,7 +42,7 @@
                        th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
                 <!-- Make this column only visible to TEACHER/COURSE_ADMINISTRATOR-->
-                <th>
+                <th th:if="${isAdmin}">
                     Add role
                 </th>
             </tr>
@@ -58,27 +60,29 @@
                                 <a th:href="'/removeRole/' + ${listedUser.id} + '?roleType=' + ${role}" th:text="${role}"></a>
                             </div>
                         </div>
-                        <div id="user__userId" th:text="${listedUser.id}"></div>
                     </td>
-                    <td>
+                    <td th:if="${isAdmin}">
                         <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT??-->
                         <form th:action="@{/addRole}"  method="post">
-                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
-                            <input type="hidden" th:name="roleType"  th:value="STUDENT" /><br>
+                            <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                            <input type="hidden" th:name="roleType"  th:value="STUDENT" />
                             <button class="button" type="submit">
                                 + Student
                             </button>
                         </form>
                         <form th:action="@{/addRole}"  method="post">
-                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
-                            <input type="hidden" th:name="roleType"  th:value="TEACHER" /><br>
+                            <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                            <input type="hidden" th:name="roleType"  th:value="TEACHER" />
                             <button class="button" type="submit">
                                 + Teacher
                             </button>
                         </form>
                         <form th:action="@{/addRole}"  method="post">
-                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/><br>
-                            <input type="hidden" th:name="roleType"  th:value="COURSE_ADMINISTRATOR" /><br>
+                            <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                            <input type="hidden" th:name="roleType"  th:value="COURSE_ADMINISTRATOR" />
                             <button class="button" type="submit">
                                 + Course Administrator
                             </button>

@@ -33,7 +33,8 @@ public class UserListController {
      * @return The mapping to the html for the first page of the list of users.
      */
     @GetMapping("/userList")
-    public String userList(@AuthenticationPrincipal AuthState principal) {
+    public String userList(@AuthenticationPrincipal AuthState principal,
+                           Model model) {
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -41,6 +42,8 @@ public class UserListController {
                 .orElse("-100"));
         String sortType = portfolioUserService.getUserListSortType(id);
         String isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
+        User user = userAccountClientService.getUserAccountById(id);
+        model.addAttribute("user", user);
         return "redirect:/userList/1" + sortingSuffix(sortType, isAscending);
     }
 
@@ -92,6 +95,7 @@ public class UserListController {
         if (pageInt > maxPage) {
             return "redirect:/userList/" + maxPage + sortingSuffix(sortType, isAscending);
         }
+        model.addAttribute("isAdmin", false);
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);
@@ -157,28 +161,26 @@ public class UserListController {
     }
 
     @PostMapping("/removeRole")
-    public String removeRole(@AuthenticationPrincipal AuthState principal,
-                                       @RequestParam(name="userId") int userId,
-                                       @RequestParam(name="roleType") UserRole role,
-                                       Model model) {
-        System.out.println("user id: " + userId);
-        System.out.println("Role: " + role);
+    public String removeRole(
+                                        @RequestParam(name="userId") int userId,
+                                        @RequestParam(name="roleType") UserRole role,
+                                        @RequestParam(name="url") String url,
+                                        Model model) {
         UserRoleChangeResponse response = userAccountClientService.removeRole(userId, role);
         model.addAttribute("message", response.getMessage());
-        return "redirect:/userList";
+        return "redirect:" + url;
     }
 
     @PostMapping("/addRole")
-    public String addRole(@AuthenticationPrincipal AuthState principal,
-                          @RequestParam(name="userId") int userId,
-                          @RequestParam(name="roleType") UserRole role,
-                                       Model model) {
-        System.out.println("user id: " + userId);
-        System.out.println("Role: " + role);
+    public String addRole(
+                                        @RequestParam(name="userId") int userId,
+                                        @RequestParam(name="roleType") UserRole role,
+                                        @RequestParam(name="url") String url,
+                                        Model model) {
         System.out.println(role.getDescriptorForType());
         UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
         model.addAttribute("message", response.getMessage());
-        return "redirect:/userList";
+        return "redirect:" + url;
     }
 
 }
