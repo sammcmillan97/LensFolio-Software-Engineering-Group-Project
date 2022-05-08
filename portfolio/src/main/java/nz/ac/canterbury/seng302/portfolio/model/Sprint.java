@@ -17,7 +17,7 @@ public class Sprint implements ImportantDate {
     private Date sprintStartDate;
     private Date sprintEndDate;
     @Transient
-    private Map<Event, Integer> eventsInside = new HashMap<>();
+    private Map<Integer, Integer> eventsInside = new HashMap<>();
     @Transient
     private String type;
 
@@ -125,12 +125,12 @@ public class Sprint implements ImportantDate {
         this.sprintEndDate = tempEndDate.getTime();
     }
 
-    public Map<Event, Integer> getEventsInside() {
+    public Map<Integer, Integer> getEventsInside() {
         return eventsInside;
     }
 
-    public void addEventsInside(Event key, Integer inside) {
-        eventsInside.put(key, inside);
+    public void addEventsInside(Integer eventIndex, Integer inside) {
+        eventsInside.put(eventIndex, inside);
     }
 
     public String getType() {

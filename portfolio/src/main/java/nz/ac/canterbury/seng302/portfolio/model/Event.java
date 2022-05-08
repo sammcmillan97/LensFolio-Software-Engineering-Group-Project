@@ -18,6 +18,8 @@ public class Event implements ImportantDate{
     private String type;
     @Transient
     private String inside;
+    @Transient
+    private boolean completed;
 
     public Event() {}
 
@@ -92,5 +94,13 @@ public class Event implements ImportantDate{
 
     public void setInside(String inside) {
         this.inside = inside;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

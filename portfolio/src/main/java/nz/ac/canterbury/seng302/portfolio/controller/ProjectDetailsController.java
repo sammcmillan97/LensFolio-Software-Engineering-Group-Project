@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
@@ -61,73 +62,82 @@ public class ProjectDetailsController {
         model.addAttribute("project", project);
 
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-        model.addAttribute("sprints", sprintList);
+        model.addAttribute("sprintList", sprintList);
 
         eventRepository.deleteAll();
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", 1, Date.valueOf("2022-05-1"), Date.valueOf("2022-05-4")));
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "xmas", 2, Date.valueOf("2022-06-01"), Date.valueOf("2022-06-05")));
-        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-06-04"), Date.valueOf("2022-06-25")));
+        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-25")));
 
         List<Event> eventList = eventService.getByEventParentProjectId(projectId);
-        List<ImportantDate> importantDates = new ArrayList<>();
+        List<Pair<Integer, String>> importantDates = new ArrayList<>();
 
         List<Event> removeList = new ArrayList<>();
 
         int completed = 0;
-        for (Event event: eventList) {
-            for (Sprint sprint: sprintList) {
-                if ((event.getEventStartDate().after(sprint.getStartDate()) || event.getEventStartDate().equals(sprint.getStartDate())) && (event.getEventEndDate().before(sprint.getEndDate()) || event.getEventEndDate().equals(sprint.getEndDate()))){
-                    sprint.addEventsInside(event, 0);
+        for (int i = 0; i < eventList.size(); i++) {
+            for (int w = 0; w < sprintList.size(); w++) {
+                if ((eventList.get(i).getEventStartDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventEndDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getEndDate()))){
+                    sprintList.get(w).addEventsInside(i, 0);
                     completed = completed + 2;
-                } else if ((event.getEventStartDate().after(sprint.getStartDate()) || event.getEventStartDate().equals(sprint.getStartDate())) && (event.getEventStartDate().before(sprint.getEndDate()) || event.getEventStartDate().equals(sprint.getEndDate()))) {
-                    sprint.addEventsInside(event, 1);
+                } else if ((eventList.get(i).getEventStartDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventStartDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getEndDate()))) {
+                    sprintList.get(w).addEventsInside(i, 1);
                     completed++;
-                } else if ((event.getEventEndDate().after(sprint.getStartDate()) || event.getEventEndDate().equals(sprint.getStartDate())) && (event.getEventEndDate().before(sprint.getEndDate()) || event.getEventEndDate().equals(sprint.getEndDate()))) {
-                    sprint.addEventsInside(event, 2);
+                } else if ((eventList.get(i).getEventEndDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventEndDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getEndDate()))) {
+                    sprintList.get(w).addEventsInside(i, 2);
                     completed++;
-                } else if (event.getEventStartDate().before(sprint.getStartDate()) && event.getEventEndDate().after(sprint.getEndDate())) {
-                    sprint.addEventsInside(event, 3);
+                } else if (eventList.get(i).getEventStartDate().before(sprintList.get(w).getStartDate()) && eventList.get(i).getEventEndDate().after(sprintList.get(w).getEndDate())) {
+                    sprintList.get(w).addEventsInside(i, 3);
                 }
-
             }
-            if (completed == 2) {
-                removeList.add(event);
+            if (completed >= 2) {
+                eventList.get(i).setCompleted(true);
             }
         }
-        for (Event event: removeList) {
-            eventList.remove(event);
+
+
+        int eventListSize = 0;
+        for (Event value : eventList) {
+            if (!value.isCompleted()) {
+                eventListSize++;
+            }
         }
 
         int sprintCounter = 0;
         int eventCounter = 0;
-        while ((sprintCounter < sprintList.size()) && (eventCounter < eventList.size())) {
-            if (sprintList.get(sprintCounter).getStartDate().before(eventList.get(eventCounter).getEventStartDate())) {
-                Sprint sprint = sprintList.get(sprintCounter);
-                sprint.setType("Sprint");
-                importantDates.add(sprint);
-                sprintCounter++;
-            } else {
-                Event event = eventList.get(eventCounter);
-                event.setType("Event");
-                importantDates.add(event);
-                eventCounter++;
+        while ((sprintCounter < sprintList.size()) && (eventCounter < eventListSize)) {
+            if (!eventList.get(eventCounter).isCompleted()) {
+                if (sprintList.get(sprintCounter).getStartDate().before(eventList.get(eventCounter).getEventStartDate())) {
+                    importantDates.add(Pair.of(sprintCounter, "Sprint"));
+                    sprintCounter++;
+                } else {
+                    Event event = eventList.get(eventCounter);
+                    event.setType("Event");
+                    importantDates.add(Pair.of(eventCounter, "Event"));
+                    eventCounter++;
+                }
             }
         }
         if (sprintCounter < sprintList.size()) {
             while (sprintCounter < sprintList.size()) {
                 Sprint sprint = sprintList.get(sprintCounter);
                 sprint.setType("Sprint");
-                importantDates.add(sprint);
+                importantDates.add(Pair.of(sprintCounter, "Sprint"));
                 sprintCounter++;
             }
         } else {
             while (eventCounter < eventList.size()) {
-                Event event = eventList.get(eventCounter);
-                event.setType("Event");
-                importantDates.add(event);
-                eventCounter++;
+                if (!eventList.get(eventCounter).isCompleted()) {
+                    Event event = eventList.get(eventCounter);
+                    event.setType("Event");
+                    importantDates.add(Pair.of(eventCounter, "Event"));
+                    eventCounter++;
+                }
             }
         }
+
+
+        model.addAttribute("eventList", eventList);
         model.addAttribute("importantDates", importantDates);
         int numObjects = importantDates.size();
         model.addAttribute("numImportantDates", numObjects);
