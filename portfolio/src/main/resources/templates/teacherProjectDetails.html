@@ -54,7 +54,7 @@
 
             <div th:each="importantDate : ${importantDates}">
                 <div class="sprint" th:if="${importantDate.getSecond() == 'Sprint'}">
-                    <h2 class="sprint__name" th:text="|${sprintList.get(importantDate.getFirst()).getLabel} - ${sprintList.get(importantDate.getFirst()).getName}|"></h2>
+                    <h2 class="sprint__name" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}" th:text="|${sprintList.get(importantDate.getFirst()).getLabel} - ${sprintList.get(importantDate.getFirst()).getName}|"></h2>
 
                     <!-- Edit/Delete Sprint Buttons -->
                     <div class="sprint__button-wrapper flex-row">
@@ -68,7 +68,7 @@
                     </div>
 
                     <!-- Sprint Details -->
-                    <div class="sprint__details">
+                    <div class="sprint__details" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}">
                         <h4 class="sprint__date" th:text="|${sprintList.get(importantDate.getFirst()).getStartDateString} ---> ${sprintList.get(importantDate.getFirst()).getEndDateString}|"></h4>
                         <p class="sprint__description" th:text="${sprintList.get(importantDate.getFirst()).getDescription}"></p>
                     </div>
@@ -76,7 +76,7 @@
                     <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                         <div class="flex-row">
                             <div class="event">
-                                <h2 class="event__name" th:style="'color : ' + ${eventColor}" th:text="${eventList.get(event.key).getEventName}"></h2>
+                                <h2 class="event__name" th:text="${eventList.get(event.key).getEventName}"></h2>
                                 <!-- Edit/Delete Sprint Buttons -->
                                 <div class="event__button-wrapper flex-row">
                                     <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${eventList.get(event.key).getEventId})}" th:method="get">
@@ -88,14 +88,15 @@
                                     </form>
                                 </div>
                                 <!-- Sprint Details -->
-                                <div class="event__details">
-                                    <h4 class="sprint__date" th:text="|${eventList.get(event.key).getEventStartDate} ---> ${eventList.get(event.key).getEventEndDate}|"></h4>
+                                <div class="event__details flex-row" >
+                                    <h4 class="event__date" th:style="'color : ' + ${eventList.get(event.key).getColourStart()}" th:text="|${eventList.get(event.key).getEventStartDate} ---> |"></h4>
+                                    <h4 class="event__date" th:style="'color : ' + ${eventList.get(event.key).getColourEnd()}" th:text="${eventList.get(event.key).getEventEndDate}"></h4>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="event" th:if="${importantDate.getSecond() == 'Event'}">
+                <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
                     <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2>
                     <!-- Edit/Delete Sprint Buttons -->
                     <div class="event__button-wrapper flex-row">
@@ -109,7 +110,7 @@
                     </div>
                     <!-- Sprint Details -->
                     <div class="event__details">
-                        <h4 class="sprint__date" th:text="|${eventList.get(importantDate.getFirst()).getEventStartDate} ---> ${eventList.get(importantDate.getFirst()).getEventEndDate}|"></h4>
+                        <h4 class="event__date" th:text="|${eventList.get(importantDate.getFirst()).getEventStartDate} ---> ${eventList.get(importantDate.getFirst()).getEventEndDate}|"></h4>
                     </div>
                 </div>
             </div>

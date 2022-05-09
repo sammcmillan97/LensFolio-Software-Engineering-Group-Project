@@ -15,12 +15,16 @@ public class ProjectDetailsUtil {
             for (Sprint sprint : sprintList) {
                 if ((eventList.get(i).getEventStartDate().after(sprint.getStartDate()) || eventList.get(i).getEventStartDate().equals(sprint.getStartDate())) && (eventList.get(i).getEventEndDate().before(sprint.getEndDate()) || eventList.get(i).getEventEndDate().equals(sprint.getEndDate()))) {
                     sprint.addEventsInside(i, 0);
+                    eventList.get(i).setColourStart(sprint.getColour());
+                    eventList.get(i).setColourEnd(sprint.getColour());
                     completed = completed + 2;
                 } else if ((eventList.get(i).getEventStartDate().after(sprint.getStartDate()) || eventList.get(i).getEventStartDate().equals(sprint.getStartDate())) && (eventList.get(i).getEventStartDate().before(sprint.getEndDate()) || eventList.get(i).getEventStartDate().equals(sprint.getEndDate()))) {
                     sprint.addEventsInside(i, 1);
+                    eventList.get(i).setColourStart(sprint.getColour());
                     completed++;
                 } else if ((eventList.get(i).getEventEndDate().after(sprint.getStartDate()) || eventList.get(i).getEventEndDate().equals(sprint.getStartDate())) && (eventList.get(i).getEventEndDate().before(sprint.getEndDate()) || eventList.get(i).getEventEndDate().equals(sprint.getEndDate()))) {
                     sprint.addEventsInside(i, 2);
+                    eventList.get(i).setColourEnd(sprint.getColour());
                     completed++;
                 } else if (eventList.get(i).getEventStartDate().before(sprint.getStartDate()) && eventList.get(i).getEventEndDate().after(sprint.getEndDate())) {
                     sprint.addEventsInside(i, 3);
@@ -81,5 +85,10 @@ public class ProjectDetailsUtil {
         return eventListSize;
     }
 
-
+    public static void colorSprints(List<Sprint> sprintList) {
+        ColourPicker.setColourZero();
+        for (Sprint sprint: sprintList) {
+            sprint.setColour(ColourPicker.getNextColour());
+        }
+    }
 }

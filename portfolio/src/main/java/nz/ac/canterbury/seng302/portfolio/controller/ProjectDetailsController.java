@@ -68,6 +68,7 @@ public class ProjectDetailsController {
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-25")));
 
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
+        ProjectDetailsUtil.colorSprints(sprintList);
         List<Event> eventList = eventService.getByEventParentProjectId(projectId);
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
         List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList);
@@ -75,7 +76,6 @@ public class ProjectDetailsController {
         model.addAttribute("sprintList", sprintList);
         model.addAttribute("eventList", eventList);
         model.addAttribute("importantDates", importantDates);
-        model.addAttribute("eventColor", "#ff0000");
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {

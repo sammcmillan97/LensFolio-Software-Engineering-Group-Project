@@ -20,6 +20,8 @@ public class Sprint implements ImportantDate {
     private Map<Integer, Integer> eventsInside = new HashMap<>();
     @Transient
     private String type;
+    @Transient
+    private String colour;
 
     public Sprint() {}
 
@@ -139,5 +141,13 @@ public class Sprint implements ImportantDate {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 }
