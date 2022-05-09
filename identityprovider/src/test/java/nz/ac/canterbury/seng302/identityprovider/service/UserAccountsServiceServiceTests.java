@@ -748,7 +748,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testBio + "2", testUser.getBio());
         assertEquals(testPronouns + "2", testUser.getPersonalPronouns());
         assertEquals(testEmail + "2", testUser.getEmail());
-        //as the password is stored encrypted, it needs to be checked differently
+        //as the password is stored as a hash, it needs to be checked differently
         assertTrue(testUser.checkPassword(testPassword + "2"));
     }
 

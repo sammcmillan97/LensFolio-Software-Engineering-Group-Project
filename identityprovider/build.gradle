@@ -41,7 +41,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     runtimeOnly "com.h2database:h2"
 
-    //password encryption
+    //password hashing
     implementation 'org.springframework.security:spring-security-crypto'
 
 
