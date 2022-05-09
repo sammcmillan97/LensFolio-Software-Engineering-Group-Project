@@ -907,7 +907,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param role the role we are checking against
      * @return true if the user has permission, false otherwise
      */
-    private boolean isValidatedForRole(int userId, UserRole role) {
+    public boolean isValidatedForRole(int userId, UserRole role) {
         User user = repository.findByUserId(userId);
         Set<UserRole> roles = user.getRoles();
         if (role == STUDENT) {
