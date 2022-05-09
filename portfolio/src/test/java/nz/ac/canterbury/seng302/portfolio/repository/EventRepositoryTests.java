@@ -42,8 +42,8 @@ public class EventRepositoryTests {
     @Test
     void findAllEvents() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
-        Event event1 = new Event(project1.getId(), "Event 1", 1, Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
-        Event event2 = new Event(project1.getId(), "Event 2", 2, Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
+        Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
+        Event event2 = new Event(project1.getId(), "Event 2", Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
         List<Event> events = new ArrayList<>();
         events.add(event1);
         events.add(event2);
@@ -54,14 +54,12 @@ public class EventRepositoryTests {
         assertThat(eventsFromDatabase.get(0)).isNotNull();
         assertThat(eventsFromDatabase.get(0).getEventId()).isEqualTo(events.get(0).getEventId());
         assertThat(eventsFromDatabase.get(0).getEventName()).isEqualTo(events.get(0).getEventName());
-        assertThat(eventsFromDatabase.get(0).getEventNumber()).isEqualTo(events.get(0).getEventNumber());
         assertThat(eventsFromDatabase.get(0).getEventStartDate()).isEqualTo(events.get(0).getEventStartDate());
         assertThat(eventsFromDatabase.get(0).getEventEndDate()).isEqualTo(events.get(0).getEventEndDate());
 
         assertThat(eventsFromDatabase.get(1)).isNotNull();
         assertThat(eventsFromDatabase.get(1).getEventId()).isEqualTo(events.get(1).getEventId());
         assertThat(eventsFromDatabase.get(1).getEventName()).isEqualTo(events.get(1).getEventName());
-        assertThat(eventsFromDatabase.get(1).getEventNumber()).isEqualTo(events.get(1).getEventNumber());
         assertThat(eventsFromDatabase.get(1).getEventStartDate()).isEqualTo(events.get(1).getEventStartDate());
         assertThat(eventsFromDatabase.get(1).getEventEndDate()).isEqualTo(events.get(1).getEventEndDate());
     }
@@ -69,8 +67,8 @@ public class EventRepositoryTests {
     @Test
     void findEventById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
-        Event event1 = new Event(project1.getId(), "Event 1", 1, Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
-        Event event2 = new Event(project1.getId(), "Event 2", 2, Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
+        Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
+        Event event2 = new Event(project1.getId(), "Event 2", Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
         List<Event> events = new ArrayList<>();
         events.add(event1);
         events.add(event2);
@@ -83,14 +81,12 @@ public class EventRepositoryTests {
         assertThat(retrievedEvent1).isNotNull();
         assertThat(retrievedEvent1.getEventId()).isEqualTo(events.get(0).getEventId());
         assertThat(retrievedEvent1.getEventName()).isEqualTo(events.get(0).getEventName());
-        assertThat(retrievedEvent1.getEventNumber()).isEqualTo(events.get(0).getEventNumber());
         assertThat(retrievedEvent1.getEventStartDate()).isEqualTo(events.get(0).getEventStartDate());
         assertThat(retrievedEvent1.getEventEndDate()).isEqualTo(events.get(0).getEventEndDate());
 
         assertThat(retrievedEvent2).isNotNull();
         assertThat(retrievedEvent2.getEventId()).isEqualTo(events.get(1).getEventId());
         assertThat(retrievedEvent2.getEventName()).isEqualTo(events.get(1).getEventName());
-        assertThat(retrievedEvent2.getEventNumber()).isEqualTo(events.get(1).getEventNumber());
         assertThat(retrievedEvent2.getEventStartDate()).isEqualTo(events.get(1).getEventStartDate());
         assertThat(retrievedEvent2.getEventEndDate()).isEqualTo(events.get(1).getEventEndDate());
     }
@@ -98,7 +94,7 @@ public class EventRepositoryTests {
     @Test
     void addEventViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
-        Event event1 = new Event(project1.getId(), "Event 1", 1, Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
+        Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
         projectRepository.save(project1);
         eventRepository.save(event1);
 
@@ -107,7 +103,6 @@ public class EventRepositoryTests {
         assertThat(retrievedEvent).isNotNull();
         assertThat(retrievedEvent.getEventId()).isEqualTo(event1.getEventId());
         assertThat(retrievedEvent.getEventName()).isEqualTo(event1.getEventName());
-        assertThat(retrievedEvent.getEventNumber()).isEqualTo(event1.getEventNumber());
         assertThat(retrievedEvent.getEventStartDate()).isEqualTo(event1.getEventStartDate());
         assertThat(retrievedEvent.getEventEndDate()).isEqualTo(event1.getEventEndDate());
     }

@@ -49,7 +49,7 @@
                 <!-- New Sprint Button -->
                 <a class="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
                 <!-- New Event Button -->
-                <a class="new-event-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Event</a>
+                <a class="new-event-button" th:href="@{/projects/edit/event/{project}/-1(project=${project.getId})}">Add Event</a>
             </div>
 
             <div th:each="importantDate : ${importantDates}">
@@ -79,7 +79,7 @@
                                 <h2 class="event__name" th:text="${eventList.get(event.key).getEventName}"></h2>
                                 <!-- Edit/Delete Sprint Buttons -->
                                 <div class="event__button-wrapper flex-row">
-                                    <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${eventList.get(event.key).getEventId})}" th:method="get">
+                                    <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event.key).getEventId})}" th:method="get">
                                         <button type="submit">Edit</button>
                                     </form>
 

@@ -11,7 +11,6 @@ public class Event implements ImportantDate{
     private int eventId;
     private int eventParentProjectId;
     private String eventName;
-    private int eventNumber;
     private Date eventStartDate;
     private Date eventEndDate;
     @Transient
@@ -25,10 +24,9 @@ public class Event implements ImportantDate{
 
     public Event() {}
 
-    public Event(int eventParentProjectId, String eventName, int eventNumber, Date eventStartDate, Date eventEndDate) {
+    public Event(int eventParentProjectId, String eventName, Date eventStartDate, Date eventEndDate) {
         this.eventParentProjectId = eventParentProjectId;
         this.eventName = eventName;
-        this.eventNumber = eventNumber;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
     }
@@ -37,7 +35,7 @@ public class Event implements ImportantDate{
     public String toString() {
         return String.format(
                 "Event[id=%d, eventParentProjectId='%d', eventName='%s', eventLabel='%s', eventStartDate='%s', eventEndDate='%s']",
-                eventId, eventParentProjectId, eventName, "Event " + eventNumber, eventStartDate, eventEndDate);
+                eventId, eventParentProjectId, eventName, eventStartDate, eventEndDate);
     }
 
     /* Getters/Setters */
@@ -56,14 +54,6 @@ public class Event implements ImportantDate{
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
-    }
-
-    public int getEventNumber() {
-        return eventNumber;
-    }
-
-    public void setEventNumber(int eventNumber) {
-        this.eventNumber = eventNumber;
     }
 
     public Date getEventStartDate() {
