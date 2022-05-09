@@ -67,6 +67,7 @@ message UserResponse {
    .google.protobuf.Timestamp Created = 9;
    string ProfileImagePath = 10;
    repeated UserRole Roles = 11;
+   int32 Id = 12;
 }
 enum UserRole {
    STUDENT = 0;
@@ -83,8 +84,7 @@ message ProfilePhotoUploadMetadata {
    int32 UserId = 1;
    string FileType = 2;
 }
-
-message UploadUserProfilePhotoRequest { 
+message UploadUserProfilePhotoRequest {
    oneof UploadData {
       ProfilePhotoUploadMetadata MetaData = 1;
       bytes FileContent = 2;
@@ -97,13 +97,14 @@ message DeleteUserProfilePhotoRequest {
 
 message DeleteUserProfilePhotoResponse {
    bool IsSuccess = 1;
-   bool Message = 2;
+   string Message = 2;
 }
 
 message GetPaginatedUsersRequest {
    int32 Offset = 1; // How many results to skip (offset of 0 means start at beginning, i.e page 1)
    int32 Limit = 2; // Max results to get - "results per page"
    string OrderBy = 3; // When paginating, we must sort on the server, not the frontend (why is this?)
+   bool IsAscendingOrder = 4;
 }
 message PaginatedUsersResponse {
    repeated UserResponse Users = 1;
@@ -116,7 +117,7 @@ message ModifyRoleOfUserRequest {
 }
 message UserRoleChangeResponse {
    bool IsSuccess = 1;
-   bool Message = 2;
+   string Message = 2;
 }
 
 

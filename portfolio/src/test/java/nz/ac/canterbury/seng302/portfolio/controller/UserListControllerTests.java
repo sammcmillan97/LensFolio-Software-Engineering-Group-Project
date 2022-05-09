@@ -38,17 +38,28 @@ class UserListControllerTests {
     }
 
     @Test
-    void testGoodSortTypeOnUsernameA() {
-        assertTrue(controller.goodSortType("usernameA"));
-    }
-
-    @Test
-    void testBadSortTypeOnUsernameC() {
-        assertFalse(controller.goodSortType("usernameC"));
+    void testGoodSortTypeOnUsername() {
+        assertTrue(controller.isGoodSortType("username"));
     }
 
     @Test
     void testBadSortTypeOnRandom() {
-        assertFalse(controller.goodSortType("random"));
+        assertFalse(controller.isGoodSortType("random"));
     }
+
+    @Test
+    void testGoodAscendingTypeOnTrue() {
+        assertTrue(controller.isGoodAscending("true"));
+    }
+
+    @Test
+    void testBadAscendingTypeOnRandom() {
+        assertFalse(controller.isGoodAscending("random"));
+    }
+
+    @Test
+    void testSortingSuffix() {
+        assertEquals("?sortType=x&isAscending=y", controller.sortingSuffix("x", "y"));
+    }
+
 }

@@ -14,30 +14,30 @@
 <!-- Page content -->
 <div id="page-content" class="constrict">
     <div class="pagination">
-        <a th:href="'/userList/' + ${firstPage} + '?sortType=' + ${sortType}">&laquo;</a>
-        <a th:href="'/userList/' + ${previousPage} + '?sortType=' + ${sortType}">&lt;</a>
+        <a th:href="'/userList/' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage} + ${sortingSuffix}">&lt;</a>
         <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
-        <a th:href="'/userList/' + ${nextPage} + '?sortType=' + ${sortType}">&gt;</a>
-        <a th:href="'/userList/' + ${lastPage} + '?sortType=' + ${sortType}">&raquo;</a>
+        <a th:href="'/userList/' + ${nextPage} + ${sortingSuffix}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
     <table>
         <thead>
             <tr class="sort-header">
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'nameA' ? 'nameD' : 'nameA')"
-                       th:text="'Name' + (${sortType} == 'nameA' ? '&#9660;' : '') + (${sortType} == 'nameD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=name&isAscending=' + (${sortType} == 'name' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Name' + (${sortType} == 'name' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'usernameA' ? 'usernameD' : 'usernameA')"
-                       th:text="'Username' + (${sortType} == 'usernameA' ? '&#9660;' : '') + (${sortType} == 'usernameD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=username&isAscending=' + (${sortType} == 'username' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Username' + (${sortType} == 'username' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'aliasA' ? 'aliasD' : 'aliasA')"
-                       th:text="'Alias' + (${sortType} == 'aliasA' ? '&#9660;' : '') + (${sortType} == 'aliasD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=alias&isAscending=' + (${sortType} == 'alias' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Alias' + (${sortType} == 'alias' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
                 <th>
-                    <a th:href="'/userList/' + ${currentPage} + '?sortType=' + (${sortType} == 'rolesA' ? 'rolesD' : 'rolesA')"
-                       th:text="'Roles' + (${sortType} == 'rolesA' ? '&#9660;' : '') + (${sortType} == 'rolesD' ? '&#9650;' : '')"></a>
+                    <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
             </tr>
         </thead>
@@ -53,11 +53,11 @@
         </tbody>
     </table>
     <div class="pagination">
-        <a th:href="'/userList/' + ${firstPage} + '?sortType=' + ${sortType}">&laquo;</a>
-        <a th:href="'/userList/' + ${previousPage} + '?sortType=' + ${sortType}">&lt;</a>
+        <a th:href="'/userList/' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
+        <a th:href="'/userList/' + ${previousPage} + ${sortingSuffix}">&lt;</a>
         <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
-        <a th:href="'/userList/' + ${nextPage} + '?sortType=' + ${sortType}">&gt;</a>
-        <a th:href="'/userList/' + ${lastPage} + '?sortType=' + ${sortType}">&raquo;</a>
+        <a th:href="'/userList/' + ${nextPage} + ${sortingSuffix}">&gt;</a>
+        <a th:href="'/userList/' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
 </div>
 </body>

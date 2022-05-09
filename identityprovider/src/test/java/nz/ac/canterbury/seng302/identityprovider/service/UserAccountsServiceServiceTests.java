@@ -67,7 +67,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
-                .setOrderBy("nameA")
+                .setOrderBy("name")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("Adam", response.getUsersList().get(0).getLastName());
@@ -82,7 +83,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
-                .setOrderBy("usernameA")
+                .setOrderBy("username")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("test1", response.getUsersList().get(0).getUsername());
@@ -96,7 +98,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
-                .setOrderBy("aliasA")
+                .setOrderBy("alias")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("3", response.getUsersList().get(0).getNickname());
@@ -110,7 +113,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
-                .setOrderBy("rolesA")
+                .setOrderBy("roles")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("test1", response.getUsersList().get(0).getUsername());
@@ -124,7 +128,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(9999)
-                .setOrderBy("usernameD")
+                .setOrderBy("username")
+                .setIsAscendingOrder(false)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals("test3", response.getUsersList().get(0).getUsername());
@@ -140,7 +145,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(3)
                 .setLimit(9999)
-                .setOrderBy("usernameA")
+                .setOrderBy("username")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals(0, response.getUsersList().size());
@@ -153,7 +159,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(1)
                 .setLimit(9999)
-                .setOrderBy("usernameA")
+                .setOrderBy("username")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals(2, response.getUsersList().size());
@@ -166,7 +173,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(0)
-                .setOrderBy("usernameA")
+                .setOrderBy("username")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals(0, response.getUsersList().size());
@@ -179,7 +187,8 @@ class UserAccountsServiceServiceTests {
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
                 .setLimit(1)
-                .setOrderBy("usernameA")
+                .setOrderBy("username")
+                .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
         assertEquals(1, response.getUsersList().size());
