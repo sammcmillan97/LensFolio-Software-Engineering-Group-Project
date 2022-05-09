@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -44,7 +45,7 @@ public class ProjectDetailsController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         /* Add project details to the model */

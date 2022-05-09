@@ -1,0 +1,73 @@
+/*  Table styling adapted from https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l */
+
+th, td {
+    padding: 12px 15px;
+}
+
+thead tr {
+    background-color: #F67B50;
+    color: #ffffff;
+    text-align: left;
+}
+
+table {
+    table-layout: fixed;
+    overflow-wrap: break-word;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    font-size: small;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tbody tr:nth-of-type(even) {
+    background-color: #F4EAE6;
+}
+
+tbody tr:last-of-type {
+    border-bottom: 2px solid #F67B50;
+}
+
+ /* Pagination styling adapted from w3schools https://www.w3schools.com/howto/howto_css_pagination.asp */
+.pagination a, div {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+
+.pagination a:hover {background-color: #F4EAE6;}
+
+ /* Pagination styling adapted from w3schools https://www.w3schools.com/howto/howto_css_pagination.asp */
+.sort-header a, div {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+
+.sort-header a:hover {background-color: #FBAA60;}
+
+button {
+    font-size: small;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 2px;
+    padding-right: 4px; /* Needed to make the buttons look better, due to kerning issues with display: inline */
+    margin: 4px;
+    display: inline;
+}
+
+button:hover {
+    background-color: #F67B50;
+}
+
+a {
+    color: black;
+}
