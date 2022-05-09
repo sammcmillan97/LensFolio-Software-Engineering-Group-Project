@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
@@ -61,86 +62,20 @@ public class ProjectDetailsController {
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("project", project);
 
-        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-        model.addAttribute("sprintList", sprintList);
-
         eventRepository.deleteAll();
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", 1, Date.valueOf("2022-05-1"), Date.valueOf("2022-05-4")));
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "xmas", 2, Date.valueOf("2022-06-01"), Date.valueOf("2022-06-05")));
         eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-25")));
 
+        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         List<Event> eventList = eventService.getByEventParentProjectId(projectId);
-        List<Pair<Integer, String>> importantDates = new ArrayList<>();
+        ProjectDetailsUtil.embedEvents(eventList, sprintList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList);
 
-        List<Event> removeList = new ArrayList<>();
-
-        int completed = 0;
-        for (int i = 0; i < eventList.size(); i++) {
-            for (int w = 0; w < sprintList.size(); w++) {
-                if ((eventList.get(i).getEventStartDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventEndDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getEndDate()))){
-                    sprintList.get(w).addEventsInside(i, 0);
-                    completed = completed + 2;
-                } else if ((eventList.get(i).getEventStartDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventStartDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventStartDate().equals(sprintList.get(w).getEndDate()))) {
-                    sprintList.get(w).addEventsInside(i, 1);
-                    completed++;
-                } else if ((eventList.get(i).getEventEndDate().after(sprintList.get(w).getStartDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getStartDate())) && (eventList.get(i).getEventEndDate().before(sprintList.get(w).getEndDate()) || eventList.get(i).getEventEndDate().equals(sprintList.get(w).getEndDate()))) {
-                    sprintList.get(w).addEventsInside(i, 2);
-                    completed++;
-                } else if (eventList.get(i).getEventStartDate().before(sprintList.get(w).getStartDate()) && eventList.get(i).getEventEndDate().after(sprintList.get(w).getEndDate())) {
-                    sprintList.get(w).addEventsInside(i, 3);
-                }
-            }
-            if (completed >= 2) {
-                eventList.get(i).setCompleted(true);
-            }
-        }
-
-
-        int eventListSize = 0;
-        for (Event value : eventList) {
-            if (!value.isCompleted()) {
-                eventListSize++;
-            }
-        }
-
-        int sprintCounter = 0;
-        int eventCounter = 0;
-        while ((sprintCounter < sprintList.size()) && (eventCounter < eventListSize)) {
-            if (!eventList.get(eventCounter).isCompleted()) {
-                if (sprintList.get(sprintCounter).getStartDate().before(eventList.get(eventCounter).getEventStartDate())) {
-                    importantDates.add(Pair.of(sprintCounter, "Sprint"));
-                    sprintCounter++;
-                } else {
-                    Event event = eventList.get(eventCounter);
-                    event.setType("Event");
-                    importantDates.add(Pair.of(eventCounter, "Event"));
-                    eventCounter++;
-                }
-            }
-        }
-        if (sprintCounter < sprintList.size()) {
-            while (sprintCounter < sprintList.size()) {
-                Sprint sprint = sprintList.get(sprintCounter);
-                sprint.setType("Sprint");
-                importantDates.add(Pair.of(sprintCounter, "Sprint"));
-                sprintCounter++;
-            }
-        } else {
-            while (eventCounter < eventList.size()) {
-                if (!eventList.get(eventCounter).isCompleted()) {
-                    Event event = eventList.get(eventCounter);
-                    event.setType("Event");
-                    importantDates.add(Pair.of(eventCounter, "Event"));
-                    eventCounter++;
-                }
-            }
-        }
-
-
+        model.addAttribute("sprintList", sprintList);
         model.addAttribute("eventList", eventList);
         model.addAttribute("importantDates", importantDates);
-        int numObjects = importantDates.size();
-        model.addAttribute("numImportantDates", numObjects);
+        model.addAttribute("eventColor", "#ff0000");
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {

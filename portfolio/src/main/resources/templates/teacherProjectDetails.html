@@ -76,7 +76,7 @@
                     <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                         <div class="flex-row">
                             <div class="event">
-                                <h2 class="event__name" th:text="${eventList.get(event.key).getEventName}"></h2>
+                                <h2 class="event__name" th:style="'color : ' + ${eventColor}" th:text="${eventList.get(event.key).getEventName}"></h2>
                                 <!-- Edit/Delete Sprint Buttons -->
                                 <div class="event__button-wrapper flex-row">
                                     <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${eventList.get(event.key).getEventId})}" th:method="get">

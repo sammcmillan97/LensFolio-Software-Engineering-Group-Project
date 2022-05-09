@@ -17,9 +17,11 @@ public class Event implements ImportantDate{
     @Transient
     private String type;
     @Transient
-    private String inside;
-    @Transient
     private boolean completed;
+    @Transient
+    private String colourStart;
+    @Transient
+    private String colourEnd;
 
     public Event() {}
 
@@ -88,19 +90,27 @@ public class Event implements ImportantDate{
         this.type = type;
     }
 
-    public String getInside() {
-        return inside;
-    }
-
-    public void setInside(String inside) {
-        this.inside = inside;
-    }
-
     public boolean isCompleted() {
         return completed;
     }
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public String getColourStart() {
+        return colourStart;
+    }
+
+    public void setColourStart(String colourStart) {
+        this.colourStart = colourStart;
+    }
+
+    public String getColourEnd() {
+        return colourEnd;
+    }
+
+    public void setColourEnd(String colourEnd) {
+        this.colourEnd = colourEnd;
     }
 }
