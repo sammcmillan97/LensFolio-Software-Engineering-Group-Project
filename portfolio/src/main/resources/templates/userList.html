@@ -5,7 +5,6 @@
     <title>List of Users</title>
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/userList.css">
-    <script rel="script" src="/scripts/userList.js"></script>
 </head>
 <body>
 <!-- Import the application's header bar. -->
@@ -14,7 +13,6 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 <!-- Page content -->
 <div id="page-content" class="constrict">
-    <p th:text="${message}"></p>
     <div class="pagination">
         <a th:href="'/userList/' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
         <a th:href="'/userList/' + ${previousPage} + ${sortingSuffix}">&lt;</a>
@@ -22,6 +20,7 @@
         <a th:href="'/userList/' + ${nextPage} + ${sortingSuffix}">&gt;</a>
         <a th:href="'/userList/' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
+    <p th:text="${message}"></p>
     <table>
         <thead>
             <tr class="sort-header">
@@ -37,10 +36,12 @@
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=alias&isAscending=' + (${sortType} == 'alias' ? (${isAscending} ? 'false' : 'true') : 'true')"
                        th:text="'Alias' + (${sortType} == 'alias' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
+                <!--IF STUDENT IS ONLY ROLE, DISPLAY LIST OF ROLES-->
                 <th th:if="!${isAdmin}">
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
                        th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
+                <!--ELSE DISPLAY ADDING REVOKING ROLES TYPES-->
                 <th th:if="${isAdmin}">
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
                        th:text="'Remove Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
@@ -57,29 +58,30 @@
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
                     <td>
-                        <!--ONLY SHOW AS LINK IF USER IS ADMIN-->
-                        <div th:each="role: ${listedUser.roleStrings}">
+                        <div th:each="role: ${listedUser.roleStrings}" style="margin:0; padding:0;float: left;">
+                            <!--SHOW ROLE AS LABEL IF STUDENT-->
                             <div th:if="!${isAdmin}" id="role-button">
                                 <div th:text="${role}"></div>
                             </div>
+                            <!--ELSE SHOW ROLE AS BUTTON-->
                             <form th:if="${isAdmin}" th:action="@{/removeRole}"  method="post">
                                 <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                                 <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                                 <input type="hidden" th:name="roleType"  th:value="${#strings.toUpperCase(role)}" />
                                 <button class="button" type="submit" title="remove role">
-                                    <div th:text="'-' + ${role}"></div>
+                                    <div th:text="'- ' + ${role}"></div>
                                 </button>
                             </form>
                         </div>
                     </td>
                     <td th:if="${isAdmin}">
-                        <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT-->
+                        <!--ONLY SHOW ADD LINK IF USER IS ADMIN-->
                         <form th:action="@{/addRole}"  method="post">
                             <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="STUDENT" />
                             <button class="button" type="submit" title="add role">
-                                + Student
+                                <div>+ Student</div>
                             </button>
                         </form>
                         <form th:action="@{/addRole}"  method="post">
@@ -87,7 +89,7 @@
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="TEACHER" />
                             <button class="button" type="submit" title="add role">
-                                + Teacher
+                                <div>+ Teacher</div>
                             </button>
                         </form>
                         <form th:action="@{/addRole}"  method="post">
@@ -95,7 +97,7 @@
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="COURSE_ADMINISTRATOR" />
                             <button class="button" type="submit" title="add role">
-                                + Course Administrator
+                                <div>+ Course Administrator</div>
                             </button>
                         </form>
                     </td>

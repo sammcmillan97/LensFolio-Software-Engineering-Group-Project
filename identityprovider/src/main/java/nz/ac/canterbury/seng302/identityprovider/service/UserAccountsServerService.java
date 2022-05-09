@@ -17,7 +17,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.*;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 
@@ -810,11 +809,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @Override
     public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
-        System.out.println("User Account Server Service: Add role to user, method called");
         UserRoleChangeResponse reply;
         if (isAuthenticated() && isAdmin(getAuthStateUserId())) {
             reply = addRoleToUserHandler(request);
-            System.out.println("User Account Server Service: reply built");
         } else {
             reply = UserRoleChangeResponse.newBuilder()
                     .setIsSuccess(false)
@@ -833,7 +830,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @VisibleForTesting
     UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
-        System.out.println("User Account Server Service: Add role to user handler, method called");
         UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
 
         int userId = request.getUserId();
@@ -910,7 +906,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return true if is admin, else false
      */
     private boolean isAdmin(int userId) {
-        System.out.println("User Account Server Service: isAdmin, method called");
         boolean hasAdminRole = false;
         User user = repository.findByUserId(userId);
         Set<UserRole> roles;
@@ -928,7 +923,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return
      */
     private int getAuthStateUserId() {
-        System.out.println("User Account Server Service: getAuthStateUserId, method called");
         String authenticatedId = null;
         try {
             AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();

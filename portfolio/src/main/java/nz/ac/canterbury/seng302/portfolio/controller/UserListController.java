@@ -191,7 +191,6 @@ public class UserListController {
                                         Model model) {
         UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
         model.addAttribute("message", response.getMessage());
-        System.out.println(response.getMessage());
         return "redirect:" + url;
 
     }
