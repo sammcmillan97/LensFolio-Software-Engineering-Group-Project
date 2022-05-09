@@ -17,7 +17,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.*;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 
@@ -810,11 +809,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @Override
     public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
-        System.out.println("User Account Server Service: Add role to user, method called");
         UserRoleChangeResponse reply;
-        if (isAuthenticated() && isAdmin(getAuthStateUserId())) {
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
             reply = addRoleToUserHandler(request);
-            System.out.println("User Account Server Service: reply built");
         } else {
             reply = UserRoleChangeResponse.newBuilder()
                     .setIsSuccess(false)
@@ -833,7 +830,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @VisibleForTesting
     UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
-        System.out.println("User Account Server Service: Add role to user handler, method called");
         UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
 
         int userId = request.getUserId();
@@ -861,7 +857,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Override
     public void removeRoleFromUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
         UserRoleChangeResponse reply;
-        if (isAdmin(getAuthStateUserId())) {
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
             reply = removeRoleFromUserHandler(request);
         } else {
             reply = UserRoleChangeResponse.newBuilder()
@@ -889,7 +885,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         User user = repository.findByUserId(userId);
         //check user has role that you are attempting to remove
         //check that this is not the users only role
-        if (!userHasRole(userId, role)){
+        if (!userHasRole(userId, role)) {
             reply.setIsSuccess(false)
                     .setMessage("Unable to remove role. User doesn't have given role");
         } else if (userHasOneRole(userId)){
@@ -905,69 +901,61 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
-     * Given a user ID check if user has TEACHER or COURSE_ADMINISTRATOR role
-     * @param userId
-     * @return true if is admin, else false
+     * Given a user ID check if user has the correct role to add or remove another role.
+     * Specifically, TEACHERS can only change student roles, and COURSE ADMINISTRATORS can change student or teacher roles.
+     * @param userId the ID of the user
+     * @param role the role we are checking against
+     * @return true if the user has permission, false otherwise
      */
-    private boolean isAdmin(int userId) {
-        System.out.println("User Account Server Service: isAdmin, method called");
-        boolean hasAdminRole = false;
+    private boolean isValidatedForRole(int userId, UserRole role) {
         User user = repository.findByUserId(userId);
-        Set<UserRole> roles;
-        roles = user.getRoles();
-        Iterator<UserRole> rolesIterator = roles.iterator();
-        if (roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR)){
-            hasAdminRole = true;
+        Set<UserRole> roles = user.getRoles();
+        if (role == STUDENT) {
+            return roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR);
+        } else if (role == TEACHER) {
+            return roles.contains(COURSE_ADMINISTRATOR);
+        } else {
+            return false;
         }
-        System.out.println(hasAdminRole);
-        return hasAdminRole;
     }
 
     /**
      * Get the user id of the user who is currently logged in
-     * @return
+     * @return The user id of the user who is currently logged in
      */
     private int getAuthStateUserId() {
-        System.out.println("User Account Server Service: getAuthStateUserId, method called");
-        String authenticatedId = null;
-        try {
-            AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
-            authenticatedId = authState.getClaimsList().stream()
-                    .filter(claim -> claim.getType().equals("nameid"))
-                    .findFirst()
-                    .map(ClaimDTO::getValue)
-                    .orElse("NOT FOUND");
-        } catch (Exception e) {
-            System.out.println("GetAuthStateUserId error: " + e);
-        }
-
+        String authenticatedId;
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
         return Integer.parseInt(authenticatedId);
     }
 
     /**
      * Check if user already has role to ensure no double ups
-     * @param userId
-     * @param role
+     * @param userId the ID of the user
+     * @param role The role of the user
      * @return true if already has role, else false
      */
     private boolean userHasRole(int userId, UserRole role) {
-        boolean hasRole = false;
         User user = repository.findByUserId(userId);
         Set<UserRole> roles;
         roles = user.getRoles();
-        Iterator<UserRole> rolesIterator = roles.iterator();
-        while (rolesIterator.hasNext()){
-            if (rolesIterator.next()==role){
-                hasRole = true;
+        for (UserRole userRole : roles) {
+            if (userRole == role) {
+                return true;
             }
         }
-        return hasRole;
+        return false;
     }
 
     /**
      * Check if user only has one role,
      * to ensure that the last role isn't removed
-     * @param userId
+     * @param userId the ID of the user
      * @return true if has only one role, else false
      */
     private boolean userHasOneRole(int userId) {
