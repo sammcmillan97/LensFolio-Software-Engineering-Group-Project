@@ -14,7 +14,6 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 <!-- Page content -->
 <div id="page-content" class="constrict">
-    <p id="user__rolesList" th:text="${user.getRoles()}"></p>
     <div class="pagination">
         <a th:href="'/userList/' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
         <a th:href="'/userList/' + ${previousPage} + ${sortingSuffix}">&lt;</a>

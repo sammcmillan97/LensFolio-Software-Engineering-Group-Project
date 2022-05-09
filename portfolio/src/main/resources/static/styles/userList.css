@@ -16,6 +16,8 @@ table {
   margin: 25px 0;
   min-width: 400px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  word-wrap: break-word;
+  table-layout:fixed;
 }
 
 tbody tr:nth-of-type(even) {
@@ -27,7 +29,7 @@ tbody tr:last-of-type {
 }
 
  /* Pagination styling adapted from w3schools https://www.w3schools.com/howto/howto_css_pagination.asp */
-.pagination a, div {
+.pagination a, .pagination div {
   color: black;
   float: left;
   padding: 8px 16px;
@@ -38,7 +40,7 @@ tbody tr:last-of-type {
 .pagination a:hover {background-color: #F4EAE6;}
 
  /* Pagination styling adapted from w3schools https://www.w3schools.com/howto/howto_css_pagination.asp */
-.sort-header a, div {
+.sort-header a, .sort-header div {
   color: black;
   float: left;
   padding: 8px 16px;
@@ -62,3 +64,23 @@ tbody tr:last-of-type {
 a {
     color: black;
 }
+
+#role-button form {
+    display: inline;
+}
+
+#role-button button {
+    color: black;
+    text-decoration: none;
+    color: #999;
+    transition: background-color .3s;
+    background: transparent;
+    border: transparent;
+}
+
+#role-button div {
+    display: inline;
+    box-sizing: border-box;
+}
+
+#role-button button:hover {background-color: #F4EAE6;}
