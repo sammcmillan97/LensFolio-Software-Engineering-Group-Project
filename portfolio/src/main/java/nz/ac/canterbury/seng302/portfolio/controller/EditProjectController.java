@@ -33,7 +33,7 @@ public class EditProjectController {
     @Autowired
     UserAccountClientService userAccountClientService;
 
-    /* Create default project. TODO: use database to check for this*/
+    /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
@@ -82,7 +82,6 @@ public class EditProjectController {
             try {
                 project = projectService.getProjectById(id);
             } catch (Exception ignored) {
-                // TODO
                 project = defaultProject;
             }
 
@@ -172,7 +171,6 @@ public class EditProjectController {
         try {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
-            //TODO Add logging for error
             return "redirect:/projects";
         }
 
@@ -188,7 +186,6 @@ public class EditProjectController {
 
         // Check dates are not null
         if (projectEndDate == null || projectStartDate == null) {
-            //TODO Add logging for error
             return "redirect:/projects/edit/" + projectId;
         }
 
@@ -200,7 +197,6 @@ public class EditProjectController {
         projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
-            // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId;
         }
 
@@ -208,7 +204,6 @@ public class EditProjectController {
         Calendar projectEndCal = getCalendarDay();
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
-            // TODO Add logging for error.
             return "redirect:/projects/edit/" + projectId;
         }
 
@@ -224,7 +219,6 @@ public class EditProjectController {
                 savedProject = projectService.saveProject(existingProject);
 
             } catch(Exception ignored) {
-                //TODO Add logging for error.
                 return "redirect:/projects/edit/" + projectId;
             }
 
@@ -253,7 +247,6 @@ public class EditProjectController {
         try {
             projectService.deleteProjectById(id);
         } catch (Exception e) {
-            //TODO log error.
         }
         return "redirect:/projects";
     }
