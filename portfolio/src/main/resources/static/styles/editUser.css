@@ -1,15 +1,20 @@
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    max-width: 5000px;
+    width: 650px;
+    padding: 20px;
+    margin: 100px auto;
+    border-radius: 5px;
+    background: lightslategrey;
+    display: table;
+    box-shadow: 0 4px 10px 1px rgb(0 0 0 / 10%);
 }
 
-h1 {
+.wrapper {
+    background: black;
     text-align: center;
-    background-color: black;
-    color: white;
-    font-size: 30px;
-    padding: 3px;
+    color: #F4EAE6;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
 div {
@@ -54,7 +59,7 @@ input:invalid {
 
 input.button {
     padding: 3px 10px 3px 10px;
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 button {
@@ -64,7 +69,8 @@ button {
 }
 
 h2 {
-    margin-bottom: 0px;
+    margin-bottom: 0;
+    font-size: 20px;
 }
 
 h4 {

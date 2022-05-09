@@ -12,35 +12,37 @@
 
         <div id="page-content" class="constrict">
             <div class="container">
-
-             <!-- form puts the params to the register controller-->
-            <form th:action="@{/editUser}" method="post">
-
-                <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
-                <div>
-                    <input type="hidden" th:name="username"  th:value="${user.username}" />
-                    <label>Account Details *</label><br>
-                    <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required</label><br>
-                    <br>
-                    <label>Full Name *</label><br>
-                    <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
-                    <input type="text" th:name="middleName" minlength="1" maxlength="64" th:value="${user.middleName}" /><label class="helper" >Middle name optional</label><br>
-                    <input type="text" th:name="lastName" minlength="1" maxlength="64" required th:value="${user.lastName}" class="required" /><label class="helper" >Last name required</label><br>
-                    <br>
-                    <label>Person Details</label><br>
-                    <input type="text" th:name="nickname" maxlength="64" th:value="${user.nickname}"/><label class="helper">Nickname - optional</label><br>
-                    <input type="text" th:name="pronouns" maxlength="64" th:value="${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
-                    <br>
-                    <label>Bio</label><label class="helper">Optional</label><br>
-                    <textarea th:name="bio" maxlength="1024" th:text="${user.bio}"></textarea>
-                    <br>
-                    <div>
-                    <p th:text="${editMessage}"></p>
-                    <p th:text="${errorMessage}"></p>
+                <!-- form puts the params to the register controller-->
+                <form th:action="@{/editUser}" method="post">
+                    <div class="wrapper">
+                        <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
+                        <h2>Please enter your details below</h2>
                     </div>
-                    <input class="button" type="submit" value="Submit" />
-                </div>
-            </form>
+
+                    <div>
+                        <input type="hidden" th:name="username"  th:value="${user.username}" />
+                        <label>Account Details *</label><br>
+                        <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required</label><br>
+                        <br>
+                        <label>Full Name *</label><br>
+                        <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
+                        <input type="text" th:name="middleName" minlength="1" maxlength="64" th:value="${user.middleName}" /><label class="helper" >Middle name optional</label><br>
+                        <input type="text" th:name="lastName" minlength="1" maxlength="64" required th:value="${user.lastName}" class="required" /><label class="helper" >Last name required</label><br>
+                        <br>
+                        <label>Person Details</label><br>
+                        <input type="text" th:name="nickname" maxlength="64" th:value="${user.nickname}"/><label class="helper">Nickname - optional</label><br>
+                        <input type="text" th:name="pronouns" maxlength="64" th:value="${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
+                        <br>
+                        <label>Bio</label><label class="helper">Optional</label><br>
+                        <textarea th:name="bio" maxlength="1024" th:text="${user.bio}"></textarea>
+                        <br>
+                        <div>
+                        <p th:text="${editMessage}"></p>
+                        <p th:text="${errorMessage}"></p>
+                        </div>
+                        <input class="button" type="submit" value="Submit" />
+                    </div>
+                </form>
             </div>
         </div>
 </body>
