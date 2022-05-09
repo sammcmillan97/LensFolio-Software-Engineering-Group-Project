@@ -183,8 +183,7 @@ public class EditSprintController {
                              @PathVariable("parentProjectId") String parentProjectId,
                              @PathVariable("sprintId") String sprintId,
                              Model model) throws Exception {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -271,8 +270,7 @@ public class EditSprintController {
             @RequestParam(value="sprintDescription") String sprintDescription,
             Model model
     ) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -368,8 +366,7 @@ public class EditSprintController {
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("sprintId") String sprintId) throws Exception {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
