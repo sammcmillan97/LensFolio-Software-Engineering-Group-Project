@@ -60,8 +60,7 @@ public class EditProjectController {
      */
     @GetMapping("/projects/edit/{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -95,11 +94,11 @@ public class EditProjectController {
             project.setName("Project " + cal.get(Calendar.YEAR));
 
             // Set project start date as current date
-            project.setStartDate(Date.from(cal.toInstant()));
+            project.setStartDate(java.util.Date.from(cal.toInstant()));
 
             // Set project end date as 8 months after start
             cal.add(Calendar.MONTH, 8);
-            project.setEndDate(Date.from(cal.toInstant()));
+            project.setEndDate(java.util.Date.from(cal.toInstant()));
         }
 
         /* Add project details to the model */
@@ -112,7 +111,7 @@ public class EditProjectController {
         // A project can only be added up to a year ago
         Calendar cal = getCalendarDay();
         cal.add(Calendar.YEAR, -1);
-        java.util.Date minStartDate = Date.from(cal.toInstant());
+        java.util.Date minStartDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
 
         // Check if the project has any sprints
@@ -163,8 +162,7 @@ public class EditProjectController {
             @RequestParam(value="projectDescription") String projectDescription,
             Model model
     ) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -237,8 +235,7 @@ public class EditProjectController {
      */
     @DeleteMapping(value="/projects/delete/{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 

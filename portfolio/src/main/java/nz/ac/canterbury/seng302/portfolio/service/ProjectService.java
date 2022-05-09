@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
@@ -26,14 +27,14 @@ public class ProjectService {
     /**
      * Get project by id
      */
-    public Project getProjectById(Integer id) throws Exception {
+    public Project getProjectById(Integer id) throws NoSuchElementException {
         Optional<Project> project = repository.findById(id);
         if(project.isPresent()) {
             return project.get();
         }
         else
         {
-            throw new Exception("Project not found");
+            throw new NoSuchElementException("Project not found");
         }
     }
 
@@ -41,11 +42,11 @@ public class ProjectService {
         return repository.save(project);
     }
 
-    public void deleteProjectById(int id) throws Exception {
+    public void deleteProjectById(int id) throws NoSuchElementException {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new Exception("No project found to delete");
+            throw new NoSuchElementException("No project found to delete");
         }
 
     }
