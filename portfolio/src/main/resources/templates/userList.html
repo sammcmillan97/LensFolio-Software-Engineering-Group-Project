@@ -41,7 +41,7 @@
                     <a th:href="'/userList/' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
                        th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
                 </th>
-                <th th:if="${isAdmin}">
+                <th th:if="${isTeacher}">
                     <div>Add role</div>
                 </th>
             </tr>
@@ -53,11 +53,10 @@
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
                     <td>
-                        <!--ONLY SHOW AS LINK IF USER IS ADMIN-->
                         <div th:each="role: ${listedUser.roleStrings}">
                             <div id="role-button">
                                 <div th:text="${role}"></div>
-                                <form th:if="${isAdmin}" th:action="@{/removeRole}"  method="post">
+                                <form th:if="${#lists.size(listedUser.roleStrings) > 1 and isTeacher and !(role == 'Course Administrator') and (!(role == 'Teacher') or isCourseAdmin)}" th:action="@{/removeRole}"  method="post">
                                     <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                                     <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                                     <input type="hidden" th:name="roleType"  th:value="${#strings.toUpperCase(role)}" />
@@ -66,9 +65,8 @@
                             </div>
                         </div>
                     </td>
-                    <td th:if="${isAdmin}">
-                        <!--ONLY SHOW ADD LINK IF ROLE NOT ALREADY PRESENT??-->
-                        <form th:action="@{/addRole}"  method="post">
+                    <td th:if="${isTeacher}">
+                        <form th:if="${isTeacher and !#lists.contains(listedUser.roleStrings, 'Student')}" th:action="@{/addRole}"  method="post">
                             <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="STUDENT" />
@@ -76,20 +74,12 @@
                                 + Student
                             </button>
                         </form>
-                        <form th:action="@{/addRole}"  method="post">
+                        <form th:if="${isCourseAdmin and !#lists.contains(listedUser.roleStrings, 'Teacher')}" th:action="@{/addRole}"  method="post">
                             <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="TEACHER" />
                             <button class="button" type="submit">
                                 + Teacher
-                            </button>
-                        </form>
-                        <form th:action="@{/addRole}"  method="post">
-                            <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
-                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
-                            <input type="hidden" th:name="roleType"  th:value="COURSE_ADMINISTRATOR" />
-                            <button class="button" type="submit">
-                                + Course Administrator
                             </button>
                         </form>
                     </td>
