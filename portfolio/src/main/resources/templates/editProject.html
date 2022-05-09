@@ -36,10 +36,10 @@
             <!-- Add/Edit Project Form -->
             <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${projectId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
-                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${projectName}" th:value="${projectName}" required>
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" minlength="1" maxlength="255" th:placeholder="${projectName}" th:value="${projectName}" required pattern=".*\S.*">
 
                 <label for="project-form__description-field">Project Description</label>
-                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
+                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
                 <label for="project-form__start-date-field">Project Start Date *</label>
                 <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>

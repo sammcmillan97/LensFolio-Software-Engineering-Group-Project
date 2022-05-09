@@ -582,7 +582,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         } else if (!email.contains("@")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must contain an @").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
 
@@ -607,6 +607,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
+            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }

@@ -175,8 +175,18 @@ public class EditProjectController {
             return "redirect:/projects";
         }
 
-        // Check required fields are not null
-        if (projectName == null || projectEndDate == null || projectStartDate == null) {
+        // Check the project name isn't null, empty, too long or consists of whitespace
+        if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
+            return "redirect:/projects/edit/" + projectId;
+            // Check project name is
+        }
+
+        if (projectDescription.length() > 255) {
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // Check dates are not null
+        if (projectEndDate == null || projectStartDate == null) {
             //TODO Add logging for error
             return "redirect:/projects/edit/" + projectId;
         }
