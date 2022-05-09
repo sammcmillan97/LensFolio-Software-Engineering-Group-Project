@@ -28,7 +28,7 @@ public class Event {
     @Override
     public String toString() {
         return String.format(
-                "Event[id=%d, eventParentProjectId='%d', eventName='%s', eventLabel='%s', eventStartDate='%s', eventEndDate='%s']",
+                "Event[eventId=%d, eventParentProjectId='%d', eventName='%s', eventNumber='%s', eventStartDate='%s', eventEndDate='%s']",
                 eventId, eventParentProjectId, eventName, "Event " + eventNumber, eventStartDate, eventEndDate);
     }
 
