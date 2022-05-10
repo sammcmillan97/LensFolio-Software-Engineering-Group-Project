@@ -49,6 +49,8 @@ html {
 #project__name {
     font-weight: 400;
     margin: 0 0 1rem 0;
+    width: calc(100% - 15rem);
+    word-wrap: break-word;
 }
 
 #project__date {

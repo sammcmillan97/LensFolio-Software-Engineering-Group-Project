@@ -113,6 +113,11 @@ public class EditProjectController {
         java.util.Date minStartDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
 
+        // A project must end within 10 years from today
+        cal.add(Calendar.YEAR, 11);
+        java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
+        model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, "yyyy-MM-dd"));
+
         // Check if the project has any sprints
         List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
         if (! projectSprints.isEmpty()) {
