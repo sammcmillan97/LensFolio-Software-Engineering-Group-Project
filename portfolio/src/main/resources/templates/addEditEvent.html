@@ -31,14 +31,8 @@
             <label for="event-form__start-date-field">Event Start Date *</label>
             <input type="datetime-local" id="event-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
 
-<!--            <label for="event-form__start-time-field">Event Start Time </label>-->
-<!--            <input type="time" id="event-form__start-time-field" name="eventStartTime" min="0:01" max="23:59" required>-->
-
             <label for="event-form__end-date-field">Event End Date *</label>
             <input type="datetime-local" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
-
-<!--            <label for="event-form__end-time-field">Event End Time </label>-->
-<!--            <input type="time" id="event-form__end-time-field" name="eventEndTime" min="0:01" max="23:59" required>-->
 
             <button type="submit" id="event-form__save">Save Changes</button>
             <a id="event-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>

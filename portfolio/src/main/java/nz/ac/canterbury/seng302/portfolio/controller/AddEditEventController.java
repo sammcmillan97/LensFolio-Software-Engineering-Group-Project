@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,7 +96,7 @@ public class AddEditEventController {
             @RequestParam(value="eventName") String eventName,
             @RequestParam(value="eventStartDate") String eventStart,
             @RequestParam(value="eventEndDate") String eventEnd,
-            Model model) {
+            Model model) throws ParseException {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
@@ -104,10 +105,13 @@ public class AddEditEventController {
         // Check ids can be parsed
         int eventId;
         int projectId;
-        Timestamp eventStartDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
-        String eventStart1 = Event.dateToString(eventStartDate);
-        Timestamp eventEndDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
-        String eventEnd1 = Event.dateToString(eventEndDate);
+
+        // Convert String values of start and end date-time to timestamp
+        Timestamp startDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
+        Timestamp endDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
+
+        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(startDate));
+        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(endDate));
 
         try {
             // Parse ids  from string
@@ -118,7 +122,7 @@ public class AddEditEventController {
         }
         //Check if it's an existing event
         if(eventId == -1) {
-            Event newEvent  = new Event(projectId, eventName, new Date(eventStart1) , new Date(eventEnd1));
+            Event newEvent  = new Event(projectId, eventName, eventStartDate , eventEndDate);
             eventService.saveEvent(newEvent);
         } else {
             //Edit existing event

@@ -47,7 +47,7 @@ public class Event implements ImportantDate{
      * @return the given date, as a string in format 01/Jan/2000 00:00:00
      */
     public static String dateToString(Date date) {
-        return new SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(date);
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date);
     }
 
     /* Getters/Setters */
