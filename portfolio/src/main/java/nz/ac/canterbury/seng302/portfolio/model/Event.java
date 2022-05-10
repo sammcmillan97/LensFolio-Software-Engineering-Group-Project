@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -122,4 +123,5 @@ public class Event implements ImportantDate{
     public void setColourEnd(String colourEnd) {
         this.colourEnd = colourEnd;
     }
+
 }

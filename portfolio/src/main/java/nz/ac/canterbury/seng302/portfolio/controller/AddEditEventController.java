@@ -88,11 +88,15 @@ public class AddEditEventController {
             @RequestParam(value="eventName") String eventName,
             @RequestParam(value="eventStartDate") java.sql.Date eventStartDate,
             @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
+            @RequestParam(value="eventStartTime") java.sql.Time eventStartTime,
+            @RequestParam(value="eventEndTime") java.sql.Time eventEndTime,
             Model model) {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
         }
+        System.out.println(eventEndTime);
+        System.out.println(eventStartTime);
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
         int eventId;
@@ -106,7 +110,7 @@ public class AddEditEventController {
         }
         //Check if it's an existing event
         if(eventId == -1) {
-            Event newEvent  = new Event(projectId, eventName, eventStartDate, eventEndDate);
+            Event newEvent  = new Event(projectId, eventName, eventStartDate.getTime() , eventEndDate);
             eventService.saveEvent(newEvent);
         } else {
             //Edit existing event
