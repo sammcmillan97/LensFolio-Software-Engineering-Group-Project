@@ -95,3 +95,10 @@ a.button {
     border-bottom: 1px solid lightgray;
     border-radius: 3px;
 }
+
+.form-error-message {
+    margin-left: 10px;
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
