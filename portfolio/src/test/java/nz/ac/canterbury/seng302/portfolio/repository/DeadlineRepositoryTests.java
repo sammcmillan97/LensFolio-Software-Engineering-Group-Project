@@ -42,8 +42,8 @@ public class DeadlineRepositoryTests {
     @Test
     void findAllDeadlines() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
-        Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1", 1, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-24"));
-        Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", 2, Date.valueOf("2022-05-25"), Date.valueOf("2022-06-10"));
+        Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1", 1,  Date.valueOf("2022-06-24"));
+        Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", 2, Date.valueOf("2022-06-10"));
         List<Deadline> deadlines = new ArrayList<>();
         deadlines.add(deadline1);
         deadlines.add(deadline2);
@@ -55,22 +55,20 @@ public class DeadlineRepositoryTests {
         assertThat(deadlinesFromDatabase.get(0).getDeadlineId()).isEqualTo(deadlines.get(0).getDeadlineId());
         assertThat(deadlinesFromDatabase.get(0).getDeadlineName()).isEqualTo(deadlines.get(0).getDeadlineName());
         assertThat(deadlinesFromDatabase.get(0).getDeadlineNumber()).isEqualTo(deadlines.get(0).getDeadlineNumber());
-        assertThat(deadlinesFromDatabase.get(0).getDeadlineStartDate()).isEqualTo(deadlines.get(0).getDeadlineStartDate());
         assertThat(deadlinesFromDatabase.get(0).getDeadlineEndDate()).isEqualTo(deadlines.get(0).getDeadlineEndDate());
 
         assertThat(deadlinesFromDatabase.get(1)).isNotNull();
         assertThat(deadlinesFromDatabase.get(1).getDeadlineId()).isEqualTo(deadlines.get(1).getDeadlineId());
         assertThat(deadlinesFromDatabase.get(1).getDeadlineName()).isEqualTo(deadlines.get(1).getDeadlineName());
         assertThat(deadlinesFromDatabase.get(1).getDeadlineNumber()).isEqualTo(deadlines.get(1).getDeadlineNumber());
-        assertThat(deadlinesFromDatabase.get(1).getDeadlineStartDate()).isEqualTo(deadlines.get(1).getDeadlineStartDate());
         assertThat(deadlinesFromDatabase.get(1).getDeadlineEndDate()).isEqualTo(deadlines.get(1).getDeadlineEndDate());
     }
     
     @Test
     void findDeadlineById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
-        Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1", 1, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-24"));
-        Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", 2, Date.valueOf("2022-05-25"), Date.valueOf("2022-06-10"));
+        Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1", 1,  Date.valueOf("2022-06-24"));
+        Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", 2, Date.valueOf("2022-06-10"));
         List<Deadline> deadlines = new ArrayList<>();
         deadlines.add(deadline1);
         deadlines.add(deadline2);
@@ -84,21 +82,19 @@ public class DeadlineRepositoryTests {
         assertThat(retrievedDeadline1.getDeadlineId()).isEqualTo(deadlines.get(0).getDeadlineId());
         assertThat(retrievedDeadline1.getDeadlineName()).isEqualTo(deadlines.get(0).getDeadlineName());
         assertThat(retrievedDeadline1.getDeadlineNumber()).isEqualTo(deadlines.get(0).getDeadlineNumber());
-        assertThat(retrievedDeadline1.getDeadlineStartDate()).isEqualTo(deadlines.get(0).getDeadlineStartDate());
         assertThat(retrievedDeadline1.getDeadlineEndDate()).isEqualTo(deadlines.get(0).getDeadlineEndDate());
 
         assertThat(retrievedDeadline2).isNotNull();
         assertThat(retrievedDeadline2.getDeadlineId()).isEqualTo(deadlines.get(1).getDeadlineId());
         assertThat(retrievedDeadline2.getDeadlineName()).isEqualTo(deadlines.get(1).getDeadlineName());
         assertThat(retrievedDeadline2.getDeadlineNumber()).isEqualTo(deadlines.get(1).getDeadlineNumber());
-        assertThat(retrievedDeadline2.getDeadlineStartDate()).isEqualTo(deadlines.get(1).getDeadlineStartDate());
         assertThat(retrievedDeadline2.getDeadlineEndDate()).isEqualTo(deadlines.get(1).getDeadlineEndDate());
     }
     
     @Test
     void addDeadlineViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
-        Deadline deadline = new Deadline(project1.getId(), "Deadline", 1, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-24"));
+        Deadline deadline = new Deadline(project1.getId(), "Deadline", 1, Date.valueOf("2022-06-24"));
         projectRepository.save(project1);
         deadlineRepository.save(deadline);
         
@@ -108,7 +104,6 @@ public class DeadlineRepositoryTests {
         assertThat(retrievedDeadline.getDeadlineId()).isEqualTo(deadline.getDeadlineId());
         assertThat(retrievedDeadline.getDeadlineName()).isEqualTo(deadline.getDeadlineName());
         assertThat(retrievedDeadline.getDeadlineNumber()).isEqualTo(deadline.getDeadlineNumber());
-        assertThat(retrievedDeadline.getDeadlineStartDate()).isEqualTo(deadline.getDeadlineStartDate());
         assertThat(retrievedDeadline.getDeadlineEndDate()).isEqualTo(deadline.getDeadlineEndDate());
     }
 }
