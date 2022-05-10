@@ -300,9 +300,9 @@ class EventServiceTest {
      */
     @Test
     void whenEventStartDateIsChangedToDateBeforeCurrentAndAfterPreviousEventDate_testStartDateChanged() throws Exception {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 2", 2,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 2",
                 Date.valueOf("2022-06-09"), Date.valueOf("2022-06-20")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(1).getEventId();
@@ -317,7 +317,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventStartDateIsChangedToDateBeforeCurrentDateAndNotWithinProjectDates_testExceptionThrown() {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -333,7 +333,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventStartDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventStartDateChanged() throws Exception {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -348,7 +348,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventStartDateIsChangedToDateAfterCurrentAndAfterEventEndDate_testExceptionThrown() {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -365,7 +365,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventEndDateIsChangedToDateBeforeCurrentDateAndWithinProjectDates_testEventEndDateChanged() throws Exception {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -380,7 +380,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventEndDateIsChangedToDateBeforeCurrentAndBeforeEventStartDate_testExceptionThrown() {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -396,9 +396,9 @@ class EventServiceTest {
      */
     @Test
     void whenEventEndDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventEndDateChanged() throws Exception {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-06-10"), Date.valueOf("2022-06-30")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
@@ -413,7 +413,7 @@ class EventServiceTest {
      */
     @Test
     void whenEventEndDateIsChangedToDateAfterCurrentAndNotWithinProjectDates_testExceptionThrown() {
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1", 1,
+        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
