@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Event
@@ -38,6 +39,16 @@ public class Event implements ImportantDate{
                 eventId, eventParentProjectId, eventName, eventStartDate, eventEndDate);
     }
 
+    /**
+     * Gets the string form of the given date in a readable format
+     *
+     * @param date the date to convert
+     * @return the given date, as a string in format 01/Jan/2000
+     */
+    public static String dateToString(Date date) {
+        return new SimpleDateFormat("dd/MMM/yyyy").format(date);
+    }
+
     /* Getters/Setters */
 
     public int getEventId() {
@@ -60,12 +71,20 @@ public class Event implements ImportantDate{
         return eventStartDate;
     }
 
+    public String getStartDateString() {
+        return Project.dateToString(this.eventStartDate);
+    }
+
     public void setEventStartDate(Date eventStartDate) {
         this.eventStartDate = eventStartDate;
     }
 
     public Date getEventEndDate() {
         return eventEndDate;
+    }
+
+    public String getEndDateString() {
+        return Project.dateToString(this.eventEndDate);
     }
 
     public void setEventEndDate(Date eventEndDate) {
