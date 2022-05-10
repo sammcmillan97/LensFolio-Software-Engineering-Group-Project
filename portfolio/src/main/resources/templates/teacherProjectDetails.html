@@ -49,7 +49,7 @@
                 <!-- New Sprint Button -->
                 <a class="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
                 <!-- New Event Button -->
-                <a class="new-event-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Event</a>
+                <a class="new-event-button" th:href="@{/projects/edit/event/{project}/-1(project=${project.getId})}">Add Event</a>
             </div>
 
             <div th:each="importantDate : ${importantDates}">
@@ -76,7 +76,7 @@
                     <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                         <div class="flex-row">
                             <div class="event">
-                                <h2 class="event__name" th:text="${eventList.get(event.key).getEventName}"></h2>
+                                <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2>
                                 <!-- Edit/Delete Inside event Buttons -->
                                 <div class="event__button-wrapper flex-row">
 
@@ -85,7 +85,7 @@
                                     </form>
 
                                     <form action="#" th:action="@{/projects/delete/{project}/{sprint}(project=${project.getId}, sprint=${eventList.get(event).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
-                                    <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event.key).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                                    <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
                                         <button type="submit">Delete</button>
                                     </form>
                                 </div>

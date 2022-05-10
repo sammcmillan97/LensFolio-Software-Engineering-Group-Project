@@ -24,7 +24,7 @@
         </header>
 
         <!-- Add/Edit Event Form -->
-        <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/event/{parentProjectId}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
+        <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/event/{project}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
             <label for="sprint-form__name-field">Event name</label>
             <input type="text" id="sprint-form__name-field" class="edit-input" name="eventName" th:placeholder="${eventName}" th:value="${eventName}" required>
 
