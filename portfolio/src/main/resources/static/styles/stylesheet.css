@@ -56,5 +56,5 @@ h5 {
     padding: 3px;
     padding-right: 4px; /* Needed to make the buttons look better, due to kerning issues with display: inline */
     margin: 2px;
-    display: inline;
+    display: inline-block;
 }

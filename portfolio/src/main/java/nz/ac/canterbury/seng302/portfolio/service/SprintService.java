@@ -6,10 +6,7 @@ import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
 
@@ -30,14 +27,14 @@ public class SprintService {
     /**
      * Get sprint by id
      */
-    public Sprint getSprintById(Integer id) throws Exception {
+    public Sprint getSprintById(Integer id) throws NoSuchElementException {
         Optional<Sprint> sprint = repository.findById(id);
         if(sprint.isPresent()) {
             return sprint.get();
         }
         else
         {
-            throw new Exception("Sprint not found");
+            throw new NoSuchElementException("Sprint not found");
         }
     }
 

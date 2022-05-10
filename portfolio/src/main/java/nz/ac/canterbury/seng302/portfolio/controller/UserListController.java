@@ -97,7 +97,8 @@ public class UserListController {
                .findFirst()
                .map(ClaimDTO::getValue)
                .orElse("NOT FOUND");
-        model.addAttribute("isAdmin", role.contains("teacher") || role.contains("courseadministrator"));
+        model.addAttribute("isCourseAdmin", role.contains("courseadministrator"));
+        model.addAttribute("isTeacher", role.contains("teacher") || role.contains("courseadministrator"));
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);

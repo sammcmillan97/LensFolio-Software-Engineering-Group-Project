@@ -38,7 +38,7 @@ public class ProjectDetailsController {
      * @return The project page displaying the selected projects details
      */
     @GetMapping("/projects/{id}")
-    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
+    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) {
         // Add user details to model
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
@@ -58,10 +58,8 @@ public class ProjectDetailsController {
 
 
         /* Return the name of the Thymeleaf template
-        detects the role of the current user and returns appropriate page
-        System.out.println(role);*/
-        String role = userAccountClientService.getRole(principal);
-        if (role.contains("teacher")) {
+        detects the role of the current user and returns appropriate page */
+        if (userAccountClientService.isTeacher(principal)) {
             return "teacherProjectDetails";
 
         } else {

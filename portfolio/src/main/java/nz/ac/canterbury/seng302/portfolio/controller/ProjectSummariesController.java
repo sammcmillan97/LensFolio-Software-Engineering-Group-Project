@@ -55,8 +55,7 @@ public class ProjectSummariesController {
 
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
-        String role = userAccountClientService.getRole(principal);
-        if (role.contains("teacher")) {
+        if (userAccountClientService.isTeacher(principal)) {
 
             // Add default project if none exist
             if (projects.isEmpty()) {

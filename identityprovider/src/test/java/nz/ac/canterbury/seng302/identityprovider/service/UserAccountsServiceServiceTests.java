@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
-import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.STUDENT;
-import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.TEACHER;
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -844,4 +843,46 @@ class UserAccountsServiceServiceTests {
         roleSet.add(studentRole);
         assertEquals(roleSet, updatedUser.getRoles());
     }
+
+    // Check that no user has permissions to modify an admin role
+    @Test
+    void isValidatedForRoleTestNotValidForAdmin() {
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that a teacher does not have permissions to modify a teacher role
+    @Test
+    void isValidatedForRoleTestNotValidForTeacherOnTeacher() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that an admin does have permissions to modify a teacher role
+    @Test
+    void isValidatedForRoleTestValidForTeacherOnAdmin() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that a student does not have permissions to modify a student role
+    @Test
+    void isValidatedForRoleTestNotValidForStudentOnStudent() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that a teacher does have permissions to modify a student role
+    @Test
+    void isValidatedForRoleTestValidForStudentOnTeacher() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+    }
+
 }
