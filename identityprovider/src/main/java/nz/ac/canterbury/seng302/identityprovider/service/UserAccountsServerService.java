@@ -773,6 +773,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must not contain only whitespace").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
+
         if (password.length() > 64) {
             System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
