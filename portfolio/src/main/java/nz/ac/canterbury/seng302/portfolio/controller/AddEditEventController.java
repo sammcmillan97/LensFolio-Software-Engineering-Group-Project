@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for the edit event page
@@ -58,11 +60,14 @@ public class AddEditEventController {
         model.addAttribute("projectId", project.getId());
 
         Event event;
+        //Check if it is existing or new event
         if (Integer.parseInt(eventId) != -1) {
             event = eventService.getEventById(Integer.parseInt(eventId));
         } else {
+            //Create new event
             event = new Event();
             event.setEventName("EventName");
+            //Default start and end date is the project start and end date
             event.setEventStartDate(project.getStartDate());
             event.setEventEndDate(project.getEndDate());
         }
@@ -75,9 +80,44 @@ public class AddEditEventController {
         model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
         model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
 
-
         return "addEditEvent";
     }
+
+    @PostMapping("/projects/edit/event/{parentProjectId}/{eventId}")
+    public String addEditEvent(
+            @AuthenticationPrincipal AuthState principle,
+            @PathVariable("parentProjectId") String projectIdString,
+            @PathVariable("eventId") String eventIdString,
+            @RequestParam(value="eventName") String eventName,
+            @RequestParam(value="eventStartDate") java.sql.Date eventStartDate,
+            @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
+            Model model) {
+        //Check if it is a teacher making the request
+        if (!userAccountClientService.isTeacher(principle)) {
+            return "redirect:/projects";
+        }
+        // Ensure request parameters represent a valid sprint.
+        // Check ids can be parsed
+        int eventId;
+        int projectId;
+        try {
+            // Parse ids and dates from string
+            eventId = Integer.parseInt(eventIdString);
+            projectId = Integer.parseInt(projectIdString);
+        } catch (NumberFormatException e) {
+            //TODO Add logging for error
+            return "redirect:/projects";
+        }
+
+
+
+
+        return "HELLO";
+    }
+
+
+
+
 
 
 }
