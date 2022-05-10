@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit Sprint</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{/styles/addEditSprint.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div id="sprint-form__wrapper">
+        <!-- Name, Date -->
+        <header class="sprint-form__header flex-column">
+            <h1 id="sprint__name" th:text="${eventName}"></h1>
+        </header>
+
+        <!-- Add/Edit Event Form -->
+        <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/event/{project}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
+            <label for="sprint-form__name-field">Event name</label>
+            <input type="text" id="sprint-form__name-field" class="edit-input" name="eventName" th:placeholder="${eventName}" th:value="${eventName}" required>
+
+            <label for="sprint-form__start-date-field">Event Start Date *</label>
+            <input type="date" id="sprint-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
+
+            <label for="sprint-form__end-date-field">Event End Date *</label>
+            <input type="date" id="sprint-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
+
+            <button type="submit" id="sprint-form__save">Save Changes</button>
+            <a id="sprint-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>
