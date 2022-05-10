@@ -14,6 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 /**
  * Controller for the edit event page
  */
@@ -86,21 +93,22 @@ public class AddEditEventController {
             @PathVariable("parentProjectId") String projectIdString,
             @PathVariable("eventId") String eventIdString,
             @RequestParam(value="eventName") String eventName,
-            @RequestParam(value="eventStartDate") java.sql.Date eventStartDate,
-            @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
-            @RequestParam(value="eventStartTime") java.sql.Time eventStartTime,
-            @RequestParam(value="eventEndTime") java.sql.Time eventEndTime,
+            @RequestParam(value="eventStartDate") String eventStart,
+            @RequestParam(value="eventEndDate") String eventEnd,
             Model model) {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
         }
-        System.out.println(eventEndTime);
-        System.out.println(eventStartTime);
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
         int eventId;
         int projectId;
+        Timestamp eventStartDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
+        String eventStart1 = Event.dateToString(eventStartDate);
+        Timestamp eventEndDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
+        String eventEnd1 = Event.dateToString(eventEndDate);
+
         try {
             // Parse ids  from string
             eventId = Integer.parseInt(eventIdString);
@@ -110,7 +118,7 @@ public class AddEditEventController {
         }
         //Check if it's an existing event
         if(eventId == -1) {
-            Event newEvent  = new Event(projectId, eventName, eventStartDate.getTime() , eventEndDate);
+            Event newEvent  = new Event(projectId, eventName, new Date(eventStart1) , new Date(eventEnd1));
             eventService.saveEvent(newEvent);
         } else {
             //Edit existing event

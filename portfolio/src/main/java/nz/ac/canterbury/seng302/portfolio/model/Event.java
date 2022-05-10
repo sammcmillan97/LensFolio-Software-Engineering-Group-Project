@@ -44,10 +44,10 @@ public class Event implements ImportantDate{
      * Gets the string form of the given date in a readable format
      *
      * @param date the date to convert
-     * @return the given date, as a string in format 01/Jan/2000
+     * @return the given date, as a string in format 01/Jan/2000 00:00:00
      */
     public static String dateToString(Date date) {
-        return new SimpleDateFormat("dd/MMM/yyyy").format(date);
+        return new SimpleDateFormat("dd/MMM/yyyy hh:mm:ss").format(date);
     }
 
     /* Getters/Setters */

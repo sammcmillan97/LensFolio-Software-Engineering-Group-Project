@@ -32,7 +32,7 @@
 }
 
 /* Set a style for the  button */
-#event-form__form button, #sprint-form__form a {
+#event-form__form button, #event-form__form a {
     padding: 0;
     margin-bottom: 1rem;
     background-color: var(--color-complement);
@@ -49,7 +49,7 @@
 }
 
 /*Add some hover effects to buttons */
-#event-form__form button:hover, #sprint-form__form a:hover {
+#event-form__form button:hover, #event-form__form a:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
