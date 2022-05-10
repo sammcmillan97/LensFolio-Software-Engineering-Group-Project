@@ -45,7 +45,7 @@
             <input class="button" id="submit-button" type="submit" value="Save new Profile Picture" />
         </form><br>
 
-        <form th:action="@{/removeProfilePicture}"  method="post">
+        <form th:action="@{removeProfilePicture}"  method="post">
             <input type="hidden" th:name="username"  th:value="${username}" id="delete-username"/><br>
             <button class="button" id="delete-button" type="submit" onClick="return confirm('Are you sure you want to permanently delete your profile picture?')">
                 Delete my Profile Picture
