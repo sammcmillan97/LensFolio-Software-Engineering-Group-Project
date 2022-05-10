@@ -63,9 +63,9 @@ public class ProjectDetailsController {
         model.addAttribute("project", project);
 
         eventRepository.deleteAll();
-        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", 1, Date.valueOf("2022-05-1"), Date.valueOf("2022-05-4")));
-        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "xmas", 2, Date.valueOf("2022-06-01"), Date.valueOf("2022-06-05")));
-        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", 3, Date.valueOf("2022-05-09"), Date.valueOf("2022-06-25")));
+        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christmas", Date.valueOf("2022-05-1"), Date.valueOf("2022-05-4")));
+        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "xmas", Date.valueOf("2022-06-01"), Date.valueOf("2022-06-05")));
+        eventService.saveEvent(new Event(Integer.parseInt(id, 10), "Christ", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-25")));
 
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         ProjectDetailsUtil.colorSprints(sprintList);

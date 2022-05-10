@@ -90,7 +90,6 @@ public class EventService {
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
         List<Event> events = getByEventParentProjectId(eventToChange.getEventParentProjectId());
-        events.sort(Comparator.comparing(Event::getEventNumber));
 
         if (newStartDate.compareTo(eventToChange.getEventEndDate()) > 0) {
             throw new UnsupportedOperationException("Event start date must not be after end date");
@@ -113,7 +112,6 @@ public class EventService {
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
         List<Event> events = getByEventParentProjectId(eventToChange.getEventParentProjectId());
-        events.sort(Comparator.comparing(Event::getEventNumber));
 
         if (newEndDate.compareTo(eventToChange.getEventStartDate()) < 0) {
             throw new UnsupportedOperationException("Event end date must not be before start date");
