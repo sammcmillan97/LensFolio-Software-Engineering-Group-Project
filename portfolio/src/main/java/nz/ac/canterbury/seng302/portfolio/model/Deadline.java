@@ -26,7 +26,7 @@ public class Deadline {
     @Override
     public String toString() {
         return String.format(
-                "Deadline[deadlineId=%d, deadlineParentProjectId='%d', deadlineName='%s', deadlineNumber='%s', deadlineStartDate='%s', deadlineEndDate='%s']",
+                "Deadline[deadlineId=%d, deadlineParentProjectId='%d', deadlineName='%s', deadlineNumber='%s', deadlineEndDate='%s']",
                 deadlineId, deadlineParentProjectId, deadlineName, "Deadline " + deadlineNumber, deadlineEndDate);
     }
 
