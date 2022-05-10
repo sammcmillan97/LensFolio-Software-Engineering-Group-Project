@@ -47,7 +47,7 @@ public class EventService {
      * @return the list of events by the project id
      */
     public List<Event> getByEventParentProjectId(int projectId) {
-        return eventRepository.findByEventParentProjectId(projectId);
+        return eventRepository.findByEventParentProjectIdOrderByEventStartDate(projectId);
     }
 
     /**
