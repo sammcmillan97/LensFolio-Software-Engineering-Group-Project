@@ -93,6 +93,7 @@ public class AddEditEventController {
             @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
             Model model) {
         //Check if it is a teacher making the request
+        System.out.println("reached");
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
         }
@@ -101,23 +102,29 @@ public class AddEditEventController {
         int eventId;
         int projectId;
         try {
-            // Parse ids and dates from string
+            // Parse ids  from string
             eventId = Integer.parseInt(eventIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            //TODO Add logging for error
             return "redirect:/projects";
         }
-
-
-
-
-        return "HELLO";
+        System.out.println("reached2");
+        //Check if it's an existing event
+        if(eventId == -1) {
+            Event newEvent  = new Event(projectId, eventName, eventStartDate, eventEndDate);
+            eventService.saveEvent(newEvent);
+        } else {
+            //Edit existing event
+            try {
+                Event existingEvent = eventService.getEventById(eventId);
+                existingEvent.setEventName(eventName);
+                eventService.updateStartDate(eventId, eventStartDate);
+                eventService.updateEndDate(eventId, eventEndDate);
+                eventService.saveEvent(existingEvent);
+            } catch (Exception e) {
+                System.out.println("Failed to update existing event");
+            }
+        }
+        return "redirect:/projects/" + projectIdString;
     }
-
-
-
-
-
-
 }
