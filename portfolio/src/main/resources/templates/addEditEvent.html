@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Edit Sprint</title>
+    <title>Edit event</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
-    <link th:href="@{/styles/addEditSprint.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
+    <link th:href="@{/styles/addEditEvent.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{/scripts/addEditEvent.js}"></script>
 </head>
 
 <body>
@@ -17,25 +17,31 @@
 
 <!-- Page content -->
 <div id="page-content" class="constrict">
-    <div id="sprint-form__wrapper">
+    <div id="event-form__wrapper">
         <!-- Name, Date -->
-        <header class="sprint-form__header flex-column">
-            <h1 id="sprint__name" th:text="${eventName}"></h1>
+        <header class="event-form__header flex-column">
+            <h1 id="event__name" th:text="${eventName}"></h1>
         </header>
 
         <!-- Add/Edit Event Form -->
-        <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/event/{project}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
-            <label for="sprint-form__name-field">Event name</label>
-            <input type="text" id="sprint-form__name-field" class="edit-input" name="eventName" th:placeholder="${eventName}" th:value="${eventName}" required>
+        <form id="event-form__form" class="flex-column" th:action="@{/projects/edit/event/{project}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
+            <label for="event-form__name-field">Event name</label>
+            <input type="text" id="event-form__name-field" class="edit-input" name="eventName" placeholder="Event Name" th:value="${eventName}" required>
 
-            <label for="sprint-form__start-date-field">Event Start Date *</label>
-            <input type="date" id="sprint-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
+            <label for="event-form__start-date-field">Event Start Date *</label>
+            <input type="date" id="event-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
 
-            <label for="sprint-form__end-date-field">Event End Date *</label>
-            <input type="date" id="sprint-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
+            <label for="event-form__start-time-field">Event Start Time </label>
+            <input type="time" id="event-form__start-time-field" name="appt" min="0:01" max="23:59" required>
 
-            <button type="submit" id="sprint-form__save">Save Changes</button>
-            <a id="sprint-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
+            <label for="event-form__end-date-field">Event End Date *</label>
+            <input type="date" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
+
+            <label for="event-form__end-time-field">Event Start Time </label>
+            <input type="time" id="event-form__end-time-field" name="appt" min="0:01" max="23:59" required>
+
+            <button type="submit" id="event-form__save">Save Changes</button>
+            <a id="event-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
         </form>
     </div>
 </div>
