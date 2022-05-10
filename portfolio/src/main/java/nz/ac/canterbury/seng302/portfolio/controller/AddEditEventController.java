@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller for the edit event page
@@ -93,7 +90,6 @@ public class AddEditEventController {
             @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
             Model model) {
         //Check if it is a teacher making the request
-        System.out.println("reached");
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
         }
@@ -108,7 +104,6 @@ public class AddEditEventController {
         } catch (NumberFormatException e) {
             return "redirect:/projects";
         }
-        System.out.println("reached2");
         //Check if it's an existing event
         if(eventId == -1) {
             Event newEvent  = new Event(projectId, eventName, eventStartDate, eventEndDate);
@@ -126,5 +121,24 @@ public class AddEditEventController {
             }
         }
         return "redirect:/projects/" + projectIdString;
+    }
+
+    /**
+     * The method which is used to delete an event from a project by using its id.
+     * @param principal is the Authentication principal storing the current user information
+     * @param parentProjectId is the id of the parent project of the event being deleted
+     * @param eventId is the id of the event being deleted
+     * @return the project page of the parent project
+     */
+    @DeleteMapping(value="/projects/delete/event/{parentProjectId}/{eventId}")
+    public String deleteProjectEventById(@AuthenticationPrincipal AuthState principal,
+                                         @PathVariable("parentProjectId") String parentProjectId,
+                                         @PathVariable("eventId") String eventId) {
+        if (!userAccountClientService.isTeacher(principal)) {
+            return "redirect:/projects";
+        }
+
+        eventService.deleteEventById(Integer.parseInt(eventId));
+        return "redirect:/projects/" + parentProjectId;
     }
 }

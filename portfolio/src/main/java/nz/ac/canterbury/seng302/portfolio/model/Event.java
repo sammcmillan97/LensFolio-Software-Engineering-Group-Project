@@ -35,7 +35,7 @@ public class Event implements ImportantDate{
     @Override
     public String toString() {
         return String.format(
-                "Event[id=%d, eventParentProjectId='%d', eventName='%s', eventLabel='%s', eventStartDate='%s', eventEndDate='%s']",
+                "Event[id=%d, eventParentProjectId='%d', eventName='%s', eventStartDate='%s', eventEndDate='%s']",
                 eventId, eventParentProjectId, eventName, eventStartDate, eventEndDate);
     }
 
