@@ -27,14 +27,14 @@ public class SprintService {
     /**
      * Get sprint by id
      */
-    public Sprint getSprintById(Integer id) throws Exception {
+    public Sprint getSprintById(Integer id) throws NoSuchElementException {
         Optional<Sprint> sprint = repository.findById(id);
         if(sprint.isPresent()) {
             return sprint.get();
         }
         else
         {
-            throw new Exception("Sprint not found");
+            throw new NoSuchElementException("Sprint not found");
         }
     }
 
