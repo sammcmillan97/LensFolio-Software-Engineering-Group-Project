@@ -36,7 +36,7 @@ public class ProjectDetailsController {
      * @param id The ID of the project being displayed
      * @return The project page displaying the selected projects details
      */
-    @GetMapping("/projects/{id}")
+    @GetMapping("/projectDetails-{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         // Add user details to model
         int userId = Integer.parseInt(principal.getClaimsList().stream()
