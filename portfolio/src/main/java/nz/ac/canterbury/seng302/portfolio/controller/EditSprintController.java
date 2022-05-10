@@ -178,7 +178,7 @@ public class EditSprintController {
      * @param model ThymeLeaf model
      * @return The edit sprint page
      */
-    @GetMapping("/projects/edit/{parentProjectId}/{sprintId}")
+    @GetMapping("/editSprint-{sprintId}-{parentProjectId}")
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
                              @PathVariable("parentProjectId") String parentProjectId,
                              @PathVariable("sprintId") String sprintId,
@@ -260,7 +260,7 @@ public class EditSprintController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The edit sprints page
      */
-    @PostMapping("/projects/edit/{parentProjectId}/{sprintId}")
+    @PostMapping("/editSprint-{sprintId}-{parentProjectId}")
     public String sprintSave(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("parentProjectId") String projectIdString,
@@ -303,13 +303,13 @@ public class EditSprintController {
             }
         } catch (Exception e) {
             //TODO Add logging for error
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:/editSprint-" + sprintId + "-" + projectId;
         }
 
         // Ensure required fields are not null
         if (sprintName == null || sprintStartDate == null || sprintEndDate == null) {
             //TODO Add logging for error
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:/editSprint-" + sprintId + "-" + projectId;
         }
 
         // Ensure sprint dates are within bounds
@@ -323,7 +323,7 @@ public class EditSprintController {
         minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:/editSprint-" + sprintId + "-" + projectId;
         }
 
         // Check sprint ends before project end and all following sprints
@@ -331,13 +331,13 @@ public class EditSprintController {
         maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:/editSprint-" + sprintId + "-" + projectId;
         }
 
         // Ensure sprintEndDate occurs after sprintStartDate
         if (!sprintEndCal.after(sprintStartCal)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return "redirect:/editSprint-" + sprintId + "-" + projectId;
         }
 
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
@@ -354,7 +354,7 @@ public class EditSprintController {
             sprintService.saveSprint(newSprint);
         }
 
-        return "redirect:/projects/" + projectIdString;
+        return "redirect:/projectDetails-" + projectIdString;
     }
 
     /**
@@ -364,7 +364,7 @@ public class EditSprintController {
      * @param sprintId The sprint ID of the sprint being delted
      * @return The projects page
      */
-    @DeleteMapping(value="/projects/delete/{parentProjectId}/{sprintId}")
+    @DeleteMapping(value="/editSprint-{sprintId}-{parentProjectId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("sprintId") String sprintId) throws Exception {
@@ -376,7 +376,7 @@ public class EditSprintController {
         int sprintNumber = sprintService.getSprintById(Integer.parseInt(sprintId)).getNumber();
         decrementSprintNumbersGreaterThan(Integer.parseInt(parentProjectId), sprintNumber);
         sprintService.deleteById(Integer.parseInt(sprintId));
-        return "redirect:/projects/" + parentProjectId;
+        return "redirect:/projectDetails-" + parentProjectId;
     }
 
 }

@@ -234,7 +234,7 @@ public class EditProjectController {
      * @param projectId ID of the project to be deleted from the database.
      * @return Redirects back to the GET mapping for /projects.
      */
-    @DeleteMapping(value="/deleteProject-{id}")
+    @DeleteMapping(value="/editProject-{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
         String role = userAccountClientService.getRole(principal);
         if (!role.contains("teacher")) {
