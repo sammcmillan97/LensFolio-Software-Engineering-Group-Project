@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Profile Picture</title>
-    <link rel="stylesheet" th:href="@{/styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
 </head>
 <body>
     <!-- Import the application's header bar. -->
@@ -12,7 +12,7 @@
     <nav th:replace="fragments/navbar :: navbar"></nav>
 
     <div id="page-content" class="constrict">
-        <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
+        <form th:action="@{addProfilePicture}" method="post" enctype="multipart/form-data">
             <!--HIDDEN-->
             <input type="hidden" th:name="fileContent" th:value="null" id="fileContent"/>
             <input type="hidden" th:name="fileType" th:value="null" id="fileType"/>
