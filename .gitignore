@@ -8,3 +8,4 @@
 */subdirectory/*.db
 */data/*.db
 /subdirectory/*.db
+identityprovider/target/

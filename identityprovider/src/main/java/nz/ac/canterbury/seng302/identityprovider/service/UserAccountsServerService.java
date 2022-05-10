@@ -769,8 +769,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (password.length() < 8) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
-        }
-        if (password.isBlank()) {
+        } else if (password.isBlank()) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must not contain only whitespace").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
