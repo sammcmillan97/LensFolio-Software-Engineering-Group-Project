@@ -27,6 +27,7 @@ public class ProjectDetailsUtil {
                     completed++;
                 } else if (eventList.get(i).getEventStartDate().before(sprint.getStartDate()) && eventList.get(i).getEventEndDate().after(sprint.getEndDate())) {
                     sprint.addEventsInside(i);
+                    completed++;
                 }
             }
             if (completed >= 1) {
