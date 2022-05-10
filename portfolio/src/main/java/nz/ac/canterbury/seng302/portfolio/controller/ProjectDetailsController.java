@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * The Controller for handling the backend of the project details page
@@ -50,11 +51,17 @@ public class ProjectDetailsController {
 
         /* Add project details to the model */
         int projectId = Integer.parseInt(id);
-        Project project = projectService.getProjectById(projectId);
-        model.addAttribute("project", project);
+        try {
+            Project project = projectService.getProjectById(projectId);
+            model.addAttribute("project", project);
 
-        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-        model.addAttribute("sprints", sprintList);
+            List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
+            model.addAttribute("sprints", sprintList);
+        } catch (NoSuchElementException e) {
+            return "redirect:/projects";
+        }
+
+
 
 
         /* Return the name of the Thymeleaf template

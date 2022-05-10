@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -65,52 +66,6 @@ public class RegisterController {
                            @RequestParam(name="bio") String bio,
                            Model model) {
         UserRegisterResponse userRegisterResponse;
-        ArrayList<String> usernameErrors = new ArrayList<>();
-        ArrayList<String> firstNameErrors = new ArrayList<>();
-        ArrayList<String> middleNameErrors = new ArrayList<>();
-        ArrayList<String> lastNameErrors = new ArrayList<>();
-        ArrayList<String> nicknameErrors = new ArrayList<>();
-        ArrayList<String> bioErrors = new ArrayList<>();
-        ArrayList<String> pronounsErrors = new ArrayList<>();
-        ArrayList<String> emailErrors = new ArrayList<>();
-        ArrayList<String> passwordErrors = new ArrayList<>();
-
-
-        if (username.isBlank()) {
-            usernameErrors.add("Username must not contain only whitespace");
-            model.addAttribute("usernameErrors", usernameErrors);
-            return "register";
-        } else {
-            model.addAttribute("username", username);
-        }
-        if (email.isBlank()) {
-            emailErrors.add("Email must not contain only whitespace");
-            model.addAttribute("emailErrors", emailErrors);
-            return "register";
-        } else {
-            model.addAttribute("email", email);
-        }
-        if (password.isBlank()) {
-            passwordErrors.add("Password must not contain only whitespace");
-            model.addAttribute("passwordErrors", passwordErrors);
-            return "register";
-        } else {
-            model.addAttribute("password", password);
-        }
-        if (firstName.isBlank()) {
-            firstNameErrors.add("First name must not contain only whitespace");
-            model.addAttribute("firstNameErrors", firstNameErrors);
-            return "register";
-        } else {
-            model.addAttribute("firstName", firstName);
-        }
-        if (lastName.isBlank()) {
-            lastNameErrors.add("Last name must not contain only whitespace");
-            model.addAttribute("lastNameErrors", lastNameErrors);
-            return "register";
-        } else {
-            model.addAttribute("lastName", lastName);
-        }
 
         try {
             //Call the grpc with users validated params
@@ -147,36 +102,7 @@ public class RegisterController {
                 return "login";
             }
         } else {
-            for (ValidationError validationError: userRegisterResponse.getValidationErrorsList()) {
-                if (validationError.getFieldName().equals("username")) {
-                    usernameErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("firstName")) {
-                    firstNameErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("middleName")) {
-                    middleNameErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("lastName")) {
-                    lastNameErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("nickname")) {
-                    nicknameErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("bio")) {
-                    bioErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("email")) {
-                    emailErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("personalPronouns")) {
-                    pronounsErrors.add(validationError.getErrorText());
-                }
-                else if (validationError.getFieldName().equals("password")) {
-                    passwordErrors.add(validationError.getErrorText());
-                }
-            }
-
+            // Add attributes back into the page so the user doesn't have to enter them again
             model.addAttribute("username", username);
             model.addAttribute("firstName", firstName);
             model.addAttribute("middleName", middleName);
@@ -186,15 +112,9 @@ public class RegisterController {
             model.addAttribute("email", email);
             model.addAttribute("pronouns", pronouns);
 
-            model.addAttribute("usernameErrors", usernameErrors);
-            model.addAttribute("firstNameErrors", firstNameErrors);
-            model.addAttribute("middleNameErrors", middleNameErrors);
-            model.addAttribute("lastNameErrors", lastNameErrors);
-            model.addAttribute("nicknameErrors", nicknameErrors);
-            model.addAttribute("bioErrors", bioErrors);
-            model.addAttribute("emailErrors", emailErrors);
-            model.addAttribute("pronounsErrors", pronounsErrors);
-            model.addAttribute("passwordErrors", passwordErrors);
+            // Add errors to the page to tell the user what they need to fix
+            List<ValidationError> validationErrors = userRegisterResponse.getValidationErrorsList();
+            model.addAttribute("validationErrors", validationErrors);
 
             return "register";
         }

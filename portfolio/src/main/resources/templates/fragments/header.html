@@ -13,7 +13,7 @@
         <script rel="script" src="/scripts/navbar.js"></script>
         <ul class="header__list">
             <a>
-                <span style="font-size: 30px; cursor: pointer" onclick="toggleNavbarVisibility()">&#9776</span>
+                <span class="header__hamburger" style="font-size: 30px; cursor: pointer; position: absolute; margin-left: 1rem; margin-top: 8px;" onclick="toggleNavbarVisibility()">&#9776</span>
             </a>
             <li class="header__dropdown">
                 <a href="javascript:void(0)" class="header__dropdown_button"><img th:src="${user.profileImagePath}" width="30px" alt="Profile Photo"></a>
