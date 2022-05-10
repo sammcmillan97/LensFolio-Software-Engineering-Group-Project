@@ -20,6 +20,7 @@
         <a th:href="'/userList/' + ${nextPage} + ${sortingSuffix}">&gt;</a>
         <a th:href="'/userList/' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
+    <p th:text="${message}"></p>
     <table>
         <thead>
             <tr class="sort-header">
@@ -68,8 +69,8 @@
                             <input type="hidden" th:name="url" th:value="'/userList/' + ${currentPage} + ${sortingSuffix}"/>
                             <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
                             <input type="hidden" th:name="roleType"  th:value="STUDENT" />
-                            <button class="button" type="submit">
-                                + Student
+                            <button class="button" type="submit" title="add role">
+                                <div>+ Student</div>
                             </button>
                         </form>
                         <form th:if="${isCourseAdmin and !#lists.contains(listedUser.roleStrings, 'Teacher')}" th:action="@{/addRole}"  method="post">
