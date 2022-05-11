@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class ProjectRepositoryTests {
@@ -49,16 +50,11 @@ class ProjectRepositoryTests {
         projects.add(project2);
         projectRepository.saveAll(projects);
         List<Project> projectsFromDatabase = StreamSupport.stream(projectRepository.findAll().spliterator(), false).toList();
-        assertThat(projectsFromDatabase.get(0).getId()).isEqualTo(projects.get(0).getId());
-        assertThat(projectsFromDatabase.get(0).getName()).isEqualTo(projects.get(0).getName());
-        assertThat(projectsFromDatabase.get(0).getDescription()).isEqualTo(projects.get(0).getDescription());
-        assertThat(projectsFromDatabase.get(0).getStartDateString()).isEqualTo(projects.get(0).getStartDateString());
-        assertThat(projectsFromDatabase.get(0).getEndDateString()).isEqualTo(projects.get(0).getEndDateString());
-        assertThat(projectsFromDatabase.get(1).getId()).isEqualTo(projects.get(1).getId());
-        assertThat(projectsFromDatabase.get(1).getName()).isEqualTo(projects.get(1).getName());
-        assertThat(projectsFromDatabase.get(1).getDescription()).isEqualTo(projects.get(1).getDescription());
-        assertThat(projectsFromDatabase.get(1).getStartDateString()).isEqualTo(projects.get(1).getStartDateString());
-        assertThat(projectsFromDatabase.get(1).getEndDateString()).isEqualTo(projects.get(1).getEndDateString());
+        Project retrievedProject1 = projectsFromDatabase.get(0);
+        Project retrievedProject2 = projectsFromDatabase.get(1);
+
+        assertEquals(project1, retrievedProject1);
+        assertEquals(project2, retrievedProject2);
     }
 
     @Test
@@ -72,19 +68,8 @@ class ProjectRepositoryTests {
         Project retrievedProject1 = projectRepository.findById(projects.get(0).getId());
         Project retrievedProject2 = projectRepository.findById(projects.get(1).getId());
 
-        assertThat(retrievedProject1).isNotNull();
-        assertThat(retrievedProject1.getId()).isEqualTo(projects.get(0).getId());
-        assertThat(retrievedProject1.getName()).isEqualTo(projects.get(0).getName());
-        assertThat(retrievedProject1.getDescription()).isEqualTo(projects.get(0).getDescription());
-        assertThat(retrievedProject1.getStartDateString()).isEqualTo(projects.get(0).getStartDateString());
-        assertThat(retrievedProject1.getEndDateString()).isEqualTo(projects.get(0).getEndDateString());
-
-        assertThat(retrievedProject2).isNotNull();
-        assertThat(retrievedProject2.getId()).isEqualTo(projects.get(1).getId());
-        assertThat(retrievedProject2.getName()).isEqualTo(projects.get(1).getName());
-        assertThat(retrievedProject2.getDescription()).isEqualTo(projects.get(1).getDescription());
-        assertThat(retrievedProject2.getStartDateString()).isEqualTo(projects.get(1).getStartDateString());
-        assertThat(retrievedProject2.getEndDateString()).isEqualTo(projects.get(1).getEndDateString());
+        assertEquals(project1, retrievedProject1);
+        assertEquals(project2, retrievedProject2);
 
     }
 
@@ -95,13 +80,8 @@ class ProjectRepositoryTests {
         projectRepository.save(project1);
 
         // Check that the project was inserted correctly
-        Project retrievedProject = projectRepository.findById(project1.getId());
-        assertThat(retrievedProject).isNotNull();
-        assertThat(retrievedProject.getId()).isEqualTo(project1.getId());
-        assertThat(retrievedProject.getName()).isEqualTo(project1.getName());
-        assertThat(retrievedProject.getDescription()).isEqualTo(project1.getDescription());
-        assertThat(retrievedProject.getStartDateString()).isEqualTo(project1.getStartDateString());
-        assertThat(retrievedProject.getEndDateString()).isEqualTo(project1.getEndDateString());
+        Project retrievedProject1 = projectRepository.findById(project1.getId());
+        assertEquals(project1, retrievedProject1);
 
     }
 }

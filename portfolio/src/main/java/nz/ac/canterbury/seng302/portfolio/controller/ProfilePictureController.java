@@ -29,8 +29,8 @@ public class ProfilePictureController {
 
     /**
      * Get mapping to open addProfilePicture page
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return the addProfilePicture page
      */
     @GetMapping("/addProfilePicture")
@@ -51,7 +51,14 @@ public class ProfilePictureController {
     }
 
 
-
+    /**
+     * Post mapping to save a profile picture
+     * @param principal Authentication principal storing current user information
+     * @param base64FileContent The image content
+     * @param fileType The images filetype
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return the addProfilePicture page
+     */
     @PostMapping("/addProfilePicture")
     public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
                                     @RequestParam(name="fileContent") String base64FileContent,
@@ -92,6 +99,13 @@ public class ProfilePictureController {
         return "addProfilePicture";
     }
 
+    /**
+     * Post mapping to remove the users profile picture
+     * @param principal Authentication principal storing current user information
+     * @param username The users username
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The profile page
+     */
     @PostMapping("/removeProfilePicture")
     public String removeProfilePicture(@AuthenticationPrincipal AuthState principal,
                                        @RequestParam(name="username") String username,

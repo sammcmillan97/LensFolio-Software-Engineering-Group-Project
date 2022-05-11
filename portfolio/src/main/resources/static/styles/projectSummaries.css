@@ -52,7 +52,7 @@ html {
 
     cursor: pointer;
     width: calc(100% - 25rem);
-    word-wrap: break-word;}
+}
 
 .project__name:hover {
     color: var(--color-accent);
@@ -90,6 +90,9 @@ html {
     position: absolute;
     top: 1rem;
     right: 0;
+}
+.project__description {
+    word-wrap: break-word;
 }
 
 .project__button-wrapper button {
