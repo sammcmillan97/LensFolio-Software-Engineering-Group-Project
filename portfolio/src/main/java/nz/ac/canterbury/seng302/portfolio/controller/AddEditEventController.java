@@ -79,12 +79,12 @@ public class AddEditEventController {
 
         //Add event details to model
         model.addAttribute("eventName", event.getEventName());
-        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd hh:mm:ss.S"));
-        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd hh:mm:ss.S"));
+        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd'T'HH:mm"));
 
         // Add event date boundaries for event to the model
-        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd hh:mm:ss.S"));
-        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd hh:mm:ss.S"));
+        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd'T'HH:mm"));
 
         return "addEditEvent";
     }

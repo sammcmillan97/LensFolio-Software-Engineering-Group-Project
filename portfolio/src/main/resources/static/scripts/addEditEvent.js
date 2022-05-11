@@ -15,12 +15,19 @@ function countCharacters() {
     characterCounter.textContent = String(maxNumOfChars - numOfEnteredChars) + "/30 characters remain";
 }
 
+/**
+ * Gets the date in a string format
+ * @param date is the date to be converted to a string format
+ * @returns {string} format of the date
+ */
 function getDateString(date) {
     let days = date.getDate();
     let months = date.getMonth() + 1; //January is 0!
     let years = date.getFullYear();
     let hours = date.getHours();
     let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let milliseconds = date.getMilliseconds();
 
     // Ensure day and month are two characters wide
     if (days < 10) {
@@ -30,7 +37,7 @@ function getDateString(date) {
         months = '0' + months;
     }
 
-    return years + '-' + months + '-' + days + ' ' + hours + ':' + minutes;
+    return years + '-' + months + '-' + days + 'T' + hours + ':' + minutes;
 }
 
 
@@ -41,10 +48,8 @@ function getDateString(date) {
 function updateMinEndDate() {
     let startDate = document.getElementById("event-form__start-date-field").valueAsNumber;
     startDate = new Date(startDate);
-
     let minEndDate = new Date();
     minEndDate.setTime(startDate.getTime());
-
     document.getElementById("event-form__end-date-field").setAttribute('min', getDateString(minEndDate));
 }
 
@@ -55,10 +60,8 @@ function updateMinEndDate() {
 function updateMaxStartDate() {
     let endDate = document.getElementById("event-form__end-date-field").valueAsNumber;
     endDate = new Date(endDate);
-
     let maxStartDate = new Date();
     maxStartDate.setTime(endDate.getTime());
-
     document.getElementById("event-form__start-date-field").setAttribute('max', getDateString(maxStartDate));
 }
 
