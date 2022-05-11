@@ -40,7 +40,7 @@ public class UserListController {
         String isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
-        return "redirect:/userList/1" + sortingSuffix(sortType, isAscending);
+        return "redirect:/userList-1" + sortingSuffix(sortType, isAscending);
     }
 
     /**
@@ -50,7 +50,7 @@ public class UserListController {
      * @param page The exact page of the user list we are on. Starts at 1 and increases from there.
      * @return The mapping to the list of users html page.
      */
-    @GetMapping("/userList/{page}")
+    @GetMapping("/userList-{page}")
     public String userListSortedPage(@AuthenticationPrincipal AuthState principal,
                                Model model,
                                @PathVariable("page") String page,
@@ -75,7 +75,7 @@ public class UserListController {
             if (!isGoodAscending(isAscending)) {
                 isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
             }
-            return "redirect:/userList/" + page + sortingSuffix(sortType, isAscending);
+            return "redirect:/userList-" + page + sortingSuffix(sortType, isAscending);
         }
         int pageInt = Integer.parseInt(page);
         portfolioUserService.setUserListSortType(id, sortType);
@@ -89,7 +89,7 @@ public class UserListController {
             maxPage = 1;
         }
         if (pageInt > maxPage) {
-            return "redirect:/userList/" + maxPage + sortingSuffix(sortType, isAscending);
+            return "redirect:/userList-" + maxPage + sortingSuffix(sortType, isAscending);
         }
        // Below code is just begging to be added as a method somewhere...
        String role = principal.getClaimsList().stream()
