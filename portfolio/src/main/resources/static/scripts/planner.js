@@ -35,7 +35,7 @@ function isAdmin() {
     let rolesList = convertTextToList(rolesListText);
     const arrayLength = rolesList.length;
     for (let i = 0; i < arrayLength; i++) {
-        if (rolesList[i] === "TEACHER" || rolesList[i] === "ADMIN") {
+        if (rolesList[i] === "TEACHER" || rolesList[i] === "COURSE_ADMINISTRATOR") {
             isTeacherOrAdmin = true;
         }
     }
