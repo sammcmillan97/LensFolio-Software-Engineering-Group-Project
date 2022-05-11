@@ -14,6 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 /**
  * Controller for the edit event page
  */
@@ -86,9 +94,9 @@ public class AddEditEventController {
             @PathVariable("parentProjectId") String projectIdString,
             @PathVariable("eventId") String eventIdString,
             @RequestParam(value="eventName") String eventName,
-            @RequestParam(value="eventStartDate") java.sql.Date eventStartDate,
-            @RequestParam(value="eventEndDate") java.sql.Date eventEndDate,
-            Model model) {
+            @RequestParam(value="eventStartDate") String eventStart,
+            @RequestParam(value="eventEndDate") String eventEnd,
+            Model model) throws ParseException {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
@@ -97,6 +105,14 @@ public class AddEditEventController {
         // Check ids can be parsed
         int eventId;
         int projectId;
+
+        // Convert String values of start and end date-time to timestamp
+        Timestamp startDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
+        Timestamp endDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
+
+        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(startDate));
+        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(endDate));
+
         try {
             // Parse ids  from string
             eventId = Integer.parseInt(eventIdString);
@@ -106,7 +122,7 @@ public class AddEditEventController {
         }
         //Check if it's an existing event
         if(eventId == -1) {
-            Event newEvent  = new Event(projectId, eventName, eventStartDate, eventEndDate);
+            Event newEvent  = new Event(projectId, eventName, eventStartDate , eventEndDate);
             eventService.saveEvent(newEvent);
         } else {
             //Edit existing event

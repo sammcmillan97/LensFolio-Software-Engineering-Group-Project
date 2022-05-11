@@ -3,6 +3,18 @@
  * @param date The date object from which to extract a string formatted date
  * @returns {string} The string formatted date (yyyy-MM-dd) extracted from the date object
  */
+const maxNumOfChars = 30;
+
+/**
+ * Simple function that updates char_count field to reflect how many characters are remaining for the
+ * user to use
+ */
+function countCharacters() {
+    let numOfEnteredChars = document.getElementById("event-form__name-field").value.length;
+    let characterCounter = document.getElementById("char_count")
+    characterCounter.textContent = String(maxNumOfChars - numOfEnteredChars) + "/30 characters remain";
+}
+
 function getDateString(date) {
     let days = date.getDate();
     let months = date.getMonth() + 1; //January is 0!
@@ -54,4 +66,5 @@ function updateMaxStartDate() {
 window.addEventListener('load', (event) => {
     updateMinEndDate();
     updateMaxStartDate();
+    countCharacters();
 });

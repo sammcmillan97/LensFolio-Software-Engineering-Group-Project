@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,10 +44,10 @@ public class Event implements ImportantDate{
      * Gets the string form of the given date in a readable format
      *
      * @param date the date to convert
-     * @return the given date, as a string in format 01/Jan/2000
+     * @return the given date, as a string in format 01/Jan/2000 00:00:00
      */
     public static String dateToString(Date date) {
-        return new SimpleDateFormat("dd/MMM/yyyy").format(date);
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date);
     }
 
     /* Getters/Setters */
@@ -122,4 +123,5 @@ public class Event implements ImportantDate{
     public void setColourEnd(String colourEnd) {
         this.colourEnd = colourEnd;
     }
+
 }
