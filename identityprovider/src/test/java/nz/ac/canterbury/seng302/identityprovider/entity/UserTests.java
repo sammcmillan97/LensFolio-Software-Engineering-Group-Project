@@ -108,7 +108,7 @@ class UserTests {
 
     //Tests that the password is not stored in plain text
     @Test
-    void testEncryptOccurs(){
+    void testHashingOccurs(){
         assertNotEquals("password", user1.getPassword());
     }
 

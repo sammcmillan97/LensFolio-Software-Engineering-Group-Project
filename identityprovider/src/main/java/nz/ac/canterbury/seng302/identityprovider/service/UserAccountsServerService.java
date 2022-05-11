@@ -286,8 +286,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Service for deleting a users profile photo with authentication
-     * @param request
-     * @param responseObserver
+     * @param request A DeleteUserProfilePhotoRequest according to user_accounts.proto
+     * @param responseObserver The observer to send the response over
      */
     @Override
     public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
@@ -586,6 +586,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (username.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (username.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must not contain only whitespace").setFieldName(USERNAME_FIELD).build();
+            validationErrors.add(validationError);
         }
 
         if (username.length() > 64) {
@@ -617,7 +620,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (firstName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
-        } else if (isBadName(firstName)) {
+        } else if (firstName.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain only whitespace").setFieldName(FIRST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        }
+        else if (isBadName(firstName)) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain special characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -658,6 +665,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (lastName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (lastName.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain only whitespace").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         } else if (isBadName(lastName)) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain special characters").setFieldName(LAST_NAME_FIELD).build();
@@ -713,7 +723,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         boolean validPronouns = pronounsMatcher.find();
 
         if (!validPronouns && !personalPronouns.equals("")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must contain a /").setFieldName(PRONOUNS_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be of form {pronoun}/{pronoun}").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);
         }
 
@@ -739,7 +749,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         } else if (!validEmail) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be of form a@b.c").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
 
@@ -761,9 +771,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (password.length() < 8) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
+        } else if (password.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must not contain only whitespace").setFieldName(PASSWORD_FIELD).build();
+            validationErrors.add(validationError);
         }
 
         if (password.length() > 64) {
+            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }

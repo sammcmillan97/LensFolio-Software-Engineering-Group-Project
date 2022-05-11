@@ -37,8 +37,8 @@ public class UserAccountClientService {
 
     /**
      * Creates a request to be sent to the IDP for requesting a paginated list of user responses
-     * @param offset The number of users to be sliced from the orignal list of users from the DB
-     * @param limit The max number of users to be returned in the list
+     * @param offset The number of users to be sliced from the original list of users from the DB
+     * @param limit The max number of users to be returned to the list
      * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles" Ends with "A" or "D" for descending or Ascending
      * @return A list of paginated, sorted and ordered user responses
      */

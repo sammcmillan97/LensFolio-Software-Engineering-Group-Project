@@ -142,6 +142,11 @@ public class Project {
 
     public String getStartDateCalendarString() {return  Project.dateToString(this.projectStartDate, "yyyy-MM-dd"); }
 
+    /**
+     * Calculates the day after the end date as a calendar string
+     * This is for the FullCalendar program as the end date on there is not inclusive
+     * @return the day after the projects end date as a calendar string
+     */
     public String getDayAfterEndDateCalendarString() {
         Calendar tempEndDate = Calendar.getInstance();
         tempEndDate.setTime(this.getEndDate());

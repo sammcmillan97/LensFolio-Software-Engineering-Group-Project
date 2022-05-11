@@ -284,7 +284,6 @@ public class EditSprintController {
             sprintId = Integer.parseInt(sprintIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            //TODO Add logging for error
             return "redirect:/projects";
         }
 
@@ -301,14 +300,12 @@ public class EditSprintController {
                 sprintNumber = getNextSprintNumber(projectId);
             }
         } catch (Exception e) {
-            //TODO Add logging for error
-            return "redirect:/editSprint-" + sprintId + "-" + projectId;
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure required fields are not null
         if (sprintName == null || sprintStartDate == null || sprintEndDate == null) {
-            //TODO Add logging for error
-            return "redirect:/editSprint-" + sprintId + "-" + projectId;
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure sprint dates are within bounds
@@ -321,22 +318,19 @@ public class EditSprintController {
         Calendar minSprintStart = getCalendarDay();
         minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
-            // TODO Add logging for error.
-            return "redirect:/editSprint-" + sprintId + "-" + projectId;
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Check sprint ends before project end and all following sprints
         Calendar maxSprintEnd = getCalendarDay();
         maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
-            // TODO Add logging for error.
-            return "redirect:/editSprint-" + sprintId + "-" + projectId;
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
         // Ensure sprintEndDate occurs after sprintStartDate
         if (!sprintEndCal.after(sprintStartCal)) {
-            // TODO Add logging for error.
-            return "redirect:/editSprint-" + sprintId + "-" + projectId;
+            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
         }
 
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.

@@ -17,33 +17,58 @@
         </div>
 
         <!-- error message received from the controller-->
-        <p th:text="${registerMessage}"></p>
-        <tr th:each="entity: ${validationErrors}">
-            <td><p th:text="${entity.errorText}"> Error </p></td>
-        </tr>
-        <p th:text="${errorMessage}"></p>
-        <p th:text="${loginMessage}"></p>
+        <p th:text="${registerMessage}" class="form-error-message"></p>
+        <p th:text="${errorMessage}" class="form-error-message"></p>
+        <p th:text="${loginMessage}" class="form-error-message"></p>
 
         <!-- form posts the params to the register controller-->
         <form th:action="@{'register'}"  method="post">
 
             <div>
                 <label>Account Details *</label><br>
-                <input type="text" th:name="username" minlength="1" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >User name*, must be unique</label><br>
-                <input type= "email" th:name="email" minlength="1" maxlength="255" required placeholder="Email (*)" class="required" /><label class="helper" >Email*</label><br>
-                <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)" class="required" /><label class="helper" >Password*, must be at least 8 characters</label><br>
+                <input type="text" th:name="username" th:value="${username} ?: ''" minlength="1" maxlength="64" required placeholder="Username (*)" class="required" /><label class="helper" >*User name, must be unique</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'username'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
+                <input type="email" th:name="email" th:value="${email} ?: ''" minlength="1" maxlength="255" required placeholder="Email (*)" class="required" /><label class="helper" >*Email, must include '@'</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'email'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
+                <input type="password" th:name="password" minlength="8" maxlength="64" required placeholder="Password (*)" class="required" /><label class="helper" >*Password, must be at least 8 characters</label><br>
+
                 <br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'password'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
                 <label>Full Name *</label><br>
-                <input type="text" th:name="firstName" minlength="1" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >First Name*</label><br>
-                <input type="text" th:name="middleName" minlength="1" maxlength="64"  placeholder="Middle Name" class="helper" /><label class="helper" >Middle Name</label><br>
-                <input type="text" th:name="lastName" minlength="1" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >Last Name*</label><br>
+                <input type="text" th:name="firstName" th:value="${firstName} ?: ''" minlength="1" maxlength="64" required placeholder="First Name (*)" class="required" /><label class="helper" >*First Name</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'firstName'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
+                <input type="text" th:name="middleName" th:value="${middleName} ?: ''" minlength="1" maxlength="64"  placeholder="Middle Name" class="helper" /><label class="helper" >Middle Name</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'middleName'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
+                <input type="text" th:name="lastName" th:value="${lastName} ?: ''" minlength="1" maxlength="64" required placeholder="Last Name (*)" class="required" /><label class="helper" >*Last Name</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'lastName'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
                 <br>
                 <label>Person Details</label><br>
-                <input type="text" th:name="nickname" maxlength="64" placeholder="Nickname"/><label class="helper">Nickname</label><br>
-                <input type="text" th:name="pronouns" maxlength="64" placeholder="Preferred Pronouns" /><label class="helper">Preferred Pronouns</label><br>
+                <input type="text" th:name="nickname" th:value="${nickname} ?: ''" maxlength="64" placeholder="Nickname"/><label class="helper">Nickname</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'nickname'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
+                <input type="text" th:name="pronouns" th:value="${pronouns} ?: ''" maxlength="64" placeholder="Preferred Pronouns" /><label class="helper">Preferred Pronouns</label><br>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'personalPronouns'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
                 <br>
                 <label>Bio</label><label class="helper"></label><br>
-                <textarea th:name="bio" maxlength="1024" placeholder=""></textarea>
+                <textarea th:name="bio" th:text="${bio} ?: ''" maxlength="1024" placeholder=""></textarea>
+                <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'bio'}">
+                    <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                </th:block>
                 <br><br>
 
                 <input class="button" type="submit" value="Submit" />
