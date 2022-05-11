@@ -61,9 +61,6 @@ public class ProjectDetailsController {
             return "redirect:/projects";
         }
 
-
-
-
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {

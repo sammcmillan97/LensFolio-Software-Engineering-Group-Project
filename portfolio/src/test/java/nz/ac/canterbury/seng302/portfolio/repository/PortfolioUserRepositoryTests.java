@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class PortfolioUserRepositoryTests {
@@ -52,11 +53,12 @@ class PortfolioUserRepositoryTests {
         users.add(user2);
         portfolioUserRepository.saveAll(users);
         List<PortfolioUser> retrievedUsers = StreamSupport.stream(portfolioUserRepository.findAll().spliterator(), false).toList();
-        for (int i = 0; i < users.size(); i++) {
-            assertThat(retrievedUsers.get(0).getUserId()).isEqualTo(users.get(0).getUserId());
-            assertThat(retrievedUsers.get(0).getUserListSortType()).isEqualTo(users.get(0).getUserListSortType());
-            assertThat(retrievedUsers.get(0).isUserListSortAscending()).isEqualTo(users.get(0).isUserListSortAscending());
-        }
+
+        PortfolioUser retrievedUser1 = portfolioUserRepository.findByUserId(users.get(0).getUserId());
+        PortfolioUser retrievedUser2 = portfolioUserRepository.findByUserId(users.get(1).getUserId());
+
+        assertEquals(user1, retrievedUser1);
+        assertEquals(user2, retrievedUser2);
     }
 
     // Test a specific user can be retrieved from the database
@@ -68,12 +70,11 @@ class PortfolioUserRepositoryTests {
         users.add(user1);
         users.add(user2);
         portfolioUserRepository.saveAll(users);
-        PortfolioUser retrievedUser = portfolioUserRepository.findByUserId(users.get(0).getUserId());
+        PortfolioUser retrievedUser1 = portfolioUserRepository.findByUserId(users.get(0).getUserId());
+        PortfolioUser retrievedUser2 = portfolioUserRepository.findByUserId(users.get(1).getUserId());
 
-        assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getUserId()).isEqualTo(users.get(0).getUserId());
-        assertThat(retrievedUser.getUserListSortType()).isEqualTo(users.get(0).getUserListSortType());
-        assertThat(retrievedUser.isUserListSortAscending()).isEqualTo(users.get(0).isUserListSortAscending());
+        assertEquals(user1, retrievedUser1);
+        assertEquals(user2, retrievedUser2);
 
     }
 
