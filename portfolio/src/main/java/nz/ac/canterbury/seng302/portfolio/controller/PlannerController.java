@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import com.sun.xml.bind.v2.TODO;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -13,9 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Controller for the project planner page
@@ -32,13 +39,16 @@ public class PlannerController {
     @Autowired
     private UserAccountClientService userService;
 
+    private boolean sprintUpdated = false;
+    private String sprintDate;
+
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
      * from the database
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The planner html page with relevant project and sprint data.
      */
-    @GetMapping("/planner/{id}")
+    @GetMapping("/planner-{id}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           @PathVariable("id") String id,
                           Model model) {
@@ -60,12 +70,16 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
 
+        if (sprintUpdated) {
+            model.addAttribute("recentUpdate", sprintDate);
+            sprintUpdated = false;
+        }
 
         return "planner";
     }
@@ -97,14 +111,40 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
+
+        if (sprintUpdated) {
+            model.addAttribute("recentUpdate", sprintDate);
+            sprintUpdated = false;
+        }
+
         return "planner";
     }
 
-
+    @PostMapping("/planner/editSprint/{projectId}/{sprintId}")
+    public String planner(@AuthenticationPrincipal AuthState principal,
+                          Model model,
+                          @PathVariable String projectId,
+                          @PathVariable String sprintId,
+                          @RequestParam Date startDate,
+                          @RequestParam Date endDate,
+                          @RequestParam Date paginationDate) {
+        try {
+            sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
+            Calendar tempEndDate = Calendar.getInstance();
+            tempEndDate.setTime(endDate);
+            tempEndDate.add(Calendar.DATE, -1);
+            sprintService.updateEndDate(Integer.parseInt(sprintId), tempEndDate.getTime());
+            sprintUpdated = true;
+            sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
+        } catch ( Exception e ) {
+            sprintUpdated = false;
+        }
+        return "redirect:/planner/" + projectId;
+    }
 
 }

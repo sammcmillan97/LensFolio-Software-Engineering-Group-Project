@@ -48,7 +48,7 @@ label.helper{
     margin-left: 10px;
     font-style: italic;
     font-weight: normal;
-    color: #c8c8c8;
+    color: #888888;
 }
 
 /* Selects any valid <input> */
@@ -101,11 +101,11 @@ h6 {
     margin-bottom: 0;
 }
 
-p {
+.form-error-message {
     margin-left: 10px;
     color: red;
-    margin-top: 20px;
-    margin-bottom: -20px;
+    margin-top: -5px;
+    margin-bottom: 10px;
 }
 
 a.button {

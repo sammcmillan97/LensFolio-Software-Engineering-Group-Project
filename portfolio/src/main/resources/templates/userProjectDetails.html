@@ -4,9 +4,9 @@
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/styles/projectDetails.css">
-    <script rel="script" src="/scripts/projectDetails.js"></script>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
+    <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
 </head>
 
 <body>
@@ -26,7 +26,7 @@
         </header>
         <!-- Planner Button -->
         <div class="project__button-wrapper flex-row">
-            <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+            <form action="#" th:action="@{planner-{id}(id=${project.getId})}" th:method="get">
                 <button type="submit">Planner</button>
             </form>
         </div>
@@ -37,7 +37,7 @@
     <!-- Project Sprints -->
     <div id="project__sprints-wrapper flex-column">
         <div class="sprint" th:each="sprint : ${sprints}">
-            <h2 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h2>
+            <h2 class="sprint__name" th:text="|${sprint.getLabel} - ${sprint.getName}|"></h2>
 
             <!-- Sprint Details -->
             <div class="sprint__details">

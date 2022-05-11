@@ -104,14 +104,26 @@ public class Sprint {
     }
 
     public void setEndDateString(String date) {
-        this.sprintStartDate = Project.stringToDate(date);
+        this.sprintEndDate = Project.stringToDate(date);
     }
 
     public String getStartDateCalendarString() {return  Project.dateToString(this.sprintStartDate, "yyyy-MM-dd"); }
 
+    /**
+     * Calculates the day after the end date as a calendar string
+     * This is for the FullCalendar program as the end date on there is not inclusive
+     * @return the day after the sprints end date as a calendar string
+     */
     public String getDayAfterEndDateCalendarString() {
         Calendar tempEndDate = Calendar.getInstance();
         tempEndDate.setTime(this.getEndDate());
         tempEndDate.add(Calendar.DATE, 1);
         return  Project.dateToString(tempEndDate.getTime(), "yyyy-MM-dd"); }
+
+    public void setEndDateCalendar(Date newEndDate) {
+        Calendar tempEndDate = Calendar.getInstance();
+        tempEndDate.setTime(newEndDate);
+        tempEndDate.add(Calendar.DATE, -1);
+        this.sprintEndDate = tempEndDate.getTime();
+    }
 }

@@ -39,13 +39,18 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * Gets the mapping to the login page html and renders it
+     * @param response Login response
+     * @return the mapping to the login html page.
+     */
     @RequestMapping("/")
     public String home(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
                 "lens-session-token"
         );
-        return "login";
+        return "redirect:/login";
     }
 
     /**

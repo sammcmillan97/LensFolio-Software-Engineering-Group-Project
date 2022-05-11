@@ -1,4 +1,4 @@
-/*
+/*nz.ac.canterbury.seng302.portfolio.PortfolioApplication
 Team-Number: 400
 Team-Name: 400 Bad Request
 * */
@@ -7,6 +7,13 @@ plugins {
     id 'org.springframework.boot' version '2.6.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'application'
+    id 'se.thinkcode.cucumber-runner' version '0.0.8'
+}
+
+ext {
+    junitVersion = '5.7.2'
+    cucumberVersion = '7.2.3'
 }
 
 group = 'nz.ac.canterbury.seng302'
@@ -37,6 +44,8 @@ dependencies {
     implementation 'org.webjars:fullcalendar:5.10.2'
     // H2 database
     implementation 'com.h2database:h2:2.1.210'
+    // MariaDB
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
     // Java Persistence API
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.4'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
@@ -44,8 +53,50 @@ dependencies {
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+    testImplementation "org.junit.vintage:junit-vintage-engine:${junitVersion}"
 }
 
-tasks.named('test') {
+application {
+    // Define the main class for the application.
+    mainClass = 'nz.ac.canterbury.seng302.portfolio.PortfolioApplication'
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+task cucumberCli() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'nz/ac/canterbury/seng302/portfolio/cucumber',
+                    'src/test/resources']
+        }
+    }
+}
+
+cucumber {
+    main = 'io.cucumber.core.cli.Main'
+}
+
+test {
     useJUnitPlatform()
+
+
+
+    systemProperties(project.gradle.startParameter.systemPropertiesArgs)
 }

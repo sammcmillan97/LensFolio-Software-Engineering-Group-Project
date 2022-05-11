@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package nz.ac.canterbury.seng302;
+import "identityprovider/user_accounts.proto";
+import "util/validation_error.proto";
+
+option java_multiple_files = true;
+option java_package = "nz.ac.canterbury.seng302.shared.identityprovider";
+option java_outer_classname = "GroupsProto";
+
+message CreateGroupRequest {
+  string ShortName = 1;
+  string LongName = 2;
+}
+
+message CreateGroupResponse {
+  bool IsSuccess = 1;
+  int32 NewGroupId = 2;
+  string Message = 3;
+  repeated ValidationError ValidationErrors = 4;
+}
+
+message AddGroupMembersRequest {
+  int32 GroupId = 1;
+  repeated int32 UserIds = 2;
+}
+
+message AddGroupMembersResponse {
+  bool IsSuccess = 1;
+  string Message = 2;
+}
+
+message RemoveGroupMembersRequest {
+  int32 GroupId = 1;
+  repeated int32 UserIds = 2;
+}
+
+message RemoveGroupMembersResponse {
+  bool IsSuccess = 1;
+  string Message = 2;
+}
+
+message ModifyGroupDetailsRequest {
+  int32 GroupId = 1;
+  string ShortName = 2;
+  string LongName = 3;
+}
+
+message ModifyGroupDetailsResponse {
+  bool IsSuccess = 1;
+  string Message = 2;
+  repeated ValidationError ValidationErrors = 3;
+}
+
+message DeleteGroupRequest {
+  int32 GroupId = 1;
+}
+
+message DeleteGroupResponse {
+  bool IsSuccess = 1;
+  string Message = 2;
+}
+
+message GetGroupDetailsRequest {
+  int32 GroupId = 1;
+}
+
+message GetGroupDetailsResponse {
+  string ShortName = 1;
+  string LongName = 2;
+  repeated UserResponse Members = 3;
+}
+
+service GroupsService {
+  rpc CreateGroup (CreateGroupRequest) returns (CreateGroupResponse);
+  rpc AddGroupMembers (AddGroupMembersRequest) returns (AddGroupMembersResponse);
+  rpc RemoveGroupMembers (RemoveGroupMembersRequest) returns (RemoveGroupMembersResponse);
+  rpc ModifyGroupDetails (ModifyGroupDetailsRequest) returns (ModifyGroupDetailsResponse);
+  rpc DeleteGroup (DeleteGroupRequest) returns (DeleteGroupResponse);
+  rpc GetGroupDetails (GetGroupDetailsRequest) returns (GetGroupDetailsResponse);
+}

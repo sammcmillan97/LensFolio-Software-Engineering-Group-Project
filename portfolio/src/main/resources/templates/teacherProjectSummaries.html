@@ -4,9 +4,9 @@
 <head>
     <title>Projects</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/styles/projectSummaries.css">
-    <script rel="script" src="/scripts/projectSummaries.js"></script>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/projectSummaries.css}">
+    <script rel="script" th:src="@{scripts/projectSummaries.js}"></script>
 </head>
 
 <body>
@@ -39,7 +39,7 @@
                 <!-- Project Sprints -->
                 <div class="project__sprints-wrapper flex-column">
                     <div class="sprint collapsed" th:each="sprint : ${sprints.get(project.getId)}">
-                        <h3 class="sprint__name" th:text="|${sprint.getName} - ${sprint.getLabel}|"></h3>
+                        <h3 class="sprint__name" th:text="|${sprint.getLabel} - ${sprint.getName}|"></h3>
 
                         <div class="sprint__details">
                             <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
@@ -50,19 +50,19 @@
 
                 <!-- Edit and delete project buttons -->
                 <div class="project__button-wrapper flex-row">
-                    <form action="#" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="get">
+                    <form action="#" th:action="@{editProject-{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">Edit</button>
                     </form>
 
-                    <form action="#" th:action="@{/projects/delete/{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                    <form action="#" th:action="@{editProject-{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
                         <button type="submit">Delete</button>
                     </form>
 
-                    <form action="#" th:action="@{/projects/{id}(id=${project.getId})}" th:method="get">
+                    <form action="#" th:action="@{projectDetails-{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">View</button>
                     </form>
 
-                    <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+                    <form action="#" th:action="@{planner-{id}(id=${project.getId})}" th:method="get">
                         <button type="submit">Planner</button>
                     </form>
                 </div>
@@ -70,7 +70,7 @@
             </div>
 
             <!-- New Project Button -->
-            <a id="new-project-button" th:href="@{/projects/edit/-1}">New Project</a>
+            <a id="new-project-button" th:href="@{editProject-{id}(id=-1)}">New Project</a>
 
         </div>
     </div>
