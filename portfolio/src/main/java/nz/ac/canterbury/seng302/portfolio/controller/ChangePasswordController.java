@@ -26,8 +26,8 @@ public class ChangePasswordController {
 
     /**
      * Get mapping to return change password page
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return change password page
      */
     @GetMapping("/changePassword")

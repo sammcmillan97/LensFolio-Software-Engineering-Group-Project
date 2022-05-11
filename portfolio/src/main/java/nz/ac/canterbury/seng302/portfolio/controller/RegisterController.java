@@ -124,7 +124,7 @@ public class RegisterController {
 
     /**
      * Get mapping for displaying the register page
-     * @return
+     * @return the register page
      */
     @GetMapping("/register")
     public String register() {

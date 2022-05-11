@@ -284,8 +284,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Service for deleting a users profile photo with authentication
-     * @param request
-     * @param responseObserver
+     * @param request A DeleteUserProfilePhotoRequest according to user_accounts.proto
+     * @param responseObserver The observer to send the response over
      */
     @Override
     public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
