@@ -4,17 +4,15 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 @Controller
 public class UserListController {
@@ -31,7 +29,8 @@ public class UserListController {
      * @return The mapping to the html for the first page of the list of users.
      */
     @GetMapping("/userList")
-    public String userList(@AuthenticationPrincipal AuthState principal) {
+    public String userList(@AuthenticationPrincipal AuthState principal,
+                           Model model) {
         int id = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -39,7 +38,9 @@ public class UserListController {
                 .orElse("-100"));
         String sortType = portfolioUserService.getUserListSortType(id);
         String isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
-        return "redirect:/userList/1" + sortingSuffix(sortType, isAscending);
+        User user = userAccountClientService.getUserAccountById(id);
+        model.addAttribute("user", user);
+        return "redirect:/userList-1" + sortingSuffix(sortType, isAscending);
     }
 
     /**
@@ -49,7 +50,7 @@ public class UserListController {
      * @param page The exact page of the user list we are on. Starts at 1 and increases from there.
      * @return The mapping to the list of users html page.
      */
-    @GetMapping("/userList/{page}")
+    @GetMapping("/userList-{page}")
     public String userListSortedPage(@AuthenticationPrincipal AuthState principal,
                                Model model,
                                @PathVariable("page") String page,
@@ -74,7 +75,7 @@ public class UserListController {
             if (!isGoodAscending(isAscending)) {
                 isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
             }
-            return "redirect:/userList/" + page + sortingSuffix(sortType, isAscending);
+            return "redirect:/userList-" + page + sortingSuffix(sortType, isAscending);
         }
         int pageInt = Integer.parseInt(page);
         portfolioUserService.setUserListSortType(id, sortType);
@@ -88,8 +89,16 @@ public class UserListController {
             maxPage = 1;
         }
         if (pageInt > maxPage) {
-            return "redirect:/userList/" + maxPage + sortingSuffix(sortType, isAscending);
+            return "redirect:/userList-" + maxPage + sortingSuffix(sortType, isAscending);
         }
+       // Below code is just begging to be added as a method somewhere...
+       String role = principal.getClaimsList().stream()
+               .filter(claim -> claim.getType().equals("role"))
+               .findFirst()
+               .map(ClaimDTO::getValue)
+               .orElse("NOT FOUND");
+        model.addAttribute("isCourseAdmin", role.contains("courseadministrator"));
+        model.addAttribute("isTeacher", role.contains("teacher") || role.contains("courseadministrator"));
         model.addAttribute("users", users);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);
@@ -152,6 +161,39 @@ public class UserListController {
      */
     public String sortingSuffix(String sortType, String isAscending) {
         return "?sortType=" + sortType + "&isAscending=" + isAscending;
+    }
+
+    @PostMapping("/removeRole")
+    public String removeRole(
+                                        @RequestParam(name="userId") int userId,
+                                        @RequestParam(name="roleType") String roleString,
+                                        @RequestParam(name="url") String url,
+                                        Model model) {
+        UserRole role;
+        if (Objects.equals(roleString, "STUDENT")) {
+            role = UserRole.STUDENT;
+        } else if (Objects.equals(roleString, "TEACHER")) {
+            role = UserRole.TEACHER;
+        } else if (Objects.equals(roleString, "COURSE ADMINISTRATOR")) {
+            role = UserRole.COURSE_ADMINISTRATOR;
+        } else {
+            role = UserRole.UNRECOGNIZED;
+        }
+        UserRoleChangeResponse response = userAccountClientService.removeRole(userId, role);
+        model.addAttribute("message", response.getMessage());
+        return "redirect:" + url;
+    }
+
+    @PostMapping("/addRole")
+    public String addRole(
+                                        @RequestParam(name="userId") int userId,
+                                        @RequestParam(name="roleType") UserRole role,
+                                        @RequestParam(name="url") String url,
+                                        Model model) {
+        UserRoleChangeResponse response = userAccountClientService.addRole(userId, role);
+        model.addAttribute("message", response.getMessage());
+        return "redirect:" + url;
+
     }
 
 }
