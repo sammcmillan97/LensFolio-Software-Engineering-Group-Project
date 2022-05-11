@@ -21,6 +21,8 @@
     padding: 1rem 2rem 1rem 2rem;
 }
 
+
+
 #event-form__form label {
     margin-bottom: 0.5rem;
 }
@@ -29,6 +31,11 @@
     margin: 0 0 1rem 1rem;
     border: none;
     border-bottom: 2px solid lightgray;
+}
+
+#char_count {
+    font-size: x-small;
+    padding-bottom: 10px;
 }
 
 /* Set a style for the  button */
