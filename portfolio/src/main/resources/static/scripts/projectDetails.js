@@ -28,4 +28,18 @@ Promise.all(
   callme();
 });
 }
+const update = {
+title: 'A blog post by Kingsley',
+body: 'Brilliant post on fetch API',
+userId: 1,
+};
+
+const options = {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+},
+body: JSON.stringify(update),
+};
+fetch('http://localhost:9000/projects/1/editing', options);
 callme();
