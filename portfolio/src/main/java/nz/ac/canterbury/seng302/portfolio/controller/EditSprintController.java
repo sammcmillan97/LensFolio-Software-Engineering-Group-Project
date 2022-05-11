@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -183,8 +184,7 @@ public class EditSprintController {
                              @PathVariable("parentProjectId") String parentProjectId,
                              @PathVariable("sprintId") String sprintId,
                              Model model) throws Exception {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -194,7 +194,7 @@ public class EditSprintController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         // Add project id to model
@@ -271,8 +271,7 @@ public class EditSprintController {
             @RequestParam(value="sprintDescription") String sprintDescription,
             Model model
     ) {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 
@@ -368,8 +367,7 @@ public class EditSprintController {
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("sprintId") String sprintId) throws Exception {
-        String role = userAccountClientService.getRole(principal);
-        if (!role.contains("teacher")) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
 

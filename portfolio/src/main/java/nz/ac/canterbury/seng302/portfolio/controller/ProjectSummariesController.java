@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -46,7 +47,7 @@ public class ProjectSummariesController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         List<Project> projects = projectService.getAllProjects();
@@ -54,8 +55,7 @@ public class ProjectSummariesController {
 
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
-        String role = userAccountClientService.getRole(principal);
-        if (role.contains("teacher")) {
+        if (userAccountClientService.isTeacher(principal)) {
 
             // Add default project if none exist
             if (projects.isEmpty()) {

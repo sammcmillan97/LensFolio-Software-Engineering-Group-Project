@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
@@ -38,7 +39,7 @@ public class EditUserController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         return "editUser";
     }
@@ -84,7 +85,7 @@ public class EditUserController {
         //some validation, could use more, same as register
         if (email.isBlank() || firstName.isBlank() || lastName.isBlank()){
             //due to form resetting, you need to get the existing user again
-            UserResponse user = userAccountClientService.getUserAccountById(id);
+            User user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);
             model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
             return "editUser";
@@ -102,7 +103,7 @@ public class EditUserController {
         }
 
         //Get the new version of user
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
 
         //if edit user was successful

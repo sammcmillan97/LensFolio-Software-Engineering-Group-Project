@@ -137,7 +137,7 @@ public class Project {
     }
 
     public void setEndDateString(String date) {
-        this.projectStartDate = Project.stringToDate(date);
+        this.projectEndDate = Project.stringToDate(date);
     }
 
     public String getStartDateCalendarString() {return  Project.dateToString(this.projectStartDate, "yyyy-MM-dd"); }

@@ -45,7 +45,7 @@ public class LoginController {
                 response,
                 "lens-session-token"
         );
-        return "login";
+        return "redirect:/login";
     }
 
     /**
