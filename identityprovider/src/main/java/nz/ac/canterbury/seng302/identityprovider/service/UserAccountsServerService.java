@@ -373,9 +373,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
             }
         }
         return reply.build();
