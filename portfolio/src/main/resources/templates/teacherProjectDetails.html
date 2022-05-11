@@ -113,9 +113,8 @@
                     </div>
                     <!-- Independent Event Details -->
                     <div class="event__details">
-                        <h4 class="event__date" th:text="|${eventList.get(importantDate.getFirst()).getEventStartDate} ---> ${eventList.get(importantDate.getFirst()).getEventEndDate}|"></h4>
                         <div class="event__details flex-row" >
-                            <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}" th:text="${eventList.get(importantDate.getFirst()).getStartDateString()}"></h4>
+                            <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}" th:text="${eventList.get(importantDate.getFirst()).getStartDateString()} "></h4>
                             <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}"> ---> </h4>
                             <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourEnd()}" th:text="${eventList.get(importantDate.getFirst()).getEndDateString()}"></h4>
                         </div>
