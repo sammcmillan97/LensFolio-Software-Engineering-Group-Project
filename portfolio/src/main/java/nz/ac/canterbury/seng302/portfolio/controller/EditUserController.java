@@ -78,18 +78,9 @@ public class EditUserController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        //should add validation to ensure that other a user can only edit themselves (or possibly include admin priveldges
+        //should add validation to ensure that other a user can only edit themselves (or possibly include admin privileges
 
         EditUserResponse editUserResponse;
-
-        //some validation, could use more, same as register
-        if (email.isBlank() || firstName.isBlank() || lastName.isBlank()){
-            //due to form resetting, you need to get the existing user again
-            User user = userAccountClientService.getUserAccountById(id);
-            model.addAttribute("user", user);
-            model.addAttribute("errorMessage", "Oops! Please make sure that spaces are not used in required fields");
-            return "editUser";
-        }
 
         try {
             //Call the edit user via grpc with users validated params
@@ -111,13 +102,14 @@ public class EditUserController {
             return "redirect:/profile";
         } else {
             //if edit user was unsuccessful
-            model.addAttribute("editMessage", "");
-            StringBuilder editMessage = new StringBuilder();
-            for (ValidationError error: editUserResponse.getValidationErrorsList()) {
-                editMessage.append("\n");
-                editMessage.append(error.getErrorText());
-            }
-            model.addAttribute("editMessage", editMessage);
+            model.addAttribute("editedEmail", email);
+            model.addAttribute("editedFirstName", firstName);
+            model.addAttribute("editedMiddleName", middleName);
+            model.addAttribute("editedLastName", lastName);
+            model.addAttribute("editedNickname", nickname);
+            model.addAttribute("editedPronouns", pronouns);
+            model.addAttribute("editedBio", bio);
+            model.addAttribute("validationErrors", editUserResponse.getValidationErrorsList());
             return "/editUser";
         }
     }

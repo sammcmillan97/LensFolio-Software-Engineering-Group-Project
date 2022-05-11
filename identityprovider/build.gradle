@@ -44,7 +44,7 @@ dependencies {
     // MariaDB
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
 
-    //password encryption
+    //password hashing
     implementation 'org.springframework.security:spring-security-crypto'
 
 

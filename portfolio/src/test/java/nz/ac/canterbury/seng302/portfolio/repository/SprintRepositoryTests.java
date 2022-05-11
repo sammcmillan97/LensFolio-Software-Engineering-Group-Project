@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class SprintRepositoryTests {
@@ -56,21 +57,12 @@ class SprintRepositoryTests {
         sprintRepository.saveAll(sprints);
 
         List<Sprint> sprintsFromDatabase = StreamSupport.stream(sprintRepository.findAll().spliterator(), false).toList();
-        assertThat(sprintsFromDatabase.get(0)).isNotNull();
-        assertThat(sprintsFromDatabase.get(0).getId()).isEqualTo(sprints.get(0).getId());
-        assertThat(sprintsFromDatabase.get(0).getName()).isEqualTo(sprints.get(0).getName());
-        assertThat(sprintsFromDatabase.get(0).getLabel()).isEqualTo(sprints.get(0).getLabel());
-        assertThat(sprintsFromDatabase.get(0).getDescription()).isEqualTo(sprints.get(0).getDescription());
-        assertThat(sprintsFromDatabase.get(0).getStartDate()).isEqualTo(sprints.get(0).getStartDate());
-        assertThat(sprintsFromDatabase.get(0).getEndDate()).isEqualTo(sprints.get(0).getEndDate());
 
-        assertThat(sprintsFromDatabase.get(1)).isNotNull();
-        assertThat(sprintsFromDatabase.get(1).getId()).isEqualTo(sprints.get(1).getId());
-        assertThat(sprintsFromDatabase.get(1).getName()).isEqualTo(sprints.get(1).getName());
-        assertThat(sprintsFromDatabase.get(1).getLabel()).isEqualTo(sprints.get(1).getLabel());
-        assertThat(sprintsFromDatabase.get(1).getDescription()).isEqualTo(sprints.get(1).getDescription());
-        assertThat(sprintsFromDatabase.get(1).getStartDate()).isEqualTo(sprints.get(1).getStartDate());
-        assertThat(sprintsFromDatabase.get(1).getEndDate()).isEqualTo(sprints.get(1).getEndDate());
+        Sprint retrievedSprint1 = sprintsFromDatabase.get(0);
+        Sprint retrievedSprint2 = sprintsFromDatabase.get(1);
+
+        assertEquals(sprint1, retrievedSprint1);
+        assertEquals(sprint2, retrievedSprint2);
     }
 
     @Test
@@ -87,21 +79,8 @@ class SprintRepositoryTests {
         Sprint retrievedSprint1 = sprintRepository.findById(sprints.get(0).getId());
         Sprint retrievedSprint2 = sprintRepository.findById(sprints.get(1).getId());
 
-        assertThat(retrievedSprint1).isNotNull();
-        assertThat(retrievedSprint1.getId()).isEqualTo(sprints.get(0).getId());
-        assertThat(retrievedSprint1.getName()).isEqualTo(sprints.get(0).getName());
-        assertThat(retrievedSprint1.getLabel()).isEqualTo(sprints.get(0).getLabel());
-        assertThat(retrievedSprint1.getDescription()).isEqualTo(sprints.get(0).getDescription());
-        assertThat(retrievedSprint1.getStartDate()).isEqualTo(sprints.get(0).getStartDate());
-        assertThat(retrievedSprint1.getEndDate()).isEqualTo(sprints.get(0).getEndDate());
-
-        assertThat(retrievedSprint2).isNotNull();
-        assertThat(retrievedSprint2.getId()).isEqualTo(sprints.get(1).getId());
-        assertThat(retrievedSprint2.getName()).isEqualTo(sprints.get(1).getName());
-        assertThat(retrievedSprint2.getLabel()).isEqualTo(sprints.get(1).getLabel());
-        assertThat(retrievedSprint2.getDescription()).isEqualTo(sprints.get(1).getDescription());
-        assertThat(retrievedSprint2.getStartDate()).isEqualTo(sprints.get(1).getStartDate());
-        assertThat(retrievedSprint2.getEndDate()).isEqualTo(sprints.get(1).getEndDate());
+        assertEquals(sprint1, retrievedSprint1);
+        assertEquals(sprint2, retrievedSprint2);
     }
 
     @Test
@@ -112,14 +91,8 @@ class SprintRepositoryTests {
         sprintRepository.save(sprint1);
 
         // Check that the sprint was inserted correctly
-        Sprint retrievedSprint = sprintRepository.findById(sprint1.getId());
-        assertThat(retrievedSprint).isNotNull();
-        assertThat(retrievedSprint.getId()).isEqualTo(sprint1.getId());
-        assertThat(retrievedSprint.getName()).isEqualTo(sprint1.getName());
-        assertThat(retrievedSprint.getLabel()).isEqualTo(sprint1.getLabel());
-        assertThat(retrievedSprint.getDescription()).isEqualTo(sprint1.getDescription());
-        assertThat(retrievedSprint.getStartDate()).isEqualTo(sprint1.getStartDate());
-        assertThat(retrievedSprint.getEndDate()).isEqualTo(sprint1.getEndDate());
+        Sprint retrievedSprint1 = sprintRepository.findById(sprint1.getId());
+        assertEquals(sprint1, retrievedSprint1);
 
     }
 

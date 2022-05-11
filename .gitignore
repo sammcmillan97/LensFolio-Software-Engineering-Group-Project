@@ -9,3 +9,4 @@
 */data/*.db
 /subdirectory/*.db
 */.env
+identityprovider/target/

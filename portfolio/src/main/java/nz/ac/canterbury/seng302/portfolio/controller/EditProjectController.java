@@ -33,7 +33,7 @@ public class EditProjectController {
     @Autowired
     UserAccountClientService userAccountClientService;
 
-    /* Create default project. TODO: use database to check for this*/
+    /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
@@ -82,7 +82,6 @@ public class EditProjectController {
             try {
                 project = projectService.getProjectById(id);
             } catch (Exception ignored) {
-                // TODO
                 project = defaultProject;
             }
 
@@ -113,6 +112,11 @@ public class EditProjectController {
         cal.add(Calendar.YEAR, -1);
         java.util.Date minStartDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
+
+        // A project must end within 10 years from today
+        cal.add(Calendar.YEAR, 11);
+        java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
+        model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, "yyyy-MM-dd"));
 
         // Check if the project has any sprints
         List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
@@ -172,14 +176,22 @@ public class EditProjectController {
         try {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
-            //TODO Add logging for error
             return "redirect:/projects";
         }
 
-        // Check required fields are not null
-        if (projectName == null || projectEndDate == null || projectStartDate == null) {
-            //TODO Add logging for error
+        // Check the project name isn't null, empty, too long or consists of whitespace
+        if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
             return "redirect:/editProject-" + projectId;
+            // Check project name is
+        }
+
+        if (projectDescription.length() > 255) {
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // Check dates are not null
+        if (projectEndDate == null || projectStartDate == null) {
+            return "redirect:/projects/edit/" + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -190,7 +202,6 @@ public class EditProjectController {
         projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
-            // TODO Add logging for error.
             return "redirect:/editProject-" + projectId;
         }
 
@@ -198,7 +209,6 @@ public class EditProjectController {
         Calendar projectEndCal = getCalendarDay();
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
-            // TODO Add logging for error.
             return "redirect:/editProject-" + projectId;
         }
 
@@ -214,7 +224,6 @@ public class EditProjectController {
                 savedProject = projectService.saveProject(existingProject);
 
             } catch(Exception ignored) {
-                //TODO Add logging for error.
                 return "redirect:/editProject-" + projectId;
             }
 
@@ -243,7 +252,6 @@ public class EditProjectController {
         try {
             projectService.deleteProjectById(id);
         } catch (Exception e) {
-            //TODO log error.
         }
         return "redirect:/projects";
     }
