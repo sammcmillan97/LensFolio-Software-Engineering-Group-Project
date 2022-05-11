@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         ],
         initialView: 'dayGridMonth',
-        initialDate: projectStartDate
+        initialDate: projectStartDate,
+        contentHeight: "auto"
     });
     addSprintsToCalendar();
     calendar.render();

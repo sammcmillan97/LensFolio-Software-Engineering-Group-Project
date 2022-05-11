@@ -84,6 +84,7 @@ html {
 
 #project__description {
     padding: 0 2rem 0 2rem;
+    word-wrap: break-word;
 }
 
 
