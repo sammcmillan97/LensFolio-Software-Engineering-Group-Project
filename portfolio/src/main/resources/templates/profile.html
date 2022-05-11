@@ -19,7 +19,7 @@
         <div class="container">
 
             <div class="profile_pic__row flex-column">
-                <img th:src="../identity/${user.profileImagePath}" style="z-index: 1;" class="profile-image" alt="profilePhoto">
+                <img th:src="'../identity/' +${user.profileImagePath}" style="z-index: 1;" class="profile-image" alt="profilePhoto">
                 <a th:href="@{addProfilePicture}"><img th:src="@{images/cameraIcon.png}" style="z-index: 2;" class="icon" alt="cameraIcon"></a>
                 <h3> <span th:text="${name}" th:remove="tag">title</span></h3>
             </div>
