@@ -3,6 +3,46 @@ let calendarEl;
 let calendar;
 
 /**
+ * Helper function to convert string of roles to a list
+ * @param rolesListText
+ * @returns {*[]}
+ */
+function convertTextToList(rolesListText) {
+    let roles = [];
+    let role = '';
+    const arrayLength = rolesListText.length;
+    for (let i = 1; i < arrayLength; i++) {
+        if (rolesListText[i] === ',' || rolesListText[i] === ']'){
+            roles.push(role);
+            role = '';
+        } else if (rolesListText[i] === ' '){
+            //do nothing
+        } else {
+            role += rolesListText[i];
+        }
+    }
+    return roles;
+}
+
+/**
+ * Helper function to determine whether a user roles list contains admin or teacher
+ * @returns {boolean}
+ */
+function isAdmin() {
+    let isTeacherOrAdmin = false;
+    let rolesListText = document.getElementById("user__rolesList").textContent;
+    document.getElementById("user__rolesList").hidden = true;
+    let rolesList = convertTextToList(rolesListText);
+    const arrayLength = rolesList.length;
+    for (let i = 0; i < arrayLength; i++) {
+        if (rolesList[i] === "TEACHER" || rolesList[i] === "COURSE_ADMINISTRATOR") {
+            isTeacherOrAdmin = true;
+        }
+    }
+    return isTeacherOrAdmin;
+}
+
+/**
  * Adds an event listener to the page loading to create the calendar and set it to the project dates
  */
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,14 +58,22 @@ document.addEventListener('DOMContentLoaded', function() {
             end: fullMonthEndDate
         },
         events: [
-            // Event to grey out dates not in project
             {
-                start: projectStartDate,
-                end: dayAfterProjectEndDate,
-                display: 'inverse-background',
+                name: 'Project',
+                start: fullMonthStartDate,
+                end: projectStartDate,
+                display: 'background',
                 backgroundColor: "#CCCCCC"
             },
-            // Events for project start and end dates
+
+            {
+                name: 'Project',
+                start: dayAfterProjectEndDate,
+                end: fullMonthEndDate,
+                display: 'background',
+                backgroundColor: "#CCCCCC"
+            },
+
             {
                 title: projectName + " Starts",
                 start: projectStartDate,
@@ -43,10 +91,34 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
-        contentHeight: "auto"
+        //true when user is TEACHER or ADMIN
+        editable: (isAdmin()),
+        //disallow dragging entire event
+        eventStartEditable: false,
+        //allow resizing of start/end date
+        eventResizableFromStart: true,
+        eventResizableFromEnd: true,
+
+        eventOverlap: function( stillEvent, movingEvent) {
+            return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
+        },
+
+        //Listens to sprint drag/drop
+        eventResize: function (eventDropInfo) {
+            resizeSprint( eventDropInfo );
+        },
     });
+
     addSprintsToCalendar();
     calendar.render();
+    let today = new Date();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    if (paginationDate) {
+        calendar.gotoDate(paginationDate);
+        changeText('Changes Saved (last change made - ' + time + ')');
+    } else {
+        changeText('No Changes Made')
+    }
 });
 
 /**
@@ -97,4 +169,67 @@ function addSprintsToCalendar() {
         console.log(sprint)
         calendar.addEvent(sprint);
     }
+}
+
+function resizeSprint( eventDropInfo ) {
+
+    //Create form to post data from calendar
+    let form = document.createElement('form');
+    form.setAttribute('method', 'post');
+    form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
+
+    //Add inputs to form
+    let startInput = document.createElement('input');
+    startInput.setAttribute('type', 'hidden');
+    startInput.setAttribute('name', 'startDate');
+    startInput.setAttribute('value', `${eventDropInfo.event.start}`);
+    form.appendChild(startInput);
+    let endInput = document.createElement('input');
+    endInput.setAttribute('type', 'hidden');
+    endInput.setAttribute('name', 'endDate');
+    endInput.setAttribute('value', `${eventDropInfo.event.end}`);
+    form.appendChild(endInput);
+
+    if ( (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) > 0  || (eventDropInfo.event.end.getTime() - eventDropInfo.oldEvent.end.getTime()) < 0 ) {
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', `${eventDropInfo.event.end}`);
+        form.appendChild(pagDate);
+    } else {
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', `${eventDropInfo.event.start}`);
+        form.appendChild(pagDate);
+    }
+
+    //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function moveChoiceTo(elem_choice, direction) {
+
+    let span = elem_choice.parentNode,
+        td = span.parentNode;
+
+    if (direction === -1 && span.previousElementSibling) {
+        td.insertBefore(span, span.previousElementSibling);
+    } else if (direction === 1 && span.nextElementSibling) {
+        td.insertBefore(span, span.nextElementSibling.nextElementSibling)
+    }
+}
+
+function changeText(text) {
+    let con = document.createElement('div');
+    let h = document.createElement('h2');
+    con.classList.add('update');
+    h.classList.add('update-text');
+    h.innerText = text;
+    h.setAttribute('id', 'text-change')
+    con.appendChild(h);
+    let cal = document.getElementById('calendar');
+    cal.appendChild(con);
+    moveChoiceTo(document.getElementById('text-change'), -1)
 }
