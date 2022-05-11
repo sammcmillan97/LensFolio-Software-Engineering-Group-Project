@@ -76,7 +76,7 @@
                     <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                         <div class="flex-row">
                             <div class="event">
-                                <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2>
+                                <h2 class="event__name" th:text="${eventList.get(event).getEventName} + '&#9733;'"></h2>
                                 <!-- Edit/Delete Inside event Buttons -->
                                 <div class="event__button-wrapper flex-row">
 
@@ -100,7 +100,7 @@
                 </div>
                 <!-- Independent Events -->
                 <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
-                    <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2>
+                    <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName} + '&#9733;'"></h2>
                     <!-- Edit/Delete Independent events -->
                     <div class="event__button-wrapper flex-row">
                         <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
