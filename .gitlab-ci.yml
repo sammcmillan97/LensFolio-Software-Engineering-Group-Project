@@ -66,10 +66,15 @@ deploy-staging-identityprovider:
     - cp -r ./build/libs /home/gitlab-runner/staging-identityprovider
     - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
     - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
+    - touch /home/gitlab-runner/staging-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD" > /home/gitlab-runner/staging-identityprovider/.env
     - sudo systemctl restart staging-identityprovider
   artifacts:
     paths:
       - identityprovider/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/test
   only:
     - dev
 
@@ -83,10 +88,15 @@ deploy-staging-portfolio:
     - cp -r ./build/libs /home/gitlab-runner/staging-portfolio
     - cp ../runner/staging-portfolio.sh /home/gitlab-runner/staging-portfolio.sh
     - chmod u+x /home/gitlab-runner/staging-portfolio.sh
+    - touch /home/gitlab-runner/staging-portfolio/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_STAGING_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_PORTFOLIO_PASSWORD" > /home/gitlab-runner/staging-portfolio/.env
     - sudo systemctl restart staging-portfolio
   artifacts:
     paths:
       - portfolio/build/libs
+  environment:
+    name: staging
+    url: https://csse-s302g4.canterbury.ac.nz/test
   only:
     - dev
 
@@ -100,10 +110,15 @@ deploy-production-identityprovider:
     - cp -r ./build/libs /home/gitlab-runner/production-identityprovider
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
+    - touch /home/gitlab-runner/production-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD" > /home/gitlab-runner/production-identityprovider/.env
     - sudo systemctl restart production-identityprovider
   artifacts:
     paths:
       - identityprovider/build/libs
+  environment:
+    name: production
+    url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
     - master
@@ -118,10 +133,15 @@ deploy-production-portfolio:
     - cp -r ./build/libs /home/gitlab-runner/production-portfolio
     - cp ../runner/production-portfolio.sh /home/gitlab-runner/production-portfolio.sh
     - chmod u+x /home/gitlab-runner/production-portfolio.sh
+    - touch /home/gitlab-runner/production-portfolio/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_PRODUCTION_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_PORTFOLIO_PASSWORD" > /home/gitlab-runner/production-portfolio/.env
     - sudo systemctl restart production-portfolio
   artifacts:
     paths:
       - portfolio/build/libs
+  environment:
+    name: production
+    url: https://csse-s302g4.canterbury.ac.nz/prod
   only:
     - tags
     - master

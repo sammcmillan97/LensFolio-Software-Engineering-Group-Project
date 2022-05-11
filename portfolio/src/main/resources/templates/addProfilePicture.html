@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Profile Picture</title>
-    <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
 </head>
 <body>
     <!-- Import the application's header bar. -->
@@ -12,7 +12,7 @@
     <nav th:replace="fragments/navbar :: navbar"></nav>
 
     <div id="page-content" class="constrict">
-        <form th:action="@{/addProfilePicture}" method="post" enctype="multipart/form-data">
+        <form th:action="@{addProfilePicture}" method="post" enctype="multipart/form-data">
             <!--HIDDEN-->
             <input type="hidden" th:name="fileContent" th:value="null" id="fileContent"/>
             <input type="hidden" th:name="fileType" th:value="null" id="fileType"/>
@@ -27,7 +27,7 @@
                         <br>
                     </row>
                     <row>
-                        <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
+                        <img th:src="'../identity/'+${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
                         <div id="root"></div>
                     </row>
@@ -45,7 +45,7 @@
             <input class="button" id="submit-button" type="submit" value="Save new Profile Picture" />
         </form><br>
 
-        <form th:action="@{/removeProfilePicture}"  method="post">
+        <form th:action="@{removeProfilePicture}"  method="post">
             <input type="hidden" th:name="username"  th:value="${username}" id="delete-username"/><br>
             <button class="button" id="delete-button" type="submit" onClick="return confirm('Are you sure you want to permanently delete your profile picture?')">
                 Delete my Profile Picture

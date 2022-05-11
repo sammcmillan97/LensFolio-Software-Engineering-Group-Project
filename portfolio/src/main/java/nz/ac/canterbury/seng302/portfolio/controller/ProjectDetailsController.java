@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * The Controller for handling the backend of the project details page
@@ -36,7 +38,7 @@ public class ProjectDetailsController {
      * @param id The ID of the project being displayed
      * @return The project page displaying the selected projects details
      */
-    @GetMapping("/projects/{id}")
+    @GetMapping("/projectDetails-{id}")
     public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         // Add user details to model
         int userId = Integer.parseInt(principal.getClaimsList().stream()
@@ -44,23 +46,24 @@ public class ProjectDetailsController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         /* Add project details to the model */
         int projectId = Integer.parseInt(id);
-        Project project = projectService.getProjectById(projectId);
-        model.addAttribute("project", project);
+        try {
+            Project project = projectService.getProjectById(projectId);
+            model.addAttribute("project", project);
 
-        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-        model.addAttribute("sprints", sprintList);
-
+            List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
+            model.addAttribute("sprints", sprintList);
+        } catch (NoSuchElementException e) {
+            return "redirect:/projects";
+        }
 
         /* Return the name of the Thymeleaf template
-        detects the role of the current user and returns appropriate page
-        System.out.println(role);*/
-        String role = userAccountClientService.getRole(principal);
-        if (role.contains("teacher")) {
+        detects the role of the current user and returns appropriate page */
+        if (userAccountClientService.isTeacher(principal)) {
             return "teacherProjectDetails";
 
         } else {

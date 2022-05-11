@@ -3,12 +3,12 @@
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/webjars/fullcalendar/5.10.2/main.css">
-    <link rel="stylesheet" href="/styles/planner.css">
-    <link rel="stylesheet" href="/styles/projectDetails.css"/>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/planner.css}">
+    <link rel="stylesheet" th:href="@{styles/projectDetails.css}"/>
+    <link rel="stylesheet" th:href="@{webjars/fullcalendar/5.10.2/main.css}">
 
-    <script th:src="@{/webjars/fullcalendar/5.10.2/main.js}"></script>
+    <script th:src="@{webjars/fullcalendar/5.10.2/main.js}"></script>
 
     <!-- Define some variables that either need to be used in this page or require thymeleaf information -->
     <script type="text/javascript" th:inline="javascript">
@@ -36,7 +36,7 @@
         sprints.push(sprint);
     </script>
 
-    <script rel="script" src="/scripts/planner.js"></script>
+    <script rel="script" th:src="@{scripts/planner.js}"></script>
 
 </head>
 

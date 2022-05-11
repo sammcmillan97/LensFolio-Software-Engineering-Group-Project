@@ -88,7 +88,7 @@ public class User {
         this.bio = bio;
         this.personalPronouns = personalPronouns;
         this.email = email;
-        this.password = encryptPassword(password);
+        this.password = hashPassword(password);
         this.timeCreated = this.getCurrentTime();
         this.addRole(UserRole.STUDENT);
     }
@@ -117,7 +117,7 @@ public class User {
         this.bio = bio;
         this.personalPronouns = personalPronouns;
         this.email = email;
-        this.password = encryptPassword(password);
+        this.password = hashPassword(password);
         this.timeCreated = timestamp;
         this.addRole(UserRole.STUDENT);
     }
@@ -210,7 +210,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = encryptPassword(password);}
+        this.password = hashPassword(password);}
 
     public void setTimeCreated(Timestamp timeCreated) {this.timeCreated = timeCreated;}
 
@@ -233,9 +233,9 @@ public class User {
     /**
      * https://docs.spring.io/spring-security/site/docs/3.2.3.RELEASE/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
      * @param password raw password that user has selected during registration
-     * @return encrypted password to be stored in db
+     * @return hashed password to be stored in db
      */
-    private String encryptPassword(String password) {
+    private String hashPassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(STRENGTH, new SecureRandom());
         return passwordEncoder.encode(password);
     }
