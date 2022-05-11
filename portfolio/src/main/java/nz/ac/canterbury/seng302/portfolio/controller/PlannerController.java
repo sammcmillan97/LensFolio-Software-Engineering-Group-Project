@@ -39,7 +39,7 @@ public class PlannerController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The planner html page with relevant project and sprint data.
      */
-    @GetMapping("/planner/{id}")
+    @GetMapping("/planner-{id}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           @PathVariable("id") String id,
                           Model model) {

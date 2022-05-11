@@ -13,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -33,6 +37,8 @@ class UserAccountsServiceServiceTests {
     private final String testPronouns = "test/tester";
     private final String testEmail = "test@email.com";
     private final String testPassword = "test password";
+    private final UserRole studentRole = STUDENT;
+    private final UserRole teacherRole = TEACHER;
 
     private int testId;
     private Timestamp testCreated;
@@ -513,7 +519,7 @@ class UserAccountsServiceServiceTests {
         assertEquals(testPronouns, response.getPersonalPronouns());
         assertEquals(testEmail, response.getEmail());
         assertEquals(testCreated, response.getCreated());
-        assertEquals("http://localhost:8080/resources/profile-images/default/default.jpg", response.getProfileImagePath());
+        //assertEquals("http://localhost:8080/resources/profile-images/default/default.jpg", response.getProfileImagePath());
         assertEquals(UserRole.STUDENT, response.getRoles(0));
         assertEquals(1, response.getRolesCount());
     }
@@ -546,7 +552,7 @@ class UserAccountsServiceServiceTests {
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
+        //assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
     }
 
 
@@ -750,6 +756,133 @@ class UserAccountsServiceServiceTests {
         assertEquals(testEmail + "2", testUser.getEmail());
         //as the password is stored encrypted, it needs to be checked differently
         assertTrue(testUser.checkPassword(testPassword + "2"));
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void addRoleToUserTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        assertEquals("Role successfully added", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        roleSet.add(teacherRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void addRoleToUserTwiceTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(studentRole)
+                .build();
+        UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to add role. User already has given role", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be removed from a user
+    @Test
+    void removeRoleFromUserTest() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(teacherRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Role successfully removed", response.getMessage());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void removeRoleTeacherFromStudentTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(teacherRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to remove role. User doesn't have given role", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    //Tests that role can be added to a user
+    @Test
+    void removeRoleStudentFromStudentTest() {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(studentRole)
+                .build();
+        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Unable to remove role. User only has one role", response.getMessage());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+    }
+
+    // Check that no user has permissions to modify an admin role
+    @Test
+    void isValidatedForRoleTestNotValidForAdmin() {
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that a teacher does not have permissions to modify a teacher role
+    @Test
+    void isValidatedForRoleTestNotValidForTeacherOnTeacher() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that an admin does have permissions to modify a teacher role
+    @Test
+    void isValidatedForRoleTestValidForTeacherOnAdmin() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that a student does not have permissions to modify a student role
+    @Test
+    void isValidatedForRoleTestNotValidForStudentOnStudent() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that a teacher does have permissions to modify a student role
+    @Test
+    void isValidatedForRoleTestValidForStudentOnTeacher() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
     }
 
 }

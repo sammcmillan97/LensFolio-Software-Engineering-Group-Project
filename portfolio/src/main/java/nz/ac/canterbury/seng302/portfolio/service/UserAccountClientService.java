@@ -165,4 +165,32 @@ public class UserAccountClientService {
         return roles.contains("teacher") || roles.contains("courseadministrator");
     }
 
+    /**
+     * Add role to a user
+     * @param userId of user being altered
+     * @param role being added
+     * @return response
+     */
+    public UserRoleChangeResponse addRole(int userId, UserRole role) {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(userId)
+                .setRole(role)
+                .build();
+        return userStub.addRoleToUser(modifyRoleOfUserRequest);
+    }
+
+    /**
+     * Remove role from a user
+     * @param userId of user being altered
+     * @param role being removed
+     * @return response
+     */
+    public UserRoleChangeResponse removeRole(int userId, UserRole role) {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(userId)
+                .setRole(role)
+                .build();
+        return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
+    }
+
 }

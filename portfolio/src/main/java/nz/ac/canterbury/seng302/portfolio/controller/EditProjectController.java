@@ -58,7 +58,7 @@ public class EditProjectController {
      * @param model ThymeLeaf model
      * @return Edit project page
      */
-    @GetMapping("/projects/edit/{id}")
+    @GetMapping("/editProject-{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
@@ -152,7 +152,7 @@ public class EditProjectController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return Edit project page
      */
-    @PostMapping("/projects/edit/{id}")
+    @PostMapping("/editProject-{id}")
     public String projectSave(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("id") String projectId,
@@ -179,7 +179,7 @@ public class EditProjectController {
         // Check required fields are not null
         if (projectName == null || projectEndDate == null || projectStartDate == null) {
             //TODO Add logging for error
-            return "redirect:/projects/edit/" + projectId;
+            return "redirect:/editProject-" + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -191,7 +191,7 @@ public class EditProjectController {
 
         if (projectStartCal.before(yearAgoCal)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId;
+            return "redirect:/editProject-" + projectId;
         }
 
         // Ensure projectEndDate occurs after projectStartDate
@@ -199,7 +199,7 @@ public class EditProjectController {
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
             // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId;
+            return "redirect:/editProject-" + projectId;
         }
 
         // If editing existing project
@@ -215,7 +215,7 @@ public class EditProjectController {
 
             } catch(Exception ignored) {
                 //TODO Add logging for error.
-                return "redirect:/projects/edit/" + projectId;
+                return "redirect:/editProject-" + projectId;
             }
 
         // Otherwise, create a new project with given values
@@ -224,7 +224,7 @@ public class EditProjectController {
             savedProject = projectService.saveProject(newProject);
         }
 
-        return "redirect:/projects/" + savedProject.getId();
+        return "redirect:/projectDetails-" + savedProject.getId();
     }
 
     /**
@@ -233,7 +233,7 @@ public class EditProjectController {
      * @param projectId ID of the project to be deleted from the database.
      * @return Redirects back to the GET mapping for /projects.
      */
-    @DeleteMapping(value="/projects/delete/{id}")
+    @DeleteMapping(value="/editProject-{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
         if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";

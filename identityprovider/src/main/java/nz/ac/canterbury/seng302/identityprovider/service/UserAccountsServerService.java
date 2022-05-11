@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
+
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
 
@@ -494,9 +496,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
             }
         }
         return reply.build();
@@ -798,6 +800,171 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             validationErrors.add(validationError);
         }
         return validationErrors;
+    }
+
+    /**
+     * Service that allows authenticated users to add additional roles to a user
+     * @param request The request to add the role from a user
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
+            reply = addRoleToUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Unable to add role: Not authenticated")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of add role to user
+     * this allows for testing
+     * @param request A add role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        User user = repository.findByUserId(userId);
+        //check user doesn't already have given role
+        if (userHasRole(userId, role)){
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to add role. User already has given role");
+        } else {
+            user.addRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully added");
+        }
+        return reply.build();
+    }
+
+    /**
+     * Service that allows authenticated users to remove roles from a user
+     * @param request The request to remove the role from a user
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void removeRoleFromUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
+            reply = removeRoleFromUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Unable to remove role: Not authenticated")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of removing a role from user
+     * this allows for testing
+     * @param request A remove role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse removeRoleFromUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        User user = repository.findByUserId(userId);
+        //check user has role that you are attempting to remove
+        //check that this is not the users only role
+        if (!userHasRole(userId, role)) {
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. User doesn't have given role");
+        } else if (userHasOneRole(userId)){
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. User only has one role");
+        } else {
+            user.removeRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully removed");
+        }
+        return reply.build();
+    }
+
+    /**
+     * Given a user ID check if user has the correct role to add or remove another role.
+     * Specifically, TEACHERS can only change student roles, and COURSE ADMINISTRATORS can change student or teacher roles.
+     * @param userId the ID of the user
+     * @param role the role we are checking against
+     * @return true if the user has permission, false otherwise
+     */
+    public boolean isValidatedForRole(int userId, UserRole role) {
+        User user = repository.findByUserId(userId);
+        Set<UserRole> roles = user.getRoles();
+        if (role == STUDENT) {
+            return roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR);
+        } else if (role == TEACHER) {
+            return roles.contains(COURSE_ADMINISTRATOR);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get the user id of the user who is currently logged in
+     * @return The user id of the user who is currently logged in
+     */
+    private int getAuthStateUserId() {
+        String authenticatedId;
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+        return Integer.parseInt(authenticatedId);
+    }
+
+    /**
+     * Check if user already has role to ensure no double ups
+     * @param userId the ID of the user
+     * @param role The role of the user
+     * @return true if already has role, else false
+     */
+    private boolean userHasRole(int userId, UserRole role) {
+        User user = repository.findByUserId(userId);
+        Set<UserRole> roles;
+        roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == role) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if user only has one role,
+     * to ensure that the last role isn't removed
+     * @param userId the ID of the user
+     * @return true if has only one role, else false
+     */
+    private boolean userHasOneRole(int userId) {
+        boolean hasOneRole = false;
+        User user = repository.findByUserId(userId);
+        if (user.getRoles().size() == 1){
+            hasOneRole = true;
+        }
+        return hasOneRole;
     }
 
 }
