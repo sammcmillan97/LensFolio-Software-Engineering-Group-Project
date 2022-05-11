@@ -144,7 +144,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             sprintUpdated = false;
         }
-        return "redirect:/planner/" + projectId;
+        return "redirect:/planner-" + projectId;
     }
 
 }
