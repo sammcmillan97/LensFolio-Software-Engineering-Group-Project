@@ -76,7 +76,7 @@ deploy-staging-identityprovider:
     name: staging
     url: https://csse-s302g4.canterbury.ac.nz/test
   only:
-    - UVM-Deployment-Fixes
+    - dev
 
 deploy-staging-portfolio:
   stage: deploy
@@ -98,7 +98,7 @@ deploy-staging-portfolio:
     name: staging
     url: https://csse-s302g4.canterbury.ac.nz/test
   only:
-    - UVM-Deployment-Fixes
+    - dev
 
 deploy-production-identityprovider:
   stage: deploy
@@ -122,7 +122,6 @@ deploy-production-identityprovider:
   only:
     - tags
     - master
-    - UVM-Deployment-Fixes
 
 deploy-production-portfolio:
   stage: deploy
@@ -146,4 +145,3 @@ deploy-production-portfolio:
   only:
     - tags
     - master
-    - UVM-Deployment-Fixes
