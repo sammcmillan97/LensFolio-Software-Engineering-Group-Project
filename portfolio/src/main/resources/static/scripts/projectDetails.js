@@ -1,7 +1,7 @@
 function checkResponse(data){
     console.log(data[0])
     var editNotification = document.getElementById("editNotification");
-    if (data[0] == "<") {
+    if (data[0] == "1") {
         editNotification.style.display = "block";
     } else {
         editNotification.style.display = "none";
@@ -28,18 +28,4 @@ Promise.all(
   callme();
 });
 }
-const update = {
-title: 'A blog post by Kingsley',
-body: 'Brilliant post on fetch API',
-userId: 1,
-};
-
-const options = {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify(update),
-};
-fetch('http://localhost:9000/projects/1/editing', options);
 callme();

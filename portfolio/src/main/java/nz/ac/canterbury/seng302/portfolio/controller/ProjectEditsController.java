@@ -12,10 +12,10 @@ public class ProjectEditsController {
 
     @GetMapping("/projects/{id}/editStatus")
     public String projectEditing(@PathVariable("id") String id) {
-        if (System.currentTimeMillis() - editedAtTime < 20000) {
-            return "<";
+        if (System.currentTimeMillis() - editedAtTime < 5000) {
+            return "1";
         } else {
-            return ">";
+            return "0";
         }
     }
 

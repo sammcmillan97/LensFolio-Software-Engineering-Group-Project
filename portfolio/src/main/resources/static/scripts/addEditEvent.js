@@ -68,3 +68,25 @@ window.addEventListener('load', (event) => {
     updateMaxStartDate();
     countCharacters();
 });
+
+function callme(){
+//This promise will resolve when the network call succeeds
+//Feel free to make a REST fetch using promises and assign it to networkPromise
+const options = {
+method: 'POST'
+};
+var networkPromise = fetch('http://localhost:9000/projects/1/editing', options);
+
+//This promise will resolve when 2 seconds have passed
+var timeOutPromise = new Promise(function(resolve, reject) {
+  // 2 Second delay
+  setTimeout(resolve, 2000, 'Timeout Done');
+});
+
+Promise.all(
+[networkPromise, timeOutPromise]).then(function(values) {
+  console.log("We goin");
+  callme();
+});
+}
+callme();
