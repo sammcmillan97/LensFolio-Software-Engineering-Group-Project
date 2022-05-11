@@ -79,11 +79,12 @@ public class AddEditEventController {
 
         //Add event details to model
         model.addAttribute("eventName", event.getEventName());
-        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd"));
+        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd hh:mm:ss.S"));
+        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd hh:mm:ss.S"));
 
-        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
+        // Add event date boundaries for event to the model
+        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd hh:mm:ss.S"));
+        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd hh:mm:ss.S"));
 
         return "addEditEvent";
     }
@@ -110,8 +111,9 @@ public class AddEditEventController {
         Timestamp startDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
         Timestamp endDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
 
-        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(startDate));
-        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(endDate));
+        // Convert Timestamp values of start and end date-time to Date
+        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Event.dateToString(startDate));
+        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Event.dateToString(endDate));
 
         try {
             // Parse ids  from string

@@ -19,6 +19,8 @@ function getDateString(date) {
     let days = date.getDate();
     let months = date.getMonth() + 1; //January is 0!
     let years = date.getFullYear();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
 
     // Ensure day and month are two characters wide
     if (days < 10) {
@@ -28,13 +30,13 @@ function getDateString(date) {
         months = '0' + months;
     }
 
-    return years + '-' + months + '-' + days;
+    return years + '-' + months + '-' + days + ' ' + hours + ':' + minutes;
 }
 
 
 /**
- * Updates the soonest end date which a event may be given.
- * A event may not end before the date on which it begins.
+ * Updates the soonest end date which an event may be given.
+ * An event may not end before the date on which it begins.
  */
 function updateMinEndDate() {
     let startDate = document.getElementById("event-form__start-date-field").valueAsNumber;
@@ -47,8 +49,8 @@ function updateMinEndDate() {
 }
 
 /**
- * Updates the latest start date which a event may be given.
- * A event may not start after the date on which it ends.
+ * Updates the latest start date which an event may be given.
+ * An event may not start after the date on which it ends.
  */
 function updateMaxStartDate() {
     let endDate = document.getElementById("event-form__end-date-field").valueAsNumber;
