@@ -125,7 +125,7 @@ public class PlannerController {
         return "planner";
     }
 
-    @PostMapping("/planner/editSprint/{projectId}/{sprintId}")
+    @PostMapping("/editPlanner-{sprintId}-{projectId}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model,
                           @PathVariable String projectId,
@@ -144,7 +144,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             sprintUpdated = false;
         }
-        return "redirect:/planner/" + projectId;
+        return "redirect:/planner-" + projectId;
     }
 
 }
