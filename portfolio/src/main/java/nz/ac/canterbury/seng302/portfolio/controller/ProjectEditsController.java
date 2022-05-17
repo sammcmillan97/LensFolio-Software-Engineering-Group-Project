@@ -22,7 +22,7 @@ public class ProjectEditsController {
     private long editedAtTime;
     private String editedProject;
 
-    @GetMapping("/projects/editStatus")
+    @GetMapping("projects-editStatus")
     public String projectEditing(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
         boolean isAuthenticated = authenticateClientService.checkAuthState().getIsAuthenticated();
@@ -43,7 +43,7 @@ public class ProjectEditsController {
         }
     }
 
-    @PostMapping("/projects/editing")
+    @PostMapping("/projects-editing")
     public void isEditingProject(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
         boolean isTeacher = userAccountClientService.isTeacher(principal) && authenticateClientService.checkAuthState().getIsAuthenticated();

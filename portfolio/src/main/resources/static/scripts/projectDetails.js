@@ -11,7 +11,7 @@ function checkResponse(data){
 function callme(){
 //This promise will resolve when the network call succeeds
 //Feel free to make a REST fetch using promises and assign it to networkPromise
-var networkPromise = fetch('/projects/editStatus?id=1', options);
+var networkPromise = fetch('/projects-editStatus?id=1', options);
 
 //This promise will resolve when 2 seconds have passed
 var timeOutPromise = new Promise(function(resolve, reject) {
