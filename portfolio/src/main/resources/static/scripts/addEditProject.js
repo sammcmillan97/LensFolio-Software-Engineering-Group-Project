@@ -80,7 +80,7 @@ function callme(){
 const options = {
 method: 'POST'
 };
-var networkPromise = fetch('http://localhost:9000/projects/1/editing', options);
+var networkPromise = fetch('/projects/editing?id=1', options);
 
 //This promise will resolve when 2 seconds have passed
 var timeOutPromise = new Promise(function(resolve, reject) {
