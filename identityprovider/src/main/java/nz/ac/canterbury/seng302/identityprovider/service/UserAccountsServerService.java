@@ -12,6 +12,7 @@ import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.util.*;
@@ -34,6 +35,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+
+    @Value("${CONTEXT}")
+    private String context;
 
     @Autowired
     private UserRepository repository;
@@ -496,9 +500,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath(context + "resources/" + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath(context + "resources/profile-images/default/default.jpg");
             }
         }
         return reply.build();
