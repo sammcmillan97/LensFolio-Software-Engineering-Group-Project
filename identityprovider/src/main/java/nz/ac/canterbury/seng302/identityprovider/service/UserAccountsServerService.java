@@ -502,7 +502,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             if (user.getProfileImagePath() != null) {
                 reply.setProfileImagePath(context + "resources/" +user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath(context + "resources/" +"/profile-images/default/default.jpg");
+                reply.setProfileImagePath(context + "resources/profile-images/default/default.jpg");
             }
         }
         return reply.build();
