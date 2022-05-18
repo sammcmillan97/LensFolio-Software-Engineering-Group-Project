@@ -14,14 +14,14 @@
 <!-- Page content -->
 <div id="page-content" class="constrict">
     <div class="pagination">
-        <a th:href="'/userList-' + ${firstPage} + ${sortingSuffix}">&laquo;</a>
-        <a th:href="'/userList-' + ${previousPage} + ${sortingSuffix}">&lt;</a>
+        <a th:href="@{userList-{firstPage}{sortingSuffix}(firstPage=${firstPage}, sortingSuffix=${sortingSuffix})}">&laquo;</a>
+        <a th:href="'userList-' + ${previousPage} + ${sortingSuffix}">&lt;</a>
         <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
-        <a th:href="'/userList-' + ${nextPage} + ${sortingSuffix}">&gt;</a>
-        <a th:href="'/userList-' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
+        <a th:href="'userList-' + ${nextPage} + ${sortingSuffix}">&gt;</a>
+        <a th:href="'userList-' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
     <p th:text="${message}"></p>
-    <table>
+    <table aria-label="User List Table">
         <thead>
             <tr class="sort-header">
                 <th>
