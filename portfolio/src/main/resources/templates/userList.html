@@ -21,8 +21,7 @@
         <a th:href="'userList-' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
     </div>
     <p th:text="${message}"></p>
-    <table>
-        <caption>User List Table</caption>
+    <table aria-label="User List Table">
         <thead>
             <tr class="sort-header">
                 <th>
