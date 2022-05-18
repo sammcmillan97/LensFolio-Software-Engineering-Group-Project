@@ -500,9 +500,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + "resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath(context + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath(context + "resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath(context + "/profile-images/default/default.jpg");
             }
         }
         return reply.build();
