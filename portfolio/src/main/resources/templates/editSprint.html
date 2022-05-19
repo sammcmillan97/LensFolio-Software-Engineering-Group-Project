@@ -6,7 +6,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
     <link th:href="@{/styles/addEditSprint.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
 </head>
 
 <body>
@@ -17,6 +16,7 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
+        <div id="projectId" style="display: none;" th:text="${projectId}"></div>
         <div id="sprint-form__wrapper">
             <!-- Name, Date -->
             <header class="sprint-form__header flex-column">
@@ -43,6 +43,7 @@
             </form>
         </div>
     </div>
+    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
 </body>
 
 </html>

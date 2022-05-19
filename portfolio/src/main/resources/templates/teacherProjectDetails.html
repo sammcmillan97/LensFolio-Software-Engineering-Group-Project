@@ -6,7 +6,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/styles/stylesheet.css">
     <link rel="stylesheet" href="/styles/projectDetails.css">
-    <script rel="script" src="/scripts/projectDetails.js"></script>
 </head>
 
 <body>
@@ -17,7 +16,8 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
-        <div id="editNotification"> Somebody is editing the page! </div>
+        <div id="editNotification"></div>
+        <div id="projectId" style="display: none;" th:text="${project.getId}"></div>
         <!-- Project -->
         <div id="project">
             <!-- Name, Date -->
@@ -127,6 +127,10 @@
         </div>
 
     </div>
+
+</div>
+
+    <script rel="script" src="/scripts/projectDetails.js"></script>
 
 </body>
 

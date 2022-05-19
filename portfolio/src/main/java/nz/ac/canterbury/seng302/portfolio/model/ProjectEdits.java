@@ -24,9 +24,9 @@ public class ProjectEdits {
         return result.toString();
     }
 
-    public void newEdit(int projectId, int userId) {
+    public void newEdit(int projectId, int userId, String editString) {
         projectEditList.removeIf(edit -> edit.isFromUser(userId));
-        projectEditList.add(new ProjectEdit(projectId, userId));
+        projectEditList.add(new ProjectEdit(projectId, userId, editString));
     }
 
 }

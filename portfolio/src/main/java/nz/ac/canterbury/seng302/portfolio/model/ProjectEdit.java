@@ -1,24 +1,16 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 public class ProjectEdit {
-
-    @Autowired
-    UserAccountClientService userAccountClientService;
-
-    @Autowired
-    ProjectService projectService;
 
     private final int projectId;
     private final int userId;
+    private String editString;
     private final long time;
 
-    public ProjectEdit(int projectId, int userId) {
+    public ProjectEdit(int projectId, int userId, String editString) {
         this.projectId = projectId;
         this.userId = userId;
+        this.editString = editString;
         this.time = System.currentTimeMillis();
     }
 
@@ -35,8 +27,7 @@ public class ProjectEdit {
     }
 
     public String toString() {
-        return "'" + userAccountClientService.getUserAccountById(userId).getFirstName() +
-                " is editing " + projectService.getProjectById(projectId).getName() + "'";
+        return editString;
     }
 
 }

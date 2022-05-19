@@ -64,7 +64,7 @@ function callme(){
 const options = {
 method: 'POST'
 };
-var networkPromise = fetch('/projects-editing?id=1', options);
+var networkPromise = fetch('/projects-editing?id=' + document.getElementById("projectId").textContent, options);
 
 //This promise will resolve when 2 seconds have passed
 var timeOutPromise = new Promise(function(resolve, reject) {

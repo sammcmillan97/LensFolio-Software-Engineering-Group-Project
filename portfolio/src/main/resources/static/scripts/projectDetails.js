@@ -1,17 +1,12 @@
 function checkResponse(data){
-    console.log(data[0])
     var editNotification = document.getElementById("editNotification");
-    if (data[0] == "1") {
-        editNotification.style.display = "block";
-    } else {
-        editNotification.style.display = "none";
-    }
+    editNotification.innerHTML = data;
 }
 
 function callme(){
 //This promise will resolve when the network call succeeds
 //Feel free to make a REST fetch using promises and assign it to networkPromise
-var networkPromise = fetch('/projects-editStatus?id=1', options);
+var networkPromise = fetch('/projects-editStatus?id=' + document.getElementById("projectId").textContent);
 
 //This promise will resolve when 2 seconds have passed
 var timeOutPromise = new Promise(function(resolve, reject) {

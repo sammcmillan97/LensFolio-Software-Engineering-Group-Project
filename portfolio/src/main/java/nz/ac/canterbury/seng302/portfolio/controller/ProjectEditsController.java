@@ -1,16 +1,17 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectEdits;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
+import java.util.NoSuchElementException;
 
 @RestController
 public class ProjectEditsController {
@@ -20,6 +21,9 @@ public class ProjectEditsController {
 
     @Autowired
     UserAccountClientService userAccountClientService;
+
+    @Autowired
+    ProjectService projectService;
 
     private final ProjectEdits projectEdits = new ProjectEdits();
 
@@ -58,13 +62,18 @@ public class ProjectEditsController {
                 .orElse("-100"));
 
         int projectId;
+        Project project;
         try {
             projectId = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            return; // If project id is not an integer, the request was invalid, and we can discard it
+            project = projectService.getProjectById(projectId);
+        } catch (NumberFormatException | NoSuchElementException e) {
+            return;
+            // If project id is not an integer or does not correspond to a project, the request was invalid so we return
         }
         if (isTeacher && userId != -100) {
-            projectEdits.newEdit(projectId, userId);
+            String editString = "'" + userAccountClientService.getUserAccountById(userId).getFirstName() +
+                    " is editing " + project.getName() + "'";
+            projectEdits.newEdit(projectId, userId, editString);
         }
     }
 
