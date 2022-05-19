@@ -108,6 +108,14 @@ html {
     padding: 0 2rem 0 2rem;
 }
 
+.event_title_child {
+    display: inline-block;
+    padding: 1rem 1rem;
+    vertical-align: middle
+}
+.bi-calendar-event {
+    font-size: 40px;
+}
 /*.sprint:last-child, .event:last-child {*/
 /*    border-bottom: 1px solid var(--color-accent);*/
 /*}*/

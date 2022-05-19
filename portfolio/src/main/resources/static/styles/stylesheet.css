@@ -21,6 +21,7 @@ body {
 
 h5 {
     font-size: 1.5rem;
+    float:left;
 }
 
 .flex-column {
@@ -47,4 +48,27 @@ h5 {
 
 #page-content.expanded, header.expanded {
     margin-left: 0;
+}
+
+/***************** Navigation Bar *******************/
+
+.nav_head {
+    text-align: center;
+}
+
+#nav_line {
+    border: 1px solid white;
+    margin-inline-start: 20px;
+    margin-inline-end: 20px;
+}
+
+.site-navigation__component {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.navigation_icon {
+    font-size: 20px;
+    border-radius: 0.25em;
+    padding: 0.5em;
 }
