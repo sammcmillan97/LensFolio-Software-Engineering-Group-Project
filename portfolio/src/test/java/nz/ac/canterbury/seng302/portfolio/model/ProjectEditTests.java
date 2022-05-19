@@ -75,11 +75,4 @@ class ProjectEditTests {
         assertThat(edit.isFromUser(otherUserId)).isFalse();
     }
 
-    @Test
-    void testProjectEditToString() {
-        String editString = "this is an edit string";
-        ProjectEdit edit = new ProjectEdit(0, 0, editString);
-        assertThat(edit.toString()).hasToString(editString);
-    }
-
 }
