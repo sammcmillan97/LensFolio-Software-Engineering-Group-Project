@@ -13,7 +13,7 @@
         <div id="page-content" class="constrict">
             <div class="container">
                 <!-- form puts the params to the register controller-->
-                <form th:action="@{/editUser}" method="post">
+                <form th:action="@{editUser}" method="post">
                     <div class="wrapper">
                         <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
                         <h2>Please enter your details below</h2>
