@@ -47,9 +47,9 @@
         <div id="project__sprints-wrapper flex-column">
             <div id="new-buttons" class="flex-row">
                 <!-- New Sprint Button -->
-                <a class="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
+                <a class="new-sprint-button" th:href="@{editSprint-{sprint}-{project}(sprint=-1, project=${project.getId})}">Add Sprint</a>
                 <!-- New Event Button -->
-                <a class="new-event-button" th:href="@{/projects/edit/event/{project}/-1(project=${project.getId})}">Add Event</a>
+                <a class="new-event-button" th:href="@{editEvent-{event}-{project}(event=-1, project=${project.getId})}">Add Event</a>
             </div>
 
             <div th:each="importantDate : ${importantDates}">
@@ -80,11 +80,11 @@
                                 <!-- Edit/Delete Inside event Buttons -->
                                 <div class="event__button-wrapper flex-row">
 
-                                    <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event).getEventId})}" th:method="get">
+                                    <form action="#" th:action="@{editEvent-{event}-{project}(project=${project.getId}, event=${eventList.get(event).getEventId})}" th:method="get">
                                         <button type="submit">Edit</button>
                                     </form>
 
-                                    <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
+                                    <form action="#" th:action="@{editEvent-{event}-{project}(project=${project.getId}, event=${eventList.get(event).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
                                         <button type="submit">Delete</button>
                                     </form>
                                 </div>
@@ -103,11 +103,11 @@
                     <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName} + '&#9733;'"></h2>
                     <!-- Edit/Delete Independent events -->
                     <div class="event__button-wrapper flex-row">
-                        <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
+                        <form action="#" th:action="@{editEvent-{event}-{project}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
                             <button type="submit">Edit</button>
                         </form>
 
-                        <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
+                        <form action="#" th:action="@{editEvent-{event}-{project}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
                             <button type="submit">Delete</button>
                         </form>
                     </div>

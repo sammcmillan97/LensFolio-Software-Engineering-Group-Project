@@ -4,9 +4,9 @@
 <head>
     <title>Edit event</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
-    <link th:href="@{/styles/addEditEvent.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{/scripts/addEditEvent.js}"></script>
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/addEditEvent.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{scripts/addEditEvent.js}"></script>
 </head>
 
 <body>
@@ -24,7 +24,7 @@
         </header>
 
         <!-- Add/Edit Event Form -->
-        <form id="event-form__form" class="flex-column" th:action="@{/projects/edit/event/{project}/{eventId}(project=${parentProjectId}, eventId=${eventId})}" th:method="post">
+        <form id="event-form__form" class="flex-column" th:action="@{editEvent-{event}-{project}(project=${parentProjectId}, event=${eventId})}" th:method="post">
             <label for="event-form__name-field">Event Name *</label>
             <input type="text" id="event-form__name-field" class="edit-input" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" required onkeyup="countCharacters()">
             <span id="char_count">30/30 characters remain</span>
@@ -36,7 +36,7 @@
             <input type="datetime-local" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${eventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
 
             <button type="submit" id="event-form__save">Save Changes</button>
-            <a id="event-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
+            <a id="event-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
         </form>
     </div>
 </div>

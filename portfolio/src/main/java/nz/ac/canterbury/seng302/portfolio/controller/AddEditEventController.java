@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.*;
 import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -39,7 +38,7 @@ public class AddEditEventController {
     /**
      * The get mapping to return the page to add/edit an event
      */
-    @GetMapping("/projects/edit/event/{parentProjectId}/{eventId}")
+    @GetMapping("/editEvent-{eventId}-{parentProjectId}")
     public String eventForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
                             @PathVariable("eventId") String eventId,
@@ -56,7 +55,7 @@ public class AddEditEventController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         // Add parent project ID
@@ -89,7 +88,7 @@ public class AddEditEventController {
         return "addEditEvent";
     }
 
-    @PostMapping("/projects/edit/event/{parentProjectId}/{eventId}")
+    @PostMapping("/editEvent-{eventId}-{parentProjectId}")
     public String addEditEvent(
             @AuthenticationPrincipal AuthState principle,
             @PathVariable("parentProjectId") String projectIdString,
@@ -138,7 +137,7 @@ public class AddEditEventController {
                 System.out.println("Failed to update existing event");
             }
         }
-        return "redirect:/projects/" + projectIdString;
+        return "redirect:/projectDetails-" + projectIdString;
     }
 
     /**
@@ -148,7 +147,7 @@ public class AddEditEventController {
      * @param eventId is the id of the event being deleted
      * @return the project page of the parent project
      */
-    @DeleteMapping(value="/projects/delete/event/{parentProjectId}/{eventId}")
+    @DeleteMapping(value="/editEvent-{eventId}-{parentProjectId}")
     public String deleteProjectEventById(@AuthenticationPrincipal AuthState principal,
                                          @PathVariable("parentProjectId") String parentProjectId,
                                          @PathVariable("eventId") String eventId) {
@@ -157,6 +156,6 @@ public class AddEditEventController {
         }
 
         eventService.deleteEventById(Integer.parseInt(eventId));
-        return "redirect:/projects/" + parentProjectId;
+        return "redirect:/projectDetails-" + parentProjectId;
     }
 }

@@ -35,8 +35,6 @@ public class ProjectDetailsController {
     @Autowired
     private EventService eventService;
     @Autowired
-    private EventRepository eventRepository;
-    @Autowired
     private UserAccountClientService userAccountClientService;
 
     /**
