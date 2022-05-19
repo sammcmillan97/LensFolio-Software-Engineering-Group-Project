@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Edit Project</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
-    <link th:href="@{/styles/addEditProject.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{/scripts/addEditProject.js}"></script>
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/addEditProject.css}" rel="stylesheet" />
+    <script rel="script" th:src="@{scripts/addEditProject.js}"></script>
     <script th:inline="javascript">
         let projectFirstSprintStartDate
         let projectLastSprintEndDate
@@ -16,7 +16,6 @@
             projectFirstSprintStartDate = null
             projectLastSprintEndDate = null
         }
-
     </script>
 </head>
 <body>
@@ -34,21 +33,21 @@
             </header>
 
             <!-- Add/Edit Project Form -->
-            <form id="project-form__form" class="flex-column" th:action="@{/projects/edit/{id}(id=${projectId})}" th:method="post">
+            <form id="project-form__form" class="flex-column" th:action="@{editProject-{id}(id=${projectId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
-                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" th:placeholder="${projectName}" th:value="${projectName}" required>
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" minlength="1" maxlength="64" th:placeholder="${projectName}" th:value="${projectName}" title="Please enter 1 or more non whitespace characters" required pattern=".*\S.*">
 
                 <label for="project-form__description-field">Project Description</label>
-                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
+                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
                 <label for="project-form__start-date-field">Project Start Date *</label>
                 <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>
 
                 <label for="project-form__end-date-field">Project End Date *</label>
-                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" onchange="updateMaxStartDate()" required>
+                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" th:max="${maxProjectEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="project-form__save">Save Changes</button>
-                <a id="project-form__discard" th:href="@{/projects}">Discard</a>
+                <a id="project-form__discard" th:href="@{projects}">Discard</a>
             </form>
         </div>
     </div>

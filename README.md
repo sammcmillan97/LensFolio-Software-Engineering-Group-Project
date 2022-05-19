@@ -1,9 +1,11 @@
-# SENG302 Project Overview
+# SENG302 - Team 400 Bad Request - LenPortfolio
 
-Welcome to the template project for SENG302-2022, in this README file we've included some useful information to help you get started. We advise you to take some time reading through this entire document, as doing so may save you many headaches down the line!
+Welcome to team 400's project for Seng302. This read me contains an overview of the 'Lensfolio' applicaiton. 
+
 
 ## Dependencies
 This project requires Java version >= 17, [click here to get the latest stable OpenJDK release (as of writing this README)](https://jdk.java.net/17/)
+
 
 ## Technologies
 
@@ -16,6 +18,7 @@ Across this project there are many technologies and dependencies in use, but her
 - [Gradle](https://gradle.org/) - Gradle is a build automation tool that greatly simplifies getting applications up and running, it even manages our dependencies for us!
 - [Full Calendar](https://fullcalendar.io/) - Used in portfolio module for creating monthly planner.
 
+
 ## Project structure
 
 Inside this repository, you will see a number of directories, here's what each one is for:
@@ -26,10 +29,12 @@ Inside this repository, you will see a number of directories, here's what each o
 - `identityprovider/` - This is the first main code project in the repo. The Identity Provider (IdP) is built with Spring Boot, and uses gRPC to communicate with other modules. The IdP is where we will store user information (such as usernames, passwords, names, ids, etc.), and manage authentication. By having a separate IdP rather than, for example, building the authentication and user information into the Portfolio module, we are able to share this user information and authentication over multiple different software modules (i.e other applications within the LENS ecosystem). At the moment there are only two modules, the IdP and the Portfolio, so it may seem a little unnecessary to separate them out, but when you begin adding more modules, it will make a lot more sense. The IdP does not have any form of user interface, and at this stage should be kept as such. You can find more info about the importance of the IdP [below](#the-lens-authentication-dance)
 - `portfolio/` - Following on from the IdP, the Portfolio module is another fully fledged Java application running Spring Boot. It also uses gRPC to communicate with other modules, and is initially configured to be able to log in and check authentication with the IdP (albeit with just a dummy user account at the moment, you'll be implementing some real user functionality). Because we've already implemented much of the background authentication configuration (in the way the LENS expects), **you should think twice before modifying anything in the `Authentication`  package** - more on this [below](#the-lens-authentication-dance). The Portfolio module uses Thymeleaf for server-side rendering of HTML.
 
+
 # Quickstart guide
 
 ## Building and running the project with gradle
 We'll give some steps here for building and running via the commandline, though IDEs such as IntelliJ will typically have a 'gradle' tab somewhere that you can use to perform the same actions with as well.
+
 
 ### 1 - Generating Java dependencies from the `shared` class library
 The `shared` class library is a dependency of the two main applications, so before you will be able to build either `portfolio` or `identityprovider`, you must make sure the shared library files are available via the local maven repository.
@@ -52,6 +57,7 @@ gradlew publishToMavenLocal
 
 *Note: The `gradle clean` step is usually only necessary if there have been changes since the last publishToMavenLocal.*
 
+
 ### 2 - Running the IdentityProvider module
 In order to be able to log in through the Portfolio module, and access its protected routes, the IdP must first be up and running - check the `identityprovider\src\main\resources` and `portfolio\src\main\resources\application.properties` files to see how these two different modules know where to find each other.
 
@@ -71,6 +77,7 @@ gradlew bootRun
 
 Unlike in step 1, when you run this command, it won't 'finish'. This is because the shell (e.g windows / linux terminal) is kept busy by the process until it ends (Ctrl+C) to kill it. By default, the IdP will run on local port 9002 (`http://localhost:9002`).
 
+
 ### 3 - Running the Portfolio module
 Now that the IdP is up and running, we will be able to use the Portfolio module (note: it is entirely possible to start it up without the IdP running, you just won't be able to get very far).
 
@@ -89,18 +96,13 @@ gradlew bootRun
 
 By default, the Portfolio will run on local port 9000 (`http://localhost:9000`)
 
+
 ### 4 - Connect to the Portfolio UI through your web brower
 Everything should now be up and running, so you can load up your preferred web browser and connect to the Portfolio UI by going to `http://localhost:9000` - though you will probably want to start at `http://localhost:9000/login` until you set up an automatic redirect, or a home page of sorts.
 
+
 ## User Manual
 [User manual](https://eng-git.canterbury.ac.nz/seng302-2022/team-400/-/wikis/User-Manual) - Link to user manual within GitLab wiki.
-
-## The IdentityProvider (IdP)
-In order for multiple software modules to share the same user accounts and authentication information, there must be a single source of truth somewhere that they all rely on - the IdP is this source of truth. In the case of your applications, users must first register an account and log in with the IdP before they may proceed - in this way, we are creating from scratch a 'new identity' for each user of the application.
-
-But what about if we wanted to be able to use an already existing identity source instead of creating them all from scratch - for example, being able to sign in using our existing UC credentials. If we did this, we could also get additional information about users like what courses they are enrolled in, whether they are students or staff, and much more. In fact, this is how the *'official'* LENS IdP works! That's right, somewhere out there is a LENS IdP that already exists - **this is why it is important make sure you correctly implement using the provided `.proto` contracts**. When we integrate your products into the official LENS instance, they'll be using our Identity Provider!
-
-As the IdP is the single source of truth for our identity, we also have it be the single source of truth for our authentication. In this way, it is the IdP the generates and signs the session tokens we give to users when they log in - and it is only the IdP that can validate these session tokens to ensure they have not been tampered with or expired. This is why modules like `portfolio` send a `checkAuthState()` request to the IdP whenever a user attempts to do something that requires authentication.
 
 
 ## License
@@ -123,6 +125,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - Danish Khursheed Jahangir
 - Luke Garside
 - Sam McMillan
+
 
 ## References
 - [GitLab Wiki](https://eng-git.canterbury.ac.nz/seng302-2022/team-400/-/wikis/home)

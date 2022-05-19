@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -32,7 +33,7 @@ public class EditProjectController {
     @Autowired
     UserAccountClientService userAccountClientService;
 
-    /* Create default project. TODO: use database to check for this*/
+    /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
@@ -57,7 +58,7 @@ public class EditProjectController {
      * @param model ThymeLeaf model
      * @return Edit project page
      */
-    @GetMapping("/projects/edit/{id}")
+    @GetMapping("/editProject-{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
@@ -69,7 +70,7 @@ public class EditProjectController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         int id = Integer.parseInt(projectId);
@@ -81,7 +82,6 @@ public class EditProjectController {
             try {
                 project = projectService.getProjectById(id);
             } catch (Exception ignored) {
-                // TODO
                 project = defaultProject;
             }
 
@@ -112,6 +112,11 @@ public class EditProjectController {
         cal.add(Calendar.YEAR, -1);
         java.util.Date minStartDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
+
+        // A project must end within 10 years from today
+        cal.add(Calendar.YEAR, 11);
+        java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
+        model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, "yyyy-MM-dd"));
 
         // Check if the project has any sprints
         List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
@@ -151,7 +156,7 @@ public class EditProjectController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return Edit project page
      */
-    @PostMapping("/projects/edit/{id}")
+    @PostMapping("/editProject-{id}")
     public String projectSave(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("id") String projectId,
@@ -171,13 +176,21 @@ public class EditProjectController {
         try {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
-            //TODO Add logging for error
             return "redirect:/projects";
         }
 
-        // Check required fields are not null
-        if (projectName == null || projectEndDate == null || projectStartDate == null) {
-            //TODO Add logging for error
+        // Check the project name isn't null, empty, too long or consists of whitespace
+        if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
+            return "redirect:/editProject-" + projectId;
+            // Check project name is
+        }
+
+        if (projectDescription.length() > 255) {
+            return "redirect:/projects/edit/" + projectId;
+        }
+
+        // Check dates are not null
+        if (projectEndDate == null || projectStartDate == null) {
             return "redirect:/projects/edit/" + projectId;
         }
 
@@ -189,16 +202,14 @@ public class EditProjectController {
         projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
-            // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId;
+            return "redirect:/editProject-" + projectId;
         }
 
         // Ensure projectEndDate occurs after projectStartDate
         Calendar projectEndCal = getCalendarDay();
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
-            // TODO Add logging for error.
-            return "redirect:/projects/edit/" + projectId;
+            return "redirect:/editProject-" + projectId;
         }
 
         // If editing existing project
@@ -213,8 +224,7 @@ public class EditProjectController {
                 savedProject = projectService.saveProject(existingProject);
 
             } catch(Exception ignored) {
-                //TODO Add logging for error.
-                return "redirect:/projects/edit/" + projectId;
+                return "redirect:/editProject-" + projectId;
             }
 
         // Otherwise, create a new project with given values
@@ -223,7 +233,7 @@ public class EditProjectController {
             savedProject = projectService.saveProject(newProject);
         }
 
-        return "redirect:/projects/" + savedProject.getId();
+        return "redirect:/projectDetails-" + savedProject.getId();
     }
 
     /**
@@ -232,7 +242,7 @@ public class EditProjectController {
      * @param projectId ID of the project to be deleted from the database.
      * @return Redirects back to the GET mapping for /projects.
      */
-    @DeleteMapping(value="/projects/delete/{id}")
+    @DeleteMapping(value="/editProject-{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
         if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
@@ -242,7 +252,6 @@ public class EditProjectController {
         try {
             projectService.deleteProjectById(id);
         } catch (Exception e) {
-            //TODO log error.
         }
         return "redirect:/projects";
     }

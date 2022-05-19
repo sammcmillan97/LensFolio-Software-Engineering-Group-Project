@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * The Controller for handling the backend of the project details page
@@ -46,21 +47,22 @@ public class ProjectDetailsController {
      * @param id The ID of the project being displayed
      * @return The project page displaying the selected projects details
      */
-    @GetMapping("/projects/{id}")
-    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) {
+    @GetMapping("/projectDetails-{id}")
+    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
         // Add user details to model
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         /* Add project details to the model */
         int projectId = Integer.parseInt(id);
-        Project project = projectService.getProjectById(projectId);
-        model.addAttribute("project", project);
+        try {
+            Project project = projectService.getProjectById(projectId);
+            model.addAttribute("project", project);
 
         List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
         ProjectDetailsUtil.colorSprints(sprintList);
@@ -71,6 +73,10 @@ public class ProjectDetailsController {
         model.addAttribute("sprintList", sprintList);
         model.addAttribute("eventList", eventList);
         model.addAttribute("importantDates", importantDates);
+        } catch (NoSuchElementException e) {
+            return "redirect:/projects";
+        }
+
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {
