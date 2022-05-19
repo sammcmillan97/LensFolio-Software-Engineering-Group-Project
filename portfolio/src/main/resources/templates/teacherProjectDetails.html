@@ -4,9 +4,9 @@
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/styles/stylesheet.css">
-    <link rel="stylesheet" href="/styles/projectDetails.css">
-    <script rel="script" src="/scripts/projectDetails.js"></script>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
+    <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
 </head>
 
 <body>
@@ -27,14 +27,14 @@
 
             <!-- Edit/Delete Project and Planner Buttons -->
             <div class="project__button-wrapper flex-row">
-                <form action="#" th:action="@{/projects/edit/{id}(id=${project.getId})}" th:method="get">
+                <form action="#" th:action="@{editProject-{id}(id=${project.getId})}" th:method="get">
                     <button type="submit">Edit</button>
                 </form>
 
-                <form action="#" th:action="@{/projects/delete/{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                <form action="#" th:action="@{editProject-{id}(id=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
                     <button type="submit">Delete</button>
                 </form>
-                <form action="#" th:action="@{/planner/{id}(id=${project.getId})}" th:method="get">
+                <form action="#" th:action="@{planner-{id}(id=${project.getId})}" th:method="get">
                     <button type="submit">Planner</button>
                 </form>
             </div>
@@ -56,16 +56,16 @@
                 <div class="sprint" th:if="${importantDate.getSecond() == 'Sprint'}">
                     <h2 class="sprint__name" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}" th:text="|${sprintList.get(importantDate.getFirst()).getLabel} - ${sprintList.get(importantDate.getFirst()).getName}|"></h2>
 
-                    <!-- Edit/Delete Sprint Buttons -->
-                    <div class="sprint__button-wrapper flex-row">
-                        <form action="#" th:action="@{/projects/edit/{project}/{sprint}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" th:method="get">
-                            <button type="submit">Edit</button>
-                        </form>
+                <!-- Edit/Delete Sprint Buttons -->
+                <div class="sprint__button-wrapper flex-row">
+                    <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprint.getId})}" th:method="get">
+                        <button type="submit">Edit</button>
+                    </form>
 
-                        <form action="#" th:action="@{/projects/delete/{project}/{sprint}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
-                            <button type="submit">Delete</button>
-                        </form>
-                    </div>
+                    <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprint.getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
 
                     <!-- Sprint Details -->
                     <div class="sprint__details" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}">
@@ -121,11 +121,9 @@
                     </div>
             </div>
 
-
         </div>
 
     </div>
-
 </body>
 
 </html>
