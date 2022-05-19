@@ -940,7 +940,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Get the user id of the user who is currently logged in
      * @return The user id of the user who is currently logged in
      */
-    private int getAuthStateUserId() {
+    @VisibleForTesting
+    protected int getAuthStateUserId() {
         String authenticatedId;
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         authenticatedId = authState.getClaimsList().stream()
