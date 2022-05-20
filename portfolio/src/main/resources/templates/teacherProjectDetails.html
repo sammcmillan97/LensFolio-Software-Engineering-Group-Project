@@ -6,6 +6,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
+    <script src="https://kit.fontawesome.com/284782448e.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
     <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
 </head>
 
@@ -17,6 +19,7 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
+        <div id="editNotification"> Somebody is editing the page! </div>
         <!-- Project -->
         <div id="project">
             <!-- Name, Date -->
@@ -76,7 +79,8 @@
                     <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                         <div class="flex-row">
                             <div class="event">
-                                <h2 class="event__name" th:text="${eventList.get(event).getEventName} + '&#9733;'"></h2>
+                                <div class="event_title_child"> <i class="bi bi-calendar-event"></i> </div>
+                                <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2> </div>
                                 <!-- Edit/Delete Inside event Buttons -->
                                 <div class="event__button-wrapper flex-row">
 
@@ -100,7 +104,8 @@
                 </div>
                 <!-- Independent Events -->
                 <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
-                    <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName} + '&#9733;'"></h2>
+                    <div class="event_title_child"> <i class="bi bi-calendar-event"></i> </div>
+                    <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2> </div>
                     <!-- Edit/Delete Independent events -->
                     <div class="event__button-wrapper flex-row">
                         <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
