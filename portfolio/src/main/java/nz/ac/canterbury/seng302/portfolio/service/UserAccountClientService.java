@@ -161,6 +161,10 @@ public class UserAccountClientService {
                 .orElse("NOT FOUND");
     }
 
+    public boolean isLoggedIn(AuthState principal) {
+        return principal != null;
+    }
+
     public boolean isTeacher(AuthState principal) {
         String roles = getRoles(principal);
         return roles.contains("teacher") || roles.contains("courseadministrator");

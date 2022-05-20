@@ -923,6 +923,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } else if (userHasOneRole(userId)){
             reply.setIsSuccess(false)
                     .setMessage("Unable to remove role. User only has one role");
+        } else if (getAuthStateUserId() == userId && role == COURSE_ADMINISTRATOR) {
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. Cannot remove own course administrator role");
         } else {
             user.removeRole(role);
             repository.save(user);
@@ -944,7 +947,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         Set<UserRole> roles = user.getRoles();
         if (role == STUDENT) {
             return roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR);
-        } else if (role == TEACHER) {
+        } else if (role == TEACHER || role == COURSE_ADMINISTRATOR) {
             return roles.contains(COURSE_ADMINISTRATOR);
         } else {
             return false;
@@ -955,7 +958,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Get the user id of the user who is currently logged in
      * @return The user id of the user who is currently logged in
      */
-    private int getAuthStateUserId() {
+    @VisibleForTesting
+    protected int getAuthStateUserId() {
         String authenticatedId;
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         authenticatedId = authState.getClaimsList().stream()
