@@ -60,6 +60,7 @@ h5 {
 .site-navigation__link{
     /*float: left;*/
     width: 160px;
+    text-align: left;
 }
 
 
