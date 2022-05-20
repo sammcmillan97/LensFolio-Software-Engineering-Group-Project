@@ -1,7 +1,20 @@
 function checkResponse(data){
     var jsondata = JSON.parse(data);
     var editNotification = document.getElementById("editNotification");
-    editNotification.innerHTML = jsondata.edits;
+    if (jsondata.edits.length == 0) {
+        editNotification.className = "";
+    } else {
+        editNotification.className = "show";
+    }
+    var editHTML = "<p>";
+    for (const edit in jsondata.edits) {
+        if (edit != 0) {
+            editHTML += "<br><br>"
+        }
+        editHTML += jsondata.edits[edit]
+    }
+    editHTML += "</p>";
+    editNotification.innerHTML = editHTML;
 }
 
 function callme(){
