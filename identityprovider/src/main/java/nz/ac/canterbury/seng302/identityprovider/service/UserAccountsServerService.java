@@ -325,6 +325,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return A DeleteUserProfilePhotoResponse with success true if the photo was deleted, or did not exist in the first place.
      */
     DeleteUserProfilePhotoResponse deleteUserProfilePhotoHandler(DeleteUserProfilePhotoRequest request) {
+        System.out.println("deleteUserProfilePhotoHandler called");
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
