@@ -35,12 +35,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+    private static final String IMAGE_FOLDER = "profile-images/";
 
     @Value("${CONTEXT}")
     private String context;
 
     @Value("${IMAGE_SRC}")
-    private String image_src;
+    private String imageSrc;
 
     @Autowired
     private UserRepository repository;
@@ -233,20 +234,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     }
                 } else {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
-
                     try {
                         output.write(fileContent);
                         output.write(request.getFileContent().toByteArray());
                     } catch (IOException e) {
                         responseObserver.onError(e);
                     }
-
                     fileContent = output.toByteArray();
                 }
                 FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                         .setStatus(FileUploadStatus.IN_PROGRESS).setMessage("In progress").build();
                 responseObserver.onNext(response);
-
             }
 
             @Override
@@ -256,35 +254,36 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 } else {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
-
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File(image_src + "profile-images/" + user.getProfileImagePath());
+                            File oldPhoto = new File(imageSrc + IMAGE_FOLDER + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
                         user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
-                        repository.save(user);
-                        String filepath = image_src + "profile-images/" + user.getUsername() + "." + metaData.getFileType();
+                        repository.save(user); /**VM IS REACHING HERE**/
+                        System.out.println("Set profile image path for user");
+                        String filepath = imageSrc + IMAGE_FOLDER + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
+                        System.out.println("File Created");
                         try (OutputStream os = new FileOutputStream(file)) {
                             os.write(fileContent);
+                            System.out.println("OutputSteam written");
                             repository.save(user);
                             FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                     .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
                             responseObserver.onNext(response);
                             responseObserver.onCompleted();
                         } catch (Exception e) {
+                            System.out.println("Exception " + e);
                             responseObserver.onError(e);
                         }
                     } else {
                         //not authenticated as user, illegal action
                         responseObserver.onError(new IllegalStateException());
                     }
-
                 }
             }
-
             @Override
             public void onError(Throwable throwableError) {
                 // Client should never throw an error, so server does not need to handle them.
@@ -323,12 +322,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File(image_src + "profile-images/" + user.getProfileImagePath());
-            if (oldPhoto.delete()) {
-                user.setProfileImagePath(null);
-                repository.save(user);
-                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-            } else {
+            try {
+                File oldPhoto = new File(imageSrc + IMAGE_FOLDER + user.getProfileImagePath());
+                if (oldPhoto.delete()) {
+                    user.setProfileImagePath(null);
+                    repository.save(user);
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+                } else {
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
+                }
+            } catch (Exception e) {
+                System.out.println("Exception thrown deleting file - " + e);
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
@@ -504,7 +508,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + "profile-images/" +user.getProfileImagePath());
+                reply.setProfileImagePath(context + IMAGE_FOLDER +user.getProfileImagePath());
             } else {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
