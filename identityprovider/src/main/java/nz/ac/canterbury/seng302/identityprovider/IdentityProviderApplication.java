@@ -61,7 +61,7 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/profile-images/**")
-                .addResourceLocations("file:" + imageSrc + "profile-images/");
+                .addResourceLocations("file:" + imageSrc);
     }
 
 }

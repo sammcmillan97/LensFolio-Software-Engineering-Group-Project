@@ -255,7 +255,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File(imageSrc + IMAGE_FOLDER + user.getProfileImagePath());
+                            File oldPhoto = new File(imageSrc + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
@@ -263,7 +263,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
                         repository.save(user); /**VM IS REACHING HERE**/
                         System.out.println("Set profile image path for user");
-                        String filepath = imageSrc + IMAGE_FOLDER + user.getUsername() + "." + metaData.getFileType();
+                        String filepath = imageSrc + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
                         System.out.println ("FILEPATH:-" + filepath);
                         System.out.println("File Created");
@@ -282,7 +282,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                             responseObserver.onNext(response);
                             responseObserver.onCompleted();
                         } catch (Exception e) {
-                            System.out.println("Exception " + e);
+                            System.out.println("Exception called writing file:-" + e);
                             responseObserver.onError(e);
                         }
                     } else {
@@ -331,7 +331,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
             try {
-                File oldPhoto = new File(imageSrc + IMAGE_FOLDER + user.getProfileImagePath());
+                File oldPhoto = new File(imageSrc + user.getProfileImagePath());
                 if (oldPhoto.delete()) {
                     user.setProfileImagePath(null);
                     repository.save(user);
