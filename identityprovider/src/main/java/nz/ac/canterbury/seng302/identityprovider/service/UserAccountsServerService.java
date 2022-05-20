@@ -274,6 +274,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         System.out.println("HELPER:" + helper);
 
                         try (OutputStream os = new FileOutputStream(file)) {
+                            System.out.println("OutputSteam os = new FileOutputStream(file) passed");
                             os.write(fileContent);
                             System.out.println("OutputSteam written");
                             repository.save(user);
