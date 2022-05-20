@@ -13,7 +13,7 @@ public class ProjectEdits {
 
     public String getEdits(int projectId, int userId) {
         projectEditList.removeIf(ProjectEdit::hasTimedOut);
-        StringBuilder result = new StringBuilder("{'edits': [");
+        StringBuilder result = new StringBuilder("{\"edits\": [");
         boolean firstEdit = true;
         for (ProjectEdit edit : projectEditList) {
             if (edit.isRelevant(projectId, userId)) {
@@ -22,7 +22,7 @@ public class ProjectEdits {
                 } else {
                     firstEdit = false;
                 }
-                result.append("'").append(edit).append("'");
+                result.append("\"").append(edit).append("\"");
             }
         }
         result.append("]}");

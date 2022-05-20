@@ -1,6 +1,7 @@
 function checkResponse(data){
+    var jsondata = JSON.parse(data);
     var editNotification = document.getElementById("editNotification");
-    editNotification.innerHTML = data;
+    editNotification.innerHTML = jsondata.edits;
 }
 
 function callme(){
