@@ -42,7 +42,13 @@
             <!-- Description -->
             <p id="project__description" th:text="${project.getDescription()}"></p>
         </div>
-
+        <div>
+            <nav>
+                <a th:href="@{projects}">All</a>
+                <a th:href="@{projects}">Sprints</a>
+                <a th:href="@{projects}">Events</a>
+            </nav>
+        </div>
         <!-- Project Sprints -->
         <div id="project__sprints-wrapper flex-column">
             <div id="new-buttons" class="flex-row">
