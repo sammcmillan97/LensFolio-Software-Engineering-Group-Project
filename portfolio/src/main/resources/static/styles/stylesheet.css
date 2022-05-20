@@ -56,15 +56,17 @@ h5 {
     text-align: center;
 }
 
+
+.site-navigation__link{
+    /*float: left;*/
+    width: 160px;
+}
+
+
 #nav_line {
     border: 1px solid white;
     margin-inline-start: 20px;
     margin-inline-end: 20px;
-}
-
-.site-navigation__component {
-    display: inline-block;
-    vertical-align: middle;
 }
 
 .navigation_icon {

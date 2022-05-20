@@ -13,38 +13,36 @@
     <nav th:fragment="navbar" id="site-navigation">
         <link rel="stylesheet" href="/styles/navbar.css">
         <script rel="text/javascript" th:src="@{/scripts/navbar.js}"></script>
-        <div class="nav_box"></div>
         <div class="nav_head">
             <h2>LENSfolio</h2>
             <hr id="nav_line">
         </div>
-        <ul class="site-navigation__list">
-            <li class="site-navigation__item">
-                <h5>
-                    <a href="/profile" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
-                        <span class="bi bi-person-circle navigation_icon" ></span>
-                        Profile
-                    </a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a href="/projects" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
-                        <span class="bi bi-kanban navigation_icon"></span>
-                        Projects
-                    </a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
-                        <span class="bi bi-calendar navigation_icon"> </span>
-                        Planner
-                    </a>
-                </h5>
-            </li>
-        </ul>
-        </div>
+            <ul class="site-navigation__list">
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a href="/profile" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+                            <span class="bi bi-person-circle navigation_icon" ></span>
+                            Profile
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a href="/projects" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
+                            <span class="bi bi-kanban navigation_icon"></span>
+                            Projects
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
+                            <span class="bi bi-calendar navigation_icon"> </span>
+                            Planner
+                        </a>
+                    </h5>
+                </li>
+            </ul>
     </nav>
 </body>
 
