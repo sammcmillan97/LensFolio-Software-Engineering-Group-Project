@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,9 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(IdentityProviderApplication.class, args);
     }
+
+    @Value("${IMAGE_SRC}")
+    private String imageSrc;
 
     @Bean
     public CommandLineRunner demo(UserRepository repository) {
@@ -57,7 +61,7 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/profile-images/**")
-                .addResourceLocations("file:profile-images/");
+                .addResourceLocations("file:" + imageSrc + "profile-images/");
     }
 
 }
