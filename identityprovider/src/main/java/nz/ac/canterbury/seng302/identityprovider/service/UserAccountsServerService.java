@@ -255,13 +255,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         User user = repository.findByUserId(metaData.getUserId());
 
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+                            File oldPhoto = new File(user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
-                        user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
-                        String filepath = "src/main/resources/" + user.getProfileImagePath();
+                        String filepath = "profile-images/" + user.getUsername() + "." + metaData.getFileType();
+                        user.setProfileImagePath(user.getUsername() + "." + metaData.getFileType());
                         File file = new File(filepath);
                         try (OutputStream os = new FileOutputStream(file)) {
                             os.write(fileContent);
@@ -319,7 +319,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+            File oldPhoto = new File("profile-images/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
                 user.setProfileImagePath(null);
                 repository.save(user);
@@ -500,9 +500,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + "resources/" +user.getProfileImagePath());
+                reply.setProfileImagePath(context + "profile-images/" +user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath(context + "resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath(context + "profile-images/default.jpg");
             }
         }
         return reply.build();

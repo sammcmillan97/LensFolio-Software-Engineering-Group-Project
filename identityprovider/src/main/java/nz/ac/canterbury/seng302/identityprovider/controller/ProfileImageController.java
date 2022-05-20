@@ -22,7 +22,7 @@ public class ProfileImageController {
         File currentDirFile = new File(".");
         String helper = currentDirFile.getAbsolutePath();
         helper = helper.substring(0, helper.length() - 1);
-        Path photoRelPath = Path.of(helper + "src\\main\\resources\\profile-images\\default\\" + filename);
+        Path photoRelPath = Path.of(helper + "profile-images\\" + filename);
         InputStream inputStream = new FileInputStream(photoRelPath.toFile());
         byte[] bytes = StreamUtils.copyToByteArray(inputStream);
 
