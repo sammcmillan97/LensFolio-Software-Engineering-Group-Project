@@ -62,15 +62,7 @@ public class PlannerController {
 
         }
 
-
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-
-
-        User user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountByPrincipal(principal);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
@@ -104,14 +96,8 @@ public class PlannerController {
             endDate.add(Calendar.MONTH, 8);
             project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
         }
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
 
-
-        User user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountByPrincipal(principal);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);

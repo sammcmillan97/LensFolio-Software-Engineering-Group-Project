@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -133,6 +134,29 @@ public class UserAccountClientService {
                 .build();
         UserResponse response = userStub.getUserAccountById(getUserByIdRequest);
         return new User(response);
+    }
+
+    /**
+     * Uses the AuthState of the logged in user to get their user object
+     * @param principal Authentication principal storing current user information
+     * @return the logged in user's User object
+     */
+    public User getUserAccountByPrincipal(AuthState principal){
+        int userId = getUserId(principal);
+        return getUserAccountById(userId);
+    }
+
+    /**
+     * Uses the AuthState of the logged in user to get their user id
+     * @param principal Authentication principal storing current user information
+     * @return the logged in user's id
+     */
+    public int getUserId(AuthState principal) {
+        return Integer.parseInt(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
     }
 
     public UserRegisterResponse register(final String username, final String password, final String firstName,
