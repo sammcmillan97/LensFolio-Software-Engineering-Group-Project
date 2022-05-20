@@ -260,8 +260,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
-                        String filepath = "profile-images/" + user.getUsername() + "." + metaData.getFileType();
-                        user.setProfileImagePath(user.getUsername() + "." + metaData.getFileType());
+                        user.setProfileImagePath(user.getUsername() + ".png");
+                        repository.save(user);
+                        String filepath = "/profile-images/" + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
                         try (OutputStream os = new FileOutputStream(file)) {
                             os.write(fileContent);
@@ -319,7 +320,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File("profile-images/" + user.getProfileImagePath());
+            File oldPhoto = new File("/profile-images/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
                 user.setProfileImagePath(null);
                 repository.save(user);
@@ -502,7 +503,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             if (user.getProfileImagePath() != null) {
                 reply.setProfileImagePath(context + "profile-images/" +user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath(context + "profile-images/default.jpg");
+                reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
         }
         return reply.build();
