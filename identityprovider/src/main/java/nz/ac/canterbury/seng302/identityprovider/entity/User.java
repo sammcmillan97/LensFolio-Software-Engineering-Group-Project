@@ -67,6 +67,9 @@ public class User {
 
     private String profileImagePath;
 
+    @ManyToMany(mappedBy = "members")
+    private Set<Group> groups;
+
     /**
      * Create a user for use in backend database.
      * @param username Username of user
