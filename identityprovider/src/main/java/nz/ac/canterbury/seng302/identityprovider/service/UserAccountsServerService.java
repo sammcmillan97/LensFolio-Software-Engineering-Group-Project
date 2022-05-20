@@ -265,6 +265,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         System.out.println("Set profile image path for user");
                         String filepath = imageSrc + IMAGE_FOLDER + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
+                        System.out.println ("FILEPATH:-" + filepath);
                         System.out.println("File Created");
 
                         File currentDirFile = new File(".");
