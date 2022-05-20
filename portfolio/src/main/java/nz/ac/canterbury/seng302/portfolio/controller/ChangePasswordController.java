@@ -34,12 +34,7 @@ public class ChangePasswordController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-        User user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         return "changePassword";
     }
@@ -60,11 +55,7 @@ public class ChangePasswordController {
             Model model ) {
 
         //Get current user ID
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int id = userAccountClientService.getUserId(principal);
 
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
