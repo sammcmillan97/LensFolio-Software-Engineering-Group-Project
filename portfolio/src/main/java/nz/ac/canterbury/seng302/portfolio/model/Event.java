@@ -47,7 +47,7 @@ public class Event implements ImportantDate{
      * @return the given date, as a string in format 01/Jan/2000 00:00:00
      */
     public static String dateToString(Date date) {
-        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date);
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").format(date);
     }
 
     /* Getters/Setters */
@@ -73,7 +73,7 @@ public class Event implements ImportantDate{
     }
 
     public String getStartDateString() {
-        return Project.dateToString(this.eventStartDate);
+        return Project.dateToString(this.eventStartDate, "dd/MMMM/yyyy hh:mm a");
     }
 
     public void setEventStartDate(Date eventStartDate) {
@@ -85,7 +85,7 @@ public class Event implements ImportantDate{
     }
 
     public String getEndDateString() {
-        return Project.dateToString(this.eventEndDate);
+        return Project.dateToString(this.eventEndDate, "dd/MMMM/yyyy hh:mm a");
     }
 
     public void setEventEndDate(Date eventEndDate) {

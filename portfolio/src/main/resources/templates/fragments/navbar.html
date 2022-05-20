@@ -4,15 +4,15 @@
 <head>
     <title>Navigation Bar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/styles/stylesheet.css">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
 <body>
     <!-- The application's navigation bar. -->
     <nav th:fragment="navbar" id="site-navigation">
-        <link rel="stylesheet" href="/styles/navbar.css">
-        <script rel="text/javascript" th:src="@{/scripts/navbar.js}"></script>
+        <link rel="stylesheet" th:href="@{styles/navbar.css}">
+        <script rel="text/javascript" th:src="@{scripts/navbar.js}"></script>
         <div class="nav_head">
             <h2>LENSfolio</h2>
             <hr id="nav_line">
@@ -20,7 +20,7 @@
             <ul class="site-navigation__list">
                 <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
-                        <a href="/profile" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+                        <a th:href="@{profile}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
                             <span class="bi bi-person-circle navigation_icon" ></span>
                             Profile
                         </a>
@@ -28,7 +28,7 @@
                 </li>
                 <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
-                        <a href="/projects" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
+                        <a th:href="@{projects}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
                             <span class="bi bi-kanban navigation_icon"></span>
                             Projects
                         </a>
@@ -36,7 +36,7 @@
                 </li>
                 <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
-                        <a href="/planner" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
+                        <a th:href="@{planner}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
                             <span class="bi bi-calendar navigation_icon"> </span>
                             Planner
                         </a>

@@ -50,28 +50,12 @@ h5 {
     margin-left: 0;
 }
 
-/***************** Navigation Bar *******************/
-
-.nav_head {
-    text-align: center;
-}
-
-
-.site-navigation__link{
-    /*float: left;*/
-    width: 160px;
-    text-align: left;
-}
-
-
-#nav_line {
-    border: 1px solid white;
-    margin-inline-start: 20px;
-    margin-inline-end: 20px;
-}
-
-.navigation_icon {
-    font-size: 20px;
-    border-radius: 0.25em;
-    padding: 0.5em;
+#role-button {
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 3px;
+    padding-right: 4px; /* Needed to make the buttons look better, due to kerning issues with display: inline */
+    margin: 2px;
+    display: inline-block;
 }

@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.*;
 import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -56,7 +55,7 @@ public class AddEditEventController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-        UserResponse user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
         // Add parent project ID
@@ -79,11 +78,12 @@ public class AddEditEventController {
 
         //Add event details to model
         model.addAttribute("eventName", event.getEventName());
-        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd"));
+        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd'T'HH:mm"));
 
-        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
+        // Add event date boundaries for event to the model
+        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd'T'HH:mm"));
 
         return "addEditEvent";
     }
@@ -110,8 +110,9 @@ public class AddEditEventController {
         Timestamp startDate = Timestamp.valueOf(eventStart.replace("T", " ") + ":00");
         Timestamp endDate = Timestamp.valueOf(eventEnd.replace("T", " ") + ":00");
 
-        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(startDate));
-        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(Event.dateToString(endDate));
+        // Convert Timestamp values of start and end date-time to Date
+        Date eventStartDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Event.dateToString(startDate));
+        Date eventEndDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Event.dateToString(endDate));
 
         try {
             // Parse ids  from string

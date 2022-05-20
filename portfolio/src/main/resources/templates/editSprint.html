@@ -4,10 +4,10 @@
 <head>
     <title>Edit Sprint</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link th:href="@{/styles/stylesheet.css}" rel="stylesheet" />
-    <link th:href="@{/styles/addEditSprint.css}" rel="stylesheet" />
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/addEditSprint.css}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
-    <script rel="script" th:src="@{/scripts/addEditSprint.js}"></script>
+    <script rel="script" th:src="@{scripts/addEditSprint.js}"></script>
 </head>
 
 <body>
@@ -26,12 +26,12 @@
             </header>
 
             <!-- Add/Edit Sprint Form -->
-            <form id="sprint-form__form" class="flex-column" th:action="@{/projects/edit/{project}/{sprint}(project=${projectId}, sprint=${sprintId})}" th:method="post">
+            <form id="sprint-form__form" class="flex-column" th:action="@{editSprint-{sprint}-{project}(project=${projectId}, sprint=${sprintId})}" th:method="post">
                 <label for="sprint-form__name-field">Sprint Name *</label>
-                <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" th:placeholder="${sprintName}" th:value="${sprintName}" required>
+                <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" minlength="1" maxlength="64" th:placeholder="${sprintName}" th:value="${sprintName}" required pattern=".*\S.*">
 
                 <label for="sprint-form__description-field">Sprint Description</label>
-                <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription" th:placeholder="${sprintDescription}" th:text="${sprintDescription}"></textarea>
+                <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription" maxlength="255" th:placeholder="${sprintDescription}" th:text="${sprintDescription}"></textarea>
 
                 <label for="sprint-form__start-date-field">Sprint Start Date *</label>
                 <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" th:placeholder="${sprintStartDate}" th:value="${sprintStartDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMinEndDate()" required>
@@ -40,7 +40,7 @@
                 <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="sprint-form__save">Save Changes</button>
-                <a id="sprint-form__discard" th:href="@{/projects/{project}(project=${projectId})}">Discard</a>
+                <a id="sprint-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
             </form>
         </div>
     </div>
