@@ -110,7 +110,7 @@ deploy-production-identityprovider:
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/production-identityprovider/ || true
     - mkdir /home/gitlab-runner/production-identityprovider/
-    - mkdir /home/gitlab-runner/profile-images/
+    - mkdir /home/gitlab-runner/production-profile-images/
     - cp -r ./build/libs /home/gitlab-runner/production-identityprovider
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
