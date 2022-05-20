@@ -266,6 +266,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         String filepath = imageSrc + IMAGE_FOLDER + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
                         System.out.println("File Created");
+
+                        File currentDirFile = new File(".");
+                        String helper = currentDirFile.getAbsolutePath();
+                        helper = helper.substring(0, helper.length() - 1);
+                        System.out.println("HELPER:" + helper);
+
                         try (OutputStream os = new FileOutputStream(file)) {
                             os.write(fileContent);
                             System.out.println("OutputSteam written");
