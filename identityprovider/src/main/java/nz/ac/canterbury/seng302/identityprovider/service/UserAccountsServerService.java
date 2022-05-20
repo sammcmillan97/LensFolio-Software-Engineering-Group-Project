@@ -39,6 +39,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Value("${CONTEXT}")
     private String context;
 
+    @Value("${IMAGE_SRC}")
+    private String image_src;
+
     @Autowired
     private UserRepository repository;
 
@@ -255,14 +258,14 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         User user = repository.findByUserId(metaData.getUserId());
 
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File(user.getProfileImagePath());
+                            File oldPhoto = new File(image_src + "profile-images/" + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
-                        user.setProfileImagePath(user.getUsername() + ".png");
+                        user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
                         repository.save(user);
-                        String filepath = "/profile-images/" + user.getUsername() + "." + metaData.getFileType();
+                        String filepath = image_src + "profile-images/" + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
                         try (OutputStream os = new FileOutputStream(file)) {
                             os.write(fileContent);
@@ -320,7 +323,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File("/profile-images/" + user.getProfileImagePath());
+            File oldPhoto = new File(image_src + "profile-images/" + user.getProfileImagePath());
             if (oldPhoto.delete()) {
                 user.setProfileImagePath(null);
                 repository.save(user);
