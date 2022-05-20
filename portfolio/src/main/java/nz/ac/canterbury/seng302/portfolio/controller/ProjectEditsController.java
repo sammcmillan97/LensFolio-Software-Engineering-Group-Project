@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Class which allows users to register and receive edit notifications for projects.
+ */
 @RestController
 public class ProjectEditsController {
 
@@ -27,6 +30,13 @@ public class ProjectEditsController {
 
     private final ProjectEdits projectEdits = new ProjectEdits();
 
+    /**
+     * Returns a list of users to send to the frontend, in JSON form.
+     * Will only get relevant edits.
+     * @param principal The user's authentication
+     * @param id The project the users wishes to get edits for
+     * @return A JSON string to send to the frontend representing the edits a user is interested in.
+     */
     @GetMapping("projects-editStatus")
     public String projectEditing(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
@@ -51,6 +61,11 @@ public class ProjectEditsController {
         }
     }
 
+    /**
+     * Allows teachers or above to register an edit notification to show to other users who are interested in the project.
+     * @param principal The user's authentication
+     * @param id The project the users wishes to register an edit for
+     */
     @PostMapping("/projects-editing")
     public void isEditingProject(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
