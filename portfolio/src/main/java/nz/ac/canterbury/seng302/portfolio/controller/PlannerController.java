@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import com.sun.xml.bind.v2.TODO;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -47,7 +48,7 @@ public class PlannerController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The planner html page with relevant project and sprint data.
      */
-    @GetMapping("/planner/{id}")
+    @GetMapping("/planner-{id}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           @PathVariable("id") String id,
                           Model model) {
@@ -69,7 +70,7 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
@@ -110,7 +111,7 @@ public class PlannerController {
                 .orElse("-100"));
 
 
-        UserResponse user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);
@@ -124,7 +125,7 @@ public class PlannerController {
         return "planner";
     }
 
-    @PostMapping("/planner/editSprint/{projectId}/{sprintId}")
+    @PostMapping("/editPlanner-{sprintId}-{projectId}")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model,
                           @PathVariable String projectId,
@@ -143,7 +144,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             sprintUpdated = false;
         }
-        return "redirect:/planner/" + projectId;
+        return "redirect:/planner-" + projectId;
     }
 
 }

@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -28,8 +29,8 @@ public class ProfilePictureController {
 
     /**
      * Get mapping to open addProfilePicture page
-     * @param principal
-     * @param model
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return the addProfilePicture page
      */
     @GetMapping("/addProfilePicture")
@@ -43,14 +44,21 @@ public class ProfilePictureController {
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
 
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
         return "addProfilePicture";
     }
 
 
-
+    /**
+     * Post mapping to save a profile picture
+     * @param principal Authentication principal storing current user information
+     * @param base64FileContent The image content
+     * @param fileType The images filetype
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return the addProfilePicture page
+     */
     @PostMapping("/addProfilePicture")
     public String addProfilePicture(@AuthenticationPrincipal AuthState principal,
                                     @RequestParam(name="fileContent") String base64FileContent,
@@ -74,7 +82,7 @@ public class ProfilePictureController {
             byte[] decodedByte = decoder.decode(base64FileContent.split(",")[1]);
             userAccountClientService.uploadUserProfilePhoto(decodedByte, id, fileType);
             // Generic attributes that need to be set for the profile page
-            UserResponse user = userAccountClientService.getUserAccountById(id);
+            User user = userAccountClientService.getUserAccountById(id);
             model.addAttribute("user", user);
             model.addAttribute("name", user.getFirstName() + " " + user.getLastName());
             Timestamp ts = user.getCreated();
@@ -91,6 +99,13 @@ public class ProfilePictureController {
         return "addProfilePicture";
     }
 
+    /**
+     * Post mapping to remove the users profile picture
+     * @param principal Authentication principal storing current user information
+     * @param username The users username
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The profile page
+     */
     @PostMapping("/removeProfilePicture")
     public String removeProfilePicture(@AuthenticationPrincipal AuthState principal,
                                        @RequestParam(name="username") String username,
@@ -107,7 +122,7 @@ public class ProfilePictureController {
         deleteUserProfilePhotoResponse = userAccountClientService.deleteUserProfilePhoto(id);
 
         //Get the new version of user
-        UserResponse user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("username", username);
 

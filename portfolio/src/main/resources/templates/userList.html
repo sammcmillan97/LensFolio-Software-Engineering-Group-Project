@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Users</title>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/userList.css}">
+</head>
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div class="pagination">
+        <a th:href="@{userList-{firstPage}{sortingSuffix}(firstPage=${firstPage}, sortingSuffix=${sortingSuffix})}">&laquo;</a>
+        <a th:href="'userList-' + ${previousPage} + ${sortingSuffix}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'userList-' + ${nextPage} + ${sortingSuffix}">&gt;</a>
+        <a th:href="'userList-' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
+    </div>
+    <p th:text="${message}"></p>
+    <table aria-label="User List Table">
+        <thead>
+            <tr class="sort-header">
+                <th>
+                    <a th:href="'userList-' + ${currentPage} + '?sortType=name&isAscending=' + (${sortType} == 'name' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Name' + (${sortType} == 'name' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'userList-' + ${currentPage} + '?sortType=username&isAscending=' + (${sortType} == 'username' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Username' + (${sortType} == 'username' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'userList-' + ${currentPage} + '?sortType=alias&isAscending=' + (${sortType} == 'alias' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Alias' + (${sortType} == 'alias' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
+                </th>
+                <th>
+                    <a th:href="'userList-' + ${currentPage} + '?sortType=roles&isAscending=' + (${sortType} == 'roles' ? (${isAscending} ? 'false' : 'true') : 'true')"
+                       th:text="'Roles' + (${sortType} == 'roles' ? (${isAscending} ? '&#9650;' : '&#9660;') : '')"></a>
+                </th>
+                <th th:if="${isTeacher}">
+                    <div>Add role</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <div th:each="listedUser : ${users}">
+                <tr>
+                    <td><span th:text="${listedUser.fullName}"> Name </span></td>
+                    <td><span th:text="${listedUser.username}"> Username </span></td>
+                    <td><span th:text="${listedUser.nickname}"> Alias </span></td>
+                    <td>
+                        <div th:each="role: ${listedUser.roleStrings}">
+                            <div id="role-button">
+                                <div th:text="${role}"></div>
+                                <form th:if="${#lists.size(listedUser.roleStrings) > 1 and isTeacher and !(role == 'Course Administrator') and (!(role == 'Teacher') or isCourseAdmin)}" th:action="@{removeRole}"  method="post">
+                                    <input type="hidden" th:name="url" th:value="'userList-' + ${currentPage} + ${sortingSuffix}"/>
+                                    <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                                    <input type="hidden" th:name="roleType"  th:value="${#strings.toUpperCase(role)}" />
+                                    <button class="button" type="submit"> X </button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:if="${isTeacher}">
+                        <form th:if="${isTeacher and !#lists.contains(listedUser.roleStrings, 'Student')}" th:action="@{addRole}"  method="post">
+                            <input type="hidden" th:name="url" th:value="'userList-' + ${currentPage} + ${sortingSuffix}"/>
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                            <input type="hidden" th:name="roleType"  th:value="STUDENT" />
+                            <button class="button" type="submit" title="add role">
+                                <div>+ Student</div>
+                            </button>
+                        </form>
+                        <form th:if="${isCourseAdmin and !#lists.contains(listedUser.roleStrings, 'Teacher')}" th:action="@{addRole}"  method="post">
+                            <input type="hidden" th:name="url" th:value="'userList-' + ${currentPage} + ${sortingSuffix}"/>
+                            <input type="hidden" th:name="userId"  th:value="${listedUser.id}"/>
+                            <input type="hidden" th:name="roleType"  th:value="TEACHER" />
+                            <button class="button" type="submit">
+                                + Teacher
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </div>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <a th:href="@{userList-{firstPage}{sortingSuffix}(firstPage=${firstPage}, sortingSuffix=${sortingSuffix})}">&laquo;</a>
+        <a th:href="'userList-' + ${previousPage} + ${sortingSuffix}">&lt;</a>
+        <div th:text="${currentPage} +  ' / ' + ${lastPage}"></div>
+        <a th:href="'userList-' + ${nextPage} + ${sortingSuffix}">&gt;</a>
+        <a th:href="'userList-' + ${lastPage} + ${sortingSuffix}">&raquo;</a>
+    </div>
+</div>
+</body>
+</html>

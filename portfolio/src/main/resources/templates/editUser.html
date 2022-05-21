@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Profile</title>
-    <link rel="stylesheet" th:href="@{/styles/editUser.css}">
+    <link rel="stylesheet" th:href="@{styles/editUser.css}">
 
 </head>
 <body>
@@ -12,35 +12,58 @@
 
         <div id="page-content" class="constrict">
             <div class="container">
-
-             <!-- form puts the params to the register controller-->
-            <form th:action="@{/editUser}" method="post">
-
-                <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
-                <div>
-                    <input type="hidden" th:name="username"  th:value="${user.username}" />
-                    <label>Account Details *</label><br>
-                    <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${user.email}" class="required" /><label class="helper" >Email required, must include '@'</label><br>
-                    <br>
-                    <label>Full Name *</label><br>
-                    <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
-                    <input type="text" th:name="middleName" minlength="1" maxlength="64" th:value="${user.middleName}" /><label class="helper" >Middle name optional</label><br>
-                    <input type="text" th:name="lastName" minlength="1" maxlength="64" required th:value="${user.lastName}" class="required" /><label class="helper" >Last name required</label><br>
-                    <br>
-                    <label>Person Details</label><br>
-                    <input type="text" th:name="nickname" maxlength="64" th:value="${user.nickname}"/><label class="helper">Nickname - optional</label><br>
-                    <input type="text" th:name="pronouns" maxlength="64" th:value="${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
-                    <br>
-                    <label>Bio</label><label class="helper">Optional</label><br>
-                    <textarea th:name="bio" maxlength="1024" th:text="${user.bio}"></textarea>
-                    <br>
-                    <div>
-                    <p th:text="${editMessage}"></p>
-                    <p th:text="${errorMessage}"></p>
+                <!-- form puts the params to the register controller-->
+                <form th:action="@{editUser}" method="post">
+                    <div class="wrapper">
+                        <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
+                        <h2>Please enter your details below</h2>
                     </div>
-                    <input class="button" type="submit" value="Submit" />
-                </div>
-            </form>
+
+                    <div>
+                        <input type="hidden" th:name="username"  th:value="${user.username}" />
+                        <label>Account Details *</label><br>
+                        <input type="email" th:name="email" minlength="1" maxlength="255" required th:value="${editedEmail} ?:${user.email}" class="required" /><label class="helper" >Email required</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'email'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <br>
+                        <label>Full Name *</label><br>
+                        <input type="text" th:name="firstName" minlength="1" maxlength="64" required th:value="${editedFirstName} ?:${user.firstName}" class="required" /><label class="helper" >First name required</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'firstName'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <input type="text" th:name="middleName" minlength="1" maxlength="64" th:value="${editedMiddleName} ?:${user.middleName}" /><label class="helper" >Middle name optional</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'middleName'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <input type="text" th:name="lastName" minlength="1" maxlength="64" required th:value="${editedLastName} ?:${user.lastName}" class="required" /><label class="helper" >Last name required</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'lastName'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <br>
+                        <label>Person Details</label><br>
+                        <input type="text" th:name="nickname" maxlength="64" th:value="${editedNickname} ?:${user.nickname}"/><label class="helper">Nickname - optional</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'nickname'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <input type="text" th:name="pronouns" maxlength="64" th:value="${editedPronouns} ?:${user.personalPronouns}" /><label class="helper">Person Pronouns - optional</label><br>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'personalPronouns'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <br>
+                        <label>Bio</label><label class="helper">Optional</label><br>
+                        <textarea th:name="bio" maxlength="1024" th:text="${editedBio} ?:${user.bio}"></textarea>
+                        <th:block th:each="validationError: ${validationErrors}" th:if="${validationError.FieldName == 'bio'}">
+                            <p th:text="${validationError.ErrorText}" class="form-error-message"></p>
+                        </th:block>
+                        <br>
+                        <div>
+                        <p th:text="${editMessage}" class="form-error-message"></p>
+                        <p th:text="${errorMessage}" class="form-error-message"></p>
+                        </div>
+                        <input class="button" type="submit" value="Submit" />
+                    </div>
+                </form>
             </div>
         </div>
 </body>
