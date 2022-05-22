@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -50,7 +51,8 @@
                 <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
                     <div class="flex-row">
                         <div class="event">
-                            <h2 class="event__name" th:text="${eventList.get(event).getEventName} + '&#9733;'"></h2>
+                            <div class="event_title_child"> <i class="bi bi-calendar-event"></i> </div>
+                            <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2> </div>
                             <!-- Sprint Details -->
                             <div class="event__details flex-row" >
                                 <h4 class="event__date" th:style="'color : ' + ${eventList.get(event).getColourStart()}" th:text="${eventList.get(event).getStartDateString()}"></h4>
@@ -62,7 +64,8 @@
                 </div>
             </div>
             <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
-                <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName} + '&#9733;'"></h2>
+                <div class="event_title_child"> <i class="bi bi-calendar-event"></i> </div>
+                <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2> </div>
                 <div class="event__details flex-row" >
                     <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}" th:text="${eventList.get(importantDate.getFirst()).getStartDateString()}"></h4>
                     <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}"> ---> </h4>
