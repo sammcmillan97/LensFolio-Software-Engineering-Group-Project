@@ -7,9 +7,6 @@
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
-    <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
-    <script th:src="@{webjars/jquery/3.6.0/jquery.min.js}"></script>
-    <script th:src="@{webjars/popper.js/1.16.1/umd/popper.min.js}"></script>
     <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
 </head>
 
@@ -48,139 +45,21 @@
         </div>
         <div>
             <nav>
-                <a th:href="@{projects}">All</a>
-                <a th:href="@{projects}">Sprints</a>
-                <a th:href="@{projects}">Events</a>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0">
+                    <span>Sprints</span>
+                </button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1">
+                    <span>Events</span>
+                </button>
             </nav>
         </div>
-
-<!--        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="false">-->
-<!--            <div class="carousel-indicators">-->
-<!--                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>-->
-<!--                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>-->
-<!--                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>-->
-<!--            </div>-->
-<!--            <div class="carousel-inner">-->
-<!--                <div class="carousel-item active">-->
-<!--                    <img src="..." class="d-block w-100" alt="...">-->
-<!--                </div>-->
-<!--                <div class="carousel-item">-->
-<!--                    <img src="..." class="d-block w-100" alt="...">-->
-<!--                </div>-->
-<!--                <div class="carousel-item">-->
-<!--                    <img src="..." class="d-block w-100" alt="...">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">-->
-<!--                <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
-<!--                <span class="visually-hidden">Previous</span>-->
-<!--            </button>-->
-<!--            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">-->
-<!--                <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
-<!--                <span class="visually-hidden">Next</span>-->
-<!--            </button>-->
-<!--        </div>-->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="false">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-        <!-- Project Sprints -->
-        <div id="project__sprints-wrapper flex-column">
-            <div id="new-buttons" class="flex-row">
-                <!-- New Sprint Button -->
-                <a class="new-sprint-button" th:href="@{/projects/edit/{project}/-1(project=${project.getId})}">Add Sprint</a>
-                <!-- New Event Button -->
-                <a class="new-event-button" th:href="@{/projects/edit/event/{project}/-1(project=${project.getId})}">Add Event</a>
-            </div>
-
-
-
-            <div th:each="importantDate : ${importantDates}">
-                <div class="sprint" th:if="${importantDate.getSecond() == 'Sprint'}">
-                    <h2 class="sprint__name" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}" th:text="|${sprintList.get(importantDate.getFirst()).getLabel} - ${sprintList.get(importantDate.getFirst()).getName}|"></h2>
-
-                <!-- Edit/Delete Sprint Buttons -->
-                <div class="sprint__button-wrapper flex-row">
-                    <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" th:method="get">
-                        <button type="submit">Edit</button>
-                    </form>
-
-                    <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
-                        <button type="submit">Delete</button>
-                    </form>
+                  <div th:replace="fragments/sprints"></div>
                 </div>
-
-                    <!-- Sprint Details -->
-                    <div class="sprint__details" th:style="'color : ' + ${sprintList.get(importantDate.getFirst()).getColour()}">
-                        <h4 class="sprint__date" th:text="|${sprintList.get(importantDate.getFirst()).getStartDateString} ---> ${sprintList.get(importantDate.getFirst()).getEndDateString}|"></h4>
-                        <p class="sprint__description" th:text="${sprintList.get(importantDate.getFirst()).getDescription}"></p>
-                    </div>
-
-                    <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
-                        <div class="flex-row">
-                            <div class="event">
-                                <h2 class="event__name" th:text="${eventList.get(event).getEventName} + '&#9733;'"></h2>
-                                <!-- Edit/Delete Inside event Buttons -->
-                                <div class="event__button-wrapper flex-row">
-
-                                    <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event).getEventId})}" th:method="get">
-                                        <button type="submit">Edit</button>
-                                    </form>
-
-                                    <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(event).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
-                                        <button type="submit">Delete</button>
-                                    </form>
-                                </div>
-                                <!-- Event Details -->
-                                <div class="event__details flex-row" >
-                                    <h4 class="event__date" th:style="'color : ' + ${eventList.get(event).getColourStart()}" th:text="${eventList.get(event).getStartDateString()}"></h4>
-                                    <h4 class="event__date" th:style="'color : ' + ${eventList.get(event).getColourStart()}"> ---> </h4>
-                                    <h4 class="event__date" th:style="'color : ' + ${eventList.get(event).getColourEnd()}" th:text="${eventList.get(event).getEndDateString()}"></h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Independent Events -->
-                <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
-                    <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName} + '&#9733;'"></h2>
-                    <!-- Edit/Delete Independent events -->
-                    <div class="event__button-wrapper flex-row">
-                        <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
-                            <button type="submit">Edit</button>
-                        </form>
-
-                        <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
-                            <button type="submit">Delete</button>
-                        </form>
-                    </div>
-                    <!-- Independent Event Details -->
-                    <div class="event__details">
-                        <div class="event__details flex-row" >
-                            <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}" th:text="${eventList.get(importantDate.getFirst()).getStartDateString()} "></h4>
-                            <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}"> ---> </h4>
-                            <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourEnd()}" th:text="${eventList.get(importantDate.getFirst()).getEndDateString()}"></h4>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-                    <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
-                    </div>
+                <div class="carousel-item">
+                  <div th:replace="fragments/events"></div>
                 </div>
             </div>
         </div>

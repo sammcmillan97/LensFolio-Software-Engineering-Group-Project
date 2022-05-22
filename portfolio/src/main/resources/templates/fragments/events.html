@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<body>
+  <!-- Project Sprints -->
+  <div id="project__sprints-wrapper flex-column">
+    <div id="new-buttons" class="flex-row">
+      <!-- New Event Button -->
+      <a class="new-event-button" th:href="@{/projects/edit/event/{project}/-1(project=${project.getId})}">Add Event</a>
+    </div>
+    <div class="event__outside" th:each="event: ${eventList}">
+      <h2 class="event__name" th:text="${event.getEventName} + '&#9733;'"></h2>
+      <!-- Edit/Delete Independent events -->
+      <div class="event__button-wrapper flex-row">
+        <form action="#" th:action="@{/projects/edit/event/{project}/{event}(project=${project.getId}, event=${event.getEventId})}" th:method="get">
+          <button type="submit">Edit</button>
+        </form>
+
+        <form action="#" th:action="@{/projects/delete/event/{project}/{event}(project=${project.getId}, event=${event.getEventId})}" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+      <!-- Independent Event Details -->
+      <div class="event__details">
+        <div class="event__details flex-row" >
+          <h4 class="event__date" th:style="'color : ' + ${event.getColourStart()}" th:text="${event.getStartDateString()} "></h4>
+          <h4 class="event__date" th:style="'color : ' + ${event.getColourStart()}"> ---> </h4>
+          <h4 class="event__date" th:style="'color : ' + ${event.getColourEnd()}" th:text="${event.getEndDateString()}"></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
