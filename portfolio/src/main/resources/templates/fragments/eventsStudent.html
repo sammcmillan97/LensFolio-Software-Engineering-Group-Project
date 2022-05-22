@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<!-- Project Sprints -->
+<div id="project__sprints-wrapper flex-column">
+  <div class="event__outside" th:each="event: ${eventList}">
+    <h2 class="event__name" th:text="${event.getEventName} + '&#9733;'"></h2>
+    <!-- Independent Event Details -->
+    <div class="event__details">
+      <div class="event__details flex-row" >
+        <h4 class="event__date" th:style="'color : ' + ${event.getColourStart()}" th:text="${event.getStartDateString()} "></h4>
+        <h4 class="event__date" th:style="'color : ' + ${event.getColourStart()}"> ---> </h4>
+        <h4 class="event__date" th:style="'color : ' + ${event.getColourEnd()}" th:text="${event.getEndDateString()}"></h4>
+      </div>
+    </div>
+  </div>
+</div>
