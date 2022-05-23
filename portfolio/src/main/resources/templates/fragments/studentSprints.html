@@ -13,7 +13,8 @@
       <div class="event__details flex-row" th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
         <div class="flex-row">
           <div class="event">
-            <h2 class="event__name" th:text="${eventList.get(event).getEventName} + '&#9733;'"></h2>
+            <div class="event_title_child"> <i class="bi bi-calendar-event"></i> </div>
+            <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2> </div>
             <!-- Sprint Details -->
             <div class="event__details flex-row" >
               <h4 class="event__date" th:style="'color : ' + ${eventList.get(event).getColourStart()}" th:text="${eventList.get(event).getStartDateString()}"></h4>

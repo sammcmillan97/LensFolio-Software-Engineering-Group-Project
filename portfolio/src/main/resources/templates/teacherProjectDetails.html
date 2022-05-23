@@ -53,6 +53,12 @@
             <span>Events</span>
           </button>
         </div>
+        <div id="new-buttons" class="flex-row">
+          <!-- New Sprint Button -->
+          <a class="new-sprint-button" th:href="@{editSprint-{sprint}-{project}(sprint=-1, project=${project.getId})}">Add Sprint</a>
+          <!-- New Event Button -->
+          <a class="new-event-button" th:href="@{editEvent-{event}-{project}(event=-1, project=${project.getId})}">Add Event</a>
+        </div>
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
             <div class="carousel-inner">
                 <div class="carousel-item active">

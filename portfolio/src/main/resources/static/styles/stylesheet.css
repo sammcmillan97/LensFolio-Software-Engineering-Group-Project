@@ -24,6 +24,10 @@ h5 {
 
 }
 
+a:hover {
+    color: inherit;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
