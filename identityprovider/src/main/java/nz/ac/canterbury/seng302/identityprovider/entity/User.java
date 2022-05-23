@@ -67,7 +67,11 @@ public class User {
 
     private String profileImagePath;
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany
+    @JoinTable(
+            name="GROUP_MEMBERSHIP",
+            joinColumns = @JoinColumn(name = "user_id" ),
+            inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> groups;
 
     /**

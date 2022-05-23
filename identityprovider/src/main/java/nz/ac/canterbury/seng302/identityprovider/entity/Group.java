@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.identityprovider.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -24,23 +23,59 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany()
-    @JoinTable(
-            name="groupMembership",
-            joinColumns = @JoinColumn(name = "groupId"),
-            inverseJoinColumns = @JoinColumn(name = "userId")
-    )
+    @ManyToMany(mappedBy = "GROUP_MEMBERSHIP")
     private Set<User> memebers;
 
 
-    @ManyToMany(mappedBy = "groups")
-    private Collection<User> Group;
-
-    public Collection<User> getGroup() {
-        return Group;
+    /**
+     * Constructor for testing purposes
+     * @param shortName Short name e.g. Team400
+     * @param longName Long name e.g. BadRequest
+     * @param parentProject Parent project id as projects encapsulate groups
+     */
+    public Group(String shortName, String longName, int parentProject) {
+        this.shortName = shortName;
+        this.longName = longName;
+        this.parentProject = parentProject;
     }
 
-    public void setGroup(Collection<User> group) {
-        Group = group;
+    /**
+     * Empty constructor for JPA
+     */
+    protected Group() {
+
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public String getLongName() {
+        return longName;
+    }
+
+    public void setLongName(String longName) {
+        this.longName = longName;
+    }
+
+    public int getParentProject() {
+        return parentProject;
+    }
+
+    public void setParentProject(int parentProject) {
+        this.parentProject = parentProject;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "shortName='" + shortName + '\'' +
+                ", longName='" + longName + '\'' +
+                ", parentProject=" + parentProject +
+                '}';
     }
 }
