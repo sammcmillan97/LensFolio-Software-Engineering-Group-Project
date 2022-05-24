@@ -62,7 +62,6 @@ deploy-staging-identityprovider:
     - cd identityprovider
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-identityprovider/ || true
-    - rm /home/gitlab-runner/staging-images/
     - mkdir /home/gitlab-runner/staging-identityprovider/
     - mkdir -p /home/gitlab-runner/profile-images/staging/
     - cp -r ./build/libs /home/gitlab-runner/staging-identityprovider
@@ -110,7 +109,6 @@ deploy-production-identityprovider:
     - cd identityprovider
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/production-identityprovider/ || true
-    - rm /home/gitlab-runner/production-images/
     - mkdir /home/gitlab-runner/production-identityprovider/
     - mkdir -p /home/gitlab-runner/profile-images/production/
     - cp -r ./build/libs /home/gitlab-runner/production-identityprovider
