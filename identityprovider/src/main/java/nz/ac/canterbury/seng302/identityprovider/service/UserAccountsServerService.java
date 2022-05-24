@@ -43,6 +43,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Value("${IMAGE_SRC}")
     private String imageSrc;
 
+    @Value("${ENV}")
+    private String env;
+
     @Autowired
     private UserRepository repository;
 
@@ -255,7 +258,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File(imageSrc + user.getProfileImagePath());
+                            File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
@@ -264,7 +267,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
                         repository.save(user);
 
-                        String filepath = imageSrc + user.getUsername() + "." + metaData.getFileType();
+                        String filepath = imageSrc + env + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
 
                         try {
@@ -325,7 +328,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (user.getProfileImagePath() != null) {
             try {
                 System.out.println("try catch reached");
-                File oldPhoto = new File(imageSrc + user.getProfileImagePath());
+                File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
                 boolean success = oldPhoto.delete();
                 System.out.println("file deleted");
                 if (success) {
