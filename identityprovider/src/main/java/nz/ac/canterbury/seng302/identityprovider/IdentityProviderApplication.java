@@ -28,6 +28,9 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     @Value("${IMAGE_SRC}")
     private String imageSrc;
 
+    @Value("${ENV}")
+    private String env;
+
     @Bean
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
@@ -60,8 +63,8 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/profile-images/**")
-                .addResourceLocations("file:" + imageSrc);
+                .addResourceHandler("/profile-images/" + env  + "**")
+                .addResourceLocations("file:" + imageSrc + env);
     }
 
 }
