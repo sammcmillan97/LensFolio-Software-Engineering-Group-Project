@@ -1,10 +1,12 @@
 package nz.ac.canterbury.seng302.identityprovider.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,23 +17,23 @@ import java.nio.file.Path;
 @Controller
 public class ProfileImageController {
 
-    @GetMapping("/getProfilePicture")
-    public ResponseEntity<byte[]> getProfileImage() throws IOException {
+    @Value("${ENV}")
+    private String env;
 
-        String filename = "default.jpg";
+    @GetMapping("/ProfilePicture-{filename}")
+    public ResponseEntity<byte[]> getProfileImage(
+            @PathVariable("filename") String filename
+    ) throws IOException {
         File currentDirFile = new File(".");
         String helper = currentDirFile.getAbsolutePath();
         helper = helper.substring(0, helper.length() - 1);
-        Path photoRelPath = Path.of(helper + "profile-images\\" + filename);
+        System.out.println(helper);
+        Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
         InputStream inputStream = new FileInputStream(photoRelPath.toFile());
         byte[] bytes = StreamUtils.copyToByteArray(inputStream);
-
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(bytes);
     }
-
-
-
 }

@@ -15,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -263,33 +260,20 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
+
                         user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
-                        repository.save(user); /**VM IS REACHING HERE**/
-                        System.out.println("Set profile image path for user");
+                        repository.save(user);
+
                         String filepath = imageSrc + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
-                        System.out.println ("FILEPATH:-" + filepath);
-                        System.out.println("File Created");
 
-                        File currentDirFile = new File(".");
-                        String helper = currentDirFile.getAbsolutePath();
-                        helper = helper.substring(0, helper.length() - 1);
-                        System.out.println("HELPER:" + helper);
-
-                        /**Error is occurring here: OutputStream os = new FileOutputStream(file) **/
                         try {
-                            System.out.println("Begin OutputSteam os = new FileOutputStream(file) passed");
                             OutputStream os = new FileOutputStream(file);
-                            System.out.println("Completed OutputSteam os = new FileOutputStream(file) passed");
                             os.write(fileContent);
-                            System.out.println("OutputSteam written");
                             FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                     .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
-                            System.out.println("CreatedFileUploadStatusResponse");
                             responseObserver.onNext(response);
-                            System.out.println("Completed response observer on next");
                             responseObserver.onCompleted();
-                            System.out.println("Completed response observer on complete");
                         } catch (Exception e) {
                             System.out.println("Exception called writing file:-" + e);
                             responseObserver.onError(e);
@@ -528,7 +512,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + IMAGE_FOLDER +user.getProfileImagePath());
+                reply.setProfileImagePath(context + "ProfilePicture-" + user.getProfileImagePath());
             } else {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
