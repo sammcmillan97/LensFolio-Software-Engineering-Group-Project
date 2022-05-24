@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -273,8 +276,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         helper = helper.substring(0, helper.length() - 1);
                         System.out.println("HELPER:" + helper);
 
-                        try (OutputStream os = new FileOutputStream(file)) {
-                            System.out.println("OutputSteam os = new FileOutputStream(file) passed");
+                        /**Error is occurring here: OutputStream os = new FileOutputStream(file) **/
+                        try {
+                            System.out.println("Begin OutputSteam os = new FileOutputStream(file) passed");
+                            OutputStream os = new FileOutputStream(file);
+                            System.out.println("Completed OutputSteam os = new FileOutputStream(file) passed");
                             os.write(fileContent);
                             System.out.println("OutputSteam written");
                             repository.save(user);
