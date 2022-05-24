@@ -41,6 +41,4 @@ public class ProfileImageController {
         } catch (Exception e) {
             System.out.println("Exception:-" + e);
         }
-
-    }
 }
