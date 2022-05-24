@@ -23,19 +23,24 @@ public class ProfileImageController {
     @GetMapping("/ProfilePicture-{filename}")
     public ResponseEntity<byte[]> getProfileImage(
             @PathVariable("filename") String filename
-    ) throws IOException {
-        System.out.println("Get PP called");
-        File currentDirFile = new File(".");
-        String helper = currentDirFile.getAbsolutePath();
-        helper = helper.substring(0, helper.length() - 1);
-        System.out.println(helper);
-        Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
-        System.out.println(helper + "profile-images\\" + env + filename);
-        InputStream inputStream = new FileInputStream(photoRelPath.toFile());
-        byte[] bytes = StreamUtils.copyToByteArray(inputStream);
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(bytes);
+    ) {
+        try {
+            System.out.println("Get PP called");
+            File currentDirFile = new File(".");
+            String helper = currentDirFile.getAbsolutePath();
+            helper = helper.substring(0, helper.length() - 1);
+            System.out.println(helper);
+            Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
+            System.out.println(helper + "profile-images\\" + env + filename);
+            InputStream inputStream = new FileInputStream(photoRelPath.toFile());
+            byte[] bytes = StreamUtils.copyToByteArray(inputStream);
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(bytes);
+        } catch (Exception e) {
+            System.out.println("Exception:-" + e);
+        }
+
     }
 }
