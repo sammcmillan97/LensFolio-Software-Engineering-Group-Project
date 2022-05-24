@@ -283,11 +283,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                             System.out.println("Completed OutputSteam os = new FileOutputStream(file) passed");
                             os.write(fileContent);
                             System.out.println("OutputSteam written");
-                            repository.save(user);
                             FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                     .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
+                            System.out.println("CreatedFileUploadStatusResponse");
                             responseObserver.onNext(response);
+                            System.out.println("Completed response observer on next");
                             responseObserver.onCompleted();
+                            System.out.println("Completed response observer on complete");
                         } catch (Exception e) {
                             System.out.println("Exception called writing file:-" + e);
                             responseObserver.onError(e);
