@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectEdits;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -8,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
+import java.util.NoSuchElementException;
 
+/**
+ * Class which allows users to register and receive edit notifications for projects.
+ */
 @RestController
 public class ProjectEditsController {
 
@@ -19,10 +25,19 @@ public class ProjectEditsController {
     @Autowired
     UserAccountClientService userAccountClientService;
 
-    private long editedAtTime;
-    private String editedProject;
+    @Autowired
+    ProjectService projectService;
 
-    @GetMapping("/projects/editStatus")
+    private final ProjectEdits projectEdits = new ProjectEdits();
+
+    /**
+     * Returns a list of users to send to the frontend, in JSON form.
+     * Will only get relevant edits.
+     * @param principal The user's authentication
+     * @param id The project the users wishes to get edits for
+     * @return A JSON string to send to the frontend representing the edits a user is interested in.
+     */
+    @GetMapping("projects-editStatus")
     public String projectEditing(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
         boolean isAuthenticated = authenticateClientService.checkAuthState().getIsAuthenticated();
@@ -31,19 +46,27 @@ public class ProjectEditsController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
+
+        int projectId;
+        try {
+            projectId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            return ""; // If project id is not an integer, the request was invalid, and we just return the empty string
+        }
+
         if (isAuthenticated && userId != -100) {
-            // Proper edit detection here
-            if (System.currentTimeMillis() - editedAtTime < 5000 && Objects.equals(id, editedProject)) {
-                return "1";
-            } else {
-                return "0";
-            }
+            return projectEdits.getEdits(projectId, userId);
         } else {
-            return "0";
+            return ""; //Return empty string as user is not authenticated
         }
     }
 
-    @PostMapping("/projects/editing")
+    /**
+     * Allows teachers or above to register an edit notification to show to other users who are interested in the project.
+     * @param principal The user's authentication
+     * @param id The project the users wishes to register an edit for
+     */
+    @PostMapping("/projects-editing")
     public void isEditingProject(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
         boolean isTeacher = userAccountClientService.isTeacher(principal) && authenticateClientService.checkAuthState().getIsAuthenticated();
@@ -52,9 +75,20 @@ public class ProjectEditsController {
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
+
+        int projectId;
+        Project project;
+        try {
+            projectId = Integer.parseInt(id);
+            project = projectService.getProjectById(projectId);
+        } catch (NumberFormatException | NoSuchElementException e) {
+            return;
+            // If project id is not an integer or does not correspond to a project, the request was invalid so we return
+        }
         if (isTeacher && userId != -100) {
-            editedAtTime = System.currentTimeMillis();
-            editedProject = id;
+            String editString = userAccountClientService.getUserAccountById(userId).getFirstName() +
+                    " is editing " + project.getName();
+            projectEdits.newEdit(projectId, userId, editString);
         }
     }
 

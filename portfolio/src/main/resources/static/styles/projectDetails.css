@@ -192,6 +192,29 @@ html {
     justify-content: space-evenly;
 }
 
+/* Adapted from w3schools https://www.w3schools.com/howto/howto_js_snackbar.asp */
+#editNotification {
+  visibility: hidden;
+  min-width: 250px;
+  max-width: 250px;
+  margin-left: -280px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 8px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  position: fixed;
+  z-index: 1;
+  left: 100%;
+  bottom: 30px;
+}
+
+#editNotification.show {
+  visibility: visible;
+}
+
 .carousel-buttons {
     justify-content: space-between;
     width: 100%;

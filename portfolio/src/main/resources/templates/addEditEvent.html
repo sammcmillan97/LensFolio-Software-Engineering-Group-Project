@@ -6,7 +6,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
     <link th:href="@{styles/addEditEvent.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{scripts/addEditEvent.js}"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
@@ -18,6 +17,7 @@
 
 <!-- Page content -->
 <div id="page-content" class="constrict">
+    <div id="projectId" style="display: none;" th:text="${projectId}"></div>
     <div id="event-form__wrapper">
         <!-- Name, Date -->
         <header class="event-form__header flex-column">
@@ -41,6 +41,8 @@
         </form>
     </div>
 </div>
+<script rel="script" th:src="@{scripts/addEditEvent.js}"></script>
+<script rel="script" th:src="@{scripts/sendProjectEditNotifications.js}"></script>
 </body>
 
 
