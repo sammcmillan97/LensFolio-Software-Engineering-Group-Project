@@ -338,8 +338,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
             try {
+                System.out.println("try catch reached");
                 File oldPhoto = new File(imageSrc + user.getProfileImagePath());
-                if (oldPhoto.delete()) {
+                boolean success = oldPhoto.delete();
+                System.out.println("file deleted");
+                if (success) {
                     user.setProfileImagePath(null);
                     repository.save(user);
                     response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
