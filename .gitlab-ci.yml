@@ -74,8 +74,8 @@ deploy-staging-identityprovider:
     paths:
       - identityprovider/build/libs
   environment:
-    name: staging
-    url: https://csse-s302g4.canterbury.ac.nz/test
+    name: staging-identity
+    url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
     - UVMb-fix-profile-photos
@@ -98,7 +98,7 @@ deploy-staging-portfolio:
       - portfolio/build/libs
   environment:
     name: staging
-    url: https://csse-s302g4.canterbury.ac.nz/test
+    url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
     - UVMb-fix-profile-photos
@@ -121,8 +121,8 @@ deploy-production-identityprovider:
     paths:
       - identityprovider/build/libs
   environment:
-    name: production
-    url: https://csse-s302g4.canterbury.ac.nz/prod
+    name: production-identity
+    url: https://csse-s302g4.canterbury.ac.nz/prod/identity
   only:
     - tags
     - master
@@ -145,7 +145,7 @@ deploy-production-portfolio:
       - portfolio/build/libs
   environment:
     name: production
-    url: https://csse-s302g4.canterbury.ac.nz/prod
+    url: https://csse-s302g4.canterbury.ac.nz/prod/portfolio
   only:
     - tags
     - master
