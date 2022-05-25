@@ -25,9 +25,16 @@ public class ProjectEdits {
      * Gets a list of edits to send to the frontend.
      * The edits should relate to the project the user is viewing, but not be by them.
      * It is needed to remove all timed out edits first.
+     * Also sends a single parameter 'refresh' to the user telling them if they need to refresh their page.
+     * This is if the page has changed since the user last called this method.
      * @param projectId The id of the project
      * @param userId The id of the user viewing the project
-     * @return A JSON string to send to the frontend representing the edits a user is interested in.
+     * @return A JSON string to send to the frontend representing the edits a user is interested in,
+     * plus the refresh parameter. For example:
+     * {
+     *     "edits": ["Fabian is editing Awesome Project", "Moffat is editing Awesome Project"],
+     *     "refresh": false
+     * }
      */
     public String getEdits(int projectId, int userId) {
         projectEditList.removeIf(ProjectEdit::hasTimedOut);
@@ -44,7 +51,16 @@ public class ProjectEdits {
                 result.append("\"").append(edit).append("\"");
             }
         }
-        result.append("]}");
+        result.append("], \"refresh\":");
+        String refreshString = "false";
+        for (ProjectRefresh refresh: projectRefreshList) {
+            if (refresh.isRelevant(projectId, userId)) {
+                refreshString = "true";
+                refresh.notifyUser(userId);
+            }
+        }
+        result.append(refreshString);
+        result.append("}");
         return result.toString();
     }
 
@@ -60,6 +76,15 @@ public class ProjectEdits {
     public void newEdit(int projectId, int userId, String editString) {
         projectEditList.removeIf(edit -> edit.isFromUser(userId));
         projectEditList.add(new ProjectEdit(projectId, userId, editString));
+    }
+
+    /**
+     * Create a new project refresh. It is linked to a specific project.
+     * It will time out after 5 seconds.
+     * @param projectId The id of the project
+     */
+    public void newRefresh(int projectId) {
+        projectRefreshList.add(new ProjectRefresh(projectId));
     }
 
 }

@@ -19,7 +19,7 @@ class ProjectEditsTests {
         int otherUserId = 2;
         ProjectEdits edits = new ProjectEdits();
         edits.newEdit(projectId, userId, editString);
-        assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [\"" + editString + "\"]}");
+        assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [\"" + editString + "\"], \"refresh\":false}");
     }
 
     @Test
@@ -31,8 +31,8 @@ class ProjectEditsTests {
         ProjectEdits edits = new ProjectEdits();
         edits.newEdit(projectId, userId, editString);
         edits.newEdit(otherProjectId, userId, editString);
-        assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": []}");
-        assertThat(edits.getEdits(otherProjectId, otherUserId)).hasToString("{\"edits\": [\"" + editString + "\"]}");
+        assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [], \"refresh\":false}");
+        assertThat(edits.getEdits(otherProjectId, otherUserId)).hasToString("{\"edits\": [\"" + editString + "\"], \"refresh\":false}");
     }
 
     @Test
@@ -44,7 +44,7 @@ class ProjectEditsTests {
         ProjectEdits edits = new ProjectEdits();
         edits.newEdit(projectId, userId, editString);
         edits.newEdit(projectId, otherUserId, editString);
-        assertThat(edits.getEdits(projectId, thirdUserId)).hasToString("{\"edits\": [\"" + editString + "\",\"" + editString + "\"]}");
+        assertThat(edits.getEdits(projectId, thirdUserId)).hasToString("{\"edits\": [\"" + editString + "\",\"" + editString + "\"], \"refresh\":false}");
     }
 
 }
