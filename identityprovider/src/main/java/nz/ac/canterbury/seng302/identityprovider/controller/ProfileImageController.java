@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.identityprovider.controller;
 
+import nz.ac.canterbury.seng302.identityprovider.service.UserAccountsServerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,30 +19,25 @@ import java.nio.file.Path;
 @Controller
 public class ProfileImageController {
 
-    @Value("${ENV}")
-    private String env;
+    @Autowired
+    private UserAccountsServerService userAccountsServerService;
 
     @GetMapping("/ProfilePicture-{filename}")
-    public ResponseEntity<byte[]> getProfileImage(
+    public ResponseEntity<byte[]> ProfilePicture(
             @PathVariable("filename") String filename
     ) {
+        System.out.println("Get PP in controller called");
         try {
-            System.out.println("Get PP called");
-            File currentDirFile = new File(".");
-            String helper = currentDirFile.getAbsolutePath();
-            helper = helper.substring(0, helper.length() - 1);
-            System.out.println(helper);
-            Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
-            System.out.println(helper + "profile-images\\" + env + filename);
-            InputStream inputStream = new FileInputStream(photoRelPath.toFile());
-            byte[] bytes = StreamUtils.copyToByteArray(inputStream);
+            byte[] bytes = userAccountsServerService.getProfilePicture(filename);
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(bytes);
         } catch (Exception e) {
             System.out.println("Exception:-" + e);
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
         }
-        return null;
     }
 }

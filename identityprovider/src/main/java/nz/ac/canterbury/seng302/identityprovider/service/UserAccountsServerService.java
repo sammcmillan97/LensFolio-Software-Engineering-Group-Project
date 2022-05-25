@@ -13,8 +13,10 @@ import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StreamUtils;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1002,6 +1004,24 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             hasOneRole = true;
         }
         return hasOneRole;
+    }
+
+    public byte[] getProfilePicture(String filename){
+        try {
+            System.out.println("Get PP in service called");
+            File currentDirFile = new File(".");
+            String helper = currentDirFile.getAbsolutePath();
+            helper = helper.substring(0, helper.length() - 1);
+            System.out.println(helper);
+            Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
+            System.out.println(helper + "profile-images\\" + env + filename);
+            InputStream inputStream = new FileInputStream(photoRelPath.toFile());
+            return StreamUtils.copyToByteArray(inputStream);
+        } catch (Exception e) {
+            System.out.println("Exception:" + e);
+            return null;
+        }
+
     }
 
 }
