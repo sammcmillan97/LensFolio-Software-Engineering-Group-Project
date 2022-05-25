@@ -1,27 +1,33 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class which represents an edit currently being made to a project.
  */
-public class ProjectEdit {
+public class ProjectRefresh {
+
+    // TODO docstrings
 
     private final int projectId;
     private final int userId;
-    private final String editString;
+    private final List<Integer> usersSeenRefresh;
     private final long time;
 
     /**
      * Create a new project edit. It is linked to a specific project and user.
      * It has a message which will show to other users that this user is editing the page.
      * It will time out after 5 seconds.
+     * @param editString The string to display to other users representing the edit.
      * @param projectId The id of the project
      * @param userId The id of the user editing the project
-     * @param editString The string to display to other users representing the edit.
+     * @param usersSeenRefresh
      */
-    public ProjectEdit(int projectId, int userId, String editString) {
+    public ProjectRefresh(int projectId, int userId) {
         this.projectId = projectId;
         this.userId = userId;
-        this.editString = editString;
+        this.usersSeenRefresh = new ArrayList<>();
         this.time = System.currentTimeMillis();
     }
 
@@ -42,7 +48,11 @@ public class ProjectEdit {
      * @return True if the eit is relevant
      */
     public boolean isRelevant(int projectId, int userId) {
-        return this.projectId == projectId && this.userId != userId;
+        return this.projectId == projectId && this.userId != userId && !usersSeenRefresh.contains(userId);
+    }
+
+    public void addUser(int userId) {
+        usersSeenRefresh.add(userId);
     }
 
     /**
@@ -54,12 +64,5 @@ public class ProjectEdit {
         return this.userId == userId;
     }
 
-    /**
-     * Simply return the edit string.
-     * @return The string representing the edit
-     */
-    public String toString() {
-        return editString;
-    }
 
 }

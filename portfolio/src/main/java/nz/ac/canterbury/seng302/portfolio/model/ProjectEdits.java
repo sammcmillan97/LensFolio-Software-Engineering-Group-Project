@@ -10,11 +10,15 @@ public class ProjectEdits {
 
     private final List<ProjectEdit> projectEditList;
 
+    private final List<ProjectRefresh> projectRefreshList;
+
+
     /**
      * Default constructor, initialises the edit list.
      */
     public ProjectEdits() {
         projectEditList = new ArrayList<>();
+        projectRefreshList = new ArrayList<>();
     }
 
     /**
@@ -27,6 +31,7 @@ public class ProjectEdits {
      */
     public String getEdits(int projectId, int userId) {
         projectEditList.removeIf(ProjectEdit::hasTimedOut);
+        projectRefreshList.removeIf(ProjectRefresh::hasTimedOut);
         StringBuilder result = new StringBuilder("{\"edits\": [");
         boolean firstEdit = true;
         for (ProjectEdit edit : projectEditList) {
