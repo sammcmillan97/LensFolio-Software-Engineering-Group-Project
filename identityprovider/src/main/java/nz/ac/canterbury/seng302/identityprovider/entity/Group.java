@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.identityprovider.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,8 +24,8 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany(mappedBy = "GROUP_MEMBERSHIP")
-    private Set<User> memebers;
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private Set<User> members = new HashSet<>();
 
 
     /**
@@ -44,6 +45,13 @@ public class Group {
      */
     protected Group() {
 
+    }
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getShortName() {
@@ -68,6 +76,20 @@ public class Group {
 
     public void setParentProject(int parentProject) {
         this.parentProject = parentProject;
+    }
+
+    public void addMember(User user) {
+        this.members.add(user);
+        user.joinGroup(this);
+    }
+
+    public void removeMember(User user) {
+        this.members.remove(user);
+        user.leaveGroup(this);
+    }
+
+    public Set<User> getMembers() {
+      return this.members;
     }
 
     @Override

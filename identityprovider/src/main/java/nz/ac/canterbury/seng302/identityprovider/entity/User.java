@@ -67,12 +67,12 @@ public class User {
 
     private String profileImagePath;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name="GROUP_MEMBERSHIP",
-            joinColumns = @JoinColumn(name = "user_id" ),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private Set<Group> groups;
+            joinColumns = @JoinColumn(name = "USER_ID" ),
+            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
+    private Set<Group> groups = new HashSet<>();
 
     /**
      * Create a user for use in backend database.
@@ -233,6 +233,18 @@ public class User {
 
     public void removeRole(UserRole role) {
         this.roles.remove(role);
+    }
+
+    public void joinGroup(Group group) {
+        this.groups.add(group);
+    }
+
+    public void leaveGroup(Group group) {
+        this.groups.remove(group);
+    }
+
+    public Set<Group> getGroups() {
+        return this.groups;
     }
 
 
