@@ -17,6 +17,9 @@ public class SprintService {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private ProjectEdits projectEdits;
+
     /**
      * Get list of all sprints
      */
@@ -55,14 +58,16 @@ public class SprintService {
     }
 
     public Sprint saveSprint(Sprint sprint) {
+        projectEdits.refreshProject(sprint.getParentProjectId());
         return repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {
+        projectEdits.refreshProject(repository.findById(sprintId).getParentProjectId());
         repository.deleteById(sprintId);
     }
 
-    public void updateStartDate(int sprintId, Date newDate) throws Exception {
+    public void updateStartDate(int sprintId, Date newDate) throws UnsupportedOperationException {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
@@ -85,7 +90,7 @@ public class SprintService {
         }
     }
 
-    public void updateEndDate(int sprintId, Date newDate) throws Exception {
+    public void updateEndDate(int sprintId, Date newDate) throws UnsupportedOperationException {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();

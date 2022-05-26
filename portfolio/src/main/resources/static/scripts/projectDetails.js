@@ -1,5 +1,8 @@
 function checkResponse(data){
     var jsondata = JSON.parse(data);
+    if (jsondata.refresh) {
+        window.location.reload();
+    }
     var editNotification = document.getElementById("editNotification");
     if (jsondata.edits.length == 0) {
         editNotification.className = "";

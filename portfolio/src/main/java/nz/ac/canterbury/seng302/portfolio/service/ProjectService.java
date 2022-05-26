@@ -17,6 +17,9 @@ public class ProjectService {
     @Autowired
     private ProjectRepository repository;
 
+    @Autowired
+    private ProjectEdits projectEdits;
+
     /**
      * Get list of all projects
      */
@@ -39,12 +42,14 @@ public class ProjectService {
     }
 
     public Project saveProject(Project project) {
+        projectEdits.refreshProject(project.getId());
         return repository.save(project);
     }
 
     public void deleteProjectById(int id) throws NoSuchElementException {
         try {
             repository.deleteById(id);
+            projectEdits.refreshProject(id);
         } catch (EmptyResultDataAccessException e) {
             throw new NoSuchElementException("No project found to delete");
         }

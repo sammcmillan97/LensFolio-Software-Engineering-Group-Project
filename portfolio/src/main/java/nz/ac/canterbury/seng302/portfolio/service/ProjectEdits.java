@@ -1,4 +1,8 @@
-package nz.ac.canterbury.seng302.portfolio.model;
+package nz.ac.canterbury.seng302.portfolio.service;
+
+import nz.ac.canterbury.seng302.portfolio.model.ProjectEdit;
+import nz.ac.canterbury.seng302.portfolio.model.ProjectRefresh;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +10,7 @@ import java.util.List;
 /**
  * Class which represents a list of edits being made by a variety of users to a variety of projects.
  */
+@Service
 public class ProjectEdits {
 
     private final List<ProjectEdit> projectEditList;
@@ -14,7 +19,7 @@ public class ProjectEdits {
 
 
     /**
-     * Default constructor, initialises the edit list.
+     * Default constructor, initialises the edit list and refresh list.
      */
     public ProjectEdits() {
         projectEditList = new ArrayList<>();
@@ -83,7 +88,7 @@ public class ProjectEdits {
      * It will time out after 5 seconds.
      * @param projectId The id of the project
      */
-    public void newRefresh(int projectId) {
+    public void refreshProject(int projectId) {
         projectRefreshList.add(new ProjectRefresh(projectId));
     }
 

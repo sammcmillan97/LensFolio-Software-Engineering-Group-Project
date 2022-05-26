@@ -18,6 +18,9 @@ public class EventService {
     @Autowired
     private ProjectService eventProjectService;
 
+    @Autowired
+    private ProjectEdits projectEdits;
+
     /**
      * Get a list of all events
      * @return the list of all existing events
@@ -30,14 +33,14 @@ public class EventService {
      * Get the event by id
      * @param eventId the id of the event
      * @return the event which has the required id
-     * @throws Exception when event is not found
+     * @throws IllegalArgumentException when event is not found
      */
-    public Event getEventById(Integer eventId) throws Exception {
+    public Event getEventById(Integer eventId) throws IllegalArgumentException {
         Optional<Event> event = eventRepository.findById(eventId);
         if (event.isPresent()) {
             return event.get();
         } else {
-            throw new Exception("Event not found");
+            throw new IllegalArgumentException("Event not found");
         }
     }
 
@@ -68,6 +71,7 @@ public class EventService {
      * Save the event to the repository
      */
     public Event saveEvent(Event event) {
+        projectEdits.refreshProject(event.getEventParentProjectId());
         return eventRepository.save(event);
     }
 
@@ -76,6 +80,7 @@ public class EventService {
      * @param eventId the id of the event
      */
     public void deleteEventById(int eventId) {
+        projectEdits.refreshProject(eventRepository.findById(eventId).getEventParentProjectId());
         eventRepository.deleteById(eventId);
     }
 
@@ -83,9 +88,9 @@ public class EventService {
      * Update the start date of the event
      * @param eventId the id of the event to be updated
      * @param newStartDate the new date the start date should be updated to
-     * @throws Exception when the date is changed to a date outside the scope
+     * @throws UnsupportedOperationException when the date is changed to a date outside the scope
      */
-    public void updateStartDate(int eventId, Date newStartDate) throws Exception {
+    public void updateStartDate(int eventId, Date newStartDate) throws UnsupportedOperationException {
         Event eventToChange = getEventById(eventId);
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
@@ -104,9 +109,9 @@ public class EventService {
      * Updates the end date of the event
      * @param eventId the id of the event to be updated
      * @param newEndDate the new end date it should be updated to
-     * @throws Exception when the date it should update to is outside the scope
+     * @throws UnsupportedOperationException when the date it should update to is outside the scope
      */
-    public void updateEndDate(int eventId, Date newEndDate) throws Exception {
+    public void updateEndDate(int eventId, Date newEndDate) throws UnsupportedOperationException {
         Event eventToChange = getEventById(eventId);
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();

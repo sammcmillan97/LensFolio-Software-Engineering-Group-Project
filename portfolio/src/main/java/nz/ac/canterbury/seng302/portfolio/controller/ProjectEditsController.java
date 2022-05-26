@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.ProjectEdits;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectEdits;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -28,7 +28,8 @@ public class ProjectEditsController {
     @Autowired
     ProjectService projectService;
 
-    private final ProjectEdits projectEdits = new ProjectEdits();
+    @Autowired
+    private ProjectEdits projectEdits;
 
     /**
      * Returns a list of users to send to the frontend, in JSON form.
