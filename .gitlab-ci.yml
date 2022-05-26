@@ -150,6 +150,7 @@ sonarqube-report:
   stage: sonarqube
   script:
     - cd identityprovider
+    - pwd
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY"
     - ./gradlew sonarqube
