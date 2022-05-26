@@ -1013,8 +1013,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             String helper = currentDirFile.getAbsolutePath();
             helper = helper.substring(0, helper.length() - 1);
             System.out.println(helper);
-            Path photoRelPath = Path.of(helper + "profile-images\\" + env + filename);
-            System.out.println(helper + "profile-images\\" + env + filename);
+            Path photoRelPath = Path.of(helper + "profile-images/" + env + filename);
+            System.out.println(helper + "profile-images/" + env + filename);
             InputStream inputStream = new FileInputStream(photoRelPath.toFile());
             return StreamUtils.copyToByteArray(inputStream);
         } catch (Exception e) {
