@@ -9,6 +9,8 @@ plugins {
     id 'java'
     id 'application'
     id 'se.thinkcode.cucumber-runner' version '0.0.8'
+    id 'jacoco'
+    id "org.sonarqube" version "3.3"
 }
 
 ext {
@@ -95,8 +97,32 @@ cucumber {
 
 test {
     useJUnitPlatform()
-
-
-
     systemProperties(project.gradle.startParameter.systemPropertiesArgs)
+    finalizedBy jacocoTestReport
+}
+
+// Jacoco test coverage configuration
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+// select what reports Jacoco generates and where to put them
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/jacoco/test-report.xml")
+        csv.enabled false
+        html.destination file("${buildDir}/jacoco/html")
+    }
+}
+
+// Sonarqube specific configuration (task)
+sonarqube {
+    properties {
+        property "sonar.projectKey", "team-400-portfolio"
+        property "sonar.projectName", "team 400 - portfolio"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
+        property "sonar.login", "${SONARQUBE_API_KEY}"
+    }
 }

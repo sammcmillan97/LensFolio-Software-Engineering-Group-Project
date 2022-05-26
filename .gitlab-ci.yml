@@ -145,3 +145,15 @@ deploy-production-portfolio:
   only:
     - tags
     - master
+
+sonarqube-report:
+  stage: sonarqube
+  script:
+    - cd identityprovider
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY"
+    - ./gradlew sonarqube
+    - cd ../portfolio
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY"
+    - ./gradlew sonarqube
