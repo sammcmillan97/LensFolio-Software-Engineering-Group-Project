@@ -100,6 +100,7 @@ public class UserListController {
         model.addAttribute("isCourseAdmin", role.contains("courseadministrator"));
         model.addAttribute("isTeacher", role.contains("teacher") || role.contains("courseadministrator"));
         model.addAttribute("users", users);
+        model.addAttribute("currentUserId", id);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);
         model.addAttribute("currentPage", pageInt);
