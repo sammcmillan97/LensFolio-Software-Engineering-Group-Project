@@ -16,8 +16,6 @@ public class DeadlineService {
     @Autowired
     private DeadlineRepository deadlineRepository;
 
-    @Autowired
-    private ProjectService deadlineProjectService;
 
     public List<Deadline> getAllDeadlines() {
         return (List<Deadline>) deadlineRepository.findAll();
@@ -34,17 +32,6 @@ public class DeadlineService {
 
     public List<Deadline> getByDeadlineParentProjectId(int deadlineProjectId) {
         return deadlineRepository.findByDeadlineParentProjectId(deadlineProjectId);
-    }
-
-    public Map<Integer, List<Deadline>> getAllByDeadlineParentProjectId() {
-        List<Project> deadlineProjects = deadlineProjectService.getAllProjects();
-
-        Map<Integer, List<Deadline>> deadlinesByParentProject = new HashMap<>();
-        for (Project deadlineProject : deadlineProjects) {
-            int deadlineId = deadlineProject.getId();
-            deadlinesByParentProject.put(deadlineId, getByDeadlineParentProjectId(deadlineId));
-        }
-        return deadlinesByParentProject;
     }
 
     public Deadline saveDeadline(Deadline deadline) {
