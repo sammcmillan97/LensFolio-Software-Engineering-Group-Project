@@ -54,15 +54,15 @@ public class SprintService {
         return sprintsByParentProject;
     }
 
-    public Sprint saveSprint(Sprint sprint) {
-        return repository.save(sprint);
+    public void saveSprint(Sprint sprint) {
+        repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {
         repository.deleteById(sprintId);
     }
 
-    public void updateStartDate(int sprintId, Date newDate) throws Exception {
+    public void updateStartDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
@@ -85,7 +85,7 @@ public class SprintService {
         }
     }
 
-    public void updateEndDate(int sprintId, Date newDate) throws Exception {
+    public void updateEndDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();

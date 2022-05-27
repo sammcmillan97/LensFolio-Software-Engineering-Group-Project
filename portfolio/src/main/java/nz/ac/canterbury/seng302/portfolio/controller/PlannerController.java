@@ -51,7 +51,7 @@ public class PlannerController {
                           Model model) {
 
         int projectId = Integer.parseInt(id);
-        Project project = null;
+        Project project;
 
         try {
             project = projectService.getProjectById(projectId);
@@ -92,7 +92,7 @@ public class PlannerController {
                           Model model) {
 
         List<Project> projects = projectService.getAllProjects();
-        Project project = null;
+        Project project;
         if (!projects.isEmpty()) {
             project = projects.get(0);
         } else {
