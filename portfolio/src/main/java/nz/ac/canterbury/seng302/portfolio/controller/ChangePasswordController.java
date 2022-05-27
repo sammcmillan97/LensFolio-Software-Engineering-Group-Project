@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ChangePasswordResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +22,8 @@ public class ChangePasswordController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
+
+    private static final String CHANGE_PASSWORD_ENDPOINT = "changePassword";
 
     /**
      * Get mapping to return change password page
@@ -42,7 +43,7 @@ public class ChangePasswordController {
                 .orElse("-100"));
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
-        return "changePassword";
+        return CHANGE_PASSWORD_ENDPOINT;
     }
 
     /**
@@ -74,22 +75,22 @@ public class ChangePasswordController {
         //Try to connect to IDP to submit password response
         try {
             changePasswordResponse = userAccountClientService.changeUserPassword(id, oldPassword, newPassword);
+            //Success or fail the user will be returned to the security menu with appropriate feedback message displayed
+            if (changePasswordResponse.getIsSuccess()) {
+                model.addAttribute("success", changePasswordResponse.getMessage());
+            } else {
+                StringBuilder failure = new StringBuilder();
+                for (ValidationError error: changePasswordResponse.getValidationErrorsList()) {
+                    failure.append("\n");
+                    failure.append(error.getErrorText());
+                }
+                model.addAttribute("failure", failure);
+            }
         } catch(Exception e) {
             model.addAttribute("failure", "Error connecting to Identity Provider");
-            return "changePassword";
         }
-        //Success or fail the user will be returned to the security menu with appropriate feedback message displayed
-        if (changePasswordResponse.getIsSuccess()) {
-            model.addAttribute("success", changePasswordResponse.getMessage());
-        } else {
-            StringBuilder failure = new StringBuilder();
-            for (ValidationError error: changePasswordResponse.getValidationErrorsList()) {
-                failure.append("\n");
-                failure.append(error.getErrorText());
-            }
-            model.addAttribute("failure", failure);
-        }
-        return "changePassword";
+
+        return CHANGE_PASSWORD_ENDPOINT;
     }
 
 }

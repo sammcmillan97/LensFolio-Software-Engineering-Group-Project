@@ -7,24 +7,31 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @SpringBootTest
-class UserAccountsServiceServiceTests {
+class UserAccountsServerServiceTests {
 
     @Autowired
     private UserRepository repository;
 
+    @Spy
     @Autowired
     private UserAccountsServerService userService;
 
@@ -39,6 +46,7 @@ class UserAccountsServiceServiceTests {
     private final String testPassword = "test password";
     private final UserRole studentRole = STUDENT;
     private final UserRole teacherRole = TEACHER;
+    private final UserRole adminRole = COURSE_ADMINISTRATOR;
 
     private int testId;
     private Timestamp testCreated;
@@ -142,62 +150,30 @@ class UserAccountsServiceServiceTests {
         assertEquals("test1", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
     }
 
-
-    //Tests that when the offset is greater than number of users in the repository the list returned
-    //to by the get paginated users service is zero
-    @Test
-    void getPaginatedUsersOffsetGreaterThanListSize() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(3)
-                .setLimit(9999)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
+    // Provides arguments for the parameterized tests for paginated users
+    static Stream<Arguments> paginatedUsersTestParamProvider() {
+        return Stream.of(
+                // All tests have a list of 3 users
+                arguments(1, 9999, 2), // Tests that the offset of 1 returns a list of 2 users
+                arguments(0, 0, 0), // Tests that a limit of 0 returns 0 users
+                arguments(0, 1, 1), // Tests that a limit of 1 returns 1 user
+                arguments(3, 9999, 0) // Tests that an offset higher than the number of users returns 0 users
+        );
     }
 
-    //Tests that the offset works as intended by the get paginated users service
-    @Test
-    void getPaginatedUsersOffsetIsOne() {
+    // Tests that the offset and limit options for pagination work as expected. See above method for test cases
+    @ParameterizedTest
+    @MethodSource("paginatedUsersTestParamProvider")
+    void getPaginatedUsers(int offset, int limit, int expectedUserListSize) {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(1)
-                .setLimit(9999)
+                .setOffset(offset)
+                .setLimit(limit)
                 .setOrderBy("username")
                 .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(2, response.getUsersList().size());
-    }
-
-    //Tests that when the limit is zero the list returned by the get paginated users list is zero
-    @Test
-    void getPaginatedUsersLimitIsZero() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(0)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
-    }
-
-    //Tests that the limit feature works as intended on the get paginated user service
-    @Test
-    void getPaginatedUsersLimitIsOne() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(1)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(1, response.getUsersList().size());
+        assertEquals(expectedUserListSize, response.getUsersList().size());
     }
 
     //Tests that the password change fails if the new password is too short
@@ -552,7 +528,7 @@ class UserAccountsServiceServiceTests {
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        //assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
+        assertEquals("resources/" + testPath, response.getProfileImagePath());
     }
 
 
@@ -803,7 +779,10 @@ class UserAccountsServiceServiceTests {
                 .setUserId(testId)
                 .setRole(teacherRole)
                 .build();
-        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
         User updatedUser = repository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
         Set<UserRole> roleSet = new HashSet<>();
@@ -812,9 +791,60 @@ class UserAccountsServiceServiceTests {
         assertEquals("Role successfully removed", response.getMessage());
     }
 
-    //Tests that role can be added to a user
+    //Tests that an admin can't remove their own admin role
     @Test
-    void removeRoleTeacherFromStudentTest() {
+    void whenHasAdminRole_testRemoveOwnAdminRole() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(testId).when(spyUserService).getAuthStateUserId();
+
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        roleSet.add(adminRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Unable to remove role. Cannot remove own course administrator role", response.getMessage());
+    }
+
+    //Tests that an admin can remove someone elses admin role
+    @Test
+    void whenHasAdminRole_testRemoveOtherAdminRole() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Role successfully removed", response.getMessage());
+    }
+
+    //Tests that you can't remove a role that a user doesn't have
+    @Test
+    void whenOnlyHasStudentRole_testRemoveTeacherRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(teacherRole)
@@ -828,9 +858,9 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    //Tests that role can be added to a user
+    //Tests that the users last role can't be removed
     @Test
-    void removeRoleStudentFromStudentTest() {
+    void whenOnlyHasStudentRole_testRemoveStudentRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(studentRole)
@@ -844,45 +874,82 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    // Check that no user has permissions to modify an admin role
+    // Check that a student does not have permissions to modify a student role
     @Test
-    void isValidatedForRoleTestNotValidForAdmin() {
+    void whenHasStudentRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that a student does not have permissions to modify a teacher role
+    @Test
+    void whenHasStudentRole_testModifyTeacherRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that a student does not have permissions to modify an admin role
+    @Test
+    void whenHasStudentRole_testModifyAdminRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
         assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that a teacher does have permissions to modify a student role
+    @Test
+    void whenHasTeacherRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
     }
 
     // Check that a teacher does not have permissions to modify a teacher role
     @Test
-    void isValidatedForRoleTestNotValidForTeacherOnTeacher() {
+    void whenHasTeacherRole_testModifyTeacherRole() {
         User updatedUser = repository.findByUserId(testId);
         updatedUser.addRole(TEACHER);
         repository.save(updatedUser);
         assertFalse(userService.isValidatedForRole(testId, TEACHER));
     }
 
+    // Check that a teacher does not have permissions to modify an admin role
+    @Test
+    void whenHasTeacherRole_testModifyAdminRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that an admin does have permissions to modify a student role
+    @Test
+    void whenHasAdminRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+    }
+
     // Check that an admin does have permissions to modify a teacher role
     @Test
-    void isValidatedForRoleTestValidForTeacherOnAdmin() {
+    void whenHasAdminRole_testModifyTeacherRole() {
         User updatedUser = repository.findByUserId(testId);
         updatedUser.addRole(COURSE_ADMINISTRATOR);
         repository.save(updatedUser);
         assertTrue(userService.isValidatedForRole(testId, TEACHER));
     }
 
-    // Check that a student does not have permissions to modify a student role
+    // Check that an admin does have permissions to modify an admin role
     @Test
-    void isValidatedForRoleTestNotValidForStudentOnStudent() {
+    void whenHasAdminRole_testModifyAdminRole() {
         User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
         repository.save(updatedUser);
-        assertFalse(userService.isValidatedForRole(testId, STUDENT));
-    }
-
-    // Check that a teacher does have permissions to modify a student role
-    @Test
-    void isValidatedForRoleTestValidForStudentOnTeacher() {
-        User updatedUser = repository.findByUserId(testId);
-        updatedUser.addRole(TEACHER);
-        repository.save(updatedUser);
-        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+        assertTrue(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
     }
 
 }

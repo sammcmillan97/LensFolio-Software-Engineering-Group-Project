@@ -107,7 +107,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
             case ("name") -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case ("username") -> // Compare method for ordering by username
+            case (USERNAME_FIELD) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
             case ("alias") -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
@@ -718,7 +718,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Pattern pronounsPattern = Pattern.compile(".{1,15}/.{1,15}"); // matches any/any
         Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
         boolean validPronouns = pronounsMatcher.find();
 
@@ -742,7 +742,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Pattern emailPattern = Pattern.compile(".{1,50}@.{1,50}\\..{1,50}"); // matches any@any.any
         Matcher emailMatcher = emailPattern.matcher(email);
         boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
@@ -777,7 +777,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
-            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -905,6 +904,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } else if (userHasOneRole(userId)){
             reply.setIsSuccess(false)
                     .setMessage("Unable to remove role. User only has one role");
+        } else if (getAuthStateUserId() == userId && role == COURSE_ADMINISTRATOR) {
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. Cannot remove own course administrator role");
         } else {
             user.removeRole(role);
             repository.save(user);
@@ -926,7 +928,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         Set<UserRole> roles = user.getRoles();
         if (role == STUDENT) {
             return roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR);
-        } else if (role == TEACHER) {
+        } else if (role == TEACHER || role == COURSE_ADMINISTRATOR) {
             return roles.contains(COURSE_ADMINISTRATOR);
         } else {
             return false;
@@ -937,7 +939,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Get the user id of the user who is currently logged in
      * @return The user id of the user who is currently logged in
      */
-    private int getAuthStateUserId() {
+    @VisibleForTesting
+    protected int getAuthStateUserId() {
         String authenticatedId;
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         authenticatedId = authState.getClaimsList().stream()
