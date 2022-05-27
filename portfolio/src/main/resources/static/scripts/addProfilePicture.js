@@ -1,7 +1,6 @@
 let profileImageInput = document.getElementById("img-input");
 
 const MAX_PIXELS = 150;
-const MAX_FILE_SIZE = 1024 * 1024; //1MB
 let excessWidth= 0;
 let excessHeight=0;
 let maxSize=0;
@@ -23,19 +22,19 @@ function calculateSize(width, height) {
 function dataURItoBlob(dataURI) {
     // convert base64 to raw binary data held in a string
     // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-    var byteString = atob(dataURI.split(',')[1]);
+    const byteString = atob(dataURI.split(',')[1]);
 
     // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
     // write the bytes of the string to an ArrayBuffer
-    var ab = new ArrayBuffer(byteString.length);
+    const ab = new ArrayBuffer(byteString.length);
 
     // create a view into the buffer
-    var ia = new Uint8Array(ab);
+    const ia = new Uint8Array(ab);
 
     // set the bytes of the buffer to the correct values
-    for (var i = 0; i < byteString.length; i++) {
+    for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
     }
 
@@ -71,7 +70,6 @@ profileImageInput.onchange = function() {
             ctx.drawImage(img, excessWidth/2, excessHeight/2, maxSize, maxSize, 0, 0, MAX_PIXELS, MAX_PIXELS);
             document.getElementById("root").appendChild(canvas);
 
-            let imageData = ctx.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
             let blob = dataURItoBlob(canvas.toDataURL("image/png"));
             //set file type
             document.getElementById("fileType").value="png";
