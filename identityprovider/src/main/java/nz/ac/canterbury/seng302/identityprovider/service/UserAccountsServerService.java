@@ -107,7 +107,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
             case ("name") -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case ("username") -> // Compare method for ordering by username
+            case (USERNAME_FIELD) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
             case ("alias") -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
