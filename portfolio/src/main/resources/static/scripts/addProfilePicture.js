@@ -8,7 +8,7 @@ let maxSize=0;
 
 function calculateSize(width, height) {
     if (width === height) {
-        return 0, 0, width;
+        maxSize = height;
     } else {
         if (width > height) {
             maxSize = height;
@@ -40,8 +40,7 @@ function dataURItoBlob(dataURI) {
     }
 
     // write the ArrayBuffer to a blob, and you're done
-    var blob = new Blob([ab], {type: mimeString});
-    return blob;
+    return new Blob([ab], {type: mimeString});
 }
 
 profileImageInput.onchange = function() {
@@ -51,7 +50,7 @@ profileImageInput.onchange = function() {
     if (document.getElementById("root").childElementCount !== 0) {
         //delete canvas before new one is created
         let children = document.getElementById("root").childNodes;
-        let oldCanvas = document.getElementById("root").removeChild(children[0]);
+        document.getElementById("root").removeChild(children[0]);
     }
     const [file] = profileImageInput.files
     if (file) {
@@ -73,7 +72,6 @@ profileImageInput.onchange = function() {
             document.getElementById("root").appendChild(canvas);
 
             let imageData = ctx.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
-            let byteArray = imageData.data;
             let blob = dataURItoBlob(canvas.toDataURL("image/png"));
             //set file type
             document.getElementById("fileType").value="png";
@@ -81,9 +79,7 @@ profileImageInput.onchange = function() {
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = function() {
-                base64data = reader.result;
-                document.getElementById("fileContent").value=base64data;
-                console.log(base64data);
+                document.getElementById("fileContent").value=reader.result;
             }
         }
     }
