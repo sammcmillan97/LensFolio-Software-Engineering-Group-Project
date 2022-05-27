@@ -244,4 +244,16 @@ public class DeadlineServiceTest {
         assertThat(listSize2).isEqualTo(2);
         assertThat(listSize + listSize2).isEqualTo(4);
     }
+
+    @Test
+    void whenDeadlineExists_testDeleteDeadline() {
+        Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", 1, Date.valueOf("2022-06-06"));
+        deadlineService.saveDeadline(deadline);
+        List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
+        assertThat(deadlines.size()).isEqualTo(1);
+        deadlineService.deleteDeadlineById(deadline.getDeadlineId());
+        deadlines = (List<Deadline>) deadlineRepository.findAll();
+        assertThat(deadlines.size()).isZero();
+    }
+
 }
