@@ -14,8 +14,11 @@ import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 
 @GrpcService
 public class UserAccountsServerService extends UserAccountServiceImplBase {
@@ -66,6 +69,126 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated() && Integer.parseInt(authenticatedId) == claimedId;
     }
 
+    /**
+     * Service for getting a paginated list of userResponses for use in the portfolio module.
+     * Checks if the current user is authenticated and can make the request then call the handler.
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void getPaginatedUsers(GetPaginatedUsersRequest request, StreamObserver<PaginatedUsersResponse> responseObserver) {
+        PaginatedUsersResponse reply;
+        if (isAuthenticated()) {
+            reply = getPaginatedUsersHandler(request);
+        } else {
+            reply = PaginatedUsersResponse.newBuilder().build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * The handler for handling get paginated users request. Will take all User data from the DB as a list of users convert
+     * to user responses, sort, paginate and order as requested. Then return the list of user responses
+     * @param request The request from the user sent from the UserAccountClientService to request a paginated list of userResponses
+     * @return paginatedUserResponseList a list of user responses and the size of the original list of users before pagination
+     */
+    PaginatedUsersResponse getPaginatedUsersHandler(GetPaginatedUsersRequest request) {
+        PaginatedUsersResponse.Builder reply = PaginatedUsersResponse.newBuilder();
+        //Get all users from the DB
+        Iterable<User> users = repository.findAll();
+        ArrayList<UserResponse> userResponseList = new ArrayList<>();
+        int count = 0;
+        //Create user response list
+        for(User user: users) {
+            userResponseList.add(getUserAccountByIdHandler(GetUserByIdRequest.newBuilder().setId(user.getUserId()).build()));
+        }
+        //Sorting the list based on the requested order string
+        Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
+            case ("name") -> //Compare method for ordering by name
+                    this::paginatedUsersNameSort;
+            case ("username") -> // Compare method for ordering by username
+                    Comparator.comparing(UserResponse::getUsername);
+            case ("alias") -> //compare method for ordering by alias
+                    Comparator.comparing(UserResponse::getNickname);
+            case ("roles") -> //Compare method for ordering by roles
+                    this::paginatedUsersRolesSort;
+            default -> //Default compare method uses sort by name
+                    this::paginatedUsersNameSort;
+        };
+        //Calls the sort method
+        userResponseList.sort(comparator);
+        //If request is descending need to reverse
+        if(!request.getIsAscendingOrder()) {
+            Collections.reverse(userResponseList);
+        }
+        //Paginates the data
+        ArrayList<UserResponse> paginatedUserResponseList = new ArrayList<>();
+        for(UserResponse user: userResponseList) {
+            if (count >= request.getOffset() && count < request.getLimit() + request.getOffset()) {
+                paginatedUserResponseList.add(user);
+            }
+            count += 1;
+        }
+        //Add final sorted, paginated and ordered list
+        reply.addAllUsers(paginatedUserResponseList);
+        //Add size of original list for pagination purposes
+        reply.setResultSetSize(userResponseList.size());
+        return reply.build();
+    }
+
+    /**
+     * Sorts two users by their full name.
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which full name is greater, or 0 if they are the same.
+     */
+    int paginatedUsersNameSort(UserResponse user1, UserResponse user2) {
+        String user1FullName;
+        if (!Objects.equals(user1.getMiddleName(), "")) {
+            user1FullName = user1.getFirstName() + " " + user1.getMiddleName() + " " + user1.getLastName();
+        } else {
+            user1FullName = user1.getFirstName() + " " + user1.getLastName();
+        }
+        String user2FullName;
+        if (!Objects.equals(user2.getMiddleName(), "")) {
+            user2FullName = user2.getFirstName() + " " + user2.getMiddleName() + " " + user2.getLastName();
+        } else {
+            user2FullName = user2.getFirstName() + " " + user2.getLastName();
+        }
+        return user1FullName.compareTo(user2FullName);
+    }
+
+    /**
+     * Sorts two users by their roles. Roles are sorted by a points system, for example:
+     * Course admin > teacher + student > teacher > student
+     * @param user1 A UserResponse object representing a user
+     * @param user2 A UserResponse object representing another user
+     * @return Which roles are greater, or 0 if they are the same.
+     */
+    int paginatedUsersRolesSort(UserResponse user1, UserResponse user2) {
+        int user1RolePoints = 0;
+        Integer user2RolePoints = 0;
+        if (user1.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user1RolePoints += 4;
+        }
+        if (user1.getRolesList().contains(UserRole.TEACHER)) {
+            user1RolePoints += 2;
+        }
+        if (user1.getRolesList().contains(UserRole.STUDENT)) {
+            user1RolePoints += 1;
+        }
+        if (user2.getRolesList().contains(UserRole.COURSE_ADMINISTRATOR)) {
+            user2RolePoints += 4;
+        }
+        if (user2.getRolesList().contains(UserRole.TEACHER)) {
+            user2RolePoints += 2;
+        }
+        if (user2.getRolesList().contains(UserRole.STUDENT)) {
+            user2RolePoints += 1;
+        }
+        return user2RolePoints.compareTo(user1RolePoints);
+    }
 
     /**
      * Allows user to upload their profile photo through bidirectional streaming.
@@ -163,8 +286,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     /**
      * Service for deleting a users profile photo with authentication
-     * @param request
-     * @param responseObserver
+     * @param request A DeleteUserProfilePhotoRequest according to user_accounts.proto
+     * @param responseObserver The observer to send the response over
      */
     @Override
     public void deleteUserProfilePhoto(DeleteUserProfilePhotoRequest request, StreamObserver<DeleteUserProfilePhotoResponse> responseObserver) {
@@ -373,9 +496,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("http://localhost:8080/resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath("http://localhost:8080/resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
             }
         }
         return reply.build();
@@ -463,6 +586,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (username.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Username is required").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (username.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must not contain only whitespace").setFieldName(USERNAME_FIELD).build();
+            validationErrors.add(validationError);
         }
 
         if (username.length() > 64) {
@@ -470,6 +596,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             validationErrors.add(validationError);
         }
         return validationErrors;
+    }
+
+    /**
+     * Checks if a name is valid. Checks against a list of reasonable characters that could appear in names.
+     * @param name The name to check
+     * @return True if the name is valid
+     */
+    private boolean isBadName(String name) {
+        Pattern namePattern = Pattern.compile("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
+        Matcher nameMatcher = namePattern.matcher(name);
+        return !nameMatcher.matches();
     }
 
     /**
@@ -483,11 +620,19 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (firstName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name is required").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (firstName.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain only whitespace").setFieldName(FIRST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        }
+        else if (isBadName(firstName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must not contain special characters").setFieldName(FIRST_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
         if (firstName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("First name must be less than 65 characters").setFieldName(FIRST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
+
         return validationErrors;
     }
 
@@ -499,6 +644,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkMiddleName(String middleName) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        if (!Objects.equals(middleName, "") && isBadName(middleName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must not contain special characters").setFieldName(MIDDLE_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        }
         if (middleName.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Middle name must be less than 65 characters").setFieldName(MIDDLE_NAME_FIELD).build();
             validationErrors.add(validationError);
@@ -516,6 +665,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (lastName.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name is required").setFieldName(LAST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (lastName.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain only whitespace").setFieldName(LAST_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (isBadName(lastName)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Last name must not contain special characters").setFieldName(LAST_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         if (lastName.length() > 64) {
@@ -563,6 +718,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
+        boolean validPronouns = pronounsMatcher.find();
+
+        if (!validPronouns && !personalPronouns.equals("")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be of form {pronoun}/{pronoun}").setFieldName(PRONOUNS_FIELD).build();
+            validationErrors.add(validationError);
+        }
+
         if (personalPronouns.length() > 64) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Personal pronouns must be less than 65 characters").setFieldName(PRONOUNS_FIELD).build();
             validationErrors.add(validationError);
@@ -578,11 +742,14 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Matcher emailMatcher = emailPattern.matcher(email);
+        boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Email is required").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
-        } else if (!email.contains("@")) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be valid").setFieldName(EMAIL_FIELD).build();
+        } else if (!validEmail) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Email must be of form a@b.c").setFieldName(EMAIL_FIELD).build();
             validationErrors.add(validationError);
         }
 
@@ -604,9 +771,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         if (password.length() < 8) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be at least 8 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
+        } else if (password.isBlank()) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must not contain only whitespace").setFieldName(PASSWORD_FIELD).build();
+            validationErrors.add(validationError);
         }
 
         if (password.length() > 64) {
+            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -643,6 +814,175 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             validationErrors.add(validationError);
         }
         return validationErrors;
+    }
+
+    /**
+     * Service that allows authenticated users to add additional roles to a user
+     * @param request The request to add the role from a user
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void addRoleToUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
+            reply = addRoleToUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Unable to add role: Not authenticated")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of add role to user
+     * this allows for testing
+     * @param request A add role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse addRoleToUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        User user = repository.findByUserId(userId);
+        //check user doesn't already have given role
+        if (userHasRole(userId, role)){
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to add role. User already has given role");
+        } else {
+            user.addRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully added");
+        }
+        return reply.build();
+    }
+
+    /**
+     * Service that allows authenticated users to remove roles from a user
+     * @param request The request to remove the role from a user
+     * @param responseObserver The observer to send the response over
+     */
+    @Override
+    public void removeRoleFromUser(ModifyRoleOfUserRequest request, StreamObserver<UserRoleChangeResponse> responseObserver) {
+        UserRoleChangeResponse reply;
+        if (isAuthenticated() && isValidatedForRole(getAuthStateUserId(), request.getRole())) {
+            reply = removeRoleFromUserHandler(request);
+        } else {
+            reply = UserRoleChangeResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Unable to remove role: Not authenticated")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Abstracted main functionality of removing a role from user
+     * this allows for testing
+     * @param request A remove role request according to user_accounts.proto
+     * @return A modify role response according to user_accounts.proto
+     */
+    @VisibleForTesting
+    UserRoleChangeResponse removeRoleFromUserHandler(ModifyRoleOfUserRequest request) {
+        UserRoleChangeResponse.Builder reply = UserRoleChangeResponse.newBuilder();
+
+        int userId = request.getUserId();
+        UserRole role = request.getRole();
+
+        User user = repository.findByUserId(userId);
+        //check user has role that you are attempting to remove
+        //check that this is not the users only role
+        if (!userHasRole(userId, role)) {
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. User doesn't have given role");
+        } else if (userHasOneRole(userId)){
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. User only has one role");
+        } else if (getAuthStateUserId() == userId && role == COURSE_ADMINISTRATOR) {
+            reply.setIsSuccess(false)
+                    .setMessage("Unable to remove role. Cannot remove own course administrator role");
+        } else {
+            user.removeRole(role);
+            repository.save(user);
+            reply.setIsSuccess(true)
+                    .setMessage("Role successfully removed");
+        }
+        return reply.build();
+    }
+
+    /**
+     * Given a user ID check if user has the correct role to add or remove another role.
+     * Specifically, TEACHERS can only change student roles, and COURSE ADMINISTRATORS can change student or teacher roles.
+     * @param userId the ID of the user
+     * @param role the role we are checking against
+     * @return true if the user has permission, false otherwise
+     */
+    public boolean isValidatedForRole(int userId, UserRole role) {
+        User user = repository.findByUserId(userId);
+        Set<UserRole> roles = user.getRoles();
+        if (role == STUDENT) {
+            return roles.contains(TEACHER) || roles.contains(COURSE_ADMINISTRATOR);
+        } else if (role == TEACHER || role == COURSE_ADMINISTRATOR) {
+            return roles.contains(COURSE_ADMINISTRATOR);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get the user id of the user who is currently logged in
+     * @return The user id of the user who is currently logged in
+     */
+    @VisibleForTesting
+    protected int getAuthStateUserId() {
+        String authenticatedId;
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        authenticatedId = authState.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("NOT FOUND");
+        return Integer.parseInt(authenticatedId);
+    }
+
+    /**
+     * Check if user already has role to ensure no double ups
+     * @param userId the ID of the user
+     * @param role The role of the user
+     * @return true if already has role, else false
+     */
+    private boolean userHasRole(int userId, UserRole role) {
+        User user = repository.findByUserId(userId);
+        Set<UserRole> roles;
+        roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == role) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if user only has one role,
+     * to ensure that the last role isn't removed
+     * @param userId the ID of the user
+     * @return true if has only one role, else false
+     */
+    private boolean userHasOneRole(int userId) {
+        boolean hasOneRole = false;
+        User user = repository.findByUserId(userId);
+        if (user.getRoles().size() == 1){
+            hasOneRole = true;
+        }
+        return hasOneRole;
     }
 
 }

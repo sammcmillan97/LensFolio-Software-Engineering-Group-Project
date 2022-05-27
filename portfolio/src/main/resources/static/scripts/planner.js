@@ -35,7 +35,7 @@ function isAdmin() {
     let rolesList = convertTextToList(rolesListText);
     const arrayLength = rolesList.length;
     for (let i = 0; i < arrayLength; i++) {
-        if (rolesList[i] === "TEACHER" || rolesList[i] === "ADMIN") {
+        if (rolesList[i] === "TEACHER" || rolesList[i] === "COURSE_ADMINISTRATOR") {
             isTeacherOrAdmin = true;
         }
     }
@@ -176,7 +176,7 @@ function resizeSprint( eventDropInfo ) {
     //Create form to post data from calendar
     let form = document.createElement('form');
     form.setAttribute('method', 'post');
-    form.setAttribute('action', `/planner/editSprint/${projectId}/${eventDropInfo.oldEvent.id}`);
+    form.setAttribute('action', `editPlanner-${eventDropInfo.oldEvent.id}-${projectId}`);
 
     //Add inputs to form
     let startInput = document.createElement('input');

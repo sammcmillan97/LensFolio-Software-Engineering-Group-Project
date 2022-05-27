@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
@@ -30,8 +32,25 @@ public class UserAccountClientService {
             result.add(Arrays.copyOfRange(source, start, end));
             start += chunksize;
         }
-
         return result;
+    }
+
+    /**
+     * Creates a request to be sent to the IDP for requesting a paginated list of user responses
+     * @param offset The number of users to be sliced from the original list of users from the DB
+     * @param limit The max number of users to be returned to the list
+     * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles" Ends with "A" or "D" for descending or Ascending
+     * @return A list of paginated, sorted and ordered user responses
+     */
+    public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy, boolean isAscending) {
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy(orderBy)
+                .setIsAscendingOrder(isAscending)
+                .build();
+        PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
+        return new UserListResponse(response);
     }
 
     /**
@@ -108,11 +127,12 @@ public class UserAccountClientService {
         return userStub.editUser(editUserRequest);
     }
 
-    public UserResponse getUserAccountById(final int userId)  {
+    public User getUserAccountById(final int userId)  {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(userId)
                 .build();
-        return userStub.getUserAccountById(getUserByIdRequest);
+        UserResponse response = userStub.getUserAccountById(getUserByIdRequest);
+        return new User(response);
     }
 
     public UserRegisterResponse register(final String username, final String password, final String firstName,
@@ -140,9 +160,41 @@ public class UserAccountClientService {
                 .orElse("NOT FOUND");
     }
 
+    public boolean isLoggedIn(AuthState principal) {
+        return principal != null;
+    }
+
     public boolean isTeacher(AuthState principal) {
         String roles = getRoles(principal);
         return roles.contains("teacher") || roles.contains("courseadministrator");
+    }
+
+    /**
+     * Add role to a user
+     * @param userId of user being altered
+     * @param role being added
+     * @return response
+     */
+    public UserRoleChangeResponse addRole(int userId, UserRole role) {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(userId)
+                .setRole(role)
+                .build();
+        return userStub.addRoleToUser(modifyRoleOfUserRequest);
+    }
+
+    /**
+     * Remove role from a user
+     * @param userId of user being altered
+     * @param role being removed
+     * @return response
+     */
+    public UserRoleChangeResponse removeRole(int userId, UserRole role) {
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(userId)
+                .setRole(role)
+                .build();
+        return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
     }
 
 }

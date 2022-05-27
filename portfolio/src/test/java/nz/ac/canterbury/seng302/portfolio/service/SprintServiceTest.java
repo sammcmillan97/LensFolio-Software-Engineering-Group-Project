@@ -240,7 +240,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-10"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-10 00:00:00"));
+        assertEquals(sprint.getStartDate(), Timestamp.valueOf("2022-04-10 00:00:00"));
     }
 
     //When sprint exists and its start date is changed to date before current and new date is day after previous sprint
@@ -255,7 +255,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(1).getId();
         sprintService.updateStartDate(sprintId, Date.valueOf("2022-05-17"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-05-17 00:00:00"));
+        assertEquals(sprint.getStartDate(), Timestamp.valueOf("2022-05-17 00:00:00"));
     }
 
     //When sprint exists and its start date is changed to before the current date, and the new date is not within project
@@ -361,7 +361,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateStartDate(sprintId, Date.valueOf("2022-04-20"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getStartDate()).isEqualTo(Timestamp.valueOf("2022-04-20 00:00:00"));
+        assertEquals(sprint.getStartDate(), Timestamp.valueOf("2022-04-20 00:00:00"));
     }
 
     //When sprint exists and its start date is changed to after the current date, and the new date is after the sprint's
@@ -391,7 +391,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-20"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-20 00:00:00"));
+        assertEquals(sprint.getEndDate(), Timestamp.valueOf("2022-05-20 00:00:00"));
     }
 
     //When sprint exists and its end date is changed to date after current and new date is day before next sprint
@@ -406,7 +406,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-19"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-19 00:00:00"));
+        assertEquals(sprint.getEndDate(), Timestamp.valueOf("2022-05-19 00:00:00"));
     }
 
     //When sprint exists and its end date is changed to after the current date, and the new date is not within project
@@ -513,7 +513,7 @@ class SprintServiceTest {
         int sprintId = sprints.get(0).getId();
         sprintService.updateEndDate(sprintId, Date.valueOf("2022-05-05"));
         Sprint sprint = sprintRepository.findById(sprintId);
-        assertThat(sprint.getEndDate()).isEqualTo(Timestamp.valueOf("2022-05-05 00:00:00"));
+        assertEquals(sprint.getEndDate(), Timestamp.valueOf("2022-05-05 00:00:00"));
     }
 
     //When sprint exists and its end date is changed to before the current date, and the new date is before the sprint's
