@@ -183,7 +183,7 @@ public class DeadlineServiceTest {
         assertThat(deadlineId).isNotNull();
         Deadline deadline = deadlineService.getDeadlineById(deadlineId);
         assertThat(deadline.getDeadlineName()).isEqualTo("Test Deadline");
-        assertThat(deadline.getDeadlineEndDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));
+        assertThat(deadline.getDeadlineDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));
     }
 
     /**
@@ -253,6 +253,30 @@ public class DeadlineServiceTest {
         deadlineService.deleteDeadlineById(deadline.getDeadlineId());
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isZero();
+    }
+
+    @Test
+    void whenDeadlineDateIsChangedToDateWithinProjectDates_testDeadlineDateChanged() throws Exception {
+        Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
+        deadlineService.saveDeadline(deadline);
+        List<Deadline> deadlineList = (List<Deadline>) deadlineRepository.findAll();
+        int deadlineId = deadlineList.get(0).getDeadlineId();
+        deadlineService.updateDeadlineDate(deadlineId, Date.valueOf("2022-06-27"));
+        Deadline deadline1 = deadlineRepository.findById(deadlineId);
+        assertThat(deadline1.getDeadlineDate()).isEqualTo(Timestamp.valueOf("2022-06-27 00:00:00"));
+    }
+
+    @Test
+    void whenDeadlineDateIsChangedToDateAfterProjectEndDate_testExceptionThrown() {
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-15")));
+        List<Deadline> deadlineList = (List<Deadline>) deadlineRepository.findAll();
+        int deadlineId = deadlineList.get(0).getDeadlineId();
+
+        Exception exception = assertThrows(Exception.class, () ->
+                deadlineService.updateDeadlineDate(deadlineId, Date.valueOf("2022-07-02")));
+        String expectedMessage = "Deadline date must be within the project dates";
+        String actualMessage = exception.getMessage();
+        assertThat(expectedMessage).isEqualTo(actualMessage);
     }
 
 }
