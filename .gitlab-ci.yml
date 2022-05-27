@@ -146,6 +146,8 @@ deploy-production-portfolio:
 
 sonarqube-report:
   stage: sonarqube
+  variables:
+    GIT_DEPTH: 0
   script:
     - cd identityprovider
     - touch ./.env
