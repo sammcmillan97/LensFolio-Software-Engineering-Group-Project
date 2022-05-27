@@ -2,7 +2,7 @@ stages:
   - tagChecking
   - publishProtosToLocalMavenRepo
   - build
-#  - test
+  - test
   - sonarqube
   - deploy
 
