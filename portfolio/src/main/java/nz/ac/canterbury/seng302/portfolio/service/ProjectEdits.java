@@ -57,10 +57,14 @@ public class ProjectEdits {
             }
         }
         result.append("], \"refresh\":");
+        // Append refresh:true to tell the user to refresh if any refreshes are relevant.
+        // Else append refresh:false.
         String refreshString = "false";
         for (ProjectRefresh refresh: projectRefreshList) {
             if (refresh.isRelevant(projectId, userId)) {
                 refreshString = "true";
+                // Once the user has been told to refresh once, they don't need to do it again.
+                // Calling this method means they won't be told twice
                 refresh.notifyUser(userId);
             }
         }

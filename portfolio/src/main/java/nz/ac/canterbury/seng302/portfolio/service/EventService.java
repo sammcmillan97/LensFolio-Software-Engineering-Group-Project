@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.EventRepository;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,25 +53,11 @@ public class EventService {
     }
 
     /**
-     * Get all events by parent project id
-     */
-    public Map<Integer, List<Event>> getAllByEventParentProjectId() {
-        List<Project> eventProjects = eventProjectService.getAllProjects();
-
-        Map<Integer, List<Event>> eventsByParentProject = new HashMap<>();
-        for (Project eventProject : eventProjects) {
-            int eventId = eventProject.getId();
-            eventsByParentProject.put(eventId, getByEventParentProjectId(eventId));
-        }
-        return eventsByParentProject;
-    }
-
-    /**
      * Save the event to the repository
      */
-    public Event saveEvent(Event event) {
+    public void saveEvent(Event event) {
         projectEdits.refreshProject(event.getEventParentProjectId());
-        return eventRepository.save(event);
+        eventRepository.save(event);
     }
 
     /**
