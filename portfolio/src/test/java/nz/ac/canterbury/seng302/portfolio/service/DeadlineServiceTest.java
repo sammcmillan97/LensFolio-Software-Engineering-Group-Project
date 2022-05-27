@@ -57,7 +57,7 @@ public class DeadlineServiceTest {
     void whenNoDeadlines_testSaveDeadlineToSameProject() {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isZero();
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
     }
@@ -67,10 +67,10 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenOneDeadline_testSaveDeadlineToSameProject() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", 2, Date.valueOf("2022-07-07")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", Date.valueOf("2022-07-07")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(2);
     }
@@ -80,13 +80,13 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenManyDeadlines_testSaveDeadlineToSameProject() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Uno", 1, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Deux", 2, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Tri", 3, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Quad", 4, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Uno", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Deux", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Tri", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(4);
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Pent", 5, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Pent", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(5);
     }
@@ -96,11 +96,11 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenOneDeadline_testSaveDeadlineToDifferentProject() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Duo", 2, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Duo", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(2);
     }
@@ -110,16 +110,16 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenManyDeadlines_testSaveDeadlineToDifferentProject() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 1", 1, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 2", 2, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", 3, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", 4, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 1", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 2", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(4);
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 5", 5, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 6", 6, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 7", 7, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 5", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 6", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 7", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(7);
     }
@@ -139,7 +139,7 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenOneDeadlineSaved_testGetAllDeadlines() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
         assertThat(deadlineService.getAllDeadlines().size()).isEqualTo(1);
@@ -150,10 +150,10 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenManyDeadlinesSaved_testGetAllDeadlines() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Uno", 1, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", 2, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Tri", 3, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Quad", 4, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Uno", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Tri", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(4);
         assertThat(deadlineService.getAllDeadlines().size()).isEqualTo(4);
@@ -177,13 +177,12 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenDeadlineIdExists_testGetDeadlineById() throws Exception {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         int deadlineId = deadlines.get(0).getDeadlineId();
         assertThat(deadlineId).isNotNull();
         Deadline deadline = deadlineService.getDeadlineById(deadlineId);
         assertThat(deadline.getDeadlineName()).isEqualTo("Test Deadline");
-        assertThat(deadline.getDeadlineNumber()).isEqualTo(1);
         assertThat(deadline.getDeadlineEndDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));
     }
 
@@ -203,7 +202,7 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenOneDeadlineSaved_testGetByParentProjectId() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", 1, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
@@ -215,10 +214,10 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenManyDeadlinesSaved_testGetByParentProjectId() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 1", 1, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 2", 2, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", 3, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", 4, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 1", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 2", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(4);
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
@@ -230,10 +229,10 @@ public class DeadlineServiceTest {
      */
     @Test
     void whenManyDeadlinesSavedToDifferentProjects_testRetrieveByParentProjectId() {
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Uno", 1, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", 2, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Tri", 3, Date.valueOf("2022-06-06")));
-        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Quad", 4, Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Uno", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Tri", Date.valueOf("2022-06-06")));
+        deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(4);
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
@@ -247,7 +246,7 @@ public class DeadlineServiceTest {
 
     @Test
     void whenDeadlineExists_testDeleteDeadline() {
-        Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", 1, Date.valueOf("2022-06-06"));
+        Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
         deadlineService.saveDeadline(deadline);
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertThat(deadlines.size()).isEqualTo(1);
