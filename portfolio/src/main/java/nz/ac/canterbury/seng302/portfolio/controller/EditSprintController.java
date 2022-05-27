@@ -60,7 +60,6 @@ public class EditSprintController {
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -102,7 +101,6 @@ public class EditSprintController {
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 

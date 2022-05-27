@@ -44,7 +44,7 @@ public class LoginController {
      * @param response Login response
      * @return the mapping to the login html page.
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
