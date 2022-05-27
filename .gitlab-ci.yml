@@ -12,7 +12,7 @@ tag-checker:
     - python3 tag_checker.py $CI_COMMIT_TAG
   only:
     - tags
-    - 
+
 junit-identityprovider:
   stage: test
   script:
