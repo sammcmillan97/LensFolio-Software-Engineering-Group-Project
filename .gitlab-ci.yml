@@ -24,12 +24,16 @@ junit-identityprovider:
   script:
     - cd identityprovider
     - ./gradlew test
+  except:
+    - UVMb-sonarqube
 
 junit-portfolio:
   stage: test
   script:
     - cd portfolio
     - ./gradlew test
+  except:
+    - UVMb-sonarqube
 
 
 publish-protos-to-maven-local:

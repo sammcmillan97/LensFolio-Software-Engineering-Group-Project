@@ -123,6 +123,6 @@ sonarqube {
         property "sonar.projectName", "team 400 - portfolio"
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
-        property "sonar.login", "${SONARQUBE_API_KEY}"
+        property "sonar.login", "$System.env.SONARQUBE_API_KEY"
     }
 }
