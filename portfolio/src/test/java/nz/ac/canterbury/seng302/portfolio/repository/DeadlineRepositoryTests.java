@@ -54,12 +54,12 @@ public class DeadlineRepositoryTests {
         assertThat(deadlinesFromDatabase.get(0)).isNotNull();
         assertThat(deadlinesFromDatabase.get(0).getDeadlineId()).isEqualTo(deadlines.get(0).getDeadlineId());
         assertThat(deadlinesFromDatabase.get(0).getDeadlineName()).isEqualTo(deadlines.get(0).getDeadlineName());
-        assertThat(deadlinesFromDatabase.get(0).getDeadlineEndDate()).isEqualTo(deadlines.get(0).getDeadlineEndDate());
+        assertThat(deadlinesFromDatabase.get(0).getDeadlineDate()).isEqualTo(deadlines.get(0).getDeadlineDate());
 
         assertThat(deadlinesFromDatabase.get(1)).isNotNull();
         assertThat(deadlinesFromDatabase.get(1).getDeadlineId()).isEqualTo(deadlines.get(1).getDeadlineId());
         assertThat(deadlinesFromDatabase.get(1).getDeadlineName()).isEqualTo(deadlines.get(1).getDeadlineName());
-        assertThat(deadlinesFromDatabase.get(1).getDeadlineEndDate()).isEqualTo(deadlines.get(1).getDeadlineEndDate());
+        assertThat(deadlinesFromDatabase.get(1).getDeadlineDate()).isEqualTo(deadlines.get(1).getDeadlineDate());
     }
     
     @Test
@@ -79,12 +79,12 @@ public class DeadlineRepositoryTests {
         assertThat(retrievedDeadline1).isNotNull();
         assertThat(retrievedDeadline1.getDeadlineId()).isEqualTo(deadlines.get(0).getDeadlineId());
         assertThat(retrievedDeadline1.getDeadlineName()).isEqualTo(deadlines.get(0).getDeadlineName());
-        assertThat(retrievedDeadline1.getDeadlineEndDate()).isEqualTo(deadlines.get(0).getDeadlineEndDate());
+        assertThat(retrievedDeadline1.getDeadlineDate()).isEqualTo(deadlines.get(0).getDeadlineDate());
 
         assertThat(retrievedDeadline2).isNotNull();
         assertThat(retrievedDeadline2.getDeadlineId()).isEqualTo(deadlines.get(1).getDeadlineId());
         assertThat(retrievedDeadline2.getDeadlineName()).isEqualTo(deadlines.get(1).getDeadlineName());
-        assertThat(retrievedDeadline2.getDeadlineEndDate()).isEqualTo(deadlines.get(1).getDeadlineEndDate());
+        assertThat(retrievedDeadline2.getDeadlineDate()).isEqualTo(deadlines.get(1).getDeadlineDate());
     }
     
     @Test
@@ -99,6 +99,6 @@ public class DeadlineRepositoryTests {
         assertThat(retrievedDeadline).isNotNull();
         assertThat(retrievedDeadline.getDeadlineId()).isEqualTo(deadline.getDeadlineId());
         assertThat(retrievedDeadline.getDeadlineName()).isEqualTo(deadline.getDeadlineName());
-        assertThat(retrievedDeadline.getDeadlineEndDate()).isEqualTo(deadline.getDeadlineEndDate());
+        assertThat(retrievedDeadline.getDeadlineDate()).isEqualTo(deadline.getDeadlineDate());
     }
 }

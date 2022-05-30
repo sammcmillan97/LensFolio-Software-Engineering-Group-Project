@@ -11,21 +11,21 @@ public class Deadline {
     private int deadlineId;
     private int deadlineParentProjectId;
     private String deadlineName;
-    private Date deadlineEndDate;
+    private Date deadlineDate;
     
     public Deadline() {}
     
-    public Deadline(int deadlineParentProjectId, String deadlineName, Date deadlineEndDate) {
+    public Deadline(int deadlineParentProjectId, String deadlineName, Date deadlineDate) {
         this.deadlineParentProjectId = deadlineParentProjectId;
         this.deadlineName = deadlineName;
-        this.deadlineEndDate = deadlineEndDate;
+        this.deadlineDate = deadlineDate;
     }
     
     @Override
     public String toString() {
         return String.format(
                 "Deadline[deadlineId=%d, deadlineParentProjectId='%d', deadlineName='%s', deadlineEndDate='%s']",
-                deadlineId, deadlineParentProjectId, deadlineName, deadlineEndDate);
+                deadlineId, deadlineParentProjectId, deadlineName, deadlineDate);
     }
 
     /* Getters/Setters */
@@ -34,7 +34,7 @@ public class Deadline {
         return deadlineId;
     }
 
-    public int getEventParentProjectId() {
+    public int getDeadlineParentProjectId() {
         return deadlineParentProjectId;
     }
 
@@ -46,11 +46,11 @@ public class Deadline {
         this.deadlineName = deadlineName;
     }
 
-    public Date getDeadlineEndDate() {
-        return deadlineEndDate;
+    public Date getDeadlineDate() {
+        return deadlineDate;
     }
 
-    public void setDeadlineEndDate(Date deadlineEndDate) {
-        this.deadlineEndDate = deadlineEndDate;
+    public void setDeadlineDate(Date deadlineEndDate) {
+        this.deadlineDate = deadlineEndDate;
     }
 }

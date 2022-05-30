@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.DeadlineRepository;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,9 @@ public class DeadlineService {
 
     @Autowired
     private DeadlineRepository deadlineRepository;
+
+    @Autowired
+    private ProjectService deadlineProjectService;
 
 
     /**
@@ -62,5 +64,24 @@ public class DeadlineService {
      */
     public Deadline saveDeadline(Deadline deadline) {
         return deadlineRepository.save(deadline);
+    }
+
+    /**
+     * Updates the deadline's date to a new date
+     * @param deadlineId the id of the deadline to be updated
+     * @param newDeadlineDate the new date the deadline should be set to
+     * @throws Exception if the new deadline date falls outside the project dates
+     */
+    public void updateDeadlineDate(int deadlineId, Date newDeadlineDate) throws Exception {
+        Deadline newDeadline = getDeadlineById(deadlineId);
+        Date projectStartDate = deadlineProjectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getStartDate();
+        Date projectEndDate = deadlineProjectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getEndDate();
+
+        if (newDeadlineDate.compareTo(projectEndDate) > 0 || newDeadlineDate.compareTo(projectStartDate) < 0) {
+            throw new UnsupportedOperationException("Deadline date must be within the project dates");
+        } else {
+            newDeadline.setDeadlineDate(newDeadlineDate);
+            saveDeadline(newDeadline);
+        }
     }
 }
