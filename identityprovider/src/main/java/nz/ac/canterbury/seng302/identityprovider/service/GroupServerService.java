@@ -10,6 +10,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     private static final String LONG_NAME_FIELD = "longName";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
-
-
+    
     @Autowired
     private GroupRepository groupRepository;
 
@@ -43,12 +43,12 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             reply.addValidationErrors(validationError);
         }
         if (groupRepository.findByLongName(longName) != null) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username already taken").setFieldName(LONG_NAME_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
             reply.addValidationErrors(validationError);
         }
 
-        reply.addValidationErrors(checkShortName(shortName));
-        reply.addValidationErrors(checkLongName(longName));
+        reply.addAllValidationErrors(checkShortName(shortName));
+        reply.addAllValidationErrors(checkLongName(longName));
 
         if (reply.getValidationErrorsCount() == 0) {
             groupRepository.save(new Group(shortName, longName));
@@ -59,29 +59,33 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         } else {
             reply
                     .setIsSuccess(false)
-                    .setMessage("Invalid request, unable to create group");
+                    .setMessage("Create group failed: Validation failed");
         }
         return reply.build();
     }
 
-    private ValidationError checkLongName(String longName) {
-        ValidationError validationError = null;
+    private List<ValidationError> checkLongName(String longName) {
+        List<ValidationError> validationErrors = new ArrayList<>();
         if (longName.length()>LONG_NAME_MAX_LENGTH){
-            validationError = ValidationError.newBuilder().setErrorText("Long name must be less than " + LONG_NAME_MAX_LENGTH + "chars").setFieldName(LONG_NAME_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Long name must be less than " + LONG_NAME_MAX_LENGTH + "chars").setFieldName(LONG_NAME_FIELD).build();
+            validationErrors.add(validationError);
         } else if (longName.isEmpty()){
-            validationError = ValidationError.newBuilder().setErrorText("Long name cannot be empty").setFieldName(LONG_NAME_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Long name cannot be empty").setFieldName(LONG_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
-        return validationError;
+        return validationErrors;
     }
 
-    private ValidationError checkShortName(String shortName) {
-        ValidationError validationError = null;
+    private List<ValidationError> checkShortName(String shortName) {
+        List<ValidationError> validationErrors = new ArrayList<>();
         if (shortName.length() > SHORT_NAME_MAX_LENGTH) {
-            validationError = ValidationError.newBuilder().setErrorText("Short name must be less than " + SHORT_NAME_MAX_LENGTH + " chars").setFieldName(SHORT_NAME_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Short name must be less than " + SHORT_NAME_MAX_LENGTH + " chars").setFieldName(SHORT_NAME_FIELD).build();
+            validationErrors.add(validationError);
         } else if (shortName.isEmpty()) {
-            validationError = ValidationError.newBuilder().setErrorText("Short name cannot be empty").setFieldName(SHORT_NAME_FIELD).build();
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Short name cannot be empty").setFieldName(SHORT_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
-        return validationError;
+        return validationErrors;
     }
 
 }
