@@ -33,6 +33,11 @@
                     <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">List of Users</a>
                 </h5>
             </li>
+            <li class="site-navigation__item">
+                <h5>
+                    <a th:href="@{groups}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/groups') ? 'active':''}">Groups</a>
+                </h5>
+            </li>
         </ul>
     </nav>
 </body>
