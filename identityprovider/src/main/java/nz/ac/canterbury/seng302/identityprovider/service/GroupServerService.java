@@ -4,14 +4,13 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
+import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
+import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @GrpcService
 public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase {
@@ -20,10 +19,56 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     private static final String LONG_NAME_FIELD = "longName";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
+//    private static final int TEACHER_GROUP_ID = 420;
+//    private static final int MEMBERS_WITHOUT_GROUP_ID = 9999;
 
 
     @Autowired
     private GroupRepository groupRepository;
+
+    //Todo Potentially refactor implementation so user repository isn't needed inside group service to reduce coupling.
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
+        RemoveGroupMembersResponse reply = removeGroupMembersHandler(request);
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    @VisibleForTesting
+    RemoveGroupMembersResponse removeGroupMembersHandler(RemoveGroupMembersRequest request) {
+        RemoveGroupMembersResponse.Builder reply = RemoveGroupMembersResponse.newBuilder();
+        int groupId = request.getGroupId();
+        Group group = groupRepository.findByGroupId(groupId);
+        Iterable<Integer> usersIdsToBeRemoved = request.getUserIdsList();
+
+
+        if(group == null) {
+            reply.setMessage("Group does not exist");
+            reply.setIsSuccess(false);
+        } else if (group.getGroupId() == 9999){
+            //TODO The “Members without a group” cant remove members directly from this group to be implemented when this group is added
+
+        } else {
+            for(Integer userId: usersIdsToBeRemoved) {
+                User user = userRepository.findByUserId(userId);
+                group.removeMember(user);
+                if(user.getGroups().size() == 0) {
+                    addToWithoutAGroup(user);
+                }
+            }
+            reply.setMessage("All members removed");
+            reply.setIsSuccess(true);
+        }
+        return reply.build();
+    }
+
+    @VisibleForTesting
+    void addToWithoutAGroup(User user) {
+        //TODO add to "Members without a group"
+    }
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
