@@ -18,7 +18,7 @@ public class SprintService {
     private ProjectService projectService;
 
     @Autowired
-    private ProjectEdits projectEdits;
+    private ProjectEditsService projectEditsService;
 
     /**
      * Get list of all sprints
@@ -58,12 +58,12 @@ public class SprintService {
     }
 
     public Sprint saveSprint(Sprint sprint) {
-        projectEdits.refreshProject(sprint.getParentProjectId());
+        projectEditsService.refreshProject(sprint.getParentProjectId());
         return repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {
-        projectEdits.refreshProject(repository.findById(sprintId).getParentProjectId());
+        projectEditsService.refreshProject(repository.findById(sprintId).getParentProjectId());
         repository.deleteById(sprintId);
     }
 

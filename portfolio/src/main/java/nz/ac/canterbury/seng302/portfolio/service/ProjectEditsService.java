@@ -11,7 +11,7 @@ import java.util.List;
  * Class which represents a list of edits being made by a variety of users to a variety of projects.
  */
 @Service
-public class ProjectEdits {
+public class ProjectEditsService {
 
     private final List<ProjectEdit> projectEditList;
 
@@ -21,7 +21,7 @@ public class ProjectEdits {
     /**
      * Default constructor, initialises the edit list and refresh list.
      */
-    public ProjectEdits() {
+    public ProjectEditsService() {
         projectEditList = new ArrayList<>();
         projectRefreshList = new ArrayList<>();
     }

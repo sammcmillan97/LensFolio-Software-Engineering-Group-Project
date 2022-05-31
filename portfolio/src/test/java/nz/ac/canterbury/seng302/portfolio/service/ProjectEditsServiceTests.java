@@ -1,13 +1,12 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.service.ProjectEdits;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-class ProjectEditsTests {
+class ProjectEditsServiceTests {
 
     String editString = "edit string";
 
@@ -17,7 +16,7 @@ class ProjectEditsTests {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.newEdit(projectId, userId, editString);
         assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [\"" + editString + "\"], \"refresh\":false}");
     }
@@ -29,7 +28,7 @@ class ProjectEditsTests {
         int userId = 1;
         int otherUserId = 2;
         int otherProjectId = 2;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.newEdit(projectId, userId, editString);
         edits.newEdit(otherProjectId, userId, editString);
         assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [], \"refresh\":false}");
@@ -43,7 +42,7 @@ class ProjectEditsTests {
         int userId = 1;
         int otherUserId = 2;
         int thirdUserId = 3;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.newEdit(projectId, userId, editString);
         edits.newEdit(projectId, otherUserId, editString);
         assertThat(edits.getEdits(projectId, thirdUserId)).hasToString("{\"edits\": [\"" + editString + "\",\"" + editString + "\"], \"refresh\":false}");
@@ -55,7 +54,7 @@ class ProjectEditsTests {
     void testProjectEditsRefreshTrueOnceAfterRefresh() {
         int projectId = 1;
         int userId = 1;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.refreshProject(projectId);
         assertThat(edits.getEdits(projectId, userId)).hasToString("{\"edits\": [], \"refresh\":true}");
         assertThat(edits.getEdits(projectId, userId)).hasToString("{\"edits\": [], \"refresh\":false}");
@@ -67,7 +66,7 @@ class ProjectEditsTests {
         int projectId = 1;
         int otherProjectId = 2;
         int userId = 1;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.refreshProject(projectId);
         assertThat(edits.getEdits(otherProjectId, userId)).hasToString("{\"edits\": [], \"refresh\":false}");
     }
@@ -79,7 +78,7 @@ class ProjectEditsTests {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
-        ProjectEdits edits = new ProjectEdits();
+        ProjectEditsService edits = new ProjectEditsService();
         edits.refreshProject(projectId);
         assertThat(edits.getEdits(projectId, userId)).hasToString("{\"edits\": [], \"refresh\":true}");
         assertThat(edits.getEdits(projectId, otherUserId)).hasToString("{\"edits\": [], \"refresh\":true}");

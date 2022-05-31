@@ -18,7 +18,7 @@ public class EventService {
     private ProjectService eventProjectService;
 
     @Autowired
-    private ProjectEdits projectEdits;
+    private ProjectEditsService projectEditsService;
 
     /**
      * Get a list of all events
@@ -56,7 +56,7 @@ public class EventService {
      * Save the event to the repository
      */
     public void saveEvent(Event event) {
-        projectEdits.refreshProject(event.getEventParentProjectId());
+        projectEditsService.refreshProject(event.getEventParentProjectId());
         eventRepository.save(event);
     }
 
@@ -65,7 +65,7 @@ public class EventService {
      * @param eventId the id of the event
      */
     public void deleteEventById(int eventId) {
-        projectEdits.refreshProject(eventRepository.findById(eventId).getEventParentProjectId());
+        projectEditsService.refreshProject(eventRepository.findById(eventId).getEventParentProjectId());
         eventRepository.deleteById(eventId);
     }
 

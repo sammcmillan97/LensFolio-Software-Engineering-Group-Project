@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectEdits;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectEditsService;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -29,7 +29,7 @@ public class ProjectEditsController {
     ProjectService projectService;
 
     @Autowired
-    private ProjectEdits projectEdits;
+    private ProjectEditsService projectEditsService;
 
     /**
      * Returns a list of users to send to the frontend, in JSON form.
@@ -56,7 +56,7 @@ public class ProjectEditsController {
         }
 
         if (isAuthenticated && userId != -100) {
-            return projectEdits.getEdits(projectId, userId);
+            return projectEditsService.getEdits(projectId, userId);
         } else {
             return ""; //Return empty string as user is not authenticated
         }
@@ -89,7 +89,7 @@ public class ProjectEditsController {
         if (isTeacher && userId != -100) {
             String editString = userAccountClientService.getUserAccountById(userId).getFirstName() +
                     " is editing " + project.getName();
-            projectEdits.newEdit(projectId, userId, editString);
+            projectEditsService.newEdit(projectId, userId, editString);
         }
     }
 
