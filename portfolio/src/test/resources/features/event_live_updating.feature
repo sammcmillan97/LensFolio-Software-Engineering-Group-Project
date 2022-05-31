@@ -11,8 +11,8 @@ Feature: Users should be updated when a project is being modified
     And the user stops editing the project
     Then another user viewing the project should not be notified
 
-  Scenario: User is told to reload when an edit is completed
+  Scenario: User gets a notification to reload when an edit is completed
     Given a project exists
     When a user is editing the project
     And the user saves their edits
-    Then another user viewing the project should told to reload
+    Then another user viewing the project should get a notification to reload

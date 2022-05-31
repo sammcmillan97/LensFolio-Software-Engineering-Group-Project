@@ -82,8 +82,8 @@ public class ProjectEditsControllerStepDefs {
         projectEdits.refreshProject(projectId);
     }
 
-    @Then("another user viewing the project should told to reload")
-    public void another_user_viewing_the_project_should_told_to_reload() {
+    @Then("another user viewing the project should get a notification to reload")
+    public void another_user_viewing_the_project_should_get_a_notification_to_reload() {
         // Write code here that turns the phrase above into concrete actions
         String editNotification = projectEdits.getEdits(projectId, viewingUserId);
         assertEquals("{\"edits\": [], \"refresh\":true}", editNotification);
