@@ -454,6 +454,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    public User getUserById(int userId) {
+        if (repository.existsById(userId)) {
+            return repository.findByUserId(userId);
+        } throw new NullPointerException();
+    }
+
     /**
      * If the user is authenticated as any valid user, attempt to get the information of the requested user
      * @param request The request to get the user's information

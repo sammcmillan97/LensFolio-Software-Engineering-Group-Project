@@ -6,10 +6,10 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import nz.ac.canterbury.seng302.identityprovider.service.UserAccountsServerService;
 
 
 @GrpcService
@@ -19,6 +19,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     private static final String LONG_NAME_FIELD = "longName";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
+    private UserAccountsServerService userAccountsServerService;
 //    private static final int TEACHER_GROUP_ID = 420;
 //    private static final int MEMBERS_WITHOUT_GROUP_ID = 9999;
 
@@ -26,9 +27,8 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     @Autowired
     private GroupRepository groupRepository;
 
-    //Todo Potentially refactor implementation so user repository isn't needed inside group service to reduce coupling.
-    @Autowired
-    private UserRepository userRepository;
+    public GroupServerService() {
+    }
 
     @Override
     public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
@@ -52,14 +52,22 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             //TODO The “Members without a group” cant remove members directly from this group to be implemented when this group is added
 
         } else {
-            for(Integer userId: usersIdsToBeRemoved) {
-                User user = userRepository.findByUserId(userId);
-                group.removeMember(user);
-                if(user.getGroups().size() == 0) {
-                    addToWithoutAGroup(user);
+                for (Integer userId : usersIdsToBeRemoved) {
+                    try {
+                        User user = userAccountsServerService.getUserById(userId);
+                        group.removeMember(user);
+                        if (user.getGroups().size() == 0) {
+                            addToWithoutAGroup(user);
+                        }
+                    } catch (NullPointerException e) {
+                        reply.setMessage("User id: " + userId + " does not exist");
+                        reply.setIsSuccess(false);
+                        return reply.build();
+                    }
                 }
-            }
-            reply.setMessage("All members removed");
+
+            groupRepository.save(group);
+            reply.setMessage("All members removed successfully");
             reply.setIsSuccess(true);
         }
         return reply.build();
