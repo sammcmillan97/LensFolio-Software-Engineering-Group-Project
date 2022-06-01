@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
-import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
@@ -55,7 +54,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             reply
                     .setIsSuccess(true)
                     .setNewGroupId(groupRepository.findByShortName(request.getShortName()).getGroupId())
-                    .setMessage("Group Created");
+                    .setMessage("Successfully created group");
         } else {
             reply
                     .setIsSuccess(false)
@@ -83,12 +82,16 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             reply.addValidationErrors(validationError);
         }
         if (groupRepository.findByShortName(shortName) != null) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
-            reply.addValidationErrors(validationError);
+            if (groupRepository.findByShortName(shortName).getGroupId() != groupId){
+                ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
+                reply.addValidationErrors(validationError);
+            }
         }
         if (groupRepository.findByLongName(longName) != null) {
-            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
-            reply.addValidationErrors(validationError);
+            if (groupRepository.findByLongName(longName).getGroupId() != groupId){
+                ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
+                reply.addValidationErrors(validationError);
+            }
         }
 
         reply.addAllValidationErrors(checkShortName(shortName));
@@ -101,11 +104,11 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             groupRepository.save(group);
             reply
                     .setIsSuccess(true)
-                    .setMessage("Group Created");
+                    .setMessage("Successfully modified group");
         } else {
             reply
                     .setIsSuccess(false)
-                    .setMessage("Create group failed: Validation failed");
+                    .setMessage("Modify group failed: Validation failed");
         }
         return reply.build();
     }
