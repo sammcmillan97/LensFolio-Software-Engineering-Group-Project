@@ -1,8 +1,4 @@
-/**
- * Returns the date stored by object, in string format (yyyy-MM-dd)
- * @param date The date object from which to extract a string formatted date
- * @returns {string} The string formatted date (yyyy-MM-dd) extracted from the date object
- */
+
 const maxNumOfChars = 30;
 
 /**
@@ -26,8 +22,6 @@ function getDateString(date) {
     let years = date.getFullYear();
     let hours = date.getHours();
     let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-    let milliseconds = date.getMilliseconds();
 
     // Ensure day and month are two characters wide
     if (days < 10) {
@@ -35,6 +29,14 @@ function getDateString(date) {
     }
     if (months < 10) {
         months = '0' + months;
+    }
+
+    if (hours < 10) {
+        hours = '0' + hours;
+    }
+
+    if (minutes < 10) {
+        minutes = '0' + minutes
     }
 
     return years + '-' + months + '-' + days + 'T' + hours + ':' + minutes;

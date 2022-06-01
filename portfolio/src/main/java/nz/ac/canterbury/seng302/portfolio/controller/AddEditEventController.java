@@ -123,8 +123,12 @@ public class AddEditEventController {
         }
         //Check if it's an existing event
         if(eventId == -1) {
-            Event newEvent  = new Event(projectId, eventName, eventStartDate , eventEndDate);
-            eventService.saveEvent(newEvent);
+            try {
+                Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
+                eventService.saveEvent(newEvent);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         } else {
             //Edit existing event
             try {

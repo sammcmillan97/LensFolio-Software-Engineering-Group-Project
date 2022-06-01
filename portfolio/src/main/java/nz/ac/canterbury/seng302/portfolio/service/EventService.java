@@ -79,6 +79,7 @@ public class EventService {
         eventRepository.deleteById(eventId);
     }
 
+
     /**
      * Update the start date of the event
      * @param eventId the id of the event to be updated
