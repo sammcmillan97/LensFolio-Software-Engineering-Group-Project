@@ -12,7 +12,7 @@
           <button type="submit">Edit</button>
         </form>
 
-        <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" onSubmit="return confirm('Are you sure you want to delete this project?\nThis action cannot be undone.')" th:method="delete" >
+        <form action="#" th:action="@{editSprint-{sprint}-{project}(project=${project.getId}, sprint=${sprintList.get(importantDate.getFirst()).getId})}" onSubmit="return confirm('Are you sure you want to delete this sprint?\nThis action cannot be undone.')" th:method="delete" >
           <button type="submit">Delete</button>
         </form>
       </div>
