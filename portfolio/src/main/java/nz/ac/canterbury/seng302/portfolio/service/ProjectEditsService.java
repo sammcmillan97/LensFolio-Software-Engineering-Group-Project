@@ -37,13 +37,12 @@ public class ProjectEditsService {
      * @return A JSON string to send to the frontend representing the edits a user is interested in,
      * plus the refresh parameter. For example:
      * {
-     *     "edits": ["Fabian is editing Awesome Project", "Moffat is editing Awesome Project"],
+     *     "edits": ["Fabian is editing Awesome Project", "Moffat is editing Sprint 2"],
      *     "refresh": false
      * }
      */
     public String getEdits(int projectId, int userId) {
         projectEditList.removeIf(ProjectEdit::hasTimedOut);
-        projectRefreshList.removeIf(ProjectRefresh::hasTimedOut);
         StringBuilder result = new StringBuilder("{\"edits\": [");
         boolean firstEdit = true;
         for (ProjectEdit edit : projectEditList) {
@@ -56,7 +55,23 @@ public class ProjectEditsService {
                 result.append("\"").append(edit).append("\"");
             }
         }
-        result.append("], \"refresh\":");
+        result.append("],");
+        result.append(getShouldRefresh(projectId, userId));
+        result.append("}");
+        return result.toString();
+    }
+
+    /**
+     * Returns a JSON field representing whether a user needs to refresh their page.
+     * This is if the project has changed since the user last called this method.
+     * @param projectId The id of the project
+     * @param userId The id of the user viewing the project
+     * @return A JSON string to send to the frontend representing the refresh field
+     *      i.e. "refresh": true
+     */
+    public String getShouldRefresh(int projectId, int userId) {
+        projectRefreshList.removeIf(ProjectRefresh::hasTimedOut);
+        StringBuilder result = new StringBuilder("\"refresh\":");
         // Append refresh:true to tell the user to refresh if any refreshes are relevant.
         // Else append refresh:false.
         String refreshString = "false";
@@ -69,7 +84,6 @@ public class ProjectEditsService {
             }
         }
         result.append(refreshString);
-        result.append("}");
         return result.toString();
     }
 

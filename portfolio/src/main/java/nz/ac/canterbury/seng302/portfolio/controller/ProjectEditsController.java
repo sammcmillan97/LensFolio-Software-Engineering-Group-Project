@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectEditsService;
 import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
@@ -34,6 +33,9 @@ public class ProjectEditsController {
     /**
      * Returns a list of users to send to the frontend, in JSON form.
      * Will only get relevant edits.
+     * Also sends a single parameter 'refresh' to the user telling them if they need to refresh their page.
+     * This is if the page has changed since the user last called this method.
+     * Teachers and above get both, students only get the refresh notification.
      * @param principal The user's authentication
      * @param id The project the users wishes to get edits for
      * @return A JSON string to send to the frontend representing the edits a user is interested in.
@@ -42,6 +44,7 @@ public class ProjectEditsController {
     public String projectEditing(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam String id) {
         boolean isAuthenticated = authenticateClientService.checkAuthState().getIsAuthenticated();
+        boolean isTeacher = userAccountClientService.isTeacher(principal) && isAuthenticated;
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -56,7 +59,12 @@ public class ProjectEditsController {
         }
 
         if (isAuthenticated && userId != -100) {
-            return projectEditsService.getEdits(projectId, userId);
+            if (isTeacher) {
+                return projectEditsService.getEdits(projectId, userId);
+            } else {
+                // If the user is not a teacher, they don't need to get edit notifications, they just need to be told when to refresh.
+                return "{" + projectEditsService.getShouldRefresh(projectId, userId) + "}";
+            }
         } else {
             return ""; //Return empty string as user is not authenticated
         }
@@ -69,26 +77,24 @@ public class ProjectEditsController {
      */
     @PostMapping("/projects-editing")
     public void isEditingProject(@AuthenticationPrincipal AuthState principal,
-                                 @RequestParam String id) {
+                                 @RequestParam String id,
+                                 @RequestParam String name) {
         boolean isTeacher = userAccountClientService.isTeacher(principal) && authenticateClientService.checkAuthState().getIsAuthenticated();
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
-
         int projectId;
-        Project project;
         try {
             projectId = Integer.parseInt(id);
-            project = projectService.getProjectById(projectId);
         } catch (NumberFormatException | NoSuchElementException e) {
             return;
             // If project id is not an integer or does not correspond to a project, the request was invalid so we return
         }
         if (isTeacher && userId != -100) {
             String editString = userAccountClientService.getUserAccountById(userId).getFirstName() +
-                    " is editing " + project.getName();
+                    " is editing " + name;
             projectEditsService.newEdit(projectId, userId, editString);
         }
     }
