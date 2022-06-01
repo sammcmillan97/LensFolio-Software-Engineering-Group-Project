@@ -55,7 +55,7 @@ public class ProjectEditsService {
                 result.append("\"").append(edit).append("\"");
             }
         }
-        result.append("],");
+        result.append("], ");
         result.append(getShouldRefresh(projectId, userId));
         result.append("}");
         return result.toString();
