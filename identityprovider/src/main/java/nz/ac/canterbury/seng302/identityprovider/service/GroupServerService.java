@@ -5,9 +5,7 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +17,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
 
     private static final String SHORT_NAME_FIELD = "shortName";
     private static final String LONG_NAME_FIELD = "longName";
+    private static final String GROUP_ID_FIELD = "groupId";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
     
@@ -60,6 +59,41 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             reply
                     .setIsSuccess(false)
                     .setMessage("Create group failed: Validation failed");
+        }
+        return reply.build();
+    }
+
+    /**
+     * The gRPC method that deletes the group
+     * @param request the request to get the id of the group
+     * @param responseObserver the observer to send the response
+     */
+    @Override
+    public void deleteGroup(DeleteGroupRequest request, StreamObserver<DeleteGroupResponse> responseObserver) {
+        DeleteGroupResponse reply = deleteGroupHandler(request);
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * The handler for the method to delete a group.
+     * @param request the request to get the id of the group
+     * @return the response built
+     */
+    @VisibleForTesting
+    DeleteGroupResponse deleteGroupHandler(DeleteGroupRequest request) {
+        DeleteGroupResponse.Builder reply = DeleteGroupResponse.newBuilder();
+        int groupId = request.getGroupId();
+
+        if (groupRepository.findByGroupId(groupId) != null) {
+            groupRepository.deleteById(groupId);
+            reply
+                    .setIsSuccess(true)
+                    .setMessage("Group deleted successfully");
+        } else {
+            reply
+                    .setIsSuccess(false)
+                    .setMessage("Deleting group failed: Group does not exist");
         }
         return reply.build();
     }
