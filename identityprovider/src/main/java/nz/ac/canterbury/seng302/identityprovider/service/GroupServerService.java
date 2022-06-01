@@ -4,10 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
+import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,6 +18,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
 
     private static final String SHORT_NAME_FIELD = "shortName";
     private static final String LONG_NAME_FIELD = "longName";
+    private static final String GROUP_ID_FIELD = "groupId";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
     
@@ -63,6 +63,53 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         }
         return reply.build();
     }
+
+    @Override
+    public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
+        ModifyGroupDetailsResponse reply = modifyGroupDetailsHandler(request);
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    @VisibleForTesting
+    ModifyGroupDetailsResponse modifyGroupDetailsHandler (ModifyGroupDetailsRequest request){
+        ModifyGroupDetailsResponse.Builder reply = ModifyGroupDetailsResponse.newBuilder();
+        int groupId = request.getGroupId();
+        String shortName = request.getShortName();
+        String longName = request.getLongName();
+
+        if (groupRepository.findByGroupId(groupId) == null) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group does not exist").setFieldName(GROUP_ID_FIELD).build();
+            reply.addValidationErrors(validationError);
+        }
+        if (groupRepository.findByShortName(shortName) != null) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
+            reply.addValidationErrors(validationError);
+        }
+        if (groupRepository.findByLongName(longName) != null) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
+            reply.addValidationErrors(validationError);
+        }
+
+        reply.addAllValidationErrors(checkShortName(shortName));
+        reply.addAllValidationErrors(checkLongName(longName));
+
+        if (reply.getValidationErrorsCount() == 0) {
+            Group group = groupRepository.findByGroupId(groupId);
+            group.setShortName(shortName);
+            group.setLongName(longName);
+            groupRepository.save(group);
+            reply
+                    .setIsSuccess(true)
+                    .setMessage("Group Created");
+        } else {
+            reply
+                    .setIsSuccess(false)
+                    .setMessage("Create group failed: Validation failed");
+        }
+        return reply.build();
+    }
+
 
     private List<ValidationError> checkLongName(String longName) {
         List<ValidationError> validationErrors = new ArrayList<>();
