@@ -5,10 +5,9 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -88,4 +87,24 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         return validationErrors;
     }
 
+    @Override
+    public void getGroupDetails(GetGroupDetailsRequest request, StreamObserver<GetGroupDetailsResponse> responseObserver) {
+        GetGroupDetailsResponse reply = getGroupDetailsHandler(request);
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    @VisibleForTesting
+    GetGroupDetailsResponse getGroupDetailsHandler(GetGroupDetailsRequest request) {
+        GetGroupDetailsResponse.Builder reply = GetGroupDetailsResponse.newBuilder();
+        int groupId = request.getGroupId();
+
+        if (groupRepository.existsById(groupId)) {
+            Group group = groupRepository.findByGroupId(groupId);
+            reply
+                    .setShortName(group.getShortName())
+                    .setLongName(group.getLongName());
+        }
+        return reply.build();
+    }
 }
