@@ -7,7 +7,7 @@ public class ProjectEdit {
 
     private final int projectId;
     private final int userId;
-    private String editString;
+    private final String editString;
     private final long time;
 
     /**
@@ -39,7 +39,7 @@ public class ProjectEdit {
      * User's don't need to be notified about their own edits.
      * @param projectId The id of the project
      * @param userId The id of the user viewing the project
-     * @return True if the eit is relevant
+     * @return True if the edit is relevant
      */
     public boolean isRelevant(int projectId, int userId) {
         return this.projectId == projectId && this.userId != userId;

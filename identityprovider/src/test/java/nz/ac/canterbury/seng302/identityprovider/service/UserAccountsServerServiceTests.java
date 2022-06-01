@@ -7,10 +7,11 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.HashSet;
@@ -20,11 +21,12 @@ import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class UserAccountsServiceServiceTests {
+class UserAccountsServerServiceTests {
 
     @Autowired
     private UserRepository repository;
 
+    @Spy
     @Autowired
     private UserAccountsServerService userService;
 
@@ -39,6 +41,7 @@ class UserAccountsServiceServiceTests {
     private final String testPassword = "test password";
     private final UserRole studentRole = STUDENT;
     private final UserRole teacherRole = TEACHER;
+    private final UserRole adminRole = COURSE_ADMINISTRATOR;
 
     private int testId;
     private Timestamp testCreated;
@@ -803,7 +806,10 @@ class UserAccountsServiceServiceTests {
                 .setUserId(testId)
                 .setRole(teacherRole)
                 .build();
-        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
         User updatedUser = repository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
         Set<UserRole> roleSet = new HashSet<>();
@@ -812,9 +818,60 @@ class UserAccountsServiceServiceTests {
         assertEquals("Role successfully removed", response.getMessage());
     }
 
-    //Tests that role can be added to a user
+    //Tests that an admin can't remove their own admin role
     @Test
-    void removeRoleTeacherFromStudentTest() {
+    void whenHasAdminRole_testRemoveOwnAdminRole() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(testId).when(spyUserService).getAuthStateUserId();
+
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        roleSet.add(adminRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Unable to remove role. Cannot remove own course administrator role", response.getMessage());
+    }
+
+    //Tests that an admin can remove someone elses admin role
+    @Test
+    void whenHasAdminRole_testRemoveOtherAdminRole() {
+        repository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = repository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = repository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Role successfully removed", response.getMessage());
+    }
+
+    //Tests that you can't remove a role that a user doesn't have
+    @Test
+    void whenOnlyHasStudentRole_testRemoveTeacherRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(teacherRole)
@@ -828,9 +885,9 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    //Tests that role can be added to a user
+    //Tests that the users last role can't be removed
     @Test
-    void removeRoleStudentFromStudentTest() {
+    void whenOnlyHasStudentRole_testRemoveStudentRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(studentRole)
@@ -844,45 +901,82 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    // Check that no user has permissions to modify an admin role
+    // Check that a student does not have permissions to modify a student role
     @Test
-    void isValidatedForRoleTestNotValidForAdmin() {
+    void whenHasStudentRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that a student does not have permissions to modify a teacher role
+    @Test
+    void whenHasStudentRole_testModifyTeacherRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that a student does not have permissions to modify an admin role
+    @Test
+    void whenHasStudentRole_testModifyAdminRole() {
+        User updatedUser = repository.findByUserId(testId);
+        repository.save(updatedUser);
         assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that a teacher does have permissions to modify a student role
+    @Test
+    void whenHasTeacherRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
     }
 
     // Check that a teacher does not have permissions to modify a teacher role
     @Test
-    void isValidatedForRoleTestNotValidForTeacherOnTeacher() {
+    void whenHasTeacherRole_testModifyTeacherRole() {
         User updatedUser = repository.findByUserId(testId);
         updatedUser.addRole(TEACHER);
         repository.save(updatedUser);
         assertFalse(userService.isValidatedForRole(testId, TEACHER));
     }
 
+    // Check that a teacher does not have permissions to modify an admin role
+    @Test
+    void whenHasTeacherRole_testModifyAdminRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        repository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that an admin does have permissions to modify a student role
+    @Test
+    void whenHasAdminRole_testModifyStudentRole() {
+        User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        repository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+    }
+
     // Check that an admin does have permissions to modify a teacher role
     @Test
-    void isValidatedForRoleTestValidForTeacherOnAdmin() {
+    void whenHasAdminRole_testModifyTeacherRole() {
         User updatedUser = repository.findByUserId(testId);
         updatedUser.addRole(COURSE_ADMINISTRATOR);
         repository.save(updatedUser);
         assertTrue(userService.isValidatedForRole(testId, TEACHER));
     }
 
-    // Check that a student does not have permissions to modify a student role
+    // Check that an admin does have permissions to modify an admin role
     @Test
-    void isValidatedForRoleTestNotValidForStudentOnStudent() {
+    void whenHasAdminRole_testModifyAdminRole() {
         User updatedUser = repository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
         repository.save(updatedUser);
-        assertFalse(userService.isValidatedForRole(testId, STUDENT));
-    }
-
-    // Check that a teacher does have permissions to modify a student role
-    @Test
-    void isValidatedForRoleTestValidForStudentOnTeacher() {
-        User updatedUser = repository.findByUserId(testId);
-        updatedUser.addRole(TEACHER);
-        repository.save(updatedUser);
-        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+        assertTrue(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
     }
 
 }

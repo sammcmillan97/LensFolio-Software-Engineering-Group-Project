@@ -1,5 +1,8 @@
 function checkResponse(data){
     var jsondata = JSON.parse(data);
+    if (jsondata.refresh) {
+        window.location.reload();
+    }
     var editNotification = document.getElementById("editNotification");
     if (jsondata.edits.length == 0) {
         editNotification.className = "";
@@ -34,4 +37,8 @@ Promise.all(
   editPolling();
 });
 }
-editPolling();
+//dummy fetch so that if the user reloads the page manually it does not reload for them again automatically
+fetch('/projects-editStatus?id=' + document.getElementById("projectId").textContent);
+setTimeout(function () {
+        editPolling();
+    }, 1000);
