@@ -56,6 +56,9 @@ public class DeadlineService {
      * @param deadlineId the id of the deadline to be deleted
      */
     public void deleteDeadlineById(int deadlineId) {
+        if (deadlineRepository.findById(deadlineId) == null) {
+            throw new UnsupportedOperationException("Deadline does not exist");
+        }
         deadlineRepository.deleteById(deadlineId);
     }
 

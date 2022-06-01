@@ -256,6 +256,19 @@ public class DeadlineServiceTest {
     }
 
     @Test
+    void whenDeadlineDoesNotExist_testDeleteDeadlineThrowsException () {
+        Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
+        List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
+        assertThat(deadlines.size()).isEqualTo(0);
+
+        Exception exception = assertThrows(Exception.class, () ->
+                deadlineService.deleteDeadlineById(deadline.getDeadlineId()));
+        String expectedMessage = "Deadline does not exist";
+        String actualMessage = exception.getMessage();
+        assertThat(expectedMessage).isEqualTo(actualMessage);
+    }
+
+    @Test
     void whenDeadlineDateIsChangedToDateWithinProjectDates_testDeadlineDateChanged() throws Exception {
         Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
         deadlineService.saveDeadline(deadline);
