@@ -1,9 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,5 +19,17 @@ public class GroupsClientService {
                 .setLongName(longName)
                 .build();
         return groupsStub.createGroup(createGroupRequest);
+    }
+
+    /**
+     * Service for deleting a group
+     * @param groupId the id of the group to be deleted
+     * @return the response from the server
+     */
+    public DeleteGroupResponse deleteGroup(final int groupId) {
+        DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
+                .setGroupId(groupId)
+                .build();
+        return groupsStub.deleteGroup(deleteGroupRequest);
     }
 }
