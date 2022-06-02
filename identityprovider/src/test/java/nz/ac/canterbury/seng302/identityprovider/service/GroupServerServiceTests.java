@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
@@ -41,6 +44,7 @@ class GroupServerServiceTests {
     private final String testPronouns = "test/tester";
     private final String testEmail = "test@email.com";
     private final String testPassword = "test password";
+    private User testUser;
 
     private final UserRole studentRole = STUDENT;
     private final UserRole teacherRole = TEACHER;
@@ -54,7 +58,7 @@ class GroupServerServiceTests {
         groupRepository.deleteAll();
         userRepository.deleteAll();
         userRepository.deleteAll();
-        User testUser = userRepository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
+        testUser = userRepository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
         testId = testUser.getUserId();
         testCreated = testUser.getTimeCreated();
     }
@@ -208,17 +212,26 @@ class GroupServerServiceTests {
 
     @Test
     void whenAGroupExists_addOneUser() {
-        Iterable<Integer> usersIdsToBeRemoved = userRepository.f
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        usersIdsToBeAdded.add(testUser.getUserId());
 
-
-        CreateGroupRequest request = CreateGroupRequest.newBuilder()
+        CreateGroupRequest groupRequest = CreateGroupRequest.newBuilder()
                 .setShortName("Short")
                 .setLongName("Looooong")
                 .build();
-        CreateGroupResponse response =  groupServerService.createGroupHandler(request);
-        AddGroupMembersRequest request AddGroupMembersRequest.newBuilder()
-                .setGroupId(0)
-                .setUserIds()
+        CreateGroupResponse response =  groupServerService.createGroupHandler(groupRequest);
+        Group group = groupRepository.findByShortName("Short");
+
+        assertEquals(0, group.getMembers().size());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(group.getGroupId())
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+
+        AddGroupMembersResponse Response = groupServerService.addGroupMembersHandler(userRequest);
+        group = groupRepository.findByShortName("Short");
+        assertEquals(1, group.getMembers().size());
     }
 
 }

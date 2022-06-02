@@ -111,7 +111,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         AddGroupMembersResponse.Builder reply = AddGroupMembersResponse.newBuilder();
         int groupId = request.getGroupId();
         Group group = groupRepository.findByGroupId(groupId);
-        Iterable<Integer> usersIdsToBeAdded = request.getUserIdsList();
+        List<Integer> usersIdsToBeAdded = request.getUserIdsList();
 
         if(group == null) {
             reply.setMessage("Group does not exist");
@@ -171,7 +171,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         RemoveGroupMembersResponse.Builder reply = RemoveGroupMembersResponse.newBuilder();
         int groupId = request.getGroupId();
         Group group = groupRepository.findByGroupId(groupId);
-        Iterable<Integer> usersIdsToBeRemoved = request.getUserIdsList();
+        List<Integer> usersIdsToBeRemoved = request.getUserIdsList();
 
         if(group == null) {
             reply.setMessage("Group does not exist");
