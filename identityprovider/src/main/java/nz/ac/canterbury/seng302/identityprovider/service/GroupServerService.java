@@ -122,7 +122,10 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         if (isAuthenticated() && isTeacher()) {
             reply = deleteGroupHandler(request);
         } else {
-            reply = DeleteGroupResponse.newBuilder().build();
+            reply = DeleteGroupResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Delete group failed: User Not Authenticated")
+                    .build();
         }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
