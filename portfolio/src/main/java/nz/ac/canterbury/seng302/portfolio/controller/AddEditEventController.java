@@ -138,7 +138,7 @@ public class AddEditEventController {
                 eventService.updateEndDate(eventId, eventEndDate);
                 eventService.saveEvent(existingEvent);
             } catch (Exception e) {
-                System.out.println("Failed to update existing event");
+                System.out.println(e.getMessage());
             }
         }
         return "redirect:/projectDetails-" + projectIdString;

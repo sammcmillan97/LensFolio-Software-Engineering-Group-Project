@@ -52,7 +52,7 @@ function updateMinEndDate() {
     startDate = new Date(startDate);
     let minEndDate = new Date();
     minEndDate.setTime(startDate.getTime());
-    document.getElementById("event-form__end-date-field").setAttribute('min', getDateString(minEndDate));
+    document.getElementById("event-form__end-date-field").setAttribute('min', getDateString(minEndDate.toLocaleDateString()));
 }
 
 /**
@@ -64,7 +64,7 @@ function updateMaxStartDate() {
     endDate = new Date(endDate);
     let maxStartDate = new Date();
     maxStartDate.setTime(endDate.getTime());
-    document.getElementById("event-form__start-date-field").setAttribute('max', getDateString(maxStartDate));
+    document.getElementById("event-form__start-date-field").setAttribute('max', getDateString(maxStartDate.toLocaleDateString()));
 }
 
 /**
