@@ -4,6 +4,7 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class GroupsClientService {
 
@@ -31,5 +32,14 @@ public class GroupsClientService {
                 .setGroupId(groupId)
                 .build();
         return groupsStub.deleteGroup(deleteGroupRequest);
+    }
+
+    public AddGroupMembersResponse removeGroupMembers(final int groupId, final Iterable<Integer> userIds) {
+        AddGroupMembersRequest addGroupMembersRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(groupId)
+                .setUserIds(1, 2)
+                .addAllUserIds(userIds)
+                .build();
+        return groupsStub.addGroupMembers(addGroupMembersRequest);
     }
 }

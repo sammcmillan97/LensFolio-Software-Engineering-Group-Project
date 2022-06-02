@@ -9,10 +9,8 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
-import nz.ac.canterbury.seng302.identityprovider.service.UserAccountsServerService;
 
 
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     private static final int LONG_NAME_MAX_LENGTH = 128;
 
     private UserAccountsServerService userAccountsServerService;
-    private static final int TEACHER_GROUP_ID = 420;
+//  private static final int TEACHER_GROUP_ID = 420;
     private static final int MEMBERS_WITHOUT_GROUP_ID = 9999;
 
 
@@ -79,18 +77,35 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         return false;
     }
 
-
-    public GroupServerService() {
-    }
-
+    /**
+     * GRPC Method to add a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
 
     @Override
     public void addGroupMembers(AddGroupMembersRequest request, StreamObserver<AddGroupMembersResponse> responseObserver) {
-        AddGroupMembersResponse reply = addGroupMembersHandler(request);
+        AddGroupMembersResponse reply;
+        if (isAuthenticated() && isTeacher()) {
+            reply = addGroupMembersHandler(request);
+        } else {
+            reply = AddGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Add group members failed: Not Authorised")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
 
+    /**
+     * Method for handling adding group members
+     * Checks if group exists if so returns
+     * checks if group members belongs to the members without a group if so removes them
+     * Checks if User exits if so returns
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
     @VisibleForTesting
     AddGroupMembersResponse addGroupMembersHandler(AddGroupMembersRequest request) {
         AddGroupMembersResponse.Builder reply = AddGroupMembersResponse.newBuilder();
@@ -123,13 +138,34 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     }
 
 
+    /**
+     * GRPC Method to remove a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
     @Override
     public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
-        RemoveGroupMembersResponse reply = removeGroupMembersHandler(request);
+        RemoveGroupMembersResponse reply;
+        if (isAuthenticated() && isTeacher()) {
+            reply = removeGroupMembersHandler(request);
+        } else {
+            reply = RemoveGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Remove group members failed: Not Authorised")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
 
+    /**
+     * Method for handling removing group members
+     * Checks if a group doesn't exist it will return
+     * checks if a user now belongs to zero groups will add to the members without a group
+     * Checks if a User doesn't exist it will return
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
     @VisibleForTesting
     RemoveGroupMembersResponse removeGroupMembersHandler(RemoveGroupMembersRequest request) {
         RemoveGroupMembersResponse.Builder reply = RemoveGroupMembersResponse.newBuilder();
@@ -141,23 +177,23 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             reply.setMessage("Group does not exist");
             reply.setIsSuccess(false);
         } else if (group.getGroupId() == MEMBERS_WITHOUT_GROUP_ID){
-            reply.setMessage("Can't remove members from Memebers without a group group");
+            reply.setMessage("Can't remove members from Members without a group group");
             reply.setIsSuccess(false);
         }
         else {
-                for (Integer userId : usersIdsToBeRemoved) {
-                    try {
-                        User user = userAccountsServerService.getUserById(userId);
-                        group.removeMember(user);
-                        if (user.getGroups().size() == 0) {
-                            addToWithoutAGroup(user);
-                        }
-                    } catch (NullPointerException e) {
-                        reply.setMessage("User id: " + userId + " does not exist");
-                        reply.setIsSuccess(false);
-                        return reply.build();
+            for (Integer userId : usersIdsToBeRemoved) {
+                try {
+                    User user = userAccountsServerService.getUserById(userId);
+                    group.removeMember(user);
+                    if (user.getGroups().size() == 0) {
+                        addToWithoutAGroup(user);
                     }
+                } catch (NullPointerException e) {
+                    reply.setMessage("User id: " + userId + " does not exist");
+                    reply.setIsSuccess(false);
+                    return reply.build();
                 }
+            }
 
             groupRepository.save(group);
             reply.setMessage("All members removed successfully");
@@ -286,5 +322,4 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         }
         return validationErrors;
     }
-
 }
