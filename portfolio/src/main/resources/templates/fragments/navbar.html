@@ -5,6 +5,7 @@
     <title>Navigation Bar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -12,33 +13,36 @@
     <nav th:fragment="navbar" id="site-navigation">
         <link rel="stylesheet" th:href="@{styles/navbar.css}">
         <script rel="text/javascript" th:src="@{scripts/navbar.js}"></script>
-        <ul class="site-navigation__list">
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{profile}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">Profile</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{projects}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">Projects</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{planner}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">Planner</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">List of Users</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{groups}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/groups') ? 'active':''}">Groups</a>
-                </h5>
-            </li>
-        </ul>
+        <div class="nav_head">
+            <h2>LENSfolio</h2>
+            <hr id="nav_line">
+        </div>
+            <ul class="site-navigation__list">
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{profile}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+                            <span class="bi bi-person-circle navigation_icon" ></span>
+                            Profile
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{projects}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
+                            <span class="bi bi-kanban navigation_icon"></span>
+                            Projects
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{planner}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
+                            <span class="bi bi-calendar navigation_icon"> </span>
+                            Planner
+                        </a>
+                    </h5>
+                </li>
+            </ul>
     </nav>
 </body>
 
