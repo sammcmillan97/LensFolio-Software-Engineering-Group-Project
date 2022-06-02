@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
+import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -175,6 +176,26 @@ class GroupServerServiceTests {
         DeleteGroupResponse response = groupServerService.deleteGroupHandler(request);
         assertFalse(response.getIsSuccess());
         assertEquals("Deleting group failed: Group does not exist", response.getMessage());
+    }
+
+    @Test
+    void whenGroupExists_getGroupDetails() {
+        Group group = new Group("ShortName", "LongName");
+        User user = new User("test", "first", "mid", "last", "a",
+                "this", "he/him", "test@test.com", "password");
+        group.addMember(user);
+        groupRepository.save(group);
+        int groupId = groupRepository.findByShortName("ShortName").getGroupId();
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(1, groups.size());
+
+        GetGroupDetailsRequest request = GetGroupDetailsRequest.newBuilder()
+                .setGroupId(groupId)
+                .build();
+        GetGroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
+        assertEquals("ShortName", response.getShortName());
+        assertEquals("LongName", response.getLongName());
+    //    assertEquals(group.getMembers(), response.getMembers(UserResponse.USERNAME_FIELD_NUMBER));
     }
 
 }

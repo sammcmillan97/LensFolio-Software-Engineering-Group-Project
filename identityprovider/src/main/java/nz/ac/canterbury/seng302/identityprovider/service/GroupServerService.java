@@ -6,12 +6,9 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
-import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import nz.ac.canterbury.seng302.identityprovider.repository.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -23,7 +20,6 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
 
     private static final String SHORT_NAME_FIELD = "shortName";
     private static final String LONG_NAME_FIELD = "longName";
-    private static final String GROUP_ID_FIELD = "groupId";
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
     
@@ -114,7 +110,47 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     }
 
     /**
-     * The gRPC method that deletes the group
+     * The gRPC method which gets the group details if user is authenticated
+     * @param request the request to get the id of the group using which we get the information
+     * @param responseObserver the observer to send the response
+     */
+    @Override
+    public void getGroupDetails(GetGroupDetailsRequest request, StreamObserver<GetGroupDetailsResponse> responseObserver) {
+        GetGroupDetailsResponse reply;
+        if (isAuthenticated()) {
+            reply = getGroupDetailsHandler(request);
+        } else {
+            reply = GetGroupDetailsResponse.newBuilder().build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * The handler for the method which gets the group details
+     * @param request the request which receives the id from the proto file
+     * @return the response built
+     */
+    @VisibleForTesting
+    GetGroupDetailsResponse getGroupDetailsHandler(GetGroupDetailsRequest request) {
+        GetGroupDetailsResponse.Builder reply = GetGroupDetailsResponse.newBuilder();
+        int groupId = request.getGroupId();
+
+        if (groupRepository.existsById(groupId)) {
+            Group group = groupRepository.findByGroupId(groupId);
+            Set<User> members = group.getMembers();
+            List<UserResponse> userResponses = getAllMembers(members);
+            reply
+                    .setShortName(group.getShortName())
+                    .setLongName(group.getLongName())
+                    .addAllMembers(userResponses);
+        }
+        return reply.build();
+    }
+
+    /**
+     * The gRPC method that deletes the group if the user is authenticated and has the role teacher
+     * or course administrator
      * @param request the request to get the id of the group to be deleted
      * @param responseObserver the observer to send the response
      */
@@ -180,24 +216,23 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         return validationErrors;
     }
 
-    @Override
-    public void getGroupDetails(GetGroupDetailsRequest request, StreamObserver<GetGroupDetailsResponse> responseObserver) {
-        GetGroupDetailsResponse reply = getGroupDetailsHandler(request);
-        responseObserver.onNext(reply);
-        responseObserver.onCompleted();
-    }
-
-    @VisibleForTesting
-    GetGroupDetailsResponse getGroupDetailsHandler(GetGroupDetailsRequest request) {
-        GetGroupDetailsResponse.Builder reply = GetGroupDetailsResponse.newBuilder();
-        int groupId = request.getGroupId();
-
-        if (groupRepository.existsById(groupId)) {
-            Group group = groupRepository.findByGroupId(groupId);
-            reply
-                    .setShortName(group.getShortName())
-                    .setLongName(group.getLongName());
+    private List<UserResponse> getAllMembers(Set<User> members) {
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User member : members) {
+            UserResponse userResponse = UserResponse.newBuilder()
+                    .setUsername(member.getUsername())
+                    .setFirstName(member.getFirstName())
+                    .setMiddleName(member.getMiddleName())
+                    .setLastName(member.getLastName())
+                    .setBio(member.getBio())
+                    .setPersonalPronouns(member.getPersonalPronouns())
+                    .setEmail(member.getEmail())
+            //        .setProfileImagePath(member.getProfileImagePath())
+            //        .setRoles(member.getUserId(), new ArrayList<>(member.getRoles()).get(member.getUserId()))
+                    .build();
+            userResponses.add(userResponse);
         }
-        return reply.build();
+        return userResponses;
     }
+
 }
