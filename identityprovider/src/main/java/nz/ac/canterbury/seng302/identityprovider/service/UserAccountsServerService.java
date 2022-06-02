@@ -47,6 +47,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return authState.getIsAuthenticated();
     }
 
+
     /**
      * Checks if the requesting user is authenticated as the claimed user.
      * @param claimedId The id of the user that the requesting user claims to be

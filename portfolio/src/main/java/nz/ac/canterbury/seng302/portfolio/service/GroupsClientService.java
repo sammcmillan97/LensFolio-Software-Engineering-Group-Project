@@ -21,6 +21,11 @@ public class GroupsClientService {
         return groupsStub.createGroup(createGroupRequest);
     }
 
+    /**
+     * Service for deleting a group
+     * @param groupId the id of the group to be deleted
+     * @return the response from the server
+     */
     public DeleteGroupResponse deleteGroup(final int groupId) {
         DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
                 .setGroupId(groupId)
