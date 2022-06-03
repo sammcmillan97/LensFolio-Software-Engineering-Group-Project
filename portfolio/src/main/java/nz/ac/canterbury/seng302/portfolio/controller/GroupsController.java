@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Arrays;
+
 @Controller
 public class GroupsController {
     @Autowired
@@ -25,10 +27,8 @@ public class GroupsController {
         int id = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
-        if (userAccountClientService.isTeacher(principal)) {
-            return "teacherGroups";
-        } else {
-            return "userGroups";
-        }
+        model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
+        model.addAttribute("groups", Arrays.asList(1, 2, 3));
+        return "groups";
     }
 }
