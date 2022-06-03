@@ -42,7 +42,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Checks if the requesting user is authenticated.
      * @return True if the requesting user is authenticated
      */
-    private boolean isAuthenticated() {
+    protected boolean isAuthenticated() {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
@@ -984,6 +984,21 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             hasOneRole = true;
         }
         return hasOneRole;
+    }
+
+    /**
+     * Checks if the user has the teacher or course administrator role
+     * @return true if it meets the required conditions or else false
+     */
+    protected boolean isTeacher() {
+        User user = repository.findByUserId(getAuthStateUserId());
+        Set<UserRole> roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == UserRole.TEACHER || userRole == UserRole.COURSE_ADMINISTRATOR) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
