@@ -29,7 +29,15 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
-        CreateGroupResponse reply = createGroupHandler(request);
+        CreateGroupResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = createGroupHandler(request);
+        } else {
+            reply = CreateGroupResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Create group failed: User Not Authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -111,7 +119,15 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
 
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
-        ModifyGroupDetailsResponse reply = modifyGroupDetailsHandler(request);
+        ModifyGroupDetailsResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = modifyGroupDetailsHandler(request);
+        } else {
+            reply = ModifyGroupDetailsResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Modify group failed: User Not Authenticated")
+                    .build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -179,5 +195,4 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         }
         return validationErrors;
     }
-
 }
