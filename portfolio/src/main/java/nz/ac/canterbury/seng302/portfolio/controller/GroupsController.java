@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class GroupsController {
     @Autowired
     private UserAccountClientService userAccountClientService;
+    @Autowired
+    private GroupsClientService groupsClientService;
 
     /**
      * Get mapping to fetch groups page
@@ -28,7 +33,8 @@ public class GroupsController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
-        model.addAttribute("groups", Arrays.asList(1, 2, 3));
+//        List<Group> groups = groupsClientService.getAllGroups();
+//        model.addAttribute("groups", groups);
         return "groups";
     }
 }

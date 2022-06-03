@@ -18,8 +18,8 @@
     <h1>Groups Page</h1>
     <p th:text="${groups}"></p>
     <div>
-        <div class="group" th:each="group: ${groups}">
-            <div class="collapse" th:id="${group}">
+        <div class="group" th:each="group : ${groups}">
+            <div class="collapse" th:id="${group.groupId}">
                 <div class="card card-body" th:text="${group}">
 
                 </div>
