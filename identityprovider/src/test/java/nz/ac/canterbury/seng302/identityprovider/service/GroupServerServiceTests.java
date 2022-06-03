@@ -6,6 +6,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -294,6 +295,38 @@ class GroupServerServiceTests {
         assertEquals("Long name must be less than " + LONG_NAME_MAX_LENGTH + "chars", response.getValidationErrors(0).getErrorText());
         assertEquals("longName", response.getValidationErrors(0).getFieldName());
         assertEquals("BiggerNameBiggerName", groupRepository.findByGroupId(existingGroupId).getLongName());;
+    }
+
+    /**
+     *Delete Group Tests
+     **/
+
+    @Test
+    void whenGroupExists_testDeleteGroup() {
+        groupRepository.save(new Group("ShortName", "LongName"));
+        int groupId = groupRepository.findByShortName("ShortName").getGroupId();
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(1, groups.size());
+        DeleteGroupRequest request = DeleteGroupRequest.newBuilder()
+                .setGroupId(groupId)
+                .build();
+        DeleteGroupResponse response = groupServerService.deleteGroupHandler(request);
+        assertTrue(response.getIsSuccess());
+        assertEquals("Group deleted successfully", response.getMessage());
+        groups = groupRepository.findAll();
+        assertEquals(0, groups.size());
+    }
+
+    @Test
+    void whenNoGroupsExist_testDeleteGroup() {
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(0, groups.size());
+        DeleteGroupRequest request = DeleteGroupRequest.newBuilder()
+                .setGroupId(0)
+                .build();
+        DeleteGroupResponse response = groupServerService.deleteGroupHandler(request);
+        assertFalse(response.getIsSuccess());
+        assertEquals("Deleting group failed: Group does not exist", response.getMessage());
     }
 
 }
