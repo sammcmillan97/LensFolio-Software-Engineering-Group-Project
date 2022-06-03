@@ -112,27 +112,24 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         int groupId = request.getGroupId();
         Group group = groupRepository.findByGroupId(groupId);
         List<Integer> usersIdsToBeAdded = request.getUserIdsList();
-
+        System.out.println("Reached");
         if(group == null) {
+            System.out.println("Group NULL");
             reply.setMessage("Group does not exist");
             reply.setIsSuccess(false);
         } else {
             for (Integer userId : usersIdsToBeAdded) {
-                try {
-                    User user = userAccountsServerService.getUserById(userId);
-                    group.addMember(user);
-                    if (user.getGroups().contains(groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID))) {
-                        removeFromWithoutAGroup(user);
-                    }
-                } catch (NullPointerException e) {
-                    reply.setMessage("User id: " + userId + " does not exist");
-                    reply.setIsSuccess(false);
-                    return reply.build();
+                User user = userAccountsServerService.getUserById(userId);
+                System.out.println(user.toString());
+                group.addMember(user);
+                if (user.getGroups().contains(groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID))) {
+                    removeFromWithoutAGroup(user);
                 }
             }
             groupRepository.save(group);
             reply.setMessage("All members removed successfully");
             reply.setIsSuccess(true);
+            System.out.println("Success");
         }
         return reply.build();
     }
@@ -176,29 +173,23 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         if(group == null) {
             reply.setMessage("Group does not exist");
             reply.setIsSuccess(false);
+            return reply.build();
         } else if (group.getGroupId() == MEMBERS_WITHOUT_GROUP_ID){
             reply.setMessage("Can't remove members from Members without a group group");
             reply.setIsSuccess(false);
-        }
-        else {
+            return reply.build();
+        } else {
             for (Integer userId : usersIdsToBeRemoved) {
-                try {
-                    User user = userAccountsServerService.getUserById(userId);
-                    group.removeMember(user);
-                    if (user.getGroups().size() == 0) {
-                        addToWithoutAGroup(user);
-                    }
-                } catch (NullPointerException e) {
-                    reply.setMessage("User id: " + userId + " does not exist");
-                    reply.setIsSuccess(false);
-                    return reply.build();
+                User user = userAccountsServerService.getUserById(userId);
+                group.removeMember(user);
+                if (user.getGroups().size() == 0) {
+                    addToWithoutAGroup(user);
                 }
             }
-
-            groupRepository.save(group);
-            reply.setMessage("All members removed successfully");
-            reply.setIsSuccess(true);
         }
+        groupRepository.save(group);
+        reply.setMessage("All members removed successfully");
+        reply.setIsSuccess(true);
         return reply.build();
     }
 

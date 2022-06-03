@@ -57,10 +57,11 @@ class GroupServerServiceTests {
     public void setUp() {
         groupRepository.deleteAll();
         userRepository.deleteAll();
-        userRepository.deleteAll();
         testUser = userRepository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
         testId = testUser.getUserId();
         testCreated = testUser.getTimeCreated();
+        testUser.addRole(COURSE_ADMINISTRATOR);
+        testUser.addRole(TEACHER);
     }
 
 
@@ -214,12 +215,13 @@ class GroupServerServiceTests {
     void whenAGroupExists_addOneUser() {
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         usersIdsToBeAdded.add(testUser.getUserId());
+        assertEquals(1, usersIdsToBeAdded.size());
 
         CreateGroupRequest groupRequest = CreateGroupRequest.newBuilder()
                 .setShortName("Short")
                 .setLongName("Looooong")
                 .build();
-        CreateGroupResponse response =  groupServerService.createGroupHandler(groupRequest);
+        groupServerService.createGroupHandler(groupRequest);
         Group group = groupRepository.findByShortName("Short");
 
         assertEquals(0, group.getMembers().size());
@@ -229,9 +231,11 @@ class GroupServerServiceTests {
                 .addAllUserIds(usersIdsToBeAdded)
                 .build();
 
-        AddGroupMembersResponse Response = groupServerService.addGroupMembersHandler(userRequest);
+        AddGroupMembersResponse userResponse = groupServerService.addGroupMembersHandler(userRequest);
         group = groupRepository.findByShortName("Short");
+        System.out.println(userResponse.getMessage());
         assertEquals(1, group.getMembers().size());
+        assertTrue(group.getMembers().contains(testUser));
     }
 
 }

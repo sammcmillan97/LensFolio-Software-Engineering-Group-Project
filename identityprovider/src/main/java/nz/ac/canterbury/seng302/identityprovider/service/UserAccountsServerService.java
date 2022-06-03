@@ -456,9 +456,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     public User getUserById(int userId) {
-        if (repository.existsById(userId)) {
-            return repository.findByUserId(userId);
-        } throw new NullPointerException();
+        System.out.println(userId + "insdie getUserID");
+        return repository.findByUserId(userId);
     }
 
     /**
