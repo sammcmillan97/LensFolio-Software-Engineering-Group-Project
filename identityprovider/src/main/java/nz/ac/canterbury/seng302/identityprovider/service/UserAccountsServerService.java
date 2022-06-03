@@ -34,6 +34,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+    private static final String ALIAS_SORT = "alias";
+    private static final String ROLES_SORT = "roles";
+    private static final String USERNAME_SORT = "username";
+    private static final String NAME_SORT = "name";
 
     @Autowired
     private UserRepository repository;
@@ -106,13 +110,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
-            case ("name") -> //Compare method for ordering by name
+            case (NAME_SORT) -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case ("username") -> // Compare method for ordering by username
+            case (USERNAME_SORT) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
-            case ("alias") -> //compare method for ordering by alias
+            case (ALIAS_SORT) -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
-            case ("roles") -> //Compare method for ordering by roles
+            case (ROLES_SORT) -> //Compare method for ordering by roles
                     this::paginatedUsersRolesSort;
             default -> //Default compare method uses sort by name
                     this::paginatedUsersNameSort;
