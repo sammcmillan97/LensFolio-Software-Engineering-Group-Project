@@ -481,28 +481,15 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      */
     @VisibleForTesting
     UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
-        UserResponse.Builder reply = UserResponse.newBuilder();
+        UserResponse reply;
 
         if (repository.existsById(request.getId())) {
             User user = repository.findByUserId(request.getId());
-            reply.setUsername(user.getUsername())
-                    .setFirstName(user.getFirstName())
-                    .setMiddleName(user.getMiddleName())
-                    .setLastName(user.getLastName())
-                    .setNickname(user.getNickname())
-                    .setBio(user.getBio())
-                    .setPersonalPronouns(user.getPersonalPronouns())
-                    .setEmail(user.getEmail())
-                    .setCreated(user.getTimeCreated())
-                    .setId(user.getUserId())
-                    .addAllRoles(user.getRoles());
-            if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
-            } else {
-                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
-            }
+            reply = user.toUserResponse();
+        } else {
+            reply = UserResponse.newBuilder().build();
         }
-        return reply.build();
+        return reply;
     }
 
     /**

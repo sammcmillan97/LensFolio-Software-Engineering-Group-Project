@@ -195,7 +195,21 @@ class GroupServerServiceTests {
         GetGroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
         assertEquals("ShortName", response.getShortName());
         assertEquals("LongName", response.getLongName());
-    //    assertEquals(group.getMembers(), response.getMembers(UserResponse.USERNAME_FIELD_NUMBER));
+        assertEquals(groupServerService.getAllMembers(group.getMembers()), response.getMembersList());
+    }
+
+    @Test
+    void whenGroupDoesNotExist_getGroupDetails() {
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(0, groups.size());
+
+        GetGroupDetailsRequest request = GetGroupDetailsRequest.newBuilder()
+                .setGroupId(0)
+                .build();
+        GetGroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
+        assertEquals("", response.getShortName());
+        assertEquals("", response.getLongName());
+        assertEquals(0, response.getMembersList().size());
     }
 
 }

@@ -22,6 +22,18 @@ public class GroupsClientService {
     }
 
     /**
+     * Service for getting the group details
+     * @param groupId the id of the group to get the details for
+     * @return the response from the server
+     */
+    public GetGroupDetailsResponse getGroupDetails(final int groupId) {
+        GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder()
+                .setGroupId(groupId)
+                .build();
+        return groupsStub.getGroupDetails(getGroupDetailsRequest);
+    }
+
+    /**
      * Service for deleting a group
      * @param groupId the id of the group to be deleted
      * @return the response from the server

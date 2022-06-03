@@ -216,21 +216,10 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         return validationErrors;
     }
 
-    private List<UserResponse> getAllMembers(Set<User> members) {
+    public List<UserResponse> getAllMembers(Set<User> members) {
         List<UserResponse> userResponses = new ArrayList<>();
         for (User member : members) {
-            UserResponse userResponse = UserResponse.newBuilder()
-                    .setUsername(member.getUsername())
-                    .setFirstName(member.getFirstName())
-                    .setMiddleName(member.getMiddleName())
-                    .setLastName(member.getLastName())
-                    .setBio(member.getBio())
-                    .setPersonalPronouns(member.getPersonalPronouns())
-                    .setEmail(member.getEmail())
-            //        .setProfileImagePath(member.getProfileImagePath())
-            //        .setRoles(member.getUserId(), new ArrayList<>(member.getRoles()).get(member.getUserId()))
-                    .build();
-            userResponses.add(userResponse);
+            userResponses.add(member.toUserResponse());
         }
         return userResponses;
     }
