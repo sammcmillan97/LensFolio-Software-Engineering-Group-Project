@@ -24,7 +24,7 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> members = new HashSet<>();
 
 
