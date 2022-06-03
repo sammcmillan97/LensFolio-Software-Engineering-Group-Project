@@ -21,6 +21,15 @@ public class GroupsClientService {
         return groupsStub.createGroup(createGroupRequest);
     }
 
+    public ModifyGroupDetailsResponse modifyGroupDetails(final int groupId, final String shortName, final String longName) {
+        ModifyGroupDetailsRequest modifyGroupDetailsRequest = ModifyGroupDetailsRequest.newBuilder()
+                .setGroupId(groupId)
+                .setShortName(shortName)
+                .setLongName(longName)
+                .build();
+        return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
+    }
+
     /**
      * Service for deleting a group
      * @param groupId the id of the group to be deleted
