@@ -61,4 +61,16 @@ public class GroupsClientService {
         PaginatedGroupsResponse response = groupsStub.getPaginatedGroups(getPaginatedGroupsRequest);
         return new GroupListResponse(response);
     }
+
+    /**
+     * Gets all groups in a list of group responses. Uses the getPaginatedGroups method twice, first to get the number of
+     * groups in the database, then to get all groups
+     * @return A list of group responses, ordered by short name, in ascending order
+     */
+    public GroupListResponse getAllGroups() {
+        GroupListResponse response = getPaginatedGroups(0, 1, "short", true);
+        int numGroupsInDb = response.getResultSetSize();
+        return getPaginatedGroups(0, numGroupsInDb, "short", true);
+
+    }
 }

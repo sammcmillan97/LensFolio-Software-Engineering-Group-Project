@@ -39,8 +39,6 @@ class GroupsServerServiceTests {
 
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
-    private static final String testLongName = "Franks Team";
-    private static final String testShortName = "Team 1";
     private static final int testParentProjectId = 1;
     private int testGroupId;
     @BeforeEach
@@ -348,7 +346,6 @@ class GroupsServerServiceTests {
      * This method is to add groups to the repository for certain tests as some require the repository being empty
      */
     void setupForPaginationTests() {
-        groupRepository.deleteAll();
         User testUser1 = new User("testUser1", "Frank", "Frankie", "McFrank", "Frankie", "I am Frank", "he/him", "frank@frank.com", "frank123");
         User testUser2 = new User("testUser2", "Frank2", "Frankie2", "McFrank2", "Frankie2", "I am Frank2", "he/him", "frank2@frank.com", "frank123");
         User testUser3 = new User("testUser3", "Frank3", "Frankie3", "McFrank3", "Frankie3", "I am Frank3", "he/him", "frank3@frank.com", "frank123");
