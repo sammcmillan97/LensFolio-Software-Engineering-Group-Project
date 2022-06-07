@@ -483,8 +483,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param request A get user by id request according to user_accounts.proto
      * @return A user response according to user_accounts.proto
      */
-    @VisibleForTesting
-    UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
+    public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
         UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
