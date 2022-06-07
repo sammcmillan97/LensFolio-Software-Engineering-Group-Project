@@ -3,14 +3,13 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
+import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,9 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.AfterTransaction;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -33,6 +29,9 @@ class GroupsServerServiceTests {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Spy
     @Autowired
@@ -47,6 +46,7 @@ class GroupsServerServiceTests {
     @BeforeEach
     public void setUp() {
         groupRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     /**
