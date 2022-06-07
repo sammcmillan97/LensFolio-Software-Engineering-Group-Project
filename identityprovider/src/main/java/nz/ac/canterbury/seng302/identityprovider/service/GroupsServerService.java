@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @GrpcService
-public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase {
+public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase {
 
     private static final String SHORT_NAME_FIELD = "shortName";
     private static final String LONG_NAME_FIELD = "longName";
@@ -227,7 +228,8 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
      * @param request The request from the user sent from GroupsClientService to request a paginated list of groupResponses
      * @return paginatedGroupResponse a list of group responses and the size of the original list of groups before pagination
      */
-    private PaginatedGroupsResponse getPaginatedGroupsHandler(GetPaginatedGroupsRequest request) {
+    @VisibleForTesting
+    protected PaginatedGroupsResponse getPaginatedGroupsHandler(GetPaginatedGroupsRequest request) {
         PaginatedGroupsResponse.Builder reply = PaginatedGroupsResponse.newBuilder();
         // Get all groups from the database
         Iterable<Group> groups = groupRepository.findAll();
@@ -267,7 +269,7 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
             }
             count += 1;
         }
-        
+
         // Add sorted, ordered and paginated list of groups
         reply.addAllGroups(paginatedGroupDetailsResponses);
 

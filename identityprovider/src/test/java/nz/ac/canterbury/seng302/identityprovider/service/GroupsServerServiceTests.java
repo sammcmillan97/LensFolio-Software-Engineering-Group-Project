@@ -1,20 +1,32 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
+import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.AfterTransaction;
+
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @SpringBootTest
 class GroupsServerServiceTests {
@@ -24,11 +36,14 @@ class GroupsServerServiceTests {
 
     @Spy
     @Autowired
-    private GroupServerService groupServerService;
+    private GroupsServerService groupServerService;
 
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
-
+    private static final String testLongName = "Franks Team";
+    private static final String testShortName = "Team 1";
+    private static final int testParentProjectId = 1;
+    private int testGroupId;
     @BeforeEach
     public void setUp() {
         groupRepository.deleteAll();
@@ -294,7 +309,7 @@ class GroupsServerServiceTests {
         assertEquals("Modify group failed: Validation failed",response.getMessage());
         assertEquals("Long name must be less than " + LONG_NAME_MAX_LENGTH + "chars", response.getValidationErrors(0).getErrorText());
         assertEquals("longName", response.getValidationErrors(0).getFieldName());
-        assertEquals("BiggerNameBiggerName", groupRepository.findByGroupId(existingGroupId).getLongName());;
+        assertEquals("BiggerNameBiggerName", groupRepository.findByGroupId(existingGroupId).getLongName());
     }
 
     /**
@@ -329,4 +344,74 @@ class GroupsServerServiceTests {
         assertEquals("Deleting group failed: Group does not exist", response.getMessage());
     }
 
+    /**
+     * This method is to add groups to the repository for certain tests as some require the repository being empty
+     */
+    void setupForPaginationTests() {
+        groupRepository.deleteAll();
+        User testUser1 = new User("testUser1", "Frank", "Frankie", "McFrank", "Frankie", "I am Frank", "he/him", "frank@frank.com", "frank123");
+        User testUser2 = new User("testUser2", "Frank2", "Frankie2", "McFrank2", "Frankie2", "I am Frank2", "he/him", "frank2@frank.com", "frank123");
+        User testUser3 = new User("testUser3", "Frank3", "Frankie3", "McFrank3", "Frankie3", "I am Frank3", "he/him", "frank3@frank.com", "frank123");
+        Group testGroup1 = new Group("Group 1", "Test group 1 long name", testParentProjectId);
+        Group testGroup2 = new Group("Group 2", "Test group 2 long name", testParentProjectId);
+        Group testGroup3 = new Group("Group 3", "Test group 3 long name", testParentProjectId);
+        testGroup1.addMember(testUser1);
+        testGroup1.addMember(testUser2);
+        testGroup1.addMember(testUser3);
+        testGroup2.addMember(testUser1);
+        testGroup2.addMember(testUser2);
+        testGroup3.addMember(testUser1);
+        groupRepository.save(testGroup1);
+        groupRepository.save(testGroup2);
+        groupRepository.save(testGroup3);
+
+        testGroupId = testGroup1.getGroupId();
+    }
+
+    // Test that getting the group by id fails if the group doesn't exist
+    @Test
+    void getGroupByIdWhenGroupDoesntExist() {
+        GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder().setGroupId(-1).build();
+        GroupDetailsResponse response = groupServerService.getGroupByIdHandler(getGroupDetailsRequest);
+        assertEquals("", response.getLongName());
+        assertEquals("", response.getShortName());
+        assertEquals(new ArrayList<>(), response.getMembersList());
+    }
+
+    // Test that getting the group by id succeeds if the group exists
+    @Test
+    void getGroupByIdWhenGroupExists() {
+        setupForPaginationTests();
+        GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder().setGroupId(testGroupId).build();
+        GroupDetailsResponse response = groupServerService.getGroupByIdHandler(getGroupDetailsRequest);
+        assertEquals("Test group 1 long name", response.getLongName());
+        assertEquals("Group 1", response.getShortName());
+        assertEquals(3, response.getMembersCount());
+    }
+
+    // Provides arguments for the parameterized tests for paginated groups
+    static Stream<Arguments> paginatedGroupsTestParamProvider() {
+        return Stream.of(
+                // All tests have a list of 3 groups
+                arguments(1, 9999, 2), // Tests that the offset of 1 returns a list of 2 groups
+                arguments(0, 0, 0), // Tests that a limit of 0 returns 0 groups
+                arguments(0, 1, 1), // Tests that a limit of 1 returns 1 group
+                arguments(3, 9999, 0) // Tests that an offset higher than the number of groups returns 0 groups
+        );
+    }
+
+    // Tests that the offset and limit options for pagination work as expected. See above method for test cases
+    @ParameterizedTest
+    @MethodSource("paginatedGroupsTestParamProvider")
+    void getPaginatedGroups(int offset, int limit, int expectedGroupListSize) {
+        setupForPaginationTests();
+        GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy("short")
+                .setIsAscendingOrder(true)
+                .build();
+        PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
+        assertEquals(expectedGroupListSize, response.getGroupsList().size());
+    }
 }
