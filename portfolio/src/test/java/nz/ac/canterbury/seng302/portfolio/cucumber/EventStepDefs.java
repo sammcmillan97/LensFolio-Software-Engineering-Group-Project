@@ -13,17 +13,17 @@ public class EventStepDefs {
     @Given("an event has name {string}")
     public void anEventHasName(String name) {
         event = new Event();
-        event.setName(name);
+        event.setEventName(name);
     }
 
     @When("name is changed to {string}")
     public void nameIsChangedTo(String name) {
-        event.setName(name);
+        event.setEventName(name);
     }
 
 
     @Then("name is {string}")
     public void nameIs(String name) {
-        assertEquals(name, event.getName());
+        assertEquals(name, event.getEventName());
     }
 }
