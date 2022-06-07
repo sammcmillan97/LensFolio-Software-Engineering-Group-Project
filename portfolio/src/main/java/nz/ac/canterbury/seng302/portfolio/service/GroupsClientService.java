@@ -68,7 +68,7 @@ public class GroupsClientService {
      * @return A list of group responses, ordered by short name, in ascending order
      */
     public GroupListResponse getAllGroups() {
-        GroupListResponse response = getPaginatedGroups(0, 1, "short", true);
+        GroupListResponse response = getPaginatedGroups(0, 0, "short", true);
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
