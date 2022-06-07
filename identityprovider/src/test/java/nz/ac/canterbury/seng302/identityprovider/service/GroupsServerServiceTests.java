@@ -352,9 +352,9 @@ class GroupsServerServiceTests {
         User testUser1 = new User("testUser1", "Frank", "Frankie", "McFrank", "Frankie", "I am Frank", "he/him", "frank@frank.com", "frank123");
         User testUser2 = new User("testUser2", "Frank2", "Frankie2", "McFrank2", "Frankie2", "I am Frank2", "he/him", "frank2@frank.com", "frank123");
         User testUser3 = new User("testUser3", "Frank3", "Frankie3", "McFrank3", "Frankie3", "I am Frank3", "he/him", "frank3@frank.com", "frank123");
-        Group testGroup1 = new Group("Group 1", "Test group 1 long name", testParentProjectId);
-        Group testGroup2 = new Group("Group 2", "Test group 2 long name", testParentProjectId);
-        Group testGroup3 = new Group("Group 3", "Test group 3 long name", testParentProjectId);
+        Group testGroup1 = new Group("Group 1", "cTest group 1 long name", testParentProjectId);
+        Group testGroup2 = new Group("Group 2", "aTest group 2 long name", testParentProjectId);
+        Group testGroup3 = new Group("Group 3", "bTest group 3 long name", testParentProjectId);
         testGroup1.addMember(testUser1);
         testGroup1.addMember(testUser2);
         testGroup1.addMember(testUser3);
@@ -384,7 +384,7 @@ class GroupsServerServiceTests {
         setupForPaginationTests();
         GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder().setGroupId(testGroupId).build();
         GroupDetailsResponse response = groupServerService.getGroupByIdHandler(getGroupDetailsRequest);
-        assertEquals("Test group 1 long name", response.getLongName());
+        assertEquals("cTest group 1 long name", response.getLongName());
         assertEquals("Group 1", response.getShortName());
         assertEquals(3, response.getMembersCount());
     }
@@ -403,7 +403,7 @@ class GroupsServerServiceTests {
     // Tests that the offset and limit options for pagination work as expected. See above method for test cases
     @ParameterizedTest
     @MethodSource("paginatedGroupsTestParamProvider")
-    void getPaginatedGroups(int offset, int limit, int expectedGroupListSize) {
+    void getPaginatedGroupsTest(int offset, int limit, int expectedGroupListSize) {
         setupForPaginationTests();
         GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
                 .setOffset(offset)
@@ -413,5 +413,69 @@ class GroupsServerServiceTests {
                 .build();
         PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
         assertEquals(expectedGroupListSize, response.getGroupsList().size());
+    }
+
+    // Tests that sort by group short name works correctly
+    @Test
+    void getPaginatedGroupsSortByShortName() {
+        setupForPaginationTests();
+        GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("short")
+                .setIsAscendingOrder(true)
+                .build();
+        PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
+        assertEquals("Group 1", response.getGroupsList().get(0).getShortName());
+        assertEquals("Group 2", response.getGroupsList().get(1).getShortName());
+        assertEquals("Group 3", response.getGroupsList().get(2).getShortName());
+    }
+
+    // Tests that sort by group long name works correctly
+    @Test
+    void getPaginatedGroupsSortByLongName() {
+        setupForPaginationTests();
+        GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("long")
+                .setIsAscendingOrder(true)
+                .build();
+        PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
+        assertEquals("Group 2", response.getGroupsList().get(0).getShortName());
+        assertEquals("Group 3", response.getGroupsList().get(1).getShortName());
+        assertEquals("Group 1", response.getGroupsList().get(2).getShortName());
+    }
+
+    // Tests that sort by group short name works correctly
+    @Test
+    void getPaginatedGroupsSortByNumMembers() {
+        setupForPaginationTests();
+        GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("members")
+                .setIsAscendingOrder(true)
+                .build();
+        PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
+        assertEquals("Group 3", response.getGroupsList().get(0).getShortName());
+        assertEquals("Group 2", response.getGroupsList().get(1).getShortName());
+        assertEquals("Group 1", response.getGroupsList().get(2).getShortName());
+    }
+
+    // Tests that sort by group short name works correctly
+    @Test
+    void getPaginatedGroupsSortByNumMembersDescending() {
+        setupForPaginationTests();
+        GetPaginatedGroupsRequest getPaginatedGroupsRequest = GetPaginatedGroupsRequest.newBuilder()
+                .setOffset(0)
+                .setLimit(9999)
+                .setOrderBy("members")
+                .setIsAscendingOrder(false)
+                .build();
+        PaginatedGroupsResponse response = groupServerService.getPaginatedGroupsHandler(getPaginatedGroupsRequest);
+        assertEquals("Group 1", response.getGroupsList().get(0).getShortName());
+        assertEquals("Group 2", response.getGroupsList().get(1).getShortName());
+        assertEquals("Group 3", response.getGroupsList().get(2).getShortName());
     }
 }
