@@ -57,9 +57,8 @@ public class SprintService {
         return sprintsByParentProject;
     }
 
-    public Sprint saveSprint(Sprint sprint) {
-        projectEditsService.refreshProject(sprint.getParentProjectId());
-        return repository.save(sprint);
+    public void saveSprint(Sprint sprint) {
+        repository.save(sprint);
     }
 
     public void deleteById(int sprintId) {

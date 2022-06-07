@@ -49,6 +49,8 @@
     flex-grow: 1;
     width:calc(100% - 10px);
     border: 1px solid var(--color-accent);
+    display: flex;
+    justify-content: space-between;
 }
 
 .sprint-block {
@@ -86,7 +88,7 @@
 }
 
 * {
-    font-family: 'Helvetica';
+    font-family: 'Helvetica', serif;
     box-sizing: inherit;
 }
 
@@ -121,11 +123,6 @@ body {
     border: none;
     background-color: #e61610;
     color: white;
-}
-
-.detail-block {
-    display: flex;
-    justify-content: space-between;
 }
 
 a {
