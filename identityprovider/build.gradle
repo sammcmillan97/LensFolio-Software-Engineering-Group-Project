@@ -89,7 +89,7 @@ dependencies {
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
-    forkEvery = 1
+    maxParallelForks = 1
 }
 
 configurations {
