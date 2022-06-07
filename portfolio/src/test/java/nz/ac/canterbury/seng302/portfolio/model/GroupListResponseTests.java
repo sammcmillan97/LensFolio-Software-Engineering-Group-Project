@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GroupListResponseTests {
+class GroupListResponseTests {
     // Tests that creating a GroupListResponse from a PaginatedGroupResponse carries all the information over properly.
     @Test
     void testCreateGroupListResponse() {
@@ -28,10 +28,6 @@ public class GroupListResponseTests {
         GroupListResponse response = new GroupListResponse(source);
         assertEquals(source.getResultSetSize(), response.getResultSetSize());
         assertEquals(new Group(groupDetailsResponse), response.getGroups().get(0));
-//        assertEquals(groupDetailsResponse.getGroupId(), response.getGroups().get(0).getGroupId());
-//        assertEquals(groupDetailsResponse.getLongName(), response.getGroups().get(0).getLongName());
-//        assertEquals(groupDetailsResponse.getShortName(), response.getGroups().get(0).getShortName());
-//        assertEquals(groupDetailsResponse.getMembers(0).getFirstName(), response.getGroups().get(0).getMembers().get(0).getFirstName());
 
 
     }

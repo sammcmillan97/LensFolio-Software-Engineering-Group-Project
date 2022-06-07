@@ -1,10 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
-import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-@SpringBootTest
-public class GroupTests {
+class GroupTests {
 
     // Test that groups are equal with all properties
     @Test
@@ -89,7 +86,7 @@ public class GroupTests {
         assertEquals(group, group2);
     }
 
-    // Test that the groups aren't equal when their ids don't match
+    // Test that the groups aren't equal when their user lists don't match
     @Test
     void testUsersUnequalWhenUsersDifferent() {
         List<UserResponse> members = new ArrayList<>();
@@ -102,7 +99,7 @@ public class GroupTests {
         assertNotEquals(group, group2);
     }
 
-    // Test that the users are equal when their ids match
+    // Test that the users are equal when their user lists match
     @Test
     void testUsersEqualWhenUsersSame() {
         List<UserResponse> members = new ArrayList<>();
