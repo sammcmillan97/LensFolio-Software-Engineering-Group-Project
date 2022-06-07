@@ -30,6 +30,7 @@ public class User {
     private Timestamp created;
     private String profileImagePath;
     private int id;
+    private Object userObject;
 
     /**
      * Create a user based on a UserResponse from the identity provider.
@@ -171,5 +172,29 @@ public class User {
         formattedDate += months + monthPlural + ")";
 
         return formattedDate;
+    }
+
+    /**
+     * Checks if all the variables of two user objects are the same
+     * @param userObject The user to check against
+     * @return true if the users are identical
+     */
+    public boolean equals(Object userObject) {
+        if (userObject == null) return false;
+        if (userObject == this) return true;
+        if (!(userObject instanceof User user)) return false;
+        return this.firstName.equals(user.firstName)
+                && this.middleName.equals(user.middleName)
+                && this.lastName.equals(user.lastName)
+                && this.bio.equals(user.bio)
+                && this.email.equals(user.email)
+                && this.username.equals(user.username)
+                && this.nickname.equals(user.nickname)
+                && this.personalPronouns.equals(user.personalPronouns)
+                && this.roles.equals(user.roles)
+                && this.created.equals(user.created)
+                && this.profileImagePath.equals(user.profileImagePath)
+                && this.id == user.id;
+
     }
 }

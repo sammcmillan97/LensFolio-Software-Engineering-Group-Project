@@ -12,8 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserTests {
@@ -174,7 +173,7 @@ class UserTests {
         assertEquals(expected, testUser.getMemberSince());
     }
 
-    // Test that when a user is two years and one month old the end of getMemberSince says 2 years 1 month
+    // Test that when a user is two years and one month old, the end of getMemberSince says 2 years 1 month
     @Test
     void testGetMemberSinceWithTwoYearsOneMonth() {
         Instant time = Instant.now().minus(770, ChronoUnit.DAYS);
@@ -189,4 +188,60 @@ class UserTests {
         assertEquals(expected, testUser.getMemberSince());
     }
 
+    // Test that the users aren't equal when their first names don't match
+    @Test
+    void testUsersUnequalWhenFirstNamesDifferent() {
+        UserResponse response = UserResponse.newBuilder().setFirstName("Frank").build();
+        UserResponse response2 = UserResponse.newBuilder().setFirstName("Franklin").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their first names match
+    @Test
+    void testUsersEqualWhenFirstNamesSame() {
+        UserResponse response = UserResponse.newBuilder().setFirstName("Frank").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their middle names don't match
+    @Test
+    void testUsersUnequalWhenMiddleNamesDifferent() {
+        UserResponse response = UserResponse.newBuilder().setMiddleName("Frank").build();
+        UserResponse response2 = UserResponse.newBuilder().setMiddleName("Franklin").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their middle names match
+    @Test
+    void testUsersEqualWhenMiddleNamesSame() {
+        UserResponse response = UserResponse.newBuilder().setMiddleName("Frank").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their last names don't match
+    @Test
+    void testUsersUnequalWhenLastNamesDifferent() {
+        UserResponse response = UserResponse.newBuilder().setLastName("Frank").build();
+        UserResponse response2 = UserResponse.newBuilder().setLastName("Franklin").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their last names match
+    @Test
+    void testUsersEqualWhenLastNamesSame() {
+        UserResponse response = UserResponse.newBuilder().setLastName("Frank").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
 }
