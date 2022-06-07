@@ -244,4 +244,197 @@ class UserTests {
         User user2 = new User(response);
         assertEquals(user, user2);
     }
+
+    // Test that the users aren't equal when their bios don't match
+    @Test
+    void testUsersUnequalWhenBioDifferent() {
+        UserResponse response = UserResponse.newBuilder().setBio("Frank").build();
+        UserResponse response2 = UserResponse.newBuilder().setBio("Franklin").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their bios match
+    @Test
+    void testUsersEqualWhenBioSame() {
+        UserResponse response = UserResponse.newBuilder().setBio("Frank").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their emails don't match
+    @Test
+    void testUsersUnequalWhenEmailsDifferent() {
+        UserResponse response = UserResponse.newBuilder().setEmail("frank@gmail.com").build();
+        UserResponse response2 = UserResponse.newBuilder().setEmail("frank@hotmail.com").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their emails match
+    @Test
+    void testUsersEqualWhenLastEmailsSame() {
+        UserResponse response = UserResponse.newBuilder().setEmail("frank@gmail.com").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their usernames don't match
+    @Test
+    void testUsersUnequalWhenUsernamesDifferent() {
+        UserResponse response = UserResponse.newBuilder().setUsername("Frank123").build();
+        UserResponse response2 = UserResponse.newBuilder().setUsername("Franklinabc123").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their usernames match
+    @Test
+    void testUsersEqualWhenUsernamesSame() {
+        UserResponse response = UserResponse.newBuilder().setUsername("Frank123").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their nicknames don't match
+    @Test
+    void testUsersUnequalWhenNicknamesDifferent() {
+        UserResponse response = UserResponse.newBuilder().setNickname("Frank").build();
+        UserResponse response2 = UserResponse.newBuilder().setNickname("Franklin").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their nicknames match
+    @Test
+    void testUsersEqualWhenNicknamesSame() {
+        UserResponse response = UserResponse.newBuilder().setNickname("Frank").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their personal pronouns don't match
+    @Test
+    void testUsersUnequalWhenPronounsDifferent() {
+        UserResponse response = UserResponse.newBuilder().setPersonalPronouns("he/him").build();
+        UserResponse response2 = UserResponse.newBuilder().setPersonalPronouns("she/her").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their personal pronouns match
+    @Test
+    void testUsersEqualWhenPronounsSame() {
+        UserResponse response = UserResponse.newBuilder().setPersonalPronouns("he/him").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their ids don't match
+    @Test
+    void testUsersUnequalWhenIdsDifferent() {
+        UserResponse response = UserResponse.newBuilder().setId(1).build();
+        UserResponse response2 = UserResponse.newBuilder().setId(2).build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their ids match
+    @Test
+    void testUsersEqualWhenIdsSame() {
+        UserResponse response = UserResponse.newBuilder().setId(1).build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their profile image paths don't match
+    @Test
+    void testUsersUnequalWhenImagePathsDifferent() {
+        UserResponse response = UserResponse.newBuilder().setProfileImagePath("/images/1").build();
+        UserResponse response2 = UserResponse.newBuilder().setProfileImagePath("/images/2").build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their profile image paths match
+    @Test
+    void testUsersEqualWhenImagePathsSame() {
+        UserResponse response = UserResponse.newBuilder().setProfileImagePath("/images/1").build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their roles don't match
+    @Test
+    void testUsersUnequalWhenRolesDifferent() {
+        UserResponse response = UserResponse.newBuilder().addRoles(UserRole.STUDENT).build();
+        UserResponse response2 = UserResponse.newBuilder().addRoles(UserRole.TEACHER).addRoles(UserRole.STUDENT).build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their roles match
+    @Test
+    void testUsersEqualWhenRolesSame() {
+        UserResponse response = UserResponse.newBuilder().addRoles(UserRole.STUDENT).build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users aren't equal when their timestamps don't match
+    @Test
+    void testUsersUnequalWhenTimestampsDifferent() {
+        UserResponse response = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(5)).build();
+        UserResponse response2 = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(10)).build();
+        User user = new User(response);
+        User user2 = new User(response2);
+        assertNotEquals(user, user2);
+    }
+
+    // Test that the users are equal when their timestamps match
+    @Test
+    void testUsersEqualWhenTimestampsSame() {
+        UserResponse response = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(5)).build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
+
+    // Test that the users are equal with all properties
+    @Test
+    void testUsersEqualAllProperties() {
+        UserResponse response = UserResponse.newBuilder()
+                .setUsername("frank123")
+                .setFirstName("Frank")
+                .setMiddleName("Franks")
+                .setLastName("McFrank")
+                .setNickname("Frankie")
+                .setBio("I am Frank")
+                .setPersonalPronouns("Frank/Frank")
+                .setEmail("frank@frank.com")
+                .setCreated(Timestamp.newBuilder().setSeconds(5).build())
+                .setProfileImagePath("/images/frank123")
+                .addRoles(UserRole.COURSE_ADMINISTRATOR)
+                .setId(1)
+                .build();
+        User user = new User(response);
+        User user2 = new User(response);
+        assertEquals(user, user2);
+    }
 }
