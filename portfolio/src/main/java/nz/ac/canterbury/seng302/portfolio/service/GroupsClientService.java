@@ -72,5 +72,5 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
-    }
+    } 
 }
