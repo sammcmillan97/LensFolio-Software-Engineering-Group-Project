@@ -278,7 +278,4 @@ public class User {
         return Timestamp.newBuilder().setSeconds(time.getEpochSecond())
                 .setNanos(time.getNano()).build();
     }
-
-
-
 }

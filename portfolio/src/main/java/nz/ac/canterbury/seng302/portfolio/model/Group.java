@@ -3,8 +3,8 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Group {
 
@@ -12,7 +12,7 @@ public class Group {
     private String shortName;
     private String longName;
     private int parentProject;
-    private Set<User> members = new HashSet<>();
+    private List<User> members = new ArrayList<>();
 
     /**
      * Create a group based on a GroupDetailsResponse from the identity provider.
@@ -60,7 +60,19 @@ public class Group {
         this.parentProject = parentProject;
     }
 
-    public Set<User> getMembers() {
+    public List<User> getMembers() {
         return members;
+    }
+
+    public boolean equals(Object groupObject) {
+        if (groupObject == null) return false;
+        if (groupObject == this) return true;
+        if (!(groupObject instanceof Group group)) return false;
+        return this.groupId == group.groupId
+                && this.parentProject == group.parentProject
+                && this.shortName.equals(group.shortName)
+                && this.longName.equals(group.longName)
+                && this.members.equals(group.members);
+
     }
 }

@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Group;
+import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -33,8 +34,8 @@ public class GroupsController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
-//        List<Group> groups = groupsClientService.getAllGroups();
-//        model.addAttribute("groups", groups);
+        GroupListResponse groups = groupsClientService.getAllGroups();
+        model.addAttribute("groups", groups.getGroups());
         return "groups";
     }
 }

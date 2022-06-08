@@ -483,8 +483,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param request A get user by id request according to user_accounts.proto
      * @return A user response according to user_accounts.proto
      */
-    @VisibleForTesting
-    UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
+    public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
         UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
@@ -723,7 +722,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Pattern pronounsPattern = Pattern.compile(".{1,15}/.{1,15}"); // matches any/any
         Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
         boolean validPronouns = pronounsMatcher.find();
 
@@ -747,7 +746,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Pattern emailPattern = Pattern.compile(".{1,50}@.{1,50}\\..{1,50}"); // matches any@any.any
         Matcher emailMatcher = emailPattern.matcher(email);
         boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
@@ -782,7 +781,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
-            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
