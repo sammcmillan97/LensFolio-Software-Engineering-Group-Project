@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,9 @@ public class LoginController {
     @Autowired
     private AuthenticateClientService authenticateClientService;
 
+    private static final String COOKIE_NAME = "lens-session-token";
+    private static final String LOGIN = "login";
+
     /**
      * Gets the mapping to the login page html and renders it
      * @param response Login response
@@ -34,9 +36,9 @@ public class LoginController {
     public String login(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
-                "lens-session-token"
+                COOKIE_NAME
         );
-        return "login";
+        return LOGIN;
     }
 
     /**
@@ -44,13 +46,13 @@ public class LoginController {
      * @param response Login response
      * @return the mapping to the login html page.
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
-                "lens-session-token"
+                COOKIE_NAME
         );
-        return "redirect:/login";
+        return "redirect:/" + LOGIN;
     }
 
     /**
@@ -84,13 +86,13 @@ public class LoginController {
             loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
         } catch (StatusRuntimeException e){
             model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-            return "login";
+            return LOGIN;
         }
         if (loginReply.getSuccess()) {
             var domain = request.getHeader("host");
             CookieUtil.create(
                 response,
-                "lens-session-token",
+                    COOKIE_NAME,
                     loginReply.getToken(),
                 true,
                 5 * 60 * 60, // Expires in 5 hours
@@ -99,7 +101,7 @@ public class LoginController {
             return "redirect:/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());
-            return "login";
+            return LOGIN;
         }
     }
 

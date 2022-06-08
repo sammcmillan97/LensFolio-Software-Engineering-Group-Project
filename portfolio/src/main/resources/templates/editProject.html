@@ -5,7 +5,7 @@
     <title>Edit Project</title>
     <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
     <link th:href="@{styles/addEditProject.css}" rel="stylesheet" />
-    <script rel="script" th:src="@{scripts/addEditProject.js}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
     <script th:inline="javascript">
         let projectFirstSprintStartDate
         let projectLastSprintEndDate
@@ -26,6 +26,8 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
+        <div id="projectId" style="display: none;" th:text="${projectId}"></div>
+        <div id="nameOfEdited" style="display: none;" th:text="${projectName}"></div>
         <div id="project-form__wrapper">
             <!-- Name, Date -->
             <header class="project-form__header flex-column">
@@ -51,5 +53,7 @@
             </form>
         </div>
     </div>
+    <script rel="script" th:src="@{scripts/addEditProject.js}"></script>
+    <script rel="script" th:src="@{scripts/sendProjectEditNotifications.js}"></script>
 </body>
 </html>

@@ -7,7 +7,6 @@ import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +32,11 @@ public class EditSprintController {
     ProjectService projectService;
     @Autowired
     SprintService sprintService;
+
+    private static final String PROJECTS_REDIRECT = "redirect:/projects";
+    private static final String EDIT_PROJECT_REDIRECT = "redirect:/editProject-";
+    private static final String PROJECT_DETAILS_REDIRECT = "redirect:/projectDetails-";
+    private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
 
     /**
      * Method to return a calendar object representing the very beginning of a day
@@ -60,7 +64,6 @@ public class EditSprintController {
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -102,7 +105,6 @@ public class EditSprintController {
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
 
@@ -183,9 +185,9 @@ public class EditSprintController {
     public String sprintForm(@AuthenticationPrincipal AuthState principal,
                              @PathVariable("parentProjectId") String parentProjectId,
                              @PathVariable("sprintId") String sprintId,
-                             Model model) throws Exception {
+                             Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return PROJECTS_REDIRECT;
         }
 
         // Add user details to model
@@ -232,12 +234,12 @@ public class EditSprintController {
         model.addAttribute("sprintName", sprint.getName());
         model.addAttribute("sprintLabel", sprint.getLabel());
         model.addAttribute("sprintDescription", sprint.getDescription());
-        model.addAttribute("sprintStartDate", Project.dateToString(sprint.getStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("sprintEndDate", Project.dateToString(sprint.getEndDate(), "yyyy-MM-dd"));
+        model.addAttribute("sprintStartDate", Project.dateToString(sprint.getStartDate(), DATE_FORMAT_STRING));
+        model.addAttribute("sprintEndDate", Project.dateToString(sprint.getEndDate(), DATE_FORMAT_STRING));
 
         // Add date boundaries for sprint to model
-        model.addAttribute("minSprintStartDate", Project.dateToString(getMinSprintStartDate(projectId, sprint.getNumber()), "yyyy-MM-dd"));
-        model.addAttribute("maxSprintEndDate", Project.dateToString(getMaxSprintEndDate(projectId, sprint.getNumber()), "yyyy-MM-dd"));
+        model.addAttribute("minSprintStartDate", Project.dateToString(getMinSprintStartDate(projectId, sprint.getNumber()), DATE_FORMAT_STRING));
+        model.addAttribute("maxSprintEndDate", Project.dateToString(getMaxSprintEndDate(projectId, sprint.getNumber()), DATE_FORMAT_STRING));
 
         /* Return the name of the Thymeleaf template */
         return "editSprint";
@@ -252,7 +254,6 @@ public class EditSprintController {
      * @param sprintStartDate The start date of the sprint being edited
      * @param sprintEndDate The end date of the sprint being edited
      * @param sprintDescription The description of the sprint being edited
-     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The edit sprints page
      */
     @PostMapping("/editSprint-{sprintId}-{parentProjectId}")
@@ -263,11 +264,10 @@ public class EditSprintController {
             @RequestParam(value="sprintName") String sprintName,
             @RequestParam(value="sprintStartDate") java.sql.Date sprintStartDate,
             @RequestParam(value="sprintEndDate") java.sql.Date sprintEndDate,
-            @RequestParam(value="sprintDescription") String sprintDescription,
-            Model model
+            @RequestParam(value="sprintDescription") String sprintDescription
     ) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return PROJECTS_REDIRECT;
         }
 
         // Ensure request parameters represent a valid sprint.
@@ -279,7 +279,7 @@ public class EditSprintController {
             sprintId = Integer.parseInt(sprintIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            return "redirect:/projects";
+            return PROJECTS_REDIRECT;
         }
 
         // Get sprint number
@@ -295,12 +295,12 @@ public class EditSprintController {
                 sprintNumber = getNextSprintNumber(projectId);
             }
         } catch (Exception e) {
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return EDIT_PROJECT_REDIRECT + projectId + "-" + sprintId;
         }
 
         // Ensure required fields are not null
         if (sprintName == null || sprintStartDate == null || sprintEndDate == null) {
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return EDIT_PROJECT_REDIRECT + projectId + "-" + sprintId;
         }
 
         // Ensure sprint dates are within bounds
@@ -313,19 +313,19 @@ public class EditSprintController {
         Calendar minSprintStart = getCalendarDay();
         minSprintStart.setTime(Objects.requireNonNull(getMinSprintStartDate(projectId, sprintNumber)));
         if (sprintStartCal.before(minSprintStart)) {
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return EDIT_PROJECT_REDIRECT + projectId + "-" + sprintId;
         }
 
         // Check sprint ends before project end and all following sprints
         Calendar maxSprintEnd = getCalendarDay();
         maxSprintEnd.setTime(Objects.requireNonNull(getMaxSprintEndDate(projectId, sprintNumber)));
         if (sprintEndCal.after(maxSprintEnd)) {
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return EDIT_PROJECT_REDIRECT + projectId + "-" + sprintId;
         }
 
         // Ensure sprintEndDate occurs after sprintStartDate
         if (!sprintEndCal.after(sprintStartCal)) {
-            return "redirect:/projects/edit/" + projectId + "/" + sprintId;
+            return EDIT_PROJECT_REDIRECT + projectId + "-" + sprintId;
         }
 
         //Try to find existing sprint and update if exists. Catch 'not found' error and save new sprint.
@@ -342,7 +342,7 @@ public class EditSprintController {
             sprintService.saveSprint(newSprint);
         }
 
-        return "redirect:/projectDetails-" + projectIdString;
+        return PROJECT_DETAILS_REDIRECT + projectIdString;
     }
 
     /**
@@ -355,15 +355,15 @@ public class EditSprintController {
     @DeleteMapping(value="/editSprint-{sprintId}-{parentProjectId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,
-                                    @PathVariable("sprintId") String sprintId) throws Exception {
+                                    @PathVariable("sprintId") String sprintId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return PROJECTS_REDIRECT;
         }
 
         int sprintNumber = sprintService.getSprintById(Integer.parseInt(sprintId)).getNumber();
         decrementSprintNumbersGreaterThan(Integer.parseInt(parentProjectId), sprintNumber);
         sprintService.deleteById(Integer.parseInt(sprintId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return PROJECT_DETAILS_REDIRECT + parentProjectId;
     }
 
 }
