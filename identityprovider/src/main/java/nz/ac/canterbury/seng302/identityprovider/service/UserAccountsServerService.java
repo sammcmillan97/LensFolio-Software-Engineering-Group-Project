@@ -455,8 +455,14 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return reply.build();
     }
 
+    /**
+     * Method to get UserById
+     * So outside services can access users the user service
+     * @param userId
+     * @return
+     */
     public User getUserById(int userId) {
-        System.out.println(userId + "insdie getUserID");
+
         return repository.findByUserId(userId);
     }
 

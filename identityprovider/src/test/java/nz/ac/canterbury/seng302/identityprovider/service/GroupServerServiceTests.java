@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
-import com.google.protobuf.Timestamp;
+
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
@@ -8,6 +8,7 @@ import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,45 +26,39 @@ class GroupServerServiceTests {
     @Autowired
     private GroupRepository groupRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Spy
     @Autowired
     private GroupServerService groupServerService;
 
+    @Spy
+    @Autowired
+    private UserAccountsServerService userService;
 
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
-    private final String testUsername = "test user";
-    private final String testFirstName = "test fname";
-    private final String testMiddleName = "test mname";
-    private final String testLastName = "test lname";
-    private final String testNickname = "test nname";
-    private final String testBio = "test bio";
-    private final String testPronouns = "test/tester";
-    private final String testEmail = "test@email.com";
-    private final String testPassword = "test password";
     private User testUser;
 
-    private final UserRole studentRole = STUDENT;
-    private final UserRole teacherRole = TEACHER;
-    private final UserRole adminRole = COURSE_ADMINISTRATOR;
-
-    private int testId;
-    private Timestamp testCreated;
 
     @BeforeEach
     public void setUp() {
         groupRepository.deleteAll();
-        userRepository.deleteAll();
-        testUser = userRepository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
-        testId = testUser.getUserId();
-        testCreated = testUser.getTimeCreated();
+    }
+
+
+    public void createGroup () {
+        CreateGroupRequest request = CreateGroupRequest.newBuilder()
+                .setShortName("Test")
+                .setLongName("Long")
+                .build();
+        groupServerService.createGroupHandler(request);
+    }
+
+    public void createUser() {
+        testUser = new User("Username", "First", "Middle",
+                "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password");
         testUser.addRole(COURSE_ADMINISTRATOR);
         testUser.addRole(TEACHER);
     }
-
 
     @Test
     void whenNoGroups_testSaveValidGroup(){
@@ -213,27 +208,24 @@ class GroupServerServiceTests {
 
     @Test
     void whenAGroupExists_addOneUser() {
+        createGroup();
+        createUser();
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(testUser).when(spyUserService).getUserById(testUser.getUserId());
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         usersIdsToBeAdded.add(testUser.getUserId());
-        assertEquals(1, usersIdsToBeAdded.size());
-
-        CreateGroupRequest groupRequest = CreateGroupRequest.newBuilder()
-                .setShortName("Short")
-                .setLongName("Looooong")
-                .build();
-        groupServerService.createGroupHandler(groupRequest);
-        Group group = groupRepository.findByShortName("Short");
-
+        Group group = groupRepository.findByShortName("Test");
         assertEquals(0, group.getMembers().size());
 
         AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
                 .setGroupId(group.getGroupId())
                 .addAllUserIds(usersIdsToBeAdded)
                 .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
 
-        AddGroupMembersResponse userResponse = groupServerService.addGroupMembersHandler(userRequest);
-        group = groupRepository.findByShortName("Short");
-        System.out.println(userResponse.getMessage());
+
+        group = groupRepository.findByGroupId(group.getGroupId());
+        assertEquals("All members added successfully", addGroupMembersResponse.getMessage());
         assertEquals(1, group.getMembers().size());
         assertTrue(group.getMembers().contains(testUser));
     }

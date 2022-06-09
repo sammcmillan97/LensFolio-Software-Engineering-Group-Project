@@ -26,10 +26,11 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
 
-    private UserAccountsServerService userAccountsServerService;
 //  private static final int TEACHER_GROUP_ID = 420;
     private static final int MEMBERS_WITHOUT_GROUP_ID = 9999;
 
+    @Autowired
+    private UserAccountsServerService userAccountsServerService;
 
     @Autowired
     private GroupRepository groupRepository;
@@ -112,24 +113,22 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         int groupId = request.getGroupId();
         Group group = groupRepository.findByGroupId(groupId);
         List<Integer> usersIdsToBeAdded = request.getUserIdsList();
-        System.out.println("Reached");
         if(group == null) {
-            System.out.println("Group NULL");
             reply.setMessage("Group does not exist");
             reply.setIsSuccess(false);
         } else {
             for (Integer userId : usersIdsToBeAdded) {
                 User user = userAccountsServerService.getUserById(userId);
-                System.out.println(user.toString());
-                group.addMember(user);
-                if (user.getGroups().contains(groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID))) {
-                    removeFromWithoutAGroup(user);
+                if (user != null) {
+                    group.addMember(user);
+                    if (user.getGroups().contains(groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID))) {
+                        removeFromWithoutAGroup(user);
+                    }
                 }
             }
             groupRepository.save(group);
-            reply.setMessage("All members removed successfully");
+            reply.setMessage("All members added successfully");
             reply.setIsSuccess(true);
-            System.out.println("Success");
         }
         return reply.build();
     }
@@ -181,9 +180,11 @@ public class GroupServerService extends GroupsServiceGrpc.GroupsServiceImplBase 
         } else {
             for (Integer userId : usersIdsToBeRemoved) {
                 User user = userAccountsServerService.getUserById(userId);
-                group.removeMember(user);
-                if (user.getGroups().size() == 0) {
-                    addToWithoutAGroup(user);
+                if (user != null) {
+                    group.removeMember(user);
+                    if (user.getGroups().size() == 0) {
+                        addToWithoutAGroup(user);
+                    }
                 }
             }
         }
