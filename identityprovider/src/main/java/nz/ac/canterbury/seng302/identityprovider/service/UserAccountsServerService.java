@@ -462,11 +462,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     /**
      * Method to get UserById
      * So outside services can access users the user service
-     * @param userId
-     * @return
+     * @param userId The userId
+     * @return The User being returned
      */
+    @VisibleForTesting
     public User getUserById(int userId) {
-
         return repository.findByUserId(userId);
     }
 

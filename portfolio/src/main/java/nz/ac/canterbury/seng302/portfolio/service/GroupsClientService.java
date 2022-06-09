@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
 
@@ -45,14 +46,20 @@ public class GroupsClientService {
         return groupsStub.deleteGroup(deleteGroupRequest);
     }
 
-    public AddGroupMembersResponse removeGroupMembers(final int groupId, final List<Integer> userIds) {
+    /**
+     * Client service method for adding Users to groups
+     * @param groupId The group ID which users will be added to
+     * @param userIds The list of user ID which will be added to the group
+     * @return The response from the IDP
+     */
+    public AddGroupMembersResponse addGroupMembers(final int groupId, final List<Integer> userIds) {
         AddGroupMembersRequest addGroupMembersRequest = AddGroupMembersRequest.newBuilder()
                 .setGroupId(groupId)
-                .setUserIds(1, 2)
                 .addAllUserIds(userIds)
                 .build();
         return groupsStub.addGroupMembers(addGroupMembersRequest);
     }
+
 
     /**
      * Creates a request to be sent to the IDP for requesting a paginated list of group responses

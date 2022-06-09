@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 @GrpcService
 public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase {
@@ -27,12 +26,145 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     private static final String SHORT_NAME_SORT = "short";
     private static final String LONG_NAME_SORT = "long";
     private static final String NUM_MEMBERS_SORT = "members";
+
+    //  private static final int TEACHER_GROUP_ID = 420;
+    private static final int MEMBERS_WITHOUT_GROUP_ID = 9999;
     
     @Autowired
     private GroupRepository groupRepository;
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+
+    /**
+     * GRPC Method to add a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
+
+    @Override
+    public void addGroupMembers(AddGroupMembersRequest request, StreamObserver<AddGroupMembersResponse> responseObserver) {
+        AddGroupMembersResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = addGroupMembersHandler(request);
+        } else {
+            reply = AddGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Add group members failed: Not Authorised")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Method for handling adding group members
+     * Checks if group exists if so returns
+     * checks if group members belongs to the members without a group if so removes them
+     * Checks if User exits if so returns
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
+    @VisibleForTesting
+    AddGroupMembersResponse addGroupMembersHandler(AddGroupMembersRequest request) {
+        AddGroupMembersResponse.Builder reply = AddGroupMembersResponse.newBuilder();
+        int groupId = request.getGroupId();
+        Group group = groupRepository.findByGroupId(groupId);
+        List<Integer> usersIdsToBeAdded = request.getUserIdsList();
+        if(group == null) {
+            reply.setMessage("Group does not exist");
+            reply.setIsSuccess(false);
+        } else {
+            for (Integer userId : usersIdsToBeAdded) {
+                User user = userAccountsServerService.getUserById(userId);
+                if (user != null) {
+                    System.out.println("Adding user to group: " + user);
+                    group.addMember(user);
+                    if (user.getGroups().contains(groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID))) {
+                        removeFromWithoutAGroup(user);
+                    }
+                }
+            }
+            groupRepository.save(group);
+            reply.setMessage("Users added successfully");
+            reply.setIsSuccess(true);
+        }
+        return reply.build();
+    }
+
+    /**
+     * GRPC Method to remove a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
+    @Override
+    public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
+        RemoveGroupMembersResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = removeGroupMembersHandler(request);
+        } else {
+            reply = RemoveGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Remove group members failed: Not Authorised")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Method for handling removing group members
+     * Checks if a group doesn't exist it will return
+     * checks if a user now belongs to zero groups will add to the members without a group
+     * Checks if a User doesn't exist it will return
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
+    @VisibleForTesting
+    RemoveGroupMembersResponse removeGroupMembersHandler(RemoveGroupMembersRequest request) {
+        RemoveGroupMembersResponse.Builder reply = RemoveGroupMembersResponse.newBuilder();
+        int groupId = request.getGroupId();
+        Group group = groupRepository.findByGroupId(groupId);
+        List<Integer> usersIdsToBeRemoved = request.getUserIdsList();
+
+        if(group == null) {
+            reply.setMessage("Group does not exist");
+            reply.setIsSuccess(false);
+            return reply.build();
+        } else if (group.getGroupId() == MEMBERS_WITHOUT_GROUP_ID){
+            reply.setMessage("Can't remove members from Members without a group group");
+            reply.setIsSuccess(false);
+            return reply.build();
+        } else {
+            for (Integer userId : usersIdsToBeRemoved) {
+                User user = userAccountsServerService.getUserById(userId);
+                if (user != null) {
+                    group.removeMember(user);
+                    if (user.getGroups().size() == 0) {
+                        addToWithoutAGroup(user);
+                    }
+                }
+            }
+        }
+        groupRepository.save(group);
+        reply.setMessage("Users added successfully");
+        reply.setIsSuccess(true);
+        return reply.build();
+    }
+
+    @VisibleForTesting
+    void addToWithoutAGroup(User user) {
+        Group withoutAGroupGroup = groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID);
+        withoutAGroupGroup.addMember(user);
+        groupRepository.save(withoutAGroupGroup);
+    }
+
+    @VisibleForTesting
+    void removeFromWithoutAGroup(User user) {
+        Group withoutAGroupGroup = groupRepository.findByGroupId(MEMBERS_WITHOUT_GROUP_ID);
+        withoutAGroupGroup.removeMember(user);
+        groupRepository.save(withoutAGroupGroup);
+    }
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {

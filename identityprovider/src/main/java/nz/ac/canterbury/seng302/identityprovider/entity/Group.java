@@ -24,10 +24,19 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name="GROUP_MEMBERSHIP",
+            joinColumns = @JoinColumn(name = "GROUP_ID" ),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     private Set<User> members = new HashSet<>();
 
-
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+//    @JoinTable(
+//            name="GROUP_MEMBERSHIP",
+//            joinColumns = @JoinColumn(name = "USER_ID" ),
+//            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
+//    private Set<Group> groups = new HashSet<>();
     /**
      * Constructor for testing purposes
      * @param shortName Short name e.g. Team400
@@ -105,6 +114,7 @@ public class Group {
     }
 
     public Set<User> getMembers() {
+        System.out.println(this.members);
       return this.members;
     }
 

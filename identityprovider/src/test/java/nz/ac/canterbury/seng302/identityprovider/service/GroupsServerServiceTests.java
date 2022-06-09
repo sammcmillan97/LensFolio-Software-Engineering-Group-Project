@@ -18,6 +18,7 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -41,10 +42,19 @@ class GroupsServerServiceTests {
     private static final int LONG_NAME_MAX_LENGTH = 128;
     private static final int testParentProjectId = 1;
     private int testGroupId;
+    private Group testGroup;
+    private User testUser;
+
     @BeforeEach
     public void setUp() {
         groupRepository.deleteAll();
         userRepository.deleteAll();
+    }
+
+    public void addGroupAddUser() {
+        testGroup = groupRepository.save(new Group( "ShortName", "LongName"));
+        testUser = userRepository.save(new User("Tester1", "First", "Middle",
+                "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
     }
 
     /**
@@ -475,4 +485,107 @@ class GroupsServerServiceTests {
         assertEquals("Group 2", response.getGroupsList().get(1).getShortName());
         assertEquals("Group 3", response.getGroupsList().get(2).getShortName());
     }
+
+    /**
+     * Add user tests
+     */
+
+    @Test
+    void whenAGroupExists_addOneUser() {
+        addGroupAddUser();
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        User user = userRepository.findByUserId(testUser.getUserId());
+        usersIdsToBeAdded.add(user.getUserId());
+        assertEquals(0, testGroup.getMembers().size());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+        testGroup = groupRepository.findByShortName("ShortName");
+        testUser = userRepository.findByUsername("Tester1");
+
+        assertEquals("Users added successfully", addGroupMembersResponse.getMessage());
+        assertEquals(1, testGroup.getMembers().size());
+        User[] members = testGroup.getMembers().toArray(new User[0]);
+        assertEquals(members[0], testUser);
+    }
+
+    @Test
+    void whenAGroupExists_addTwoDifferentUsers() {
+        User testUser2 = userRepository.save(new User("Tester2", "First", "Middle",
+                "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
+        addGroupAddUser();
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        User user = userRepository.findByUserId(testUser.getUserId());
+        usersIdsToBeAdded.add(user.getUserId());
+        usersIdsToBeAdded.add(testUser2.getUserId());
+        assertEquals(0, testGroup.getMembers().size());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+
+        testGroup = groupRepository.findByShortName("ShortName");
+        assertEquals("Users added successfully", addGroupMembersResponse.getMessage());
+        assertEquals(2, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenAGroupExists_addTwoOfTheSameUser() {
+        addGroupAddUser();
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        User user = userRepository.findByUserId(testUser.getUserId());
+        usersIdsToBeAdded.add(user.getUserId());
+        usersIdsToBeAdded.add(user.getUserId());
+        assertEquals(2, usersIdsToBeAdded.size());
+        assertEquals(0, testGroup.getMembers().size());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+
+        testGroup = groupRepository.findByShortName("ShortName");
+        assertEquals("Users added successfully", addGroupMembersResponse.getMessage());
+        assertEquals(1, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenAGroupExists_addAUserThatDoestNotExist(){
+        addGroupAddUser();
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        usersIdsToBeAdded.add(-1);
+        assertEquals(0, testGroup.getMembers().size());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+
+        testGroup = groupRepository.findByShortName("ShortName");
+        assertEquals("Users added successfully", addGroupMembersResponse.getMessage());
+        assertEquals(0, testGroup.getMembers().size());
+    }
+
+    @Test
+    void addAUserToAGroupThatDoesNotExist() {
+        addGroupAddUser();
+        List<Integer> usersIdsToBeAdded = new ArrayList<>();
+        usersIdsToBeAdded.add(testUser.getUserId());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(-1)
+                .addAllUserIds(usersIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+
+        assertEquals("Group does not exist", addGroupMembersResponse.getMessage());
+    }
+
 }
