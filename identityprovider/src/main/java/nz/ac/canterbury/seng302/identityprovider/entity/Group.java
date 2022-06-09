@@ -116,4 +116,15 @@ public class Group {
                 ", parentProject=" + parentProject +
                 '}';
     }
+
+    /**
+     * Removes all users from the group before deleting it
+     * Without this method repository.deleteAll() doesn't remove groups with users
+     */
+    @PreRemove
+    private void removeUsersFromGroups() {
+        for (User u : members) {
+            u.leaveGroup(this);
+        }
+    }
 }

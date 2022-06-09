@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.DeleteUserProfilePhotoResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -27,6 +26,8 @@ public class ProfilePictureController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    private static final String NAME_ID_CLAIM_TYPE = "nameid";
+
     /**
      * Get mapping to open addProfilePicture page
      * @param principal Authentication principal storing current user information
@@ -39,7 +40,7 @@ public class ProfilePictureController {
             Model model
     ) {
         Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
+                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
@@ -109,7 +110,7 @@ public class ProfilePictureController {
 
         //get userId using the Authentication Principle
         Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
+                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));

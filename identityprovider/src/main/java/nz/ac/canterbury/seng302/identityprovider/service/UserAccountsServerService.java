@@ -34,6 +34,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+    private static final String ALIAS_SORT = "alias";
+    private static final String ROLES_SORT = "roles";
+    private static final String USERNAME_SORT = "username";
+    private static final String NAME_SORT = "name";
 
     @Autowired
     private UserRepository repository;
@@ -42,7 +46,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Checks if the requesting user is authenticated.
      * @return True if the requesting user is authenticated
      */
-    private boolean isAuthenticated() {
+    protected boolean isAuthenticated() {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
@@ -106,13 +110,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
-            case ("name") -> //Compare method for ordering by name
+            case (NAME_SORT) -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case ("username") -> // Compare method for ordering by username
+            case (USERNAME_SORT) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
-            case ("alias") -> //compare method for ordering by alias
+            case (ALIAS_SORT) -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
-            case ("roles") -> //Compare method for ordering by roles
+            case (ROLES_SORT) -> //Compare method for ordering by roles
                     this::paginatedUsersRolesSort;
             default -> //Default compare method uses sort by name
                     this::paginatedUsersNameSort;
@@ -490,8 +494,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param request A get user by id request according to user_accounts.proto
      * @return A user response according to user_accounts.proto
      */
-    @VisibleForTesting
-    UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
+    public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
         UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
@@ -730,7 +733,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Pattern pronounsPattern = Pattern.compile(".{1,15}/.{1,15}"); // matches any/any
         Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
         boolean validPronouns = pronounsMatcher.find();
 
@@ -754,7 +757,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Pattern emailPattern = Pattern.compile(".{1,50}@.{1,50}\\..{1,50}"); // matches any@any.any
         Matcher emailMatcher = emailPattern.matcher(email);
         boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
@@ -789,7 +792,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
-            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -995,6 +997,21 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             hasOneRole = true;
         }
         return hasOneRole;
+    }
+
+    /**
+     * Checks if the user has the teacher or course administrator role
+     * @return true if it meets the required conditions or else false
+     */
+    protected boolean isTeacher() {
+        User user = repository.findByUserId(getAuthStateUserId());
+        Set<UserRole> roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == UserRole.TEACHER || userRole == UserRole.COURSE_ADMINISTRATOR) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
