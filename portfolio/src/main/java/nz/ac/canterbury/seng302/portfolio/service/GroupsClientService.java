@@ -60,6 +60,14 @@ public class GroupsClientService {
         return groupsStub.addGroupMembers(addGroupMembersRequest);
     }
 
+    public RemoveGroupMembersResponse removeGroupMembers(final int groupId, final List<Integer> userIds) {
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(groupId)
+                .addAllUserIds(userIds)
+                .build();
+        return groupsStub.removeGroupMembers(removeGroupMembersRequest);
+    }
+
 
     /**
      * Creates a request to be sent to the IDP for requesting a paginated list of group responses

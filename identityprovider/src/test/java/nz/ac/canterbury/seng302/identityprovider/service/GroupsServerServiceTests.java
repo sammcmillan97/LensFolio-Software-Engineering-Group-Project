@@ -51,11 +51,7 @@ class GroupsServerServiceTests {
         userRepository.deleteAll();
     }
 
-    public void addGroupAddUser() {
-        testGroup = groupRepository.save(new Group( "ShortName", "LongName"));
-        testUser = userRepository.save(new User("Tester1", "First", "Middle",
-                "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
-    }
+
 
     /**
      * Create group tests
@@ -490,9 +486,15 @@ class GroupsServerServiceTests {
      * Add user tests
      */
 
+    public void setUpForAddingRemovingMembers() {
+        testGroup = groupRepository.save(new Group( "ShortName", "LongName"));
+        testUser = userRepository.save(new User("Tester1", "First", "Middle",
+                "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
+    }
+
     @Test
     void whenAGroupExists_addOneUser() {
-        addGroupAddUser();
+        setUpForAddingRemovingMembers();
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         User user = userRepository.findByUserId(testUser.getUserId());
         usersIdsToBeAdded.add(user.getUserId());
@@ -516,7 +518,7 @@ class GroupsServerServiceTests {
     void whenAGroupExists_addTwoDifferentUsers() {
         User testUser2 = userRepository.save(new User("Tester2", "First", "Middle",
                 "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
-        addGroupAddUser();
+        setUpForAddingRemovingMembers();
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         User user = userRepository.findByUserId(testUser.getUserId());
         usersIdsToBeAdded.add(user.getUserId());
@@ -536,7 +538,7 @@ class GroupsServerServiceTests {
 
     @Test
     void whenAGroupExists_addTwoOfTheSameUser() {
-        addGroupAddUser();
+        setUpForAddingRemovingMembers();
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         User user = userRepository.findByUserId(testUser.getUserId());
         usersIdsToBeAdded.add(user.getUserId());
@@ -557,7 +559,7 @@ class GroupsServerServiceTests {
 
     @Test
     void whenAGroupExists_addAUserThatDoestNotExist(){
-        addGroupAddUser();
+        setUpForAddingRemovingMembers();
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         usersIdsToBeAdded.add(-1);
         assertEquals(0, testGroup.getMembers().size());
@@ -575,7 +577,7 @@ class GroupsServerServiceTests {
 
     @Test
     void addAUserToAGroupThatDoesNotExist() {
-        addGroupAddUser();
+        setUpForAddingRemovingMembers();
         List<Integer> usersIdsToBeAdded = new ArrayList<>();
         usersIdsToBeAdded.add(testUser.getUserId());
 
@@ -586,6 +588,27 @@ class GroupsServerServiceTests {
         AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
 
         assertEquals("Group does not exist", addGroupMembersResponse.getMessage());
+    }
+
+    @Test
+    void whenAGroupExistsWithAUser_RemoveThatUser() {
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        assertEquals(1, testGroup.getMembers().size());
+        groupRepository.save(testGroup);
+        List<Integer> userIdsToBeRemoved = new ArrayList<>();
+        userIdsToBeRemoved.add(testUser.getUserId());
+
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(userIdsToBeRemoved)
+                .build();
+        RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
+
+        testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
+        assertEquals(0, testGroup.getMembers().size());
+        assertTrue(removeGroupMembersResponse.getIsSuccess());
+        assertEquals(removeGroupMembersResponse.getMessage(), "Users removed successfully");
     }
 
 }

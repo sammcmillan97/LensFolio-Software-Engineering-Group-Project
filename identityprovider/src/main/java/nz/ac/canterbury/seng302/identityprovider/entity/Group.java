@@ -31,12 +31,7 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     private Set<User> members = new HashSet<>();
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-//    @JoinTable(
-//            name="GROUP_MEMBERSHIP",
-//            joinColumns = @JoinColumn(name = "USER_ID" ),
-//            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
-//    private Set<Group> groups = new HashSet<>();
+
     /**
      * Constructor for testing purposes
      * @param shortName Short name e.g. Team400
@@ -109,8 +104,10 @@ public class Group {
     }
 
     public void removeMember(User user) {
+        System.out.println(this.members);
         this.members.remove(user);
         user.leaveGroup(this);
+        System.out.println(this.members);
     }
 
     public Set<User> getMembers() {

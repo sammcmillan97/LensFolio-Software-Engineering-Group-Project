@@ -70,8 +70,6 @@ public class User {
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Group> groups = new HashSet<>();
 
-//    @ManyToMany(mappedBy = "groups", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-//    private Set<User> members = new HashSet<>();
 
     /**
      * Create a user for use in backend database.
@@ -283,6 +281,7 @@ public class User {
      * @param userObject The user to check against
      * @return true if the users are identical
      */
+    @Override
     public boolean equals(Object userObject) {
         if (userObject == null) return false;
         if (userObject == this) return true;
@@ -298,6 +297,11 @@ public class User {
                 && this.roles.equals(user.roles)
                 && this.timeCreated.equals(user.timeCreated)
                 && this.userId == user.userId;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.firstName, this.middleName, this.lastName, this.bio, this.email, this.email, this.username,
+                this.nickname, this.personalPronouns, this.roles, this.timeCreated, this.userId);
     }
 }
