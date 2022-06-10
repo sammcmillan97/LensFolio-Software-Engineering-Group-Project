@@ -18,6 +18,7 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -357,9 +358,13 @@ class GroupsServerServiceTests {
                 .setGroupId(groupId)
                 .build();
         GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User member : group.getMembers()) {
+            userResponses.add(member.toUserResponse());
+        }
         assertEquals("ShortName", response.getShortName());
         assertEquals("LongName", response.getLongName());
-        assertEquals(groupServerService.convertSetOfUsersToUserResponse(group.getMembers()), response.getMembersList());
+        assertEquals(userResponses, response.getMembersList());
     }
 
     @Test

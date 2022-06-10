@@ -36,7 +36,7 @@ public class GroupsClientService {
      * @param groupId the id of the group to get the details for
      * @return the response from the server
      */
-    public GetGroupDetailsResponse getGroupDetails(final int groupId) {
+    public GroupDetailsResponse getGroupDetails(final int groupId) {
         GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();

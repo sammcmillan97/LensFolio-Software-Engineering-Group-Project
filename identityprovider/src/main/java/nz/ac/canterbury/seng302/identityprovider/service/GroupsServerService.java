@@ -31,9 +31,6 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     private GroupRepository groupRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserAccountsServerService userAccountsServerService;
 
     /**
@@ -44,38 +41,6 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
-
-    /**
-     * Get the user id of the user who is currently logged in
-     * @return The user id of the user who is currently logged in
-     */
-    @VisibleForTesting
-    protected int getAuthStateUserId() {
-        String authenticatedId;
-        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
-        authenticatedId = authState.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("NOT FOUND");
-        return Integer.parseInt(authenticatedId);
-    }
-
-    /**
-     * Checks if the user has the teacher or course administrator role
-     * @return true if it meets the required conditions or else false
-     */
-    public boolean isTeacher() {
-        User user = userRepository.findByUserId(getAuthStateUserId());
-        Set<UserRole> roles = user.getRoles();
-        for (UserRole userRole : roles) {
-            if (userRole == UserRole.TEACHER || userRole == UserRole.COURSE_ADMINISTRATOR) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
@@ -388,13 +353,5 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .addAllMembers(members);
         }
         return reply.build();
-    }
-
-    public List<UserResponse> convertSetOfUsersToUserResponse(Set<User> members) {
-        List<UserResponse> userResponses = new ArrayList<>();
-        for (User member : members) {
-            userResponses.add(member.toUserResponse());
-        }
-        return userResponses;
     }
 }
