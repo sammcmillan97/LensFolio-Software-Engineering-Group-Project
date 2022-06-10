@@ -68,7 +68,7 @@ public class User {
 
     private String profileImagePath;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name="GROUP_MEMBERSHIP",
             joinColumns = @JoinColumn(name = "USER_ID" ),

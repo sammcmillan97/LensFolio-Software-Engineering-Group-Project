@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +28,11 @@ public class RegisterController {
     private AuthenticateClientService authenticateClientService;
 
     @Autowired
-    UserAccountClientService userAccountClientService;
+    private UserAccountClientService userAccountClientService;
+
+    private static final String REGISTER = "register";
+    private static final String COOKIE_NAME = "lens-session-token";
+    private static final String LOGIN = "login";
 
     /**
      * Register a user with the IDP.
@@ -75,7 +78,7 @@ public class RegisterController {
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);
-            return "register";
+            return REGISTER;
         }
 
         if (userRegisterResponse.getIsSuccess()){
@@ -84,13 +87,13 @@ public class RegisterController {
                 loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
             } catch (StatusRuntimeException e){
                 model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-                return "login";
+                return LOGIN;
             }
             if (loginReply.getSuccess()) {
                 var domain = request.getHeader("host");
                 CookieUtil.create(
                         response,
-                        "lens-session-token",
+                        COOKIE_NAME,
                         loginReply.getToken(),
                         true,
                         5 * 60 * 60, // Expires in 5 hours
@@ -99,7 +102,7 @@ public class RegisterController {
                 return "redirect:/profile";
             } else {
                 model.addAttribute("loginMessage", loginReply.getMessage());
-                return "login";
+                return LOGIN;
             }
         } else {
             // Add attributes back into the page so the user doesn't have to enter them again
@@ -116,7 +119,7 @@ public class RegisterController {
             List<ValidationError> validationErrors = userRegisterResponse.getValidationErrorsList();
             model.addAttribute("validationErrors", validationErrors);
 
-            return "register";
+            return REGISTER;
         }
 
 
@@ -128,7 +131,7 @@ public class RegisterController {
      */
     @GetMapping("/register")
     public String register() {
-        return "register";
+        return REGISTER;
     }
 
 }

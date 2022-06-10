@@ -56,8 +56,8 @@ public class Project {
         Date date = null;
         try {
             date = new SimpleDateFormat("dd/MMM/yyyy").parse(dateString);
-        } catch (Exception e) {
-            System.err.println("Error parsing date: " + e.getMessage());
+        } catch (Exception ignored) {
+            // Date parsing didn't work, must be in wrong format
         }
         return date;
     }

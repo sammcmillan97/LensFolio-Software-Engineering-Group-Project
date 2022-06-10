@@ -15,7 +15,7 @@ class UserListResponseTests {
         PaginatedUsersResponse source = PaginatedUsersResponse.newBuilder().addUsers(userResponse).build();
         UserListResponse response = new UserListResponse(source);
         assertEquals(source.getResultSetSize(), response.getResultSetSize());
-        assertEquals(userResponse.getFirstName(), response.getUsers().get(0).getFirstName());
+        assertEquals(new User(userResponse), response.getUsers().get(0));
     }
 
 }
