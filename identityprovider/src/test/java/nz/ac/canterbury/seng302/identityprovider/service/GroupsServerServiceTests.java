@@ -38,6 +38,9 @@ class GroupsServerServiceTests {
     @Autowired
     private GroupsServerService groupServerService;
 
+    @Autowired
+    private UserAccountsServerService userService;
+
     private static final int SHORT_NAME_MAX_LENGTH = 32;
     private static final int LONG_NAME_MAX_LENGTH = 128;
     private static final int testParentProjectId = 1;
@@ -609,6 +612,65 @@ class GroupsServerServiceTests {
         assertEquals(0, testGroup.getMembers().size());
         assertTrue(removeGroupMembersResponse.getIsSuccess());
         assertEquals(removeGroupMembersResponse.getMessage(), "Users removed successfully");
+    }
+
+    @Test
+    void whenAGroupExists_AddUser_ThenEditUser_ThenRemoveUser() {
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        groupRepository.save(testGroup);
+
+        testUser.setFirstName("Newname");
+        userRepository.save(testUser);
+        List<Integer> userIdsToBeRemoved = new ArrayList<>();
+        userIdsToBeRemoved.add(testUser.getUserId());
+
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(userIdsToBeRemoved)
+                .build();
+        RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
+        testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
+        assertEquals(0, testGroup.getMembers().size());
+        assertTrue(removeGroupMembersResponse.getIsSuccess());
+        assertEquals(removeGroupMembersResponse.getMessage(), "Users removed successfully");
+    }
+
+    @Test
+    void whenAGroupExistsWithAUser_ThenRemoveUserThatDoesNotExist() {
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        assertEquals(1, testGroup.getMembers().size());
+        groupRepository.save(testGroup);
+        List<Integer> userIdsToBeRemoved = new ArrayList<>();
+        userIdsToBeRemoved.add(-1);
+
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(userIdsToBeRemoved)
+                .build();
+        RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
+
+        testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
+        assertEquals(1, testGroup.getMembers().size());
+        assertTrue(removeGroupMembersResponse.getIsSuccess());
+        assertEquals(removeGroupMembersResponse.getMessage(), "Users removed successfully");
+    }
+
+    @Test
+    void RemoveUserFromAGroupThatDoesNotExist() {
+        setUpForAddingRemovingMembers();
+        List<Integer> userIdsToBeRemoved = new ArrayList<>();
+        userIdsToBeRemoved.add(testUser.getUserId());
+
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(-1)
+                .addAllUserIds(userIdsToBeRemoved)
+                .build();
+        RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
+
+        assertFalse(removeGroupMembersResponse.getIsSuccess());
+        assertEquals(removeGroupMembersResponse.getMessage(), "Group does not exist");
     }
 
 }
