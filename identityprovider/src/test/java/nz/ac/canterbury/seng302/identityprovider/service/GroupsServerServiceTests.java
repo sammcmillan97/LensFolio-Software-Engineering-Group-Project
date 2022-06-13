@@ -351,6 +351,44 @@ class GroupsServerServiceTests {
         assertEquals("Deleting group failed: Group does not exist", response.getMessage());
     }
 
+    @Test
+    void whenGroupExists_getGroupDetails() {
+        Group group = new Group("ShortName", "LongName");
+        User user = new User("test", "first", "mid", "last", "a",
+                "this", "he/him", "test@test.com", "password");
+        group.addMember(user);
+        groupRepository.save(group);
+        int groupId = groupRepository.findByShortName("ShortName").getGroupId();
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(1, groups.size());
+
+        GetGroupDetailsRequest request = GetGroupDetailsRequest.newBuilder()
+                .setGroupId(groupId)
+                .build();
+        GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (User member : group.getMembers()) {
+            userResponses.add(member.toUserResponse());
+        }
+        assertEquals("ShortName", response.getShortName());
+        assertEquals("LongName", response.getLongName());
+        assertEquals(userResponses, response.getMembersList());
+    }
+
+    @Test
+    void whenGroupDoesNotExist_getGroupDetails() {
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(0, groups.size());
+
+        GetGroupDetailsRequest request = GetGroupDetailsRequest.newBuilder()
+                .setGroupId(0)
+                .build();
+        GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
+        assertEquals("", response.getShortName());
+        assertEquals("", response.getLongName());
+        assertEquals(0, response.getMembersList().size());
+    }
+
     /**
      * This method is to add groups to the repository for certain tests as some require the repository being empty
      */

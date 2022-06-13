@@ -3,13 +3,16 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
+import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationServerInterceptor;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
+import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,7 +30,6 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     private static final String LONG_NAME_SORT = "long";
     private static final String NUM_MEMBERS_SORT = "members";
 
-    
     @Autowired
     private GroupRepository groupRepository;
 
@@ -150,6 +152,15 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         return reply.build();
     }
 
+
+    /**
+     * Checks if the requesting user is authenticated.
+     * @return True if the requesting user is authenticated
+     */
+    private boolean isAuthenticated() {
+        AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
+        return authState.getIsAuthenticated();
+    }
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
@@ -291,6 +302,48 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             reply
                     .setIsSuccess(false)
                     .setMessage("Modify group failed: Validation failed");
+        }
+        return reply.build();
+    }
+
+    /**
+     * The gRPC method which gets the group details if user is authenticated
+     * @param request the request to get the id of the group using which we get the information
+     * @param responseObserver the observer to send the response
+     */
+    @Override
+    public void getGroupDetails(GetGroupDetailsRequest request, StreamObserver<GroupDetailsResponse> responseObserver) {
+        GroupDetailsResponse reply;
+        if (isAuthenticated()) {
+            reply = getGroupDetailsHandler(request);
+        } else {
+            reply = GroupDetailsResponse.newBuilder().build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * The handler for the method which gets the group details
+     * @param request the request which receives the id from the proto file
+     * @return the response built
+     */
+    @VisibleForTesting
+    GroupDetailsResponse getGroupDetailsHandler(GetGroupDetailsRequest request) {
+        GroupDetailsResponse.Builder reply = GroupDetailsResponse.newBuilder();
+        int groupId = request.getGroupId();
+
+        if (groupRepository.existsById(groupId)) {
+            Group group = groupRepository.findByGroupId(groupId);
+            Set<User> members = group.getMembers();
+            List<UserResponse> userResponses = new ArrayList<>();
+            for (User member : members) {
+                userResponses.add(member.toUserResponse());
+            }
+            reply
+                    .setShortName(group.getShortName())
+                    .setLongName(group.getLongName())
+                    .addAllMembers(userResponses);
         }
         return reply.build();
     }

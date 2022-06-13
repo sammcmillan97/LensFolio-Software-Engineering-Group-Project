@@ -24,7 +24,7 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name="GROUP_MEMBERSHIP",
             joinColumns = @JoinColumn(name = "GROUP_ID" ),
@@ -109,7 +109,6 @@ public class Group {
     }
 
     public Set<User> getMembers() {
-        System.out.println(this.members);
       return this.members;
     }
 

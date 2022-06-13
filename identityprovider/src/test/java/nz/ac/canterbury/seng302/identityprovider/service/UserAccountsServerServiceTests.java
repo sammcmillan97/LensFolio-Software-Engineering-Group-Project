@@ -55,6 +55,7 @@ class UserAccountsServerServiceTests {
     private int testId;
     private Timestamp testCreated;
 
+
     @BeforeEach
     public void setup() {
         groupRepository.deleteAll();
