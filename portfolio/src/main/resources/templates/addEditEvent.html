@@ -32,11 +32,9 @@
             <span id="char_count">30/30 characters remain</span>
 
             <label for="event-form__start-date-field">Event Start Date *</label>
-            <input type="datetime-local" id="event-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${eventEndDate}" onchange="updateMinEndDate()" required>
-
+            <input type="datetime-local" id="event-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
             <label for="event-form__end-date-field">Event End Date *</label>
-            <input type="datetime-local" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${eventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
-
+            <input type="datetime-local" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
             <button type="submit" id="event-form__save">Save Changes</button>
             <a id="event-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
         </form>
