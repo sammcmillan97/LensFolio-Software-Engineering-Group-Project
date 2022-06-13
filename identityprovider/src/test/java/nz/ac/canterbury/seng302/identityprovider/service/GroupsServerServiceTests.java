@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
+import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
@@ -17,6 +18,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -527,7 +530,7 @@ class GroupsServerServiceTests {
      * Add user tests
      */
 
-    public void setUpForAddingRemovingMembers() {
+    private void setUpForAddingRemovingMembers() {
         testGroup = groupRepository.save(new Group( "ShortName", "LongName"));
         testUser = userRepository.save(new User("Tester1", "First", "Middle",
                 "Last", "Nick", "Bio", "Test, Tester", "test@email.com", "password"));
@@ -583,7 +586,6 @@ class GroupsServerServiceTests {
         User user = userRepository.findByUserId(testUser.getUserId());
         userIdsToBeAdded.add(user.getUserId());
         userIdsToBeAdded.add(user.getUserId());
-        assertEquals(2, userIdsToBeAdded.size());
         assertEquals(0, testGroup.getMembers().size());
 
         AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
@@ -593,8 +595,8 @@ class GroupsServerServiceTests {
         AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
 
         testGroup = groupRepository.findByShortName("ShortName");
-        assertEquals("User(s) added successfully", addGroupMembersResponse.getMessage());
-        assertEquals(1, testGroup.getMembers().size());
+        assertFalse(addGroupMembersResponse.getIsSuccess());
+        assertEquals(0, testGroup.getMembers().size());
     }
 
     @Test
@@ -649,6 +651,25 @@ class GroupsServerServiceTests {
         assertFalse(addGroupMembersResponse.getIsSuccess());
         assertEquals("Add group members failed: User -1 does not exist", addGroupMembersResponse.getMessage());
         assertEquals(0, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenAGroupExistsWithAUser_ReAddThatUser() {
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        groupRepository.save(testGroup);
+        assertEquals(1, testGroup.getMembers().size());
+        List<Integer> userIdsToBeAdded = new ArrayList<>();
+        userIdsToBeAdded.add(testUser.getUserId());
+
+        AddGroupMembersRequest userRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(userIdsToBeAdded)
+                .build();
+        AddGroupMembersResponse addGroupMembersResponse = groupServerService.addGroupMembersHandler(userRequest);
+
+        assertFalse(addGroupMembersResponse.getIsSuccess());
+        assertEquals(1, testGroup.getMembers().size());
     }
 
     @Test
@@ -749,5 +770,21 @@ class GroupsServerServiceTests {
         assertFalse(removeGroupMembersResponse.getIsSuccess());
         assertEquals("Remove group members failed: User -1 does not exist", removeGroupMembersResponse.getMessage());
         assertEquals(1, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenAGroupExistsWithNoUsers_RemoveAUser() {
+        setUpForAddingRemovingMembers();
+        List<Integer> userIdsToBeRemoved = new ArrayList<>();
+        userIdsToBeRemoved.add(testUser.getUserId());
+        userIdsToBeRemoved.add(-1);
+
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(testGroup.getGroupId())
+                .addAllUserIds(userIdsToBeRemoved)
+                .build();
+        RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
+        assertFalse(removeGroupMembersResponse.getIsSuccess());
+        assertEquals(0, testGroup.getMembers().size());
     }
 }

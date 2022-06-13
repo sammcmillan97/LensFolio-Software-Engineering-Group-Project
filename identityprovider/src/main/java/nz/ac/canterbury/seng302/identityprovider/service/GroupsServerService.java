@@ -78,12 +78,16 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
         for (Integer userId : usersIdsToBeAdded) {
             User user = userAccountsServerService.getUserById(userId);
-            if (user != null) {
-                group.addMember(user);
-            } else {
+            if (user == null) {
                 reply.setMessage("Add group members failed: User " + userId + " does not exist");
                 reply.setIsSuccess(false);
                 return reply.build();
+            } else if (group.getMembers().contains(user)) {
+                reply.setMessage("Add group members failed: User " + userId + " is already in the group");
+                reply.setIsSuccess(false);
+                return reply.build();
+            } else {
+                group.addMember(user);
                 }
             }
 
@@ -136,12 +140,16 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
         for (Integer userId : usersIdsToBeRemoved) {
             User user = userAccountsServerService.getUserById(userId);
-            if (user != null) {
-                group.removeMember(user);
-            } else {
+            if (user == null) {
                 reply.setMessage("Remove group members failed: User " + userId + " does not exist");
                 reply.setIsSuccess(false);
                 return reply.build();
+            } else if (!group.getMembers().contains(user)) {
+                reply.setMessage("Remove group members failed: User " + userId + " is not in the group");
+                reply.setIsSuccess(false);
+                reply.build();
+            } else {
+                group.removeMember(user);
             }
         }
 
