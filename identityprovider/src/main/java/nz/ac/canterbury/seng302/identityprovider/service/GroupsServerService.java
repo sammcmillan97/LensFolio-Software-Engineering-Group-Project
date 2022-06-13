@@ -7,7 +7,6 @@ import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationSe
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
