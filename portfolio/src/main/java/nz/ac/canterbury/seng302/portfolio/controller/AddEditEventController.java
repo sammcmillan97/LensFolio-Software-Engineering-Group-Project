@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -34,6 +30,9 @@ public class AddEditEventController {
     @Autowired
     EventService eventService;
 
+    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
+    private String redirectToProjects = "redirect:/projects";
+
 
     /**
      * The get mapping to return the page to add/edit an event
@@ -46,7 +45,7 @@ public class AddEditEventController {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return redirectToProjects;
         }
 
         // Add user details to model for displaying in top banner
@@ -78,12 +77,12 @@ public class AddEditEventController {
 
         //Add event details to model
         model.addAttribute("eventName", event.getEventName());
-        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), "yyyy-MM-dd'T'HH:mm"));
-        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), timeFormat));
+        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), timeFormat));
 
         // Add event date boundaries for event to the model
-        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), "yyyy-MM-dd'T'HH:mm"));
-        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), timeFormat));
+        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), timeFormat));
 
         return "addEditEvent";
     }
@@ -99,7 +98,7 @@ public class AddEditEventController {
             Model model) throws ParseException {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
-            return "redirect:/projects";
+            return redirectToProjects;
         }
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
@@ -119,7 +118,7 @@ public class AddEditEventController {
             eventId = Integer.parseInt(eventIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            return "redirect:/projects";
+            return redirectToProjects;
         }
         //Check if it's an existing event
         if(eventId == -1) {
@@ -156,7 +155,7 @@ public class AddEditEventController {
                                          @PathVariable("parentProjectId") String parentProjectId,
                                          @PathVariable("eventId") String eventId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return redirectToProjects;
         }
 
         eventService.deleteEventById(Integer.parseInt(eventId));
