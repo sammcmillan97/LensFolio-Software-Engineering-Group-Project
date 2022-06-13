@@ -104,10 +104,8 @@ public class Group {
     }
 
     public void removeMember(User user) {
-        System.out.println(this.members);
         this.members.remove(user);
         user.leaveGroup(this);
-        System.out.println(this.members);
     }
 
     public Set<User> getMembers() {

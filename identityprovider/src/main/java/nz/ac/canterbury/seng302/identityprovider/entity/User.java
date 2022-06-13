@@ -299,6 +299,10 @@ public class User {
                 && this.userId == user.userId;
     }
 
+    /**
+     * Creates a hash for the User with the given the provided variables, so they can be removed and added to a set
+     * @return The hash value
+     */
     @Override
     public int hashCode() {
         return Objects.hash(this.firstName, this.middleName, this.lastName, this.bio, this.email, this.email, this.username,
