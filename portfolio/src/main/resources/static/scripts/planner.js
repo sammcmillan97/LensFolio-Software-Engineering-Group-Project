@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addSprintsToCalendar();
+    addEventsToCalendar();
     calendar.render();
     let today = new Date();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -168,6 +169,16 @@ function addSprintsToCalendar() {
     for (let sprint of sprints) {
         console.log(sprint)
         calendar.addEvent(sprint);
+    }
+}
+
+/**
+ * Adds all the events in the list created by thymeleaf to the calendar
+ */
+function addEventsToCalendar() {
+    for (let event of events) {
+        console.log(event)
+        calendar.addEvent(event);
     }
 }
 

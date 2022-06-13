@@ -1,8 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Event
@@ -91,6 +91,19 @@ public class Event implements ImportantDate{
     public void setEventEndDate(Date eventEndDate) {
         this.eventEndDate = eventEndDate;
     }
+
+    public String getStartDateCalendarString() {return  Project.dateToString(this.eventStartDate, "yyyy-MM-dd"); }
+
+    /**
+     * Calculates the day after the end date as a calendar string
+     * This is for the FullCalendar program as the end date on there is not inclusive
+     * @return the day after the sprints end date as a calendar string
+     */
+    public String getDayAfterEndDateCalendarString() {
+        Calendar tempEndDate = Calendar.getInstance();
+        tempEndDate.setTime(this.getEventEndDate());
+        tempEndDate.add(Calendar.DATE, 1);
+        return  Project.dateToString(tempEndDate.getTime(), "yyyy-MM-dd"); }
 
     public String getType() {
         return type;
