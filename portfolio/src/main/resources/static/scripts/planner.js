@@ -107,10 +107,13 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResize: function (eventDropInfo) {
             resizeSprint( eventDropInfo );
         },
+        dayCellContent: function(info, create) {
+            return { html: '<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512" width="20" height="20"><title>Calendar</title><rect fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32" x="48" y="80" width="416" height="384" rx="48"/><circle cx="296" cy="232" r="24"/><circle cx="376" cy="232" r="24"/><circle cx="296" cy="312" r="24"/><circle cx="376" cy="312" r="24"/><circle cx="136" cy="312" r="24"/><circle cx="216" cy="312" r="24"/><circle cx="136" cy="392" r="24"/><circle cx="216" cy="392" r="24"/><circle cx="296" cy="392" r="24"/><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32" stroke-linecap="round" d="M128 48v32M384 48v32"/><path fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32" d="M464 160H48"/></svg>' };
+        },
     });
 
     addSprintsToCalendar();
-    addEventsToCalendar();
+    //addEventsToCalendar();
     calendar.render();
     let today = new Date();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -169,16 +172,6 @@ function addSprintsToCalendar() {
     for (let sprint of sprints) {
         console.log(sprint)
         calendar.addEvent(sprint);
-    }
-}
-
-/**
- * Adds all the events in the list created by thymeleaf to the calendar
- */
-function addEventsToCalendar() {
-    for (let event of events) {
-        console.log(event)
-        calendar.addEvent(event);
     }
 }
 

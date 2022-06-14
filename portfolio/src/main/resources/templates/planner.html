@@ -38,18 +38,6 @@
         sprints.push(sprint);
     </script>
 
-    <!-- Save event information, so it can be accessed by the calendar -->
-    <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
-        event = {id: [[${event.getEventId}]],
-            title: [[${event.getEventName}]],
-            eventType: 'Event',
-            start: [[${event.getStartDateCalendarString}]],
-            end: [[${event.getDayAfterEndDateCalendarString}]],
-            color: "#aaaaaa"
-        }
-        events.push(event);
-    </script>
-
     <script rel="script" th:src="@{scripts/planner.js}"></script>
 
 </head>
