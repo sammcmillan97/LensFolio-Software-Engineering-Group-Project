@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;

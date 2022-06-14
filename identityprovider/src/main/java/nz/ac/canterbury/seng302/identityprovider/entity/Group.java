@@ -24,7 +24,11 @@ public class Group {
 
     private int parentProject;
 
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name="GROUP_MEMBERSHIP",
+            joinColumns = @JoinColumn(name = "GROUP_ID" ),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     private Set<User> members = new HashSet<>();
 
 

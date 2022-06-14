@@ -5,6 +5,9 @@ import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
 @Service
 public class GroupsClientService {
 
@@ -56,6 +59,29 @@ public class GroupsClientService {
     }
 
     /**
+     * Client service method for adding Users to groups
+     * @param groupId The group ID which users will be added to
+     * @param userIds The list of user ID which will be added to the group
+     * @return The response from the IDP
+     */
+    public AddGroupMembersResponse addGroupMembers(final int groupId, final List<Integer> userIds) {
+        AddGroupMembersRequest addGroupMembersRequest = AddGroupMembersRequest.newBuilder()
+                .setGroupId(groupId)
+                .addAllUserIds(userIds)
+                .build();
+        return groupsStub.addGroupMembers(addGroupMembersRequest);
+    }
+
+    public RemoveGroupMembersResponse removeGroupMembers(final int groupId, final List<Integer> userIds) {
+        RemoveGroupMembersRequest removeGroupMembersRequest = RemoveGroupMembersRequest.newBuilder()
+                .setGroupId(groupId)
+                .addAllUserIds(userIds)
+                .build();
+        return groupsStub.removeGroupMembers(removeGroupMembersRequest);
+    }
+
+
+    /**
      * Creates a request to be sent to the IDP for requesting a paginated list of group responses
      * @param offset The number of groups to be sliced from the original list of groups from the DB
      * @param limit The max number of groups to be returned
@@ -84,5 +110,5 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
-    } 
+    }
 }

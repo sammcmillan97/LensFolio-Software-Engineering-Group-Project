@@ -7,13 +7,15 @@ import nz.ac.canterbury.seng302.identityprovider.authentication.AuthenticationSe
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
-import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @GrpcService
 public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase {
@@ -26,12 +28,137 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     private static final String SHORT_NAME_SORT = "short";
     private static final String LONG_NAME_SORT = "long";
     private static final String NUM_MEMBERS_SORT = "members";
-    
+
     @Autowired
     private GroupRepository groupRepository;
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+
+    /**
+     * GRPC Method to add a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
+
+    @Override
+    public void addGroupMembers(AddGroupMembersRequest request, StreamObserver<AddGroupMembersResponse> responseObserver) {
+        AddGroupMembersResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = addGroupMembersHandler(request);
+        } else {
+            reply = AddGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Add group members failed: Not Authorised")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Method for handling adding group members
+     * Checks if group exists if so returns
+     * checks if group members belongs to the members without a group if so removes them
+     * Checks if User exists if so returns
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
+    @VisibleForTesting
+    AddGroupMembersResponse addGroupMembersHandler(AddGroupMembersRequest request) {
+        AddGroupMembersResponse.Builder reply = AddGroupMembersResponse.newBuilder();
+        int groupId = request.getGroupId();
+        Group group = groupRepository.findByGroupId(groupId);
+        List<Integer> usersIdsToBeAdded = request.getUserIdsList();
+        if(group == null) {
+            reply.setMessage("Add group members failed: Group " + groupId +  " does not exist");
+            reply.setIsSuccess(false);
+            return reply.build();
+        }
+
+        for (Integer userId : usersIdsToBeAdded) {
+            User user = userAccountsServerService.getUserById(userId);
+            if (user == null) {
+                reply.setMessage("Add group members failed: User " + userId + " does not exist");
+                reply.setIsSuccess(false);
+                return reply.build();
+            } else if (group.getMembers().contains(user)) {
+                reply.setMessage("Add group members failed: User " + userId + " is already in the group");
+                reply.setIsSuccess(false);
+                return reply.build();
+            } else {
+                group.addMember(user);
+                }
+            }
+
+        groupRepository.save(group);
+        reply.setMessage("User(s) added successfully");
+        reply.setIsSuccess(true);
+        return reply.build();
+    }
+
+    /**
+     * GRPC Method to remove a collection of users to a group
+     * @param request The client built request containing the group and users
+     * @param responseObserver The observer to send the response
+     */
+    @Override
+    public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
+        RemoveGroupMembersResponse reply;
+        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+            reply = removeGroupMembersHandler(request);
+        } else {
+            reply = RemoveGroupMembersResponse.newBuilder()
+                    .setIsSuccess(false)
+                    .setMessage("Remove group members failed: Not Authorised")
+                    .build();
+        }
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+
+    /**
+     * Method for handling removing group members
+     * Checks if a group doesn't exist it will return
+     * checks if a user now belongs to zero groups will add to the members without a group
+     * Checks if a User doesn't exist it will return
+     * @param request The request containing the group and users to be added
+     * @return The reply containing message and if it succeeded
+     */
+    @VisibleForTesting
+    RemoveGroupMembersResponse removeGroupMembersHandler(RemoveGroupMembersRequest request) {
+        RemoveGroupMembersResponse.Builder reply = RemoveGroupMembersResponse.newBuilder();
+        int groupId = request.getGroupId();
+        Group group = groupRepository.findByGroupId(groupId);
+        List<Integer> usersIdsToBeRemoved = request.getUserIdsList();
+
+        if(group == null) {
+            reply.setMessage("Remove group members failed: Group " + groupId + " does not exist");
+            reply.setIsSuccess(false);
+            return reply.build();
+        }
+
+        for (Integer userId : usersIdsToBeRemoved) {
+            User user = userAccountsServerService.getUserById(userId);
+            if (user == null) {
+                reply.setMessage("Remove group members failed: User " + userId + " does not exist");
+                reply.setIsSuccess(false);
+                return reply.build();
+            } else if (!group.getMembers().contains(user)) {
+                reply.setMessage("Remove group members failed: User " + userId + " is not in the group");
+                reply.setIsSuccess(false);
+                reply.build();
+            } else {
+                group.removeMember(user);
+            }
+        }
+
+        groupRepository.save(group);
+        reply.setMessage("User(s) removed successfully");
+        reply.setIsSuccess(true);
+        return reply.build();
+    }
+
 
     /**
      * Checks if the requesting user is authenticated.
