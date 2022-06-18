@@ -20,6 +20,10 @@ public class ColourPicker {
     };
     public static int index = 0;
 
+    /**
+     * Gets the next colour in the colour list relative to the methods last call
+     * @return a colour from the colours list
+     */
     public static String getNextColour() {
         String colour = colours[index];
         index++;
