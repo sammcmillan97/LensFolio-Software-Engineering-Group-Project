@@ -360,7 +360,7 @@ public class EditSprintController {
     @DeleteMapping(value="/editSprint-{sprintId}-{parentProjectId}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
                                     @PathVariable("parentProjectId") String parentProjectId,
-                                    @PathVariable("sprintId") String sprintId) throws Exception {
+                                    @PathVariable("sprintId") String sprintId) {
         if (!userAccountClientService.isTeacher(principal)) {
             return "redirect:/projects";
         }
