@@ -1,19 +1,24 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
-import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,6 +32,8 @@ public class ProjectDetailsController {
     private ProjectService projectService;
     @Autowired
     private SprintService sprintService;
+    @Autowired
+    private EventService eventService;
     @Autowired
     private UserAccountClientService userAccountClientService;
 
@@ -55,8 +62,15 @@ public class ProjectDetailsController {
             Project project = projectService.getProjectById(projectId);
             model.addAttribute("project", project);
 
-            List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-            model.addAttribute("sprints", sprintList);
+        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
+        ProjectDetailsUtil.colorSprints(sprintList);
+        List<Event> eventList = eventService.getByEventParentProjectId(projectId);
+        ProjectDetailsUtil.embedEvents(eventList, sprintList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList);
+
+        model.addAttribute("sprintList", sprintList);
+        model.addAttribute("eventList", eventList);
+        model.addAttribute("importantDates", importantDates);
         } catch (NoSuchElementException e) {
             return "redirect:/projects";
         }

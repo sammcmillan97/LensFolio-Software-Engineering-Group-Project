@@ -1,26 +1,34 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Event
 @Table(name="EVENT")
-public class Event {
+public class Event implements ImportantDate{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int eventId;
     private int eventParentProjectId;
     private String eventName;
-    private int eventNumber;
     private Date eventStartDate;
     private Date eventEndDate;
+    @Transient
+    private String type;
+    @Transient
+    private boolean completed;
+    @Transient
+    private String colourStart;
+    @Transient
+    private String colourEnd;
 
     public Event() {}
 
-    public Event(int eventParentProjectId, String eventName, int eventNumber, Date eventStartDate, Date eventEndDate) {
+    public Event(int eventParentProjectId, String eventName, Date eventStartDate, Date eventEndDate) {
         this.eventParentProjectId = eventParentProjectId;
         this.eventName = eventName;
-        this.eventNumber = eventNumber;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
     }
@@ -28,8 +36,18 @@ public class Event {
     @Override
     public String toString() {
         return String.format(
-                "Event[eventId=%d, eventParentProjectId='%d', eventName='%s', eventNumber='%s', eventStartDate='%s', eventEndDate='%s']",
-                eventId, eventParentProjectId, eventName, "Event " + eventNumber, eventStartDate, eventEndDate);
+                "Event[id=%d, eventParentProjectId='%d', eventName='%s', eventStartDate='%s', eventEndDate='%s']",
+                eventId, eventParentProjectId, eventName, eventStartDate, eventEndDate);
+    }
+
+    /**
+     * Gets the string form of the given date in a readable format
+     *
+     * @param date the date to convert
+     * @return the given date, as a string in format 01/Jan/2000 00:00:00
+     */
+    public static String dateToString(Date date) {
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").format(date);
     }
 
     /* Getters/Setters */
@@ -50,16 +68,12 @@ public class Event {
         this.eventName = eventName;
     }
 
-    public int getEventNumber() {
-        return eventNumber;
-    }
-
-    public void setEventNumber(int eventNumber) {
-        this.eventNumber = eventNumber;
-    }
-
     public Date getEventStartDate() {
         return eventStartDate;
+    }
+
+    public String getStartDateString() {
+        return Project.dateToString(this.eventStartDate, "dd/MMMM/yyyy hh:mm a");
     }
 
     public void setEventStartDate(Date eventStartDate) {
@@ -70,8 +84,44 @@ public class Event {
         return eventEndDate;
     }
 
+    public String getEndDateString() {
+        return Project.dateToString(this.eventEndDate, "dd/MMMM/yyyy hh:mm a");
+    }
+
     public void setEventEndDate(Date eventEndDate) {
         this.eventEndDate = eventEndDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public String getColourStart() {
+        return colourStart;
+    }
+
+    public void setColourStart(String colourStart) {
+        this.colourStart = colourStart;
+    }
+
+    public String getColourEnd() {
+        return colourEnd;
+    }
+
+    public void setColourEnd(String colourEnd) {
+        this.colourEnd = colourEnd;
     }
 
 }
