@@ -12,6 +12,10 @@ public class Deadline {
     private int deadlineParentProjectId;
     private String deadlineName;
     private Date deadlineDate;
+    @Transient
+    private boolean completed;
+    @Transient
+    private String colour;
     
     public Deadline() {}
     
@@ -52,5 +56,21 @@ public class Deadline {
 
     public void setDeadlineDate(Date deadlineEndDate) {
         this.deadlineDate = deadlineEndDate;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 }

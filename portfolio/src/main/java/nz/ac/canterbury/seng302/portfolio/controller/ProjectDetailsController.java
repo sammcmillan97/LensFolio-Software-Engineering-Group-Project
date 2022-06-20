@@ -1,10 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.portfolio.service.EventService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -35,6 +32,8 @@ public class ProjectDetailsController {
     @Autowired
     private EventService eventService;
     @Autowired
+    private DeadlineService deadlineService;
+    @Autowired
     private UserAccountClientService userAccountClientService;
 
     /**
@@ -62,15 +61,18 @@ public class ProjectDetailsController {
             Project project = projectService.getProjectById(projectId);
             model.addAttribute("project", project);
 
-        List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-        ProjectDetailsUtil.colorSprints(sprintList);
-        List<Event> eventList = eventService.getByEventParentProjectId(projectId);
-        ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList);
+            List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
+            ProjectDetailsUtil.colorSprints(sprintList);
+            List<Event> eventList = eventService.getByEventParentProjectId(projectId);
+            ProjectDetailsUtil.embedEvents(eventList, sprintList);
+            List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projectId);
+            ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+            List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
 
-        model.addAttribute("sprintList", sprintList);
-        model.addAttribute("eventList", eventList);
-        model.addAttribute("importantDates", importantDates);
+            model.addAttribute("sprintList", sprintList);
+            model.addAttribute("eventList", eventList);
+            model.addAttribute("deadlineList", deadlineList);
+            model.addAttribute("importantDates", importantDates);
         } catch (NoSuchElementException e) {
             return "redirect:/projects";
         }

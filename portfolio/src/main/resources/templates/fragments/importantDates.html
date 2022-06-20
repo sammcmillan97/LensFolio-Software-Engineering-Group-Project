@@ -71,6 +71,27 @@
         </div>
       </div>
     </div>
+
+    <div class="event__outside" th:if="${importantDate.getSecond() == 'Deadline'}">
+      <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
+      <div class="event_title_child"> <h2 class="event__name" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineName}"></h2> </div>
+      <!-- Edit/Delete Independent events -->
+      <div class="event__button-wrapper flex-row">
+        <form action="#" th:method="get">
+          <button type="submit">Edit</button>
+        </form>
+
+        <form action="#" onSubmit="return confirm('Are you sure you want to delete this event?\nThis action cannot be undone.')" th:method="delete" >
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+      <!-- Independent Deadline Details -->
+      <div class="event__details">
+        <div class="event__details flex-row" >
+          <h4 class="event__date" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineDate()} "></h4>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
