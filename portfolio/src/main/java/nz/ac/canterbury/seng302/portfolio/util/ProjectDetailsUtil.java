@@ -72,16 +72,6 @@ public class ProjectDetailsUtil {
     public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Deadline> deadlineList) {
         List<Pair<Integer, String>> importantDates = new ArrayList<>();
 
-//        eventList.sort(Comparator.comparing(Event::getEventStartDate));
-//        deadlineList.sort(Comparator.comparing(Deadline::getDeadlineDate));
-//
-//        int eventIndex = 0;
-//        int sprintIndex = 0;
-//        int deadlineIndex = 0;
-//        while (eventIndex + sprintIndex + deadlineIndex < eventList.size() + sprintList.size() + deadlineList.size()) {
-//            if (sprintList)
-//        }
-
         for (int i = 0; i < eventList.size(); i++) {
             if (!eventList.get(i).isCompleted()) {
                 importantDates.add(Pair.of(i, "Event"));

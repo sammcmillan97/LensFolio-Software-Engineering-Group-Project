@@ -151,4 +151,8 @@ public class Sprint implements ImportantDate {
     public void addDeadlinesInside(int deadlineIndex) {
         deadlinesInside.add(deadlineIndex);
     }
+
+    public List<Integer> getDeadlinesInside() {
+        return deadlinesInside;
+    }
 }
