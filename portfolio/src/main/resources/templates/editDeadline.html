@@ -30,15 +30,12 @@
             <span id="char_count">30/30 characters remain</span>
 
             <label for="form__date-field">Date *</label>
-            <input type="date" id="form__date-field" class="edit-input" name="deadLineDate" th:placeholder="${deadlineDate}" th:value="${deadlineDate}" th:min="${minDeadlineDate}" th:max="${maxDeadlineDate}" required>
+            <input type="date" id="form__date-field" class="edit-input" name="deadlineDate" th:placeholder="${deadlineDate}" th:value="${deadlineDate}" th:min="${minDeadlineDate}" th:max="${maxDeadlineDate}" required>
             <button type="submit" class="form__button">Save Changes</button>
             <a class="form__button" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
         </form>
     </div>
 </div>
-<!--<script rel="script" th:src="@{scripts/addEditEvent.js}"></script>-->
-<script rel="script" th:src="@{scripts/sendProjectEditNotifications.js}"></script>
+<script rel="script" th:src="@{scripts/addEditDeadlines.js}"></script>
 </body>
-
-
 </html>

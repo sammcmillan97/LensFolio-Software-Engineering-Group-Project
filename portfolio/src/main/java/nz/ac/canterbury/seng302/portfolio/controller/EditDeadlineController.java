@@ -80,25 +80,40 @@ public class EditDeadlineController {
             @RequestParam(value="deadlineName") String deadlineName,
             @RequestParam(value="deadlineDate") String deadlineDateString,
             Model model) throws Exception {
+
         if (!userAccountClientService.isTeacher(principle)) {
             return redirectToProjects;
         }
 
         int deadlineId;
         int projectId;
-        //check values
-        Date deadlineDate = new SimpleDateFormat(timeFormat).parse(deadlineDateString);
 
+        Date deadlineDate = new SimpleDateFormat(timeFormat).parse(deadlineDateString);
         try {
-            deadlineId = Integer.parseInt(deadlineDateString);
+            deadlineId = Integer.parseInt(deadlineIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
             return redirectToProjects;
         }
 
-
-    return "string";
+        //check if creating or editing existing deadline
+        if (deadlineId == -1) {
+            try {
+                deadlineService.createNewDeadline(projectId, deadlineName, deadlineDate);
+            } catch (UnsupportedOperationException e) {
+                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
+            }
+        } else {
+            try {
+                deadlineService.updateDeadline(projectId, deadlineId, deadlineName, deadlineDate);
+            } catch(UnsupportedOperationException e) {
+                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
+            }
+        }
+        return "redirect:/projectDetails-" + projectIdString;
     }
+
+
 
 
 

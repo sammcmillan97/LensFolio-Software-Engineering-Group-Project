@@ -7,7 +7,7 @@
     <div class="event_title_child"> <h2 class="event__name" th:text="${deadline.getDeadlineName}"></h2> </div>
     <!-- Edit/Delete Independent deadlines -->
     <div class="event__button-wrapper flex-row">
-      <form action="#" th:method="get">
+      <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadline.getDeadlineId}, project=${project.getId})}" th:method="get">
         <button type="submit">Edit</button>
       </form>
 
