@@ -19,6 +19,9 @@ public class DeadlineService {
     @Autowired
     private ProjectService deadlineProjectService;
 
+    @Autowired
+    private ProjectEditsService projectEditsService;
+
 
     /**
      * Gets a list of all deadlines
@@ -71,6 +74,7 @@ public class DeadlineService {
      * Saves the provided deadline into the repository
      */
     public Deadline saveDeadline(Deadline deadline) {
+        projectEditsService.refreshProject(deadline.getDeadlineParentProjectId());
         return deadlineRepository.save(deadline);
     }
 

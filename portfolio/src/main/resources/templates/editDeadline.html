@@ -17,6 +17,8 @@
 
 <!-- Page content -->
 <div id="page-content" class="constrict">
+  <div id="projectId" style="display: none;" th:text="${projectId}"></div>
+  <div id="nameOfEdited" style="display: none;" th:text="${deadlineName}"></div>
     <div id="form__wrapper">
 
         <header class="form__header flex-column">
@@ -37,5 +39,6 @@
     </div>
 </div>
 <script rel="script" th:src="@{scripts/addEditDeadlines.js}"></script>
+<script rel="script" th:src="@{scripts/sendProjectEditNotifications.js}"></script>
 </body>
 </html>
