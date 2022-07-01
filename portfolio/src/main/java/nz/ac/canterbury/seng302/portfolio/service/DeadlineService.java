@@ -67,6 +67,7 @@ public class DeadlineService {
         if (deadlineRepository.findById(deadlineId) == null) {
             throw new UnsupportedOperationException("Deadline does not exist");
         }
+        projectEditsService.refreshProject(deadlineRepository.findById(deadlineId).getDeadlineParentProjectId());
         deadlineRepository.deleteById(deadlineId);
     }
 

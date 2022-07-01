@@ -11,7 +11,7 @@
         <button type="submit">Edit</button>
       </form>
 
-      <form action="#" onSubmit="return confirm('Are you sure you want to delete this deadline?\nThis action cannot be undone.')" th:method="delete" >
+      <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadline.getDeadlineId}, project=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this deadline?\nThis action cannot be undone.')" th:method="delete" >
         <button type="submit">Delete</button>
       </form>
     </div>

@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -115,7 +112,17 @@ public class EditDeadlineController {
     }
 
 
+    @DeleteMapping("/editDeadline-{deadlineId}-{parentProjectId}")
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
+                                    @PathVariable("parentProjectId") String parentProjectId,
+                                    @PathVariable("deadlineId") String deadlineId) {
+        if (!userAccountClientService.isTeacher(principal)) {
+            return redirectToProjects;
+        }
 
+        deadlineService.deleteDeadlineById(Integer.parseInt(deadlineId));
+        return "redirect:/projectDetails-" + parentProjectId;
+    }
 
 
 }
