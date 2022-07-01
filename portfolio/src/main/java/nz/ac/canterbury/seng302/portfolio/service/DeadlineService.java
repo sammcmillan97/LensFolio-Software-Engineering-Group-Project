@@ -94,6 +94,14 @@ public class DeadlineService {
         }
     }
 
+    /**
+     * Updates the deadline's date and name attributes
+     * @param parentProjectId The parent project of the deadline
+     * @param deadlineId The deadline ID
+     * @param deadlineName The new deadline name
+     * @param deadlineDate The new deadline date
+     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     */
     public void updateDeadline(int parentProjectId, int deadlineId, String deadlineName, Date deadlineDate) throws Exception {
         Deadline deadline = getDeadlineById(deadlineId);
         Project parentProject = deadlineProjectService.getProjectById(parentProjectId);
@@ -107,6 +115,13 @@ public class DeadlineService {
         saveDeadline(deadline);
     }
 
+    /**
+     * Creates a new deadline with the given parameters
+     * @param parentProjectId The parent project of the deadline
+     * @param deadLineName The new deadline name
+     * @param deadlineDate The new deadline date
+     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     */
     public void createNewDeadline(int parentProjectId, String deadLineName, Date deadlineDate) throws Exception {
         Project parentProject = deadlineProjectService.getProjectById(parentProjectId);
         Date projectStartDate = parentProject.getStartDate();

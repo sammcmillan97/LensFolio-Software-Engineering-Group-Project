@@ -20,7 +20,12 @@
     <div id="form__wrapper">
 
         <header class="form__header flex-column">
-            <h1 id="form__name" th:text="${deadline.deadlineName}"></h1>
+            <div th:if="${deadlineId == '-1'}">
+                <h1> Create new deadline</h1>
+            </div>
+            <div th:if="${deadlineId != '-1'}">
+            <h1 th:text="'Editing: ' + ${deadline.deadlineName}"></h1>
+            </div>
         </header>
 
         <!-- Add/Edit Deadline Form -->

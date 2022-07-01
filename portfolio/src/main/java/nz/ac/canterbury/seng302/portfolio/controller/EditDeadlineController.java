@@ -38,7 +38,13 @@ public class EditDeadlineController {
     private String timeFormat = "yyyy-MM-dd";
     private String redirectToProjects = "redirect:/projects";
 
-
+    /**
+     * The get mapping to return the page with the form to add/edit deadlines
+     * @param principal Authentication principle
+     * @param parentProjectId The parent project ID
+     * @param deadlineId Deadline ID, -1 for a new deadline
+     * @param model The model
+     */
     @GetMapping("/editDeadline-{deadlineId}-{parentProjectId}")
     public String deadLineForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
@@ -63,7 +69,7 @@ public class EditDeadlineController {
         if (Integer.parseInt(deadlineId) != -1) {
             deadline = deadlineService.getDeadlineById(Integer.parseInt(deadlineId));
         } else {
-            deadline = new Deadline(projectId, "New Deadline", project.getEndDate());
+            deadline = new Deadline(projectId, "Deadline name", project.getEndDate());
         }
         model.addAttribute("deadline", deadline);
         model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), timeFormat));
@@ -72,6 +78,15 @@ public class EditDeadlineController {
         return "editDeadline";
     }
 
+    /**
+     * The post mapping for submitting the add/edit deadline form
+     * @param principle Authentication principle
+     * @param projectIdString The project ID string representing the parent project ID
+     * @param deadlineIdString The deadline ID string representing the deadline, -1 for a new deadline
+     * @param deadlineName The new deadline name
+     * @param deadlineDateString The new deadline date
+     * @param model The model
+     */
     @PostMapping("/editDeadline-{deadlineId}-{parentProjectId}")
     public String submitForm(
             @AuthenticationPrincipal AuthState principle,
@@ -112,8 +127,6 @@ public class EditDeadlineController {
         }
         return "redirect:/projectDetails-" + projectIdString;
     }
-
-
 
 
 
