@@ -128,6 +128,4 @@ public class EditDeadlineController {
         return "redirect:/projectDetails-" + projectIdString;
     }
 
-
-
 }
