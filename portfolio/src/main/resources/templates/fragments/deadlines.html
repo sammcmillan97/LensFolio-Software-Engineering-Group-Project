@@ -7,11 +7,11 @@
     <div class="event_title_child"> <h2 class="event__name" th:text="${deadline.getDeadlineName}"></h2> </div>
     <!-- Edit/Delete Independent deadlines -->
     <div class="event__button-wrapper flex-row">
-      <form action="#" th:method="get">
+      <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadline.getDeadlineId}, project=${project.getId})}" th:method="get">
         <button type="submit">Edit</button>
       </form>
 
-      <form action="#" onSubmit="return confirm('Are you sure you want to delete this deadline?\nThis action cannot be undone.')" th:method="delete" >
+      <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadline.getDeadlineId}, project=${project.getId})}" onSubmit="return confirm('Are you sure you want to delete this deadline?\nThis action cannot be undone.')" th:method="delete" >
         <button type="submit">Delete</button>
       </form>
     </div>
