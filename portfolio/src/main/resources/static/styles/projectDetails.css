@@ -150,14 +150,22 @@ html {
     font-weight: 400;
 }
 
-
-.sprint .sprint__details, .event__details {
-    border-top: 1px solid var(--color-accent);
+.sprint {
     padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.break{
+    border-top: 1px solid var(--color-accent);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .event__details {
-    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .sprint__date, .event__start-date, .event__end-date, .event__date {
