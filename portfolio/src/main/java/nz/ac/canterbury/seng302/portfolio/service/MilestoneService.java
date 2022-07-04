@@ -2,9 +2,11 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.MilestoneRepository;
+import nz.ac.canterbury.seng302.portfolio.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +47,7 @@ public class MilestoneService {
      * @param projectId the id of the project
      * @return the list of milestones by the project id
      */
-    public List<Milestone> getByParentProjectId(int projectId) {
+    public List<Milestone> getByMilestoneParentProjectId(int projectId) {
         return milestoneRepository.findByMilestoneParentProjectIdOrderByMilestoneDate(projectId);
     }
 
@@ -58,11 +60,73 @@ public class MilestoneService {
     }
 
     /**
-     * Delete the milestone by id
-     * @param milestoneId the id of the milestone
+     * Deletes the milestone from the repository using the provided id
+     *
+     * @param milestoneId the id of the deadline to be deleted
      */
     public void deleteMilestoneById(int milestoneId) {
-        projectEditsService.refreshProject(milestoneRepository.findById(milestoneId).getMilestoneParentProjectId());
+        if (milestoneRepository.findById(milestoneId) == null) {
+            throw new UnsupportedOperationException("Milestone does not exist");
+        }
         milestoneRepository.deleteById(milestoneId);
+    }
+
+    /**
+     * Updates the milestones's date to a new date
+     *
+     * @param milestoneId      the id of the milestone to be updated
+     * @param newMilestoneDate the new date the milestone should be set to
+     * @throws Exception if the new milestone date falls outside the project dates
+     */
+    public void updateMilestoneDate(int milestoneId, Date newMilestoneDate) throws Exception {
+        Milestone newMilestone = getMilestoneById(milestoneId);
+        Date projectStartDate = projectService.getProjectById(newMilestone.getMilestoneParentProjectId()).getStartDate();
+        Date projectEndDate = projectService.getProjectById(newMilestone.getMilestoneParentProjectId()).getEndDate();
+
+        if (newMilestoneDate.compareTo(projectEndDate) > 0 || newMilestoneDate.compareTo(projectStartDate) < 0) {
+            throw new UnsupportedOperationException("Milestone date must be within the project dates");
+        } else {
+            newMilestone.setMilestoneDate(newMilestoneDate);
+            saveMilestone(newMilestone);
+        }
+    }
+
+    /**
+     * Updates the milestone's date and name attributes
+     * @param parentProjectId The parent project of the milestone
+     * @param milestoneId The milestone ID
+     * @param milestoneName The new deadline name
+     * @param milestoneDate The new deadline date
+     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     */
+    public void updateMilestone(int parentProjectId, int milestoneId, String milestoneName, Date milestoneDate) throws Exception {
+        Milestone milestone = getMilestoneById(milestoneId);
+        Project parentProject = projectService.getProjectById(parentProjectId);
+        Date projectStartDate = parentProject.getStartDate();
+        Date projectEndDate = parentProject.getEndDate();
+        if (milestoneDate.compareTo(projectEndDate) > 0 || milestoneDate.compareTo(projectStartDate) < 0) {
+            throw new UnsupportedOperationException("Milestone date must be within the project dates");
+        }
+        milestone.setMilestoneDate(milestoneDate);
+        milestone.setMilestoneName(milestoneName);
+        saveMilestone(milestone);
+    }
+
+    /**
+     * Creates a new milestone with the given parameters
+     * @param parentProjectId The parent project of the milestone
+     * @param milestoneName The new milestone name
+     * @param milestoneDate The new milestone date
+     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     */
+    public void createNewMilestone(int parentProjectId, String milestoneName, Date milestoneDate) throws Exception {
+        Project parentProject = projectService.getProjectById(parentProjectId);
+        Date projectStartDate = parentProject.getStartDate();
+        Date projectEndDate = parentProject.getEndDate();
+        if (milestoneDate.compareTo(projectEndDate) > 0 || milestoneDate.compareTo(projectStartDate) < 0) {
+            throw new UnsupportedOperationException("Milestone date must be within the project dates");
+        } else {
+            saveMilestone(new Milestone(parentProjectId, milestoneName, milestoneDate));
+        }
     }
 }
