@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class EditDeadlineController {
     @Autowired
     DeadlineService deadlineService;
 
-    private String timeFormat = "yyyy-MM-dd";
+    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
     private String redirectToProjects = "redirect:/projects";
 
     /**
@@ -103,7 +104,9 @@ public class EditDeadlineController {
         int deadlineId;
         int projectId;
 
-        Date deadlineDate = new SimpleDateFormat(timeFormat).parse(deadlineDateString);
+        Timestamp deadlineDateTimeStamp = Timestamp.valueOf(deadlineDateString.replace("T", " ") +":00");
+        Date deadlineDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Deadline.dateToString(deadlineDateTimeStamp));
+
         try {
             deadlineId = Integer.parseInt(deadlineIdString);
             projectId = Integer.parseInt(projectIdString);
