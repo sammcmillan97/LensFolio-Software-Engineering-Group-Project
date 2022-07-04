@@ -18,7 +18,7 @@
     <!-- Independent Deadline Details -->
     <div class="event__details">
       <div class="event__details flex-row" >
-        <h4 class="event__date" th:style="'color : ' + ${deadline.getColour()}" th:text="${deadline.getDeadlineDate()} "></h4>
+        <h4 class="event__date" th:style="'color : ' + ${deadline.getColour()}" th:text="${deadline.getDateString()} "></h4>
       </div>
     </div>
   </div>
