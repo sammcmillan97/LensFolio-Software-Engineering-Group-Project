@@ -53,7 +53,10 @@ public class ProjectDetailsUtil {
     public static void embedDeadlines(List<Deadline> deadlineList, List<Sprint> sprintList) {
         for (int i = 0; i < deadlineList.size(); i++) {
             for (Sprint sprint : sprintList) {
-                if ((deadlineList.get(i).getDeadlineDate().after(sprint.getStartDate()) || deadlineList.get(i).getDeadlineDate().equals(sprint.getStartDate())) && (deadlineList.get(i).getDeadlineDate().before(sprint.getEndDate()) || deadlineList.get(i).getDeadlineDate().equals(sprint.getEndDate()))) {
+                if ((deadlineList.get(i).getDeadlineDate().after(sprint.getStartDate()) ||
+                        deadlineList.get(i).getDeadlineDate().equals(sprint.getStartDate())) &&
+                        (deadlineList.get(i).getDeadlineDate().before(sprint.getEndDate()) ||
+                                deadlineList.get(i).getDeadlineDate().equals(sprint.getEndDate()))) {
                     sprint.addDeadlinesInside(i);
                     deadlineList.get(i).setColour(sprint.getColour());
                     deadlineList.get(i).setCompleted(true);
