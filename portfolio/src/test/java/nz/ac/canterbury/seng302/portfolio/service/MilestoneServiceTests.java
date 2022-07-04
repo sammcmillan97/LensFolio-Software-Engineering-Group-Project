@@ -269,4 +269,13 @@ public class MilestoneServiceTests {
         assertEquals(Date.valueOf("2022-06-05"), milestoneList.get(0).getMilestoneDate());
 
     }
+
+    @Test
+    void whenCreateNewMilestoneBeforeProjectStarts_testExceptionThrown() {
+        Exception exception = assertThrows(Exception.class, () ->
+                milestoneService.createNewMilestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-04-06")));
+        String expectedMessage = "Milestone date must be within the project dates";
+        String actualMessage = exception.getMessage();
+        assertThat(expectedMessage).isEqualTo(actualMessage);
+    }
 }
