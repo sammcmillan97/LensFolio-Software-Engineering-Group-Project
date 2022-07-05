@@ -229,30 +229,6 @@ public class MilestoneServiceTests {
     }
 
     @Test
-    void whenMilestoneDateIsChangedToDateWithinProjectDates_testMilestoneDateChanged() throws Exception {
-        Milestone milestone = new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06"));
-        milestoneService.saveMilestone(milestone);
-        List<Milestone> milestoneList = (List<Milestone>) milestoneRepository.findAll();
-        int milestoneId = milestoneList.get(0).getId();
-        milestoneService.updateMilestoneDate(milestoneId, Date.valueOf("2022-06-27"));
-        Milestone milestone1 = milestoneRepository.findById(milestoneId);
-        assertThat(milestone1.getMilestoneDate()).isEqualTo(Timestamp.valueOf("2022-06-27 00:00:00"));
-    }
-
-    @Test
-    void whenMilestoneDateIsChangedToDateAfterProjectEndDate_testExceptionThrown() {
-        milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-15")));
-        List<Milestone> milestoneList = (List<Milestone>) milestoneRepository.findAll();
-        int milestoneId = milestoneList.get(0).getId();
-
-        Exception exception = assertThrows(Exception.class, () ->
-                milestoneService.updateMilestoneDate(milestoneId, Date.valueOf("2022-07-02")));
-        String expectedMessage = "Milestone date must be within the project dates";
-        String actualMessage = exception.getMessage();
-        assertThat(expectedMessage).isEqualTo(actualMessage);
-    }
-
-    @Test
     void whenNoMilestoneExists_testCreateNewMilestone() throws Exception {
         milestoneService.createNewMilestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06"));
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
