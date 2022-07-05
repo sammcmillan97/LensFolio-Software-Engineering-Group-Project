@@ -33,7 +33,7 @@ public class Milestone {
 
     /* Getters/Setters */
 
-    public int getIdd() {
+    public int getId() {
         return id;
     }
 
