@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class MilestoneServiceTests {
+class MilestoneServiceTests {
     @Autowired
     MilestoneService milestoneService;
 
@@ -256,7 +256,7 @@ public class MilestoneServiceTests {
     void whenNoMilestoneExists_testCreateNewMilestone() throws Exception {
         milestoneService.createNewMilestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06"));
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
-        assertEquals(milestoneList.get(0).getMilestoneName(), "Test Milestone");
+        assertEquals("Test Milestone", milestoneList.get(0).getMilestoneName());
     }
 
     @Test

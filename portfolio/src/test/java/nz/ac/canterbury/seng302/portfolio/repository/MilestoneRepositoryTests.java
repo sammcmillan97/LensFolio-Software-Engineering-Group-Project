@@ -17,7 +17,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-public class MilestoneRepositoryTests {
+class MilestoneRepositoryTests {
 
     @Autowired
     private DataSource dataSource;
