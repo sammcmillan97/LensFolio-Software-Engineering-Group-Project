@@ -59,20 +59,30 @@ public class EditDeadlineController {
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
+
         int projectId = Integer.parseInt(parentProjectId);
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("projectId", project.getId());
 
         Deadline deadline;
+
+        Date deadlineDate;
+        Date currentDate = new Date();
+        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+            deadlineDate = currentDate;
+        } else {
+            deadlineDate = project.getStartDate();
+        }
+
         if (Integer.parseInt(deadlineId) != -1) {
             deadline = deadlineService.getDeadlineById(Integer.parseInt(deadlineId));
         } else {
-            deadline = new Deadline(projectId, "Deadline name", project.getEndDate());
+            deadline = new Deadline(projectId, "Deadline name", deadlineDate);
         }
         model.addAttribute("deadline", deadline);
         model.addAttribute("deadlineName", deadline.getDeadlineName());
         model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), timeFormat));
-        model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), timeFormat));
+        model.addAttribute("minDeadlineDate", Project.dateToString(currentDate, timeFormat));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), timeFormat));
         return "editDeadline";
     }
