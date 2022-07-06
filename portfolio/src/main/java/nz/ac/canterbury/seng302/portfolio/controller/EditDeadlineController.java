@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,10 +33,16 @@ public class EditDeadlineController {
     @Autowired
     DeadlineService deadlineService;
 
-    private String timeFormat = "yyyy-MM-dd";
+    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
     private String redirectToProjects = "redirect:/projects";
 
-
+    /**
+     * The get mapping to return the page with the form to add/edit deadlines
+     * @param principal Authentication principle
+     * @param parentProjectId The parent project ID
+     * @param deadlineId Deadline ID, -1 for a new deadline
+     * @param model The model
+     */
     @GetMapping("/editDeadline-{deadlineId}-{parentProjectId}")
     public String deadLineForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
@@ -52,24 +59,43 @@ public class EditDeadlineController {
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
+
         int projectId = Integer.parseInt(parentProjectId);
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("projectId", project.getId());
 
         Deadline deadline;
+
+        Date deadlineDate;
+        Date currentDate = new Date();
+        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+            deadlineDate = currentDate;
+        } else {
+            deadlineDate = project.getStartDate();
+        }
+
         if (Integer.parseInt(deadlineId) != -1) {
             deadline = deadlineService.getDeadlineById(Integer.parseInt(deadlineId));
         } else {
-            deadline = new Deadline(projectId, "New Deadline", project.getEndDate());
+            deadline = new Deadline(projectId, "Deadline name", deadlineDate);
         }
         model.addAttribute("deadline", deadline);
         model.addAttribute("deadlineName", deadline.getDeadlineName());
         model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), timeFormat));
-        model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), timeFormat));
+        model.addAttribute("minDeadlineDate", Project.dateToString(currentDate, timeFormat));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), timeFormat));
         return "editDeadline";
     }
 
+    /**
+     * The post mapping for submitting the add/edit deadline form
+     * @param principle Authentication principle
+     * @param projectIdString The project ID string representing the parent project ID
+     * @param deadlineIdString The deadline ID string representing the deadline, -1 for a new deadline
+     * @param deadlineName The new deadline name
+     * @param deadlineDateString The new deadline date
+     * @param model The model
+     */
     @PostMapping("/editDeadline-{deadlineId}-{parentProjectId}")
     public String submitForm(
             @AuthenticationPrincipal AuthState principle,
@@ -86,7 +112,9 @@ public class EditDeadlineController {
         int deadlineId;
         int projectId;
 
-        Date deadlineDate = new SimpleDateFormat(timeFormat).parse(deadlineDateString);
+        Timestamp deadlineDateTimeStamp = Timestamp.valueOf(deadlineDateString.replace("T", " ") +":00");
+        Date deadlineDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").parse(Deadline.dateToString(deadlineDateTimeStamp));
+
         try {
             deadlineId = Integer.parseInt(deadlineIdString);
             projectId = Integer.parseInt(projectIdString);

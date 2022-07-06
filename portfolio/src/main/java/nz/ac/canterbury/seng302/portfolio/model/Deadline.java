@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Deadline
@@ -32,6 +33,17 @@ public class Deadline {
                 deadlineId, deadlineParentProjectId, deadlineName, deadlineDate);
     }
 
+
+    /**
+     * Gets the string form of the given date in a readable format
+     *
+     * @param date the date to convert
+     * @return the given date, as a string in format 01/Jan/2000 00:00:00
+     */
+    public static String dateToString(Date date) {
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a").format(date);
+    }
+
     /* Getters/Setters */
 
     public int getDeadlineId() {
@@ -53,6 +65,8 @@ public class Deadline {
     public Date getDeadlineDate() {
         return deadlineDate;
     }
+
+    public String getDeadlineDateString() {return Project.dateToString(this.deadlineDate, "dd/MMMM/yyyy hh:mm a");}
 
     public void setDeadlineDate(Date deadlineEndDate) {
         this.deadlineDate = deadlineEndDate;

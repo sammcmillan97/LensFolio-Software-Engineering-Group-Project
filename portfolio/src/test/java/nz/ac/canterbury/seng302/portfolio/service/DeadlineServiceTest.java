@@ -14,8 +14,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
@@ -290,6 +289,24 @@ public class DeadlineServiceTest {
         String expectedMessage = "Deadline date must be within the project dates";
         String actualMessage = exception.getMessage();
         assertThat(expectedMessage).isEqualTo(actualMessage);
+    }
+
+    @Test
+    void whenNoDeadlineExists_testCreateNewDeadline() throws Exception {
+        deadlineService.createNewDeadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06"));
+        List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
+        assertEquals(deadlineList.get(0).getDeadlineName(), "Test Deadline");
+    }
+
+    @Test
+    void whenDeadlineExists_testEditDeadline() throws Exception {
+        Deadline deadline = new Deadline((projects.get(0).getId()), "Unedited Deadline", Date.valueOf("2022-06-06"));
+        deadlineRepository.save(deadline);
+        deadlineService.updateDeadline(projects.get(0).getId(), deadline.getDeadlineId(), "Edited Deadline", Date.valueOf("2022-06-05"));
+        List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
+        assertEquals("Edited Deadline", deadlineList.get(0).getDeadlineName());
+        assertEquals(Date.valueOf("2022-06-05"), deadlineList.get(0).getDeadlineDate());
+
     }
 
 }
