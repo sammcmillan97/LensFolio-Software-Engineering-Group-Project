@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.util;
 
 import nz.ac.canterbury.seng302.portfolio.model.Event;
+import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import org.springframework.data.util.Pair;
 
@@ -44,13 +45,34 @@ public class ProjectDetailsUtil {
     }
 
     /**
+     * Takes a list of Milestone objects and a list of Sprint objects and determines which Milestones occur within a Sprint. If
+     * a Milestone occurs within a Sprint the Milestones's id number is stored within the Sprint.
+     * @param milestoneList List of Milestone objects to embed in a Sprint
+     * @param sprintList List of Sprint objects which will have Events embedded within
+     */
+    public static void embedMilestones(List<Milestone> milestoneList, List<Sprint> sprintList) {
+        for (int i = 0; i < milestoneList.size(); i++) {
+            for (Sprint sprint : sprintList) {
+                if ((milestoneList.get(i).getMilestoneDate().after(sprint.getStartDate()) ||
+                        milestoneList.get(i).getMilestoneDate().equals(sprint.getStartDate())) &&
+                        (milestoneList.get(i).getMilestoneDate().before(sprint.getEndDate()) ||
+                                milestoneList.get(i).getMilestoneDate().equals(sprint.getEndDate()))) {
+                    sprint.addMilestonesInside(i);
+                    milestoneList.get(i).setColour(sprint.getColour());
+                    milestoneList.get(i).setCompleted(true);
+                }
+            }
+        }
+    }
+
+    /**
      * Takes a list of Event objects and a list of Sprint objects and orders them by Start Date. Returns a list of Pairs
      * which hold the id of the Event or Sprint and a string which describes whether the id is for a Sprint or Event.
      * @param eventList list of Event objects to order
      * @param sprintList list of Sprint objects to order
      * @return list of Pair<Integer, String> objects which hold the id of the object and what type it is
      */
-    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList) {
+    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Milestone> milestoneList) {
         List<Pair<Integer, String>> importantDates = new ArrayList<>();
 
         for (int i = 0; i < eventList.size(); i++) {
@@ -58,10 +80,15 @@ public class ProjectDetailsUtil {
                 importantDates.add(Pair.of(i, "Event"));
             }
         }
+        for (int i = 0; i < milestoneList.size(); i++) {
+            if (!milestoneList.get(i).isCompleted()) {
+                importantDates.add(Pair.of(i, "Milestone"));
+            }
+        }
         for (int i = 0; i < sprintList.size(); i++) {
             importantDates.add(Pair.of(i, "Sprint"));
         }
-        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : eventList.get(a.getFirst()).getEventStartDate())));
+        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : milestoneList.get(a.getFirst()).getMilestoneDate())));
         return importantDates;
     }
 

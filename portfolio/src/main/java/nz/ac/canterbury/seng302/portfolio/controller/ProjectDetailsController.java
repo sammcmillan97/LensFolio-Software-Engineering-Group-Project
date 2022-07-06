@@ -1,10 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.portfolio.service.EventService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -34,6 +31,8 @@ public class ProjectDetailsController {
     private SprintService sprintService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private MilestoneService milestoneService;
     @Autowired
     private UserAccountClientService userAccountClientService;
 
@@ -66,7 +65,9 @@ public class ProjectDetailsController {
         ProjectDetailsUtil.colorSprints(sprintList);
         List<Event> eventList = eventService.getByEventParentProjectId(projectId);
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList);
+        List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projectId);
+        ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
 
         model.addAttribute("sprintList", sprintList);
         model.addAttribute("eventList", eventList);
