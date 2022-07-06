@@ -1,11 +1,13 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -94,6 +97,15 @@ public class PlannerController {
     @GetMapping("/planner")
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model) {
+
+        Project testProject  = new Project("Project Name", "Test Project", java.sql.Date.valueOf("2022-05-01"), java.sql.Date.valueOf("2022-06-30"));
+        List<Event> eventList = new ArrayList<>();
+        Event event1 = new Event(testProject.getId(), "Test Event", java.sql.Date.valueOf("2022-06-03"), java.sql.Date.valueOf("2022-06-06"));
+        Event event2 = new Event(testProject.getId(), "Test Event", java.sql.Date.valueOf("2022-06-03"), java.sql.Date.valueOf("2022-06-04"));
+        eventList.add(event1);
+        eventList.add(event2);
+        PlannerUtil.getEventsForCalender(eventList, testProject);
+
 
         List<Project> projects = projectService.getAllProjects();
         Project project = null;
