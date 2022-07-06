@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.Util;
 
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
+import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,19 +21,21 @@ public class ProjectDetailsUtilTest {
     public static List<Event> eventList;
     public static List<Sprint> sprintList;
     public static List<Deadline> deadlineList;
+    public static List<Milestone> milestoneList;
 
     @BeforeEach
     void setupSprintList() {
         sprintList = new ArrayList<>();
         eventList = new ArrayList<>();
         deadlineList = new ArrayList<>();
-        sprintList.add(new Sprint(1, "Test Sprint",1, "Description",
+        milestoneList = new ArrayList<>();
+        sprintList.add(new Sprint(1, "Test Sprint", 1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintList.add(new Sprint(1, "Test Sprint",2, "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 2, "Description",
                 Date.valueOf("2022-05-17"), Date.valueOf("2022-06-16")));
-        sprintList.add(new Sprint(1, "Test Sprint",3, "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 3, "Description",
                 Date.valueOf("2022-06-17"), Date.valueOf("2022-07-16")));
-        sprintList.add(new Sprint(1, "Test Sprint",4, "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 4, "Description",
                 Date.valueOf("2022-07-17"), Date.valueOf("2022-08-16")));
     }
 
@@ -41,7 +44,7 @@ public class ProjectDetailsUtilTest {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-05"), Date.valueOf("2022-04-06")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertEquals(0, sprint.getEventsInside().size());
         }
     }
@@ -69,7 +72,7 @@ public class ProjectDetailsUtilTest {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-05"), Date.valueOf("2022-07-25")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             List<Integer> eventIndexes = sprint.getEventsInside();
             assertEquals(eventList.get(0), eventList.get(eventIndexes.get(0)));
         }
@@ -80,7 +83,7 @@ public class ProjectDetailsUtilTest {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-07-25")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             List<Integer> eventIndexes = sprint.getEventsInside();
             assertEquals(eventList.get(0), eventList.get(eventIndexes.get(0)));
         }
@@ -100,7 +103,7 @@ public class ProjectDetailsUtilTest {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             List<Integer> eventIndexes = sprint.getEventsInside();
             assertEquals(eventList.get(0), eventList.get(eventIndexes.get(0)));
         }
@@ -111,7 +114,7 @@ public class ProjectDetailsUtilTest {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-10"), Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             List<Integer> eventIndexes = sprint.getEventsInside();
             assertEquals(eventList.get(0), eventList.get(eventIndexes.get(0)));
         }
@@ -196,7 +199,7 @@ public class ProjectDetailsUtilTest {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-04-13")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertEquals(0, sprint.getDeadlinesInside().size());
         }
     }
@@ -206,7 +209,7 @@ public class ProjectDetailsUtilTest {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertEquals(0, sprint.getDeadlinesInside().size());
         }
     }
@@ -276,7 +279,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -295,7 +298,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -314,7 +317,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -333,7 +336,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -352,7 +355,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -371,7 +374,7 @@ public class ProjectDetailsUtilTest {
         indices.add(Pair.of(1, "Sprint"));
         indices.add(Pair.of(2, "Sprint"));
         indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
         for (int i = 0; i < importantDates.size(); i++) {
             assertEquals(indices.get(i), importantDates.get(i));
         }
@@ -379,35 +382,35 @@ public class ProjectDetailsUtilTest {
 
     @Test
     void whenSprintListExistsTestColourSprints() {
-        for(Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertNull(sprint.getColour());
         }
         ProjectDetailsUtil.colorSprints(sprintList);
-        for(Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertNotNull(sprint.getColour());
         }
     }
-}
+
 
     @Test
     void whenMilestoneOccursBeforeAllSprintsTestMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-13")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
-        for (Sprint sprint: sprintList) {
+        for (Sprint sprint : sprintList) {
             assertEquals(0, sprint.getMilestonesInside().size());
         }
     }
 
 
     @Test
-        }
-            assertEquals(0, sprint.getMilestonesInside().size());
-        for (Sprint sprint: sprintList) {
     void whenMilestoneOccursAfterAllSprintsTestMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
+        for (Sprint sprint : sprintList) {
+            assertEquals(0, sprint.getMilestonesInside().size());
+        }
     }
 
     @Test
@@ -434,21 +437,22 @@ public class ProjectDetailsUtilTest {
         List<Integer> milestoneIndexes = sprintList.get(0).getMilestonesInside();
         assertEquals(milestoneList.get(0), milestoneList.get(milestoneIndexes.get(0)));
     }
-    @Test
 
+    @Test
     void whenMilestoneOccursDaySprintEndsTestMilestoneEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-05-16")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         List<Integer> eventIndexes = sprintList.get(0).getMilestonesInside();
-    }
         assertEquals(milestoneList.get(0), milestoneList.get(eventIndexes.get(0)));
+    }
 
-    void whenMilestoneOccursWithinSprintTestEmbedMilestoneAndMilestoneColourSameAsSprint() {
+
     @Test
+    void whenMilestoneOccursWithinSprintTestEmbedMilestoneAndMilestoneColourSameAsSprint() {
         ProjectDetailsUtil.colorSprints(sprintList);
-                Date.valueOf("2022-04-20")));
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
+                Date.valueOf("2022-04-20")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         assertEquals(sprintList.get(0).getColour(), milestoneList.get(0).getColour());
     }
@@ -461,3 +465,4 @@ public class ProjectDetailsUtilTest {
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         assertNull(milestoneList.get(0).getColour());
     }
+}

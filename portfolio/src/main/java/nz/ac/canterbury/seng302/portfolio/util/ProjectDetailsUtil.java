@@ -94,8 +94,7 @@ public class ProjectDetailsUtil {
      * @param sprintList list of Sprint objects to order
      * @return list of Pair<Integer, String> objects which hold the id of the object and what type it is
      */
-    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Deadline> deadlineList) {
-    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Milestone> milestoneList) {
+    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Deadline> deadlineList, List<Milestone> milestoneList) {
         List<Pair<Integer, String>> importantDates = new ArrayList<>();
 
         for (int i = 0; i < eventList.size(); i++) {
@@ -116,8 +115,7 @@ public class ProjectDetailsUtil {
         for (int i = 0; i < sprintList.size(); i++) {
             importantDates.add(Pair.of(i, "Sprint"));
         }
-        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : deadlineList.get(a.getFirst()).getDeadlineDate())));
-        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : milestoneList.get(a.getFirst()).getMilestoneDate())));
+        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : a.getSecond().equals("Deadline") ? deadlineList.get(a.getFirst()).getDeadlineDate() : milestoneList.get(a.getFirst()).getMilestoneDate())));
         return importantDates;
     }
 

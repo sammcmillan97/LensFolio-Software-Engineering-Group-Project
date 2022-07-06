@@ -69,15 +69,14 @@ public class ProjectDetailsController {
             ProjectDetailsUtil.embedEvents(eventList, sprintList);
             List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projectId);
             ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
-        List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projectId);
-        ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
-            List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
+            List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projectId);
+            ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
+            List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
 
             model.addAttribute("sprintList", sprintList);
             model.addAttribute("eventList", eventList);
             model.addAttribute("deadlineList", deadlineList);
-        model.addAttribute("milestoneList", milestoneList);
+            model.addAttribute("milestoneList", milestoneList);
             model.addAttribute("importantDates", importantDates);
         } catch (NoSuchElementException e) {
             return "redirect:/projects";

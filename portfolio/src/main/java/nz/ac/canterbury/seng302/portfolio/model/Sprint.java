@@ -149,14 +149,6 @@ public class Sprint implements ImportantDate {
         milestonesInside.add(milestoneIndex);
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getColour() {
         return colour;
     }
