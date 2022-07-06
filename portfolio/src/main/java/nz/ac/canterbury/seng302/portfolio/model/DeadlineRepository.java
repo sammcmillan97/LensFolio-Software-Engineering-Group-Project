@@ -10,5 +10,5 @@ import java.util.List;
 public interface DeadlineRepository extends CrudRepository<Deadline, Integer> {
     List<Deadline> findByDeadlineName(String deadlineName);
     Deadline findById(int id);
-    List<Deadline> findByDeadlineParentProjectId(int deadlineParentProjectId);
+    List<Deadline> findByDeadlineParentProjectIdOrderByDeadlineDate(int deadlineParentProjectId);
 }

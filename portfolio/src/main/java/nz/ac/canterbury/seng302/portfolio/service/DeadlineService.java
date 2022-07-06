@@ -55,7 +55,7 @@ public class DeadlineService {
      * @return the list of deadlines of the project
      */
     public List<Deadline> getByDeadlineParentProjectId(int deadlineProjectId) {
-        return deadlineRepository.findByDeadlineParentProjectId(deadlineProjectId);
+        return deadlineRepository.findByDeadlineParentProjectIdOrderByDeadlineDate(deadlineProjectId);
     }
 
     /**
