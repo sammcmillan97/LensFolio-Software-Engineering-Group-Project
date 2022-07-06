@@ -75,7 +75,7 @@ public class PlannerController {
         model.addAttribute("user", user);
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
-        model.addAttribute("events", eventService.getByEventParentProjectId(project.getId()));
+
 
         if (sprintUpdated) {
             model.addAttribute("recentUpdate", sprintDate);
