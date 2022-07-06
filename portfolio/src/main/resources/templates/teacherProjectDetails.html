@@ -55,6 +55,9 @@
           <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2">
             <span>Events</span>
           </button>
+          <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3">
+            <span>Milestones</span>
+          </button>
         </div>
         <div id="new-buttons" class="flex-row">
           <!-- New Sprint Button -->
@@ -72,6 +75,9 @@
           </div>
           <div class="carousel-item">
             <div th:replace="fragments/events"></div>
+          </div>
+          <div class="carousel-item">
+            <div th:replace="fragments/milestones"></div>
           </div>
         </div>
       </div>

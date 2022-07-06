@@ -71,6 +71,7 @@ public class ProjectDetailsController {
 
         model.addAttribute("sprintList", sprintList);
         model.addAttribute("eventList", eventList);
+        model.addAttribute("milestoneList", milestoneList);
         model.addAttribute("importantDates", importantDates);
         } catch (NoSuchElementException e) {
             return "redirect:/projects";

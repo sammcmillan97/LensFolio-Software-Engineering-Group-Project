@@ -18,7 +18,7 @@ public class Sprint implements ImportantDate {
     private Date sprintEndDate;
     @Transient
     private List<Integer> eventsInside = new ArrayList<>();
-    @Transient List<Integer> milestonesIndside = new ArrayList<>();
+    @Transient List<Integer> milestonesInside = new ArrayList<>();
     @Transient
     private String type;
     @Transient
@@ -141,12 +141,12 @@ public class Sprint implements ImportantDate {
         eventsInside.add(eventIndex);
     }
 
-    public List<Integer> getMilestonesIndside() {
-        return milestonesIndside;
+    public List<Integer> getMilestonesInside() {
+        return milestonesInside;
     }
 
     public void addMilestonesInside(Integer milestoneIndex) {
-        milestonesIndside.add(milestoneIndex);
+        milestonesInside.add(milestoneIndex);
     }
 
     public String getType() {
