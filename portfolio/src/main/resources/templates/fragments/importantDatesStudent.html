@@ -24,6 +24,22 @@
           </div>
         </div>
       </div>
+
+      <div class="break"></div>
+
+      <!--      Embedded Milestones-->
+      <div class="event__details">
+        <div th:each="milestone : ${sprintList.get(importantDate.getFirst()).getMilestonesInside}">
+          <div class="event">
+            <div class="event_title_child"> <i class="bi bi-trophy"></i> </div>
+            <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(milestone).getMilestoneName}"></h2> </div>
+            <!-- Inside milestone Details -->
+            <div class="event__details flex-row" >
+              <h4 class="event__date" th:style="'color : ' + ${milestoneList.get(milestone).getColour()}" th:text="${milestoneList.get(milestone).getDateString()} "></h4>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Independent Events -->
     <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
@@ -35,6 +51,17 @@
           <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}" th:text="${eventList.get(importantDate.getFirst()).getStartDateString()} "></h4>
           <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourStart()}"> ---> </h4>
           <h4 class="event__date" th:style="'color : ' + ${eventList.get(importantDate.getFirst()).getColourEnd()}" th:text="${eventList.get(importantDate.getFirst()).getEndDateString()}"></h4>
+        </div>
+      </div>
+    </div>
+    <!--    Independent Milestones-->
+    <div class="event__outside" th:if="${importantDate.getSecond() == 'Milestone'}">
+      <div class="event_title_child"> <i class="bi bi-trophy"></i> </div>
+      <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(importantDate.getFirst()).getMilestoneName}"></h2> </div>
+      <!-- Independent Milestone Details -->
+      <div class="event__details">
+        <div class="event__details flex-row" >
+          <h4 class="event__date" th:style="'color : ' + ${milestoneList.get(importantDate.getFirst()).getColour()}" th:text="${milestoneList.get(importantDate.getFirst()).getDateString()} "></h4>
         </div>
       </div>
     </div>

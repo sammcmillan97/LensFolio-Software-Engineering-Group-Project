@@ -47,6 +47,9 @@
     <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2">
       <span>Events</span>
     </button>
+    <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3">
+      <span>Milestones</span>
+    </button>
   </div>
   <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
     <div class="carousel-inner">
@@ -58,6 +61,9 @@
       </div>
       <div class="carousel-item">
         <div th:replace="fragments/eventsStudent"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragments/milestonesStudent"></div>
       </div>
     </div>
   </div>

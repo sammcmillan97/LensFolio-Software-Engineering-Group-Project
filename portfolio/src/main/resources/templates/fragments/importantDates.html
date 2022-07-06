@@ -48,14 +48,13 @@
         </div>
       </div>
 
-
+      <div class="break"></div>
 
       <!--      Embedded Milestones-->
       <div class="event__details">
-        <div class="break"></div>
         <div th:each="milestone : ${sprintList.get(importantDate.getFirst()).getMilestonesInside}">
           <div class="event">
-            <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
+            <div class="event_title_child"> <i class="bi bi-trophy"></i> </div>
             <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(milestone).getMilestoneName}"></h2> </div>
             <!-- Edit/Delete Inside Milestone Buttons -->
             <div class="event__button-wrapper flex-row">
@@ -101,7 +100,7 @@
     </div>
     <!--    Independent Milestones-->
     <div class="event__outside" th:if="${importantDate.getSecond() == 'Milestone'}">
-      <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
+      <div class="event_title_child"> <i class="bi bi-trophy"></i> </div>
       <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(importantDate.getFirst()).getMilestoneName}"></h2> </div>
       <!-- Edit/Delete Independent Milestones -->
       <div class="event__button-wrapper flex-row">
