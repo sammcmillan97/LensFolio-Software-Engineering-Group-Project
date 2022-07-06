@@ -50,12 +50,13 @@
 
       <div class="break"></div>
 
+<!--      Embedded Deadlines-->
       <div class="event__details">
         <div th:each="deadline : ${sprintList.get(importantDate.getFirst()).getDeadlinesInside}">
           <div class="event">
             <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
             <div class="event_title_child"> <h2 class="event__name" th:text="${deadlineList.get(deadline).getDeadlineName}"></h2> </div>
-            <!-- Edit/Delete Inside deadline Buttons -->
+            <!-- Edit/Delete Inside Deadline Buttons -->
             <div class="event__button-wrapper flex-row">
 
               <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadlineList.get(deadline).getDeadlineId}, project=${project.getId})}"  th:method="get">
@@ -68,7 +69,7 @@
             </div>
             <!-- Inside deadline Details -->
             <div class="event__details flex-row" >
-              <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(deadline).getColour()}" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineDate()} "></h4>
+              <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(deadline).getColour()}" th:text="${deadlineList.get(deadline).getDateString()} "></h4>
             </div>
           </div>
         </div>
@@ -97,11 +98,11 @@
         </div>
       </div>
     </div>
-
+<!--    Independent Deadlines-->
     <div class="event__outside" th:if="${importantDate.getSecond() == 'Deadline'}">
       <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
       <div class="event_title_child"> <h2 class="event__name" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineName}"></h2> </div>
-      <!-- Edit/Delete Independent Deadline -->
+      <!-- Edit/Delete Independent Deadlines -->
       <div class="event__button-wrapper flex-row">
         <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadlineList.get(importantDate.getFirst()).getDeadlineId}, project=${project.getId})}" th:method="get">
           <button type="submit">Edit</button>
@@ -114,7 +115,7 @@
       <!-- Independent Deadline Details -->
       <div class="event__details">
         <div class="event__details flex-row" >
-          <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(importantDate.getFirst()).getColour()}" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineDate()} "></h4>
+          <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(importantDate.getFirst()).getColour()}" th:text="${deadlineList.get(importantDate.getFirst()).getDateString()} "></h4>
         </div>
       </div>
     </div>

@@ -73,7 +73,7 @@ public class Event implements ImportantDate{
     }
 
     public String getStartDateString() {
-        return Project.dateToString(this.eventStartDate, "dd/MMMM/yyyy hh:mm a");
+        return Project.dateToString(this.eventStartDate, "dd/MMM/yyyy hh:mm a");
     }
 
     public void setEventStartDate(Date eventStartDate) {
@@ -85,7 +85,7 @@ public class Event implements ImportantDate{
     }
 
     public String getEndDateString() {
-        return Project.dateToString(this.eventEndDate, "dd/MMMM/yyyy hh:mm a");
+        return Project.dateToString(this.eventEndDate, "dd/MMM/yyyy hh:mm a");
     }
 
     public void setEventEndDate(Date eventEndDate) {
