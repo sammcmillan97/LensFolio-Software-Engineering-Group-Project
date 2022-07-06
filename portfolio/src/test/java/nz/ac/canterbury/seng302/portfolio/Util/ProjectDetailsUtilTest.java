@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.Util;
 
+import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProjectDetailsUtilTest {
     public static List<Event> eventList;
     public static List<Sprint> sprintList;
-    public static List<Milestone> milestoneList;
+    public static List<Deadline> deadlineList;
 
     @BeforeEach
     void setupSprintList() {
         sprintList = new ArrayList<>();
         eventList = new ArrayList<>();
-        milestoneList = new ArrayList<>();
+        deadlineList = new ArrayList<>();
         sprintList.add(new Sprint(1, "Test Sprint",1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
         sprintList.add(new Sprint(1, "Test Sprint",2, "Description",
@@ -192,6 +192,204 @@ public class ProjectDetailsUtilTest {
     }
 
     @Test
+    void whenDeadlineOccursBeforeAllSprintsTestDeadlineNotEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-13")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        for (Sprint sprint: sprintList) {
+            assertEquals(0, sprint.getDeadlinesInside().size());
+        }
+    }
+
+    @Test
+    void whenDeadlineOccursAfterAllSprintsTestDeadlineNotEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-08-18")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        for (Sprint sprint: sprintList) {
+            assertEquals(0, sprint.getDeadlinesInside().size());
+        }
+    }
+
+    @Test
+    void whenDeadlineOccursDayBeforeSprintStartsTestDeadlineNotEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-14")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        assertEquals(0, sprintList.get(0).getDeadlinesInside().size());
+    }
+
+    @Test
+    void whenDeadlineOccursDayAfterSprintEndsTestDeadlineNotEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-05-17")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        assertEquals(0, sprintList.get(0).getDeadlinesInside().size());
+    }
+
+    @Test
+    void whenDeadlineOccursDaySprintStartsTestDeadlineEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-15")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        List<Integer> deadlineIndexes = sprintList.get(0).getDeadlinesInside();
+        assertEquals(deadlineList.get(0), deadlineList.get(deadlineIndexes.get(0)));
+    }
+
+    @Test
+    void whenDeadlineOccursDaySprintEndsTestDeadlineEmbedded() {
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-05-16")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        List<Integer> eventIndexes = sprintList.get(0).getDeadlinesInside();
+        assertEquals(deadlineList.get(0), deadlineList.get(eventIndexes.get(0)));
+    }
+
+    @Test
+    void whenDeadlineOccursWithinSprintTestEmbedDeadlineAndDeadlineColourSameAsSprint() {
+        ProjectDetailsUtil.colorSprints(sprintList);
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-20")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        assertEquals(sprintList.get(0).getColour(), deadlineList.get(0).getColour());
+    }
+
+    @Test
+    void whenDeadlineNotOccursWithinSprintTestEmbedDeadlineAndDeadlineColourNotExist() {
+        ProjectDetailsUtil.colorSprints(sprintList);
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-03-20")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        assertNull(deadlineList.get(0).getColour());
+    }
+
+    @Test
+    void whenSprintEventDeadlineListsExistTestOrderImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-05-16"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-05-14")));
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(0, "Deadline"));
+        indices.add(Pair.of(0, "Event"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenSprintEventDeadlineListsExistAndEventAndDeadlineDatesAreTheSameTestOrderImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-05-14"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-05-14")));
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(0, "Event"));
+        indices.add(Pair.of(0, "Deadline"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenSprintEventDeadlineListsExistAndEventAndSprintDatesAreTheSameTestOrderImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-05-14")));
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Event"));
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(0, "Deadline"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenSprintEventDeadlineListsExistAndDeadlineAndSprintDatesAreTheSameTestOrderImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-05-15"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-15")));
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Deadline"));
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(0, "Event"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenSprintEventDeadlineListsExistAndEventDeadlineAndSprintDatesAreTheSameTestOrderImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-15")));
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Event"));
+        indices.add(Pair.of(0, "Deadline"));
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenDeadlinesAndEventsEmbeddedInSprintsTestNotIncludedInImportantDates() {
+        eventList.add(new Event(1, "Test Event Uno",
+                Date.valueOf("2022-05-10"), Date.valueOf("2022-05-20")));
+        deadlineList.add(new Deadline(1, "Test Deadline Hand In",
+                Date.valueOf("2022-04-20")));
+        ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+        ProjectDetailsUtil.embedEvents(eventList, sprintList);
+        List<Pair<Integer, String>> indices = new ArrayList<>();
+        indices.add(Pair.of(0, "Sprint"));
+        indices.add(Pair.of(1, "Sprint"));
+        indices.add(Pair.of(2, "Sprint"));
+        indices.add(Pair.of(3, "Sprint"));
+        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList);
+        for (int i = 0; i < importantDates.size(); i++) {
+            assertEquals(indices.get(i), importantDates.get(i));
+        }
+    }
+
+    @Test
+    void whenSprintListExistsTestColourSprints() {
+        for(Sprint sprint: sprintList) {
+            assertNull(sprint.getColour());
+        }
+        ProjectDetailsUtil.colorSprints(sprintList);
+        for(Sprint sprint: sprintList) {
+            assertNotNull(sprint.getColour());
+        }
+    }
+}
+
+    @Test
     void whenMilestoneOccursBeforeAllSprintsTestMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-13")));
@@ -201,14 +399,15 @@ public class ProjectDetailsUtilTest {
         }
     }
 
+
     @Test
+        }
+            assertEquals(0, sprint.getMilestonesInside().size());
+        for (Sprint sprint: sprintList) {
     void whenMilestoneOccursAfterAllSprintsTestMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
-        for (Sprint sprint: sprintList) {
-            assertEquals(0, sprint.getMilestonesInside().size());
-        }
     }
 
     @Test
@@ -235,21 +434,21 @@ public class ProjectDetailsUtilTest {
         List<Integer> milestoneIndexes = sprintList.get(0).getMilestonesInside();
         assertEquals(milestoneList.get(0), milestoneList.get(milestoneIndexes.get(0)));
     }
-
     @Test
+
     void whenMilestoneOccursDaySprintEndsTestMilestoneEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-05-16")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         List<Integer> eventIndexes = sprintList.get(0).getMilestonesInside();
-        assertEquals(milestoneList.get(0), milestoneList.get(eventIndexes.get(0)));
     }
+        assertEquals(milestoneList.get(0), milestoneList.get(eventIndexes.get(0)));
 
-    @Test
     void whenMilestoneOccursWithinSprintTestEmbedMilestoneAndMilestoneColourSameAsSprint() {
+    @Test
         ProjectDetailsUtil.colorSprints(sprintList);
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-20")));
+        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         assertEquals(sprintList.get(0).getColour(), milestoneList.get(0).getColour());
     }
@@ -262,129 +461,3 @@ public class ProjectDetailsUtilTest {
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
         assertNull(milestoneList.get(0).getColour());
     }
-
-    @Test
-    void whenSprintEventMilestoneListsExistTestOrderImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-05-16"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-05-14")));
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(0, "Milestone"));
-        indices.add(Pair.of(0, "Event"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenSprintEventMilestoneListsExistAndEventAndMilestoneDatesAreTheSameTestOrderImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-05-14"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-05-14")));
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(0, "Event"));
-        indices.add(Pair.of(0, "Milestone"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenSprintEventMilestoneListsExistAndEventAndSprintDatesAreTheSameTestOrderImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-05-14")));
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Event"));
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(0, "Milestone"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenSprintEventMilestoneListsExistAndMilestoneAndSprintDatesAreTheSameTestOrderImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-05-15"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-04-15")));
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Milestone"));
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(0, "Event"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenSprintEventMilestoneListsExistAndEventMilestoneAndSprintDatesAreTheSameTestOrderImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-04-15")));
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Event"));
-        indices.add(Pair.of(0, "Milestone"));
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenMielstonesAndEventsEmbeddedInSprintsTestNotIncludedInImportantDates() {
-        eventList.add(new Event(1, "Test Event Uno",
-                Date.valueOf("2022-05-10"), Date.valueOf("2022-05-20")));
-        milestoneList.add(new Milestone(1, "Test Milestone Hand In",
-                Date.valueOf("2022-04-20")));
-        ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
-        ProjectDetailsUtil.embedEvents(eventList, sprintList);
-        List<Pair<Integer, String>> indices = new ArrayList<>();
-        indices.add(Pair.of(0, "Sprint"));
-        indices.add(Pair.of(1, "Sprint"));
-        indices.add(Pair.of(2, "Sprint"));
-        indices.add(Pair.of(3, "Sprint"));
-        List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, milestoneList);
-        for (int i = 0; i < importantDates.size(); i++) {
-            assertEquals(indices.get(i), importantDates.get(i));
-        }
-    }
-
-    @Test
-    void whenSprintListExistsTestColourSprints() {
-        for(Sprint sprint: sprintList) {
-            assertNull(sprint.getColour());
-        }
-        ProjectDetailsUtil.colorSprints(sprintList);
-        for(Sprint sprint: sprintList) {
-            assertNotNull(sprint.getColour());
-        }
-    }
-}

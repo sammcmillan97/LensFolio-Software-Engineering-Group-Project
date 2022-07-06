@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.util;
 
+import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
@@ -11,7 +12,7 @@ public class ProjectDetailsUtil {
 
     /**
      * Takes a list of Event objects and a list of Sprint objects and determines which Events occur within a Sprint. If
-     * and Event occurs within a Sprint the Event's id number is stored within the Sprint.
+     * an Event occurs within a Sprint the Event's id number is stored within the Sprint.
      * @param eventList List of Event objects to embed in a Sprint
      * @param sprintList List of Sprint objects which will have Events embedded within
      */
@@ -45,6 +46,27 @@ public class ProjectDetailsUtil {
     }
 
     /**
+     * Takes a list of Deadline objects and a list of Sprint objects and determines which Deadlines occur within a Sprint. If
+     * a Deadline occurs within a Sprint the Dealines's id number is stored within the Sprint.
+     * @param deadlineList List of Deadline objects to embed in a Sprint
+     * @param sprintList List of Sprint objects which will have Events embedded within
+     */
+    public static void embedDeadlines(List<Deadline> deadlineList, List<Sprint> sprintList) {
+        for (int i = 0; i < deadlineList.size(); i++) {
+            for (Sprint sprint : sprintList) {
+                if ((deadlineList.get(i).getDeadlineDate().after(sprint.getStartDate()) ||
+                        deadlineList.get(i).getDeadlineDate().equals(sprint.getStartDate())) &&
+                        (deadlineList.get(i).getDeadlineDate().before(sprint.getEndDate()) ||
+                                deadlineList.get(i).getDeadlineDate().equals(sprint.getEndDate()))) {
+                    sprint.addDeadlinesInside(i);
+                    deadlineList.get(i).setColour(sprint.getColour());
+                    deadlineList.get(i).setCompleted(true);
+                }
+            }
+        }
+    }
+
+    /**
      * Takes a list of Milestone objects and a list of Sprint objects and determines which Milestones occur within a Sprint. If
      * a Milestone occurs within a Sprint the Milestones's id number is stored within the Sprint.
      * @param milestoneList List of Milestone objects to embed in a Sprint
@@ -72,12 +94,18 @@ public class ProjectDetailsUtil {
      * @param sprintList list of Sprint objects to order
      * @return list of Pair<Integer, String> objects which hold the id of the object and what type it is
      */
+    public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Deadline> deadlineList) {
     public static List<Pair<Integer, String>> getOrderedImportantDates(List<Event> eventList, List<Sprint> sprintList, List<Milestone> milestoneList) {
         List<Pair<Integer, String>> importantDates = new ArrayList<>();
 
         for (int i = 0; i < eventList.size(); i++) {
             if (!eventList.get(i).isCompleted()) {
                 importantDates.add(Pair.of(i, "Event"));
+            }
+        }
+        for (int i = 0; i < deadlineList.size(); i++) {
+            if (!deadlineList.get(i).isCompleted()) {
+                importantDates.add(Pair.of(i, "Deadline"));
             }
         }
         for (int i = 0; i < milestoneList.size(); i++) {
@@ -88,6 +116,7 @@ public class ProjectDetailsUtil {
         for (int i = 0; i < sprintList.size(); i++) {
             importantDates.add(Pair.of(i, "Sprint"));
         }
+        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : deadlineList.get(a.getFirst()).getDeadlineDate())));
         importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : milestoneList.get(a.getFirst()).getMilestoneDate())));
         return importantDates;
     }

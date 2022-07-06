@@ -4,14 +4,14 @@ function checkResponse(data){
         window.location.reload();
     }
     var editNotification = document.getElementById("editNotification");
-    if (jsondata.edits.length == 0) {
+    if (jsondata.edits.length === 0) {
         editNotification.className = "";
     } else {
         editNotification.className = "show";
     }
     var editHTML = "<p>";
     for (const edit in jsondata.edits) {
-        if (edit != 0) {
+        if (edit !== 0) {
             editHTML += "<br><br>"
         }
         editHTML += jsondata.edits[edit]
