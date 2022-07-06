@@ -19,6 +19,9 @@ public class DeadlineService {
     @Autowired
     private ProjectService deadlineProjectService;
 
+    @Autowired
+    private ProjectEditsService projectEditsService;
+
 
     /**
      * Gets a list of all deadlines
@@ -52,7 +55,7 @@ public class DeadlineService {
      * @return the list of deadlines of the project
      */
     public List<Deadline> getByDeadlineParentProjectId(int deadlineProjectId) {
-        return deadlineRepository.findByDeadlineParentProjectId(deadlineProjectId);
+        return deadlineRepository.findByDeadlineParentProjectIdOrderByDeadlineDate(deadlineProjectId);
     }
 
     /**
@@ -64,6 +67,7 @@ public class DeadlineService {
         if (deadlineRepository.findById(deadlineId) == null) {
             throw new UnsupportedOperationException("Deadline does not exist");
         }
+        projectEditsService.refreshProject(deadlineRepository.findById(deadlineId).getDeadlineParentProjectId());
         deadlineRepository.deleteById(deadlineId);
     }
 
@@ -71,6 +75,7 @@ public class DeadlineService {
      * Saves the provided deadline into the repository
      */
     public Deadline saveDeadline(Deadline deadline) {
+        projectEditsService.refreshProject(deadline.getDeadlineParentProjectId());
         return deadlineRepository.save(deadline);
     }
 

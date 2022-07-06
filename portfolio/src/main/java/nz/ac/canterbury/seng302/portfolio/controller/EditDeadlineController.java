@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -73,6 +70,7 @@ public class EditDeadlineController {
             deadline = new Deadline(projectId, "Deadline name", project.getEndDate());
         }
         model.addAttribute("deadline", deadline);
+        model.addAttribute("deadlineName", deadline.getDeadlineName());
         model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), timeFormat));
         model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), timeFormat));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), timeFormat));
@@ -130,4 +128,19 @@ public class EditDeadlineController {
         }
         return "redirect:/projectDetails-" + projectIdString;
     }
+
+
+    @DeleteMapping("/editDeadline-{deadlineId}-{parentProjectId}")
+    public String deleteProjectById(@AuthenticationPrincipal AuthState principal,
+                                    @PathVariable("parentProjectId") String parentProjectId,
+                                    @PathVariable("deadlineId") String deadlineId) {
+        if (!userAccountClientService.isTeacher(principal)) {
+            return redirectToProjects;
+        }
+
+        deadlineService.deleteDeadlineById(Integer.parseInt(deadlineId));
+        return "redirect:/projectDetails-" + parentProjectId;
+    }
+
+
 }

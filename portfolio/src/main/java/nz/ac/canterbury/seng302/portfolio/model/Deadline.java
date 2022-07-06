@@ -87,4 +87,8 @@ public class Deadline {
     public void setColour(String colour) {
         this.colour = colour;
     }
+
+    public String getDateString() {
+        return Project.dateToString(this.deadlineDate, "dd/MMM/yyyy hh:mm a");
+    }
 }
