@@ -11,6 +11,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.util.Date;
 /**
  * Controller for adding/editing deadlines
  */
+@Controller
 public class EditMilestoneController {
 
     @Autowired
@@ -37,11 +39,18 @@ public class EditMilestoneController {
     private final String timeFormat = "yyyy-MM-dd";
     private final String redirectToProjects = "redirect:/projects";
 
+    /**
+     * The get mapping to return the page with the form to add/edit milestones
+     * @param principal Authentication principle
+     * @param parentProjectId The parent project ID
+     * @param milestoneIdString milestone current ID or -1 for a new deadline
+     * @param model The model
+     */
     @GetMapping("/editMilestone-{milestoneId}-{parentProjectId}")
     public String milestoneForm(@AuthenticationPrincipal AuthState principal,
-                                @PathVariable("parentProjectId") String projectIdString,
+                                @PathVariable("parentProjectId") String parentProjectId,
                                 @PathVariable("milestoneId") String milestoneIdString,
-                                Model model) throws Exception {
+                                Model model) {
 
         if (!userAccountClientService.isTeacher(principal)) {
             return redirectToProjects;
@@ -59,17 +68,29 @@ public class EditMilestoneController {
         int milestoneId;
 
         try {
-            projectId = Integer.parseInt(projectIdString);
+            projectId = Integer.parseInt(parentProjectId);
             milestoneId = Integer.parseInt(milestoneIdString);
         } catch (NumberFormatException e) {
             return redirectToProjects;
         }
         Project project = projectService.getProjectById(projectId);
+        model.addAttribute("projectId", projectId);
+
+        //Create the default date for a new milestone. current date it falls within project start and finish otherwise project start date
+        Date milestoneDate;
+        Date currentDate = new Date();
+        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+            milestoneDate = currentDate;
+        } else {
+            milestoneDate = project.getStartDate();
+        }
+
+        //Create new or get existing milestone
         Milestone milestone;
         if (milestoneId != -1) {
             milestone = milestoneService.getMilestoneById(milestoneId);
         } else {
-            milestone = new Milestone(projectId, "Milestone name", project.getEndDate());
+            milestone = new Milestone(projectId, "Milestone name", milestoneDate);
         }
 
         model.addAttribute("milestone", milestone);
@@ -79,6 +100,15 @@ public class EditMilestoneController {
         return "editMilestone";
     }
 
+    /**
+     * The post mapping for submitting the add/edit milestone form
+     * @param principle Authentication principle
+     * @param projectIdString The project ID string representing the parent project ID
+     * @param milestoneIdString The Milestone ID string representing the deadline, -1 for a new deadline
+     * @param milestoneName The new/edited/existing milestone name
+     * @param milestoneDateString The new/edited/existing milestone date
+     * @param model The model
+     */
     @PostMapping("/editMilestone-{milestoneId}-{parentProjectId}")
     public String submitForm(
             @AuthenticationPrincipal AuthState principle,
