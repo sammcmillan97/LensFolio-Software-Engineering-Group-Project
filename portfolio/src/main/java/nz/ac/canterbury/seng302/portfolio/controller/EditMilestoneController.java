@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,7 +101,7 @@ public class EditMilestoneController {
      * The post mapping for submitting the add/edit milestone form
      * @param principle Authentication principle
      * @param projectIdString The project ID string representing the parent project ID
-     * @param milestoneIdString The Milestone ID string representing the deadline, -1 for a new deadline
+     * @param milestoneIdString The Milestone ID string representing the milestone, -1 for a new deadline
      * @param milestoneName The new/edited/existing milestone name
      * @param milestoneDateString The new/edited/existing milestone date
      * @param model The model
@@ -148,6 +145,25 @@ public class EditMilestoneController {
             }
         }
         return "redirect:/projectDetails-" + projectIdString;
+    }
+
+    /**
+     * Delete mapping for deleting milestones
+     * @param principal Authentication principle
+     * @param parentProjectId The project ID string representing the parent project ID
+     * @param milestoneId The Milestone ID string representing the milestone
+     * @return Project details page
+     */
+    @DeleteMapping("/editMilestone-{milestoneId}-{parentProjectId}")
+    public String deleteMilestone(@AuthenticationPrincipal AuthState principal,
+                                    @PathVariable("parentProjectId") String parentProjectId,
+                                    @PathVariable("milestoneId") String milestoneId) {
+        if (!userAccountClientService.isTeacher(principal)) {
+            return redirectToProjects;
+        }
+
+        milestoneService.deleteMilestoneById(Integer.parseInt(milestoneId));
+        return "redirect:/projectDetails-" + parentProjectId;
     }
 
 }
