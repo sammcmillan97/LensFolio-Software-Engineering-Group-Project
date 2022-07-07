@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * Controller for the project planner page
@@ -65,7 +62,6 @@ public class PlannerController {
 
         }
 
-
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
                 .findFirst()
@@ -75,10 +71,12 @@ public class PlannerController {
 
         User user = userService.getUserAccountById(userId);
 
+        Map<String, Integer> eventMap = PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId), project);
+
+        model.addAttribute("events", eventMap);
         model.addAttribute("user", user);
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
-
 
         if (sprintUpdated) {
             model.addAttribute("recentUpdate", sprintDate);

@@ -38,11 +38,11 @@
         sprints.push(sprint);
     </script>
 
-    <script type="text/javascript" th:inline="javascript">
-        tempEvent = {id: "10-10-2022",
-            title: "1",
+    <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
+        tempEvent = {id: [[${event.key}]],
+            title: [[${event.value}]],
             classNames: "event",
-            start: '2022-10-10',
+            start: [[${event.key}]],
             backgroundColor: "white"
         }
         events.push(tempEvent);
