@@ -7,7 +7,6 @@ import java.util.List;
 
 @Repository
 public interface MilestoneRepository extends CrudRepository<Milestone, Integer> {
-    List<Milestone> findByMilestoneName(String milestoneName);
     Milestone findById(int id);
     List<Milestone> findByMilestoneParentProjectIdOrderByMilestoneDate(int milestoneParentProjectId);
 }

@@ -72,4 +72,8 @@ public class Milestone {
     public void setColour(String colour) {
         this.colour = colour;
     }
+
+    public String getDateString() {
+        return Project.dateToString(this.milestoneDate, "dd/MMM/yyyy");
+    }
 }
