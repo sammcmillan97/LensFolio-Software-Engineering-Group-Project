@@ -96,15 +96,6 @@ public class PlannerController {
     public String planner(@AuthenticationPrincipal AuthState principal,
                           Model model) {
 
-        Project testProject  = new Project("Project Name", "Test Project", java.sql.Date.valueOf("2022-05-01"), java.sql.Date.valueOf("2022-06-30"));
-        List<Event> eventList = new ArrayList<>();
-        Event event1 = new Event(testProject.getId(), "Test Event", java.sql.Date.valueOf("2022-06-03"), java.sql.Date.valueOf("2022-06-06"));
-        Event event2 = new Event(testProject.getId(), "Test Event", java.sql.Date.valueOf("2022-06-03"), java.sql.Date.valueOf("2022-06-04"));
-        eventList.add(event1);
-        eventList.add(event2);
-        PlannerUtil.getEventsForCalender(eventList, testProject);
-
-
         List<Project> projects = projectService.getAllProjects();
         Project project = null;
         if (!projects.isEmpty()) {
