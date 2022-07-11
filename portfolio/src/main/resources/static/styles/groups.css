@@ -104,8 +104,12 @@ html {
     cursor: pointer;
 }
 
-.table-active {
+.unselected {
     --bs-table-accent-bg: var(--color-complement)
+}
+
+.selected {
+    opacity: 0.8 !important;
 }
 
 /*.table {*/
