@@ -18,6 +18,7 @@ public class Sprint implements ImportantDate {
     private Date sprintEndDate;
     @Transient
     private List<Integer> eventsInside = new ArrayList<>();
+    @Transient List<Integer> milestonesInside = new ArrayList<>();
     @Transient
     private List<Integer> deadlinesInside = new ArrayList<>();
     @Transient
@@ -138,6 +139,14 @@ public class Sprint implements ImportantDate {
 
     public void addEventsInside(int eventIndex) {
         eventsInside.add(eventIndex);
+    }
+
+    public List<Integer> getMilestonesInside() {
+        return milestonesInside;
+    }
+
+    public void addMilestonesInside(Integer milestoneIndex) {
+        milestonesInside.add(milestoneIndex);
     }
 
     public String getColour() {

@@ -58,6 +58,9 @@
           <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3">
             <span>Deadlines</span>
           </button>
+          <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4">
+            <span>Milestones</span>
+          </button>
         </div>
         <div id="new-buttons" class="flex-row">
           <!-- New Sprint Button -->
@@ -66,6 +69,8 @@
           <a class="new-event-button" th:href="@{editEvent-{event}-{project}(event=-1, project=${project.getId})}">Add Event</a>
           <!-- New Deadline Button -->
           <a class="new-event-button" th:href="@{editDeadline-{deadline}-{project}(deadline=-1, project=${project.getId})}">Add Deadline</a>
+            <!-- New Milestone Button -->
+            <a class="new-event-button" th:href="@{editMilestone-{milestone}-{project}(milestone=-1, project=${project.getId})}">Add Milestone</a>
         </div>
       <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
         <div class="carousel-inner">
@@ -80,6 +85,9 @@
           </div>
           <div class="carousel-item">
             <div th:replace="fragments/deadlines"></div>
+          </div>
+          <div class="carousel-item">
+            <div th:replace="fragments/milestones"></div>
           </div>
         </div>
       </div>

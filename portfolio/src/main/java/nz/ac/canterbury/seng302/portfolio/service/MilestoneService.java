@@ -72,26 +72,6 @@ public class MilestoneService {
     }
 
     /**
-     * Updates the milestones's date to a new date
-     *
-     * @param milestoneId      the id of the milestone to be updated
-     * @param newMilestoneDate the new date the milestone should be set to
-     * @throws Exception if the new milestone date falls outside the project dates
-     */
-    public void updateMilestoneDate(int milestoneId, Date newMilestoneDate) throws Exception {
-        Milestone newMilestone = getMilestoneById(milestoneId);
-        Date projectStartDate = projectService.getProjectById(newMilestone.getMilestoneParentProjectId()).getStartDate();
-        Date projectEndDate = projectService.getProjectById(newMilestone.getMilestoneParentProjectId()).getEndDate();
-
-        if (newMilestoneDate.compareTo(projectEndDate) > 0 || newMilestoneDate.compareTo(projectStartDate) < 0) {
-            throw new UnsupportedOperationException("Milestone date must be within the project dates");
-        } else {
-            newMilestone.setMilestoneDate(newMilestoneDate);
-            saveMilestone(newMilestone);
-        }
-    }
-
-    /**
      * Updates the milestone's date and name attributes
      * @param parentProjectId The parent project of the milestone
      * @param milestoneId The milestone ID
