@@ -23,6 +23,8 @@ document.addEventListener("keydown", function (event) {
         shiftPressed = true;
     } else if (event.key === "Escape") {
         clearTableSelection()
+    } else if (event.key === "a" && ctrlPressed) {
+        selectAllInTable()
     }
 }, false)
 
@@ -57,5 +59,11 @@ function selectRowsBetween(indexes) {
 function clearTableSelection() {
     for (let i = 0; i < currentTable.length; i++) {
         currentTable[i].className = 'unselected';
+    }
+}
+
+function selectAllInTable() {
+    for (let i = 0; i < currentTable.length; i++) {
+        currentTable[i].className = 'selected';
     }
 }
