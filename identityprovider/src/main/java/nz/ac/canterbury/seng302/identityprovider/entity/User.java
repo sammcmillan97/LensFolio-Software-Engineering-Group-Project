@@ -68,12 +68,9 @@ public class User {
 
     private String profileImagePath;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name="GROUP_MEMBERSHIP",
-            joinColumns = @JoinColumn(name = "USER_ID" ),
-            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
+    @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Group> groups = new HashSet<>();
+
 
     /**
      * Create a user for use in backend database.
@@ -303,4 +300,37 @@ public class User {
 
 
 
+
+    /**
+     * Checks if all the variables of two user objects are the same
+     * @param userObject The user to check against
+     * @return true if the users are identical
+     */
+    @Override
+    public boolean equals(Object userObject) {
+        if (userObject == null) return false;
+        if (userObject == this) return true;
+        if (!(userObject instanceof User user)) return false;
+        return this.firstName.equals(user.firstName)
+                && this.middleName.equals(user.middleName)
+                && this.lastName.equals(user.lastName)
+                && this.bio.equals(user.bio)
+                && this.email.equals(user.email)
+                && this.username.equals(user.username)
+                && this.nickname.equals(user.nickname)
+                && this.personalPronouns.equals(user.personalPronouns)
+                && this.roles.equals(user.roles)
+                && this.timeCreated.equals(user.timeCreated)
+                && this.userId == user.userId;
+    }
+
+    /**
+     * Creates a hash for the User with the given the provided variables, so they can be removed and added to a set
+     * @return The hash value
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.firstName, this.middleName, this.lastName, this.bio, this.email, this.email, this.username,
+                this.nickname, this.personalPronouns, this.roles, this.timeCreated, this.userId);
+    }
 }

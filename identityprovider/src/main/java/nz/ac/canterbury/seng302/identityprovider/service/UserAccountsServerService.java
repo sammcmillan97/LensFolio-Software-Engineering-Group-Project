@@ -460,6 +460,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
+     * Method to get UserById
+     * So outside services can access users the user service
+     * @param userId The userId
+     * @return The User being returned
+     */
+    @VisibleForTesting
+    public User getUserById(int userId) {
+        return repository.findByUserId(userId);
+    }
+
+    /**
      * If the user is authenticated as any valid user, attempt to get the information of the requested user
      * @param request The request to get the user's information
      * @param responseObserver The observer to send the response over
