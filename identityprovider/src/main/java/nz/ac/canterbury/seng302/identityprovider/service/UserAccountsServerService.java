@@ -280,7 +280,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                             responseObserver.onNext(response);
                             responseObserver.onCompleted();
                         } catch (Exception e) {
-                            System.out.println("Exception called writing file:-" + e);
                             responseObserver.onError(e);
                         }
                     } else {
@@ -324,15 +323,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return A DeleteUserProfilePhotoResponse with success true if the photo was deleted, or did not exist in the first place.
      */
     DeleteUserProfilePhotoResponse deleteUserProfilePhotoHandler(DeleteUserProfilePhotoRequest request) {
-        System.out.println("deleteUserProfilePhotoHandler called");
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
             try {
-                System.out.println("try catch reached");
                 File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
                 boolean success = oldPhoto.delete();
-                System.out.println("file deleted");
                 if (success) {
                     user.setProfileImagePath(null);
                     repository.save(user);
@@ -341,7 +337,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
                 }
             } catch (Exception e) {
-                System.out.println("Exception thrown deleting file - " + e);
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
@@ -798,7 +793,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
-            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -1008,17 +1002,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     public byte[] getProfilePicture(String filename){
         try {
-            System.out.println("Get PP in service called");
             File currentDirFile = new File(".");
             String helper = currentDirFile.getAbsolutePath();
             helper = helper.substring(0, helper.length() - 1);
-            System.out.println(helper);
             Path photoRelPath = Path.of(helper + "profile-images/" + env + filename);
-            System.out.println(helper + "profile-images/" + env + filename);
             InputStream inputStream = new FileInputStream(photoRelPath.toFile());
             return StreamUtils.copyToByteArray(inputStream);
         } catch (Exception e) {
-            System.out.println("Exception:" + e);
             return null;
         }
 

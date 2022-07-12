@@ -26,7 +26,6 @@ public class ProfileImageController {
     public ResponseEntity<byte[]> ProfilePicture(
             @PathVariable("filename") String filename
     ) {
-        System.out.println("Get PP in controller called");
         try {
             byte[] bytes = userAccountsServerService.getProfilePicture(filename);
             return ResponseEntity
@@ -34,7 +33,6 @@ public class ProfileImageController {
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(bytes);
         } catch (Exception e) {
-            System.out.println("Exception:-" + e);
             return ResponseEntity
                     .badRequest()
                     .body(null);
