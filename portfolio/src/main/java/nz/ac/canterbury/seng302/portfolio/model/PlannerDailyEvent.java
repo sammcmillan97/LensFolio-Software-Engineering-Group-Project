@@ -6,14 +6,14 @@ public class PlannerDailyEvent {
     public String date;
     public String description;
     public int numberOfEvents;
-    public String classNames;
+    public String type;
 
     public PlannerDailyEvent(String id, String date, String description, int numberOfEvents, String classNames) {
         this.Id = id;
         this.date = date;
         this.description = description + "\n";
         this.numberOfEvents = numberOfEvents;
-        this.classNames = classNames;
+        this.type = classNames;
     }
 
     public String getId() {
@@ -22,14 +22,6 @@ public class PlannerDailyEvent {
 
     public String getDate() {
         return date;
-    }
-
-    public int getNumberOfEvents() {
-        return numberOfEvents;
-    }
-
-    public String getClassNames() {
-        return classNames;
     }
 
     public void addNumberOfEvents() {

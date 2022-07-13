@@ -38,6 +38,9 @@ public class PlannerController {
     private DeadlineService deadlineService;
 
     @Autowired
+    private MilestoneService milestoneService;
+
+    @Autowired
     private UserAccountClientService userService;
 
     private boolean sprintUpdated = false;
@@ -76,7 +79,9 @@ public class PlannerController {
 
         Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId));
         Map<String, PlannerDailyEvent> deadlineMap = PlannerUtil.getDeadlinesForCalender(deadlineService.getByDeadlineParentProjectId(projectId));
+        Map<String, PlannerDailyEvent> milestoneMap = PlannerUtil.getMilestonesForCalender(milestoneService.getByMilestoneParentProjectId(projectId));
 
+        model.addAttribute("milestones", milestoneMap);
         model.addAttribute("deadlines", deadlineMap);
         model.addAttribute("events", eventMap);
         model.addAttribute("user", user);

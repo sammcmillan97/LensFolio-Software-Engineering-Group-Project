@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.util;
 
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
+import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
 
 import java.time.Instant;
@@ -42,7 +43,7 @@ public class PlannerUtil {
                     eventMap.replace(eventDateString, tempDailyEvent);
                 } else {
                     PlannerDailyEvent tempDailyEvent = new PlannerDailyEvent("e" + eventDateString, eventDateString,
-                            event.getEventName(), 1, "event");
+                            event.getEventName(), 1, "daily-event");
                     eventMap.put(eventDateString, tempDailyEvent);
                 }
             }
@@ -51,7 +52,7 @@ public class PlannerUtil {
     }
 
     /**
-     * Creates a map representing the days when deadlines occur and the amount of events occurring on that day.
+     * Creates a map representing the days when deadlines occur and the amount of deadlines occurring on that day.
      * Used in the full calendar
      * Key is a string of the date in the form: "2022-01-01"
      * Value is a plannerDailyEvent representing data needed to be displayed in the planner
@@ -71,10 +72,38 @@ public class PlannerUtil {
                 deadlineMap.replace(deadlineDateString, tempDailyEvent);
             } else {
                 PlannerDailyEvent tempDailyEvent = new PlannerDailyEvent("d" + deadlineDateString, deadlineDateString,
-                        deadline.getDeadlineName(),1,  "deadline");
+                        deadline.getDeadlineName(),1,  "daily-deadline");
                 deadlineMap.put(deadlineDateString, tempDailyEvent);
             }
         }
         return deadlineMap;
+    }
+
+    /**
+     * Creates a map representing the days when milestones occur and the amount of milestones occurring on that day.
+     * Used in the full calendar
+     * Key is a string of the date in the form: "2022-01-01"
+     * Value is a plannerDailyEvent representing data needed to be displayed in the planner
+     * @param mileStoneList The list of milestones from any given project
+     * @return The map of String(date strings) Value(PlannerDailyEvent)
+     */
+    public static Map<String, PlannerDailyEvent> getMilestonesForCalender(List<Milestone> mileStoneList) {
+
+        HashMap<String, PlannerDailyEvent> milestoneMap = new HashMap<>();
+
+        for (Milestone milestone: mileStoneList) {
+            String milestoneDateString = milestone.getMilestoneDate().toString();
+            if (milestoneMap.containsKey(milestoneDateString)) {
+                PlannerDailyEvent tempDailyEvent = milestoneMap.get(milestoneDateString);
+                tempDailyEvent.addNumberOfEvents();
+                tempDailyEvent.addDescription(milestone.getMilestoneName());
+                milestoneMap.replace(milestoneDateString, tempDailyEvent);
+            } else {
+                PlannerDailyEvent tempDailyEvent = new PlannerDailyEvent("m" + milestoneDateString, milestoneDateString,
+                        milestone.getMilestoneName(),1,  "daily-milestone");
+                milestoneMap.put(milestoneDateString, tempDailyEvent);
+            }
+        }
+        return milestoneMap;
     }
 }

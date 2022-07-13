@@ -38,26 +38,35 @@
         sprints.push(sprint);
     </script>
 
-    <!-- Save event information, so it can be accessed by the calendar for event icons -->
+    <!-- Save deadline information, so it can be accessed by the calendar for deadline icons -->
     <script type="text/javascript" th:inline="javascript" th:each="deadline, iterInfo: ${deadlines}">
-        tempEvent = {id: [[${deadline.value.Id}]],
+        tempEvent = {
             title: [[${deadline.value.numberOfEvents}]],
-            classNames: [[${deadline.value.classNames}]],
+            eventType: [[${deadline.value.type}]],
             start: [[${deadline.value.date}]],
             description: [[${deadline.value.description}]],
-            backgroundColor: "white"
         }
         events.push(tempEvent);
     </script>
 
-    <!-- Save deadline information, so it can be accessed by the calendar for deadline icons -->
+    <!-- Save event information, so it can be accessed by the calendar for event icons -->
     <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
-        tempEvent = {id: [[${event.value.Id}]],
+        tempEvent = {
             title: [[${event.value.numberOfEvents}]],
-            classNames: [[${event.value.classNames}]],
+            eventType: [[${event.value.type}]],
             start: [[${event.value.date}]],
             description: [[${event.value.description}]],
-            backgroundColor: "white"
+        }
+        events.push(tempEvent);
+    </script>
+
+    <!-- Save milestone information, so it can be accessed by the calendar for milestone icons -->
+    <script type="text/javascript" th:inline="javascript" th:each="milestone, iterInfo: ${milestones}">
+        tempEvent = {
+            title: [[${milestone.value.numberOfEvents}]],
+            eventType: [[${milestone.value.type}]],
+            start: [[${milestone.value.date}]],
+            description: [[${milestone.value.description}]],
         }
         events.push(tempEvent);
     </script>
