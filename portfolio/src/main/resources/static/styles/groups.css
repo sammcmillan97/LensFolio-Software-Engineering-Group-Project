@@ -1,0 +1,118 @@
+:root {
+    /* CSS variables */
+    --color-primary: #FBAA60;
+    --color-secondary: #FADFC6FF;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/* Hide scrollbar */
+html::-webkit-scrollbar {
+    /* Chrome, Safari, Opera */
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
+
+/******************** Project Cards ********************/
+
+.group, #new-group-button, #clear-all-tables-button {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.group, #new-group-button, .group__button-wrapper button, #clear-all-tables-button {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+}
+
+.group__details-wrapper {
+    position: relative;
+    padding: 0 2rem 0 2rem;
+}
+
+.group__name {
+    margin: 0 15rem 0 0;
+    padding: 0;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.group__name:hover {
+    color: var(--color-accent);
+}
+
+.group__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    visibility: visible;
+}
+
+.group__button-wrapper {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+}
+.group__long-name {
+    word-wrap: break-word;
+}
+
+.group__button-wrapper button {
+    /* Position & Size */
+    margin-right: 1rem;
+    padding: 0;
+    width: 4rem;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+#new-group-button, #clear-all-tables-button {
+    /* Position & Size */
+    padding: 0;
+    height: 3rem;
+    line-height: 3rem;
+
+    /* Text */
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
+}
+
+#clear-all-tables-button {
+    padding: 0 1rem 0 1rem;
+    width: fit-content;
+}
+
+#new-group-button:hover, #clear-all-tables-button:hover, .group__button-wrapper button:hover{
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}
+
+.unselected {
+    --bs-table-accent-bg: var(--color-complement)
+}
+
+.selected {
+    opacity: 0.8 !important;
+}

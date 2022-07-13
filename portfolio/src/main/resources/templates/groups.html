@@ -6,7 +6,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
     <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+    <script th:src="@{scripts/groups.js}"></script>
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/groups.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 <body>
@@ -16,15 +18,43 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 <div id="page-content" class="constrict">
     <h1>Groups Page</h1>
-    <p th:text="${groups}"></p>
-    <div>
-        <div class="group" th:each="group : ${groups}">
-            <div class="collapse" th:id="${group.groupId}">
-                <div class="card card-body" th:text="${group}">
+    <div class="flex-column">
+        <!-- Clear tables button -->
+        <a id="clear-all-tables-button" onclick="clearAllTableSelections()">Clear all table selections</a>
 
+        <div class="group" th:each="group : *{groups}">
+            <div class="group__details-wrapper">
+                <h2 class="group__name" th:text="${group.getShortName} + ' - ' + ${group.getLongName}" type="button" data-bs-toggle="collapse" th:data-bs-target="'#group_' + ${group.getGroupId}" aria-expanded="false" th:aria-controls="group_ + ${group.getGroupId}"></h2>
+                <div class="group__details collapse" th:id="group_ + ${group.getGroupId}">
+                    <h4>Members</h4>
+                    <div class="group__members-wrapper">
+                        <div class="group__member" >
+                            <table class="table table-hover table-active table-sm table__color" th:id="'group_' + ${group.getGroupId} + '_members'">
+                                <thead>
+                                <tr class="unselected">
+                                    <th scope="col">User Id</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="member : ${group.getMembers}" onclick="rowClick(this)" class="unselected">
+                                    <th scope="row" th:text="${member.getId}"></th>
+                                    <td th:text="${member.getFirstName}"></td>
+                                    <td th:text="${member.getLastName}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
         </div>
+
+        <!-- New Group Button -->
+        <a id="new-group-button" th:if="${userIsTeacher}" th:href="@{editGroup-{id}(id=-1)}">New Group</a>
     </div>
 </div>
 

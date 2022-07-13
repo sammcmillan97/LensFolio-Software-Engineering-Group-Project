@@ -36,6 +36,7 @@ public class GroupsController {
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
         GroupListResponse groups = groupsClientService.getAllGroups();
         model.addAttribute("groups", groups.getGroups());
+        System.out.println(groups.getGroups().get(1).getMembers());
         return "groups";
     }
 }
