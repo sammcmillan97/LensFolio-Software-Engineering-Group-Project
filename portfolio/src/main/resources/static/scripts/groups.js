@@ -79,7 +79,7 @@ function selectRowsBetween(indexes) {
 }
 
 /**
- * Unselects all items in the current table as unselected
+ * Unselects all items in the current table
  */
 function clearTableSelection() {
     for (let i = 0; i < currentTable.length; i++) {
@@ -93,5 +93,26 @@ function clearTableSelection() {
 function selectAllInTable() {
     for (let i = 0; i < currentTable.length; i++) {
         currentTable[i].className = 'selected';
+    }
+}
+
+/**
+ * Unselects all items in all tables
+ */
+function clearAllTableSelections() {
+    if (currentTable) {
+        // Fetch all tables by getting all elements with the same class name as the current table
+        const allTables = document.getElementsByClassName(currentTable[0].parentNode.parentNode.className)
+
+        let tableRows;
+        // Iterate through each table, fetch the table elements, then mark them all as unselected
+        for (const table of allTables) {
+            tableRows = table.getElementsByTagName("tr");
+
+            // Mark each item in the table as unselected
+            for (let i = 1; i < tableRows.length; i++) { // starts at 1 to skip header row
+                tableRows[i].className = 'unselected';
+            }
+        }
     }
 }
