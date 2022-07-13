@@ -26,6 +26,8 @@ public class ProfilePictureController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    private static final String NAME_ID_CLAIM_TYPE = "nameid";
+
     /**
      * Get mapping to open addProfilePicture page
      * @param principal Authentication principal storing current user information
@@ -38,7 +40,7 @@ public class ProfilePictureController {
             Model model
     ) {
         Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
+                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
@@ -71,7 +73,7 @@ public class ProfilePictureController {
 
         //get userId using the Authentication Principle
         int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
+                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));
@@ -112,7 +114,7 @@ public class ProfilePictureController {
 
         //get userId using the Authentication Principle
         Integer id = Integer.valueOf(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
+                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
                 .findFirst()
                 .map(ClaimDTO::getValue)
                 .orElse("-100"));

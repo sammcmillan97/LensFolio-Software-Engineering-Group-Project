@@ -13,12 +13,6 @@ tag-checker:
   only:
     - tags
 
-# junit-portfolio:
-#   stage: test
-#   script:
-#     - cd portfolio
-#     - ./gradlew test
-
 junit-identityprovider:
   stage: test
   script:
@@ -30,7 +24,6 @@ junit-portfolio:
   script:
     - cd portfolio
     - ./gradlew test
-
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -147,3 +140,17 @@ deploy-production-portfolio:
   only:
     - tags
     - master
+
+sonarqube-report:
+  stage: sonarqube
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - cd identityprovider
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
+    - ./gradlew sonarqube
+    - cd ../portfolio
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
+    - ./gradlew sonarqube
