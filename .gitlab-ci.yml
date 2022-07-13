@@ -78,7 +78,7 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
-    - - UVMb-fix-profile-photos
+    - UVMb-fix-profile-photos
 
 deploy-staging-portfolio:
   stage: deploy
