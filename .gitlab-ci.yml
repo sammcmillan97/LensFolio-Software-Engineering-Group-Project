@@ -68,7 +68,7 @@ deploy-staging-identityprovider:
     - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
     - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
     - touch /home/gitlab-runner/staging-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD" > /home/gitlab-runner/staging-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD \nIMAGE_FOLDER=$STAGING_IMAGE_FOLDER" > /home/gitlab-runner/staging-identityprovider/.env
     - sudo systemctl restart staging-identityprovider
   artifacts:
     paths:
@@ -78,6 +78,7 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
+    - - UVMb-fix-profile-photos
 
 deploy-staging-portfolio:
   stage: deploy
@@ -100,6 +101,7 @@ deploy-staging-portfolio:
     url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
+    - UVMb-fix-profile-photos
 
 deploy-production-identityprovider:
   stage: deploy
@@ -113,7 +115,7 @@ deploy-production-identityprovider:
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
     - touch /home/gitlab-runner/production-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD" > /home/gitlab-runner/production-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER" > /home/gitlab-runner/production-identityprovider/.env
     - sudo systemctl restart production-identityprovider
   artifacts:
     paths:
