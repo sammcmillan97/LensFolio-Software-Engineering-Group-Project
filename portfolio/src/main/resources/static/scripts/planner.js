@@ -106,6 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResize: function (eventDropInfo) {
             resizeSprint( eventDropInfo );
         },
+
+        //Changes the html of events, deadlines and milestones so they can be represented as icons on the planner
         eventDidMount : function(info) {
             if (info.event.classNames.toString() === "deadline") {
                 info.el.innerHTML = `<col><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="bi bi-alarm" viewBox="0 0 16 16">

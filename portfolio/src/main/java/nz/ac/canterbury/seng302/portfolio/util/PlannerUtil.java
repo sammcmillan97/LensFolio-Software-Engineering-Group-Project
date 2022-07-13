@@ -21,9 +21,9 @@ public class PlannerUtil {
      * Creates a map of representing the days when events occur and the amount of events occurring on that day.
      * Used in the full calendar
      * Key is a string of the date in the form: "2022-01-01"
-     * Value is a int representing how many events occur on that day
+     * Value is a plannerDailyEvent representing data needed to be displayed in the planner
      * @param eventList The list of events from any given project
-     * @return The map of key (day strings) value (amount of events)
+     * @return The map of String(date strings) Value(PlannerDailyEvent)
      */
     public static Map<String, PlannerDailyEvent> getEventsForCalender(List<Event> eventList) {
 
@@ -50,6 +50,14 @@ public class PlannerUtil {
         return eventMap;
     }
 
+    /**
+     * Creates a map representing the days when deadlines occur and the amount of events occurring on that day.
+     * Used in the full calendar
+     * Key is a string of the date in the form: "2022-01-01"
+     * Value is a plannerDailyEvent representing data needed to be displayed in the planner
+     * @param deadlineList The list of deadlines from any given project
+     * @return The map of String(date strings) Value(PlannerDailyEvent)
+     */
     public static Map<String, PlannerDailyEvent> getDeadlinesForCalender(List<Deadline> deadlineList) {
 
         HashMap<String, PlannerDailyEvent> deadlineMap = new HashMap<>();

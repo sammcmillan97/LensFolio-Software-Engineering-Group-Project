@@ -38,6 +38,7 @@
         sprints.push(sprint);
     </script>
 
+    <!-- Save event information, so it can be accessed by the calendar for event icons -->
     <script type="text/javascript" th:inline="javascript" th:each="deadline, iterInfo: ${deadlines}">
         tempEvent = {id: [[${deadline.value.Id}]],
             title: [[${deadline.value.numberOfEvents}]],
@@ -49,6 +50,7 @@
         events.push(tempEvent);
     </script>
 
+    <!-- Save deadline information, so it can be accessed by the calendar for deadline icons -->
     <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
         tempEvent = {id: [[${event.value.Id}]],
             title: [[${event.value.numberOfEvents}]],
