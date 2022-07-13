@@ -124,7 +124,6 @@ deploy-production-identityprovider:
   only:
     - tags
     - master
-    - UVMb-fix-profile-photos
 
 deploy-production-portfolio:
   stage: deploy
@@ -148,4 +147,3 @@ deploy-production-portfolio:
   only:
     - tags
     - master
-    - UVMb-fix-profile-photos
