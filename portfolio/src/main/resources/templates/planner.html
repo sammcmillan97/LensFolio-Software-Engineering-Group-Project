@@ -38,11 +38,23 @@
         sprints.push(sprint);
     </script>
 
+    <script type="text/javascript" th:inline="javascript" th:each="deadline, iterInfo: ${deadlines}">
+        tempEvent = {id: [[${deadline.value.Id}]],
+            title: [[${deadline.value.numberOfEvents}]],
+            classNames: [[${deadline.value.classNames}]],
+            start: [[${deadline.value.date}]],
+            description: [[${deadline.value.description}]],
+            backgroundColor: "white"
+        }
+        events.push(tempEvent);
+    </script>
+
     <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
-        tempEvent = {id: [[${event.key}]],
-            title: [[${event.value}]],
-            classNames: "event",
-            start: [[${event.key}]],
+        tempEvent = {id: [[${event.value.Id}]],
+            title: [[${event.value.numberOfEvents}]],
+            classNames: [[${event.value.classNames}]],
+            start: [[${event.value.date}]],
+            description: [[${event.value.description}]],
             backgroundColor: "white"
         }
         events.push(tempEvent);

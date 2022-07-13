@@ -1,12 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
+import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.service.EventService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -36,11 +33,17 @@ public class PlannerController {
     private SprintService sprintService;
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private DeadlineService deadlineService;
+
     @Autowired
     private UserAccountClientService userService;
 
     private boolean sprintUpdated = false;
     private String sprintDate;
+
+    private String redirectToProjects = "redirect:/projects";
 
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
@@ -59,7 +62,7 @@ public class PlannerController {
         try {
             project = projectService.getProjectById(projectId);
         } catch (Exception ignored) {
-
+            return redirectToProjects;
         }
 
         int userId = Integer.parseInt(principal.getClaimsList().stream()
@@ -71,8 +74,10 @@ public class PlannerController {
 
         User user = userService.getUserAccountById(userId);
 
-        Map<String, Integer> eventMap = PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId), project);
+        Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId));
+        Map<String, PlannerDailyEvent> deadlineMap = PlannerUtil.getDeadlinesForCalender(deadlineService.getByDeadlineParentProjectId(projectId));
 
+        model.addAttribute("deadlines", deadlineMap);
         model.addAttribute("events", eventMap);
         model.addAttribute("user", user);
         model.addAttribute("project", project);
