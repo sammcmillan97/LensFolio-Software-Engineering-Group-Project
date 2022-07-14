@@ -25,6 +25,7 @@ public class User {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int userId;
 
+    @Column(unique=true)
     @NotBlank(message="Username is required")
     @Size(max=64, message="Username must be less than 65 characters")
     private String username;
@@ -60,6 +61,11 @@ public class User {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns =  @JoinColumn(name="userId")
+    )
+    @Column(name="roles", nullable = false)
     private Set<UserRole> roles = new HashSet<>();
 
     @Column(length = 1024)
