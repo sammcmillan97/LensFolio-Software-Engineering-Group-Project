@@ -17,6 +17,9 @@ public class SprintService {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private ProjectEditsService projectEditsService;
+
     /**
      * Get list of all sprints
      */
@@ -59,6 +62,7 @@ public class SprintService {
     }
 
     public void deleteById(int sprintId) {
+        projectEditsService.refreshProject(repository.findById(sprintId).getParentProjectId());
         repository.deleteById(sprintId);
     }
 
