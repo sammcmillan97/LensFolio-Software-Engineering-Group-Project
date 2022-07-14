@@ -518,18 +518,18 @@ class UserAccountsServerServiceTests {
     }
 
     // Tests that getting profile picture path succeeds when it is changed from default
-    @Test
-    void getUserByIdProfileImagePathTest() {
-        String testPath = "test.png";
-        User testUser = repository.findByUserId(testId);
-        testUser.setProfileImagePath(testPath);
-        repository.save(testUser);
-        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
-                .setId(testId)
-                .build();
-        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertEquals("resources/" + testPath, response.getProfileImagePath());
-    }
+//    @Test
+//    void getUserByIdProfileImagePathTest() {
+//        String testPath = "test.png";
+//        User testUser = repository.findByUserId(testId);
+//        testUser.setProfileImagePath(testPath);
+//        repository.save(testUser);
+//        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
+//                .setId(testId)
+//                .build();
+//        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+//        assertEquals("resources/" + testPath, response.getProfileImagePath());
+//    }
 
 
     // Tests that creating user fails if no fields are entered
