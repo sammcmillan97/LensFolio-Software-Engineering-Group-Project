@@ -7,15 +7,17 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.DeleteGroupResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsResponse;
+import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class EditGroupController {
@@ -32,17 +34,17 @@ public class EditGroupController {
      * The get mapping to return the page to add/edit an group
      */
     @GetMapping("/editGroup-{groupId}")
-    public String editGroup(@AuthenticationPrincipal AuthState principal,
+    public String editGroup(@AuthenticationPrincipal AuthState principle,
                             @PathVariable("groupId") String groupId,
                             Model model) {
 
         //Check User is a teacher otherwise return to project page
-        if (!userAccountClientService.isTeacher(principal)) {
+        if (!userAccountClientService.isTeacher(principle)) {
             return "redirect:/projects";
         }
 
         // Add user details to model for displaying in top banner
-        int userId = userAccountClientService.getUserId(principal);
+        int userId = userAccountClientService.getUserId(principle);
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
@@ -65,8 +67,66 @@ public class EditGroupController {
     }
 
     @PostMapping("/editGroup-{id}")
-    public String projectSave(@PathVariable("id") String groupId) {
-        return GROUPS_REDIRECT;
+    public String saveGroupEdits(@AuthenticationPrincipal AuthState principle,
+                              @PathVariable("id") String groupIdString,
+                              @RequestParam("groupShortName") String groupShortName,
+                              @RequestParam("groupLongName") String groupLongName,
+                              Model model) {
+        //Check if it is a teacher making the request
+        if (!userAccountClientService.isTeacher(principle)) {
+            return GROUPS_REDIRECT;
+        }
+
+        int userId = userAccountClientService.getUserId(principle);
+        User user = userAccountClientService.getUserAccountById(userId);
+
+        int groupId;
+
+        try {
+            groupId = Integer.parseInt(groupIdString);
+        } catch (NumberFormatException e) {
+            return GROUPS_REDIRECT;
+        }
+
+        List<ValidationError> validationErrorList;
+        boolean responseSuccess;
+
+        if (groupId == -1) {
+            CreateGroupResponse response = groupsClientService.createGroup(groupShortName, groupLongName);
+            responseSuccess = response.getIsSuccess();
+            validationErrorList = response.getValidationErrorsList();
+        } else {
+            Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
+            group.setGroupId(groupId);
+            group.setShortName(groupShortName);
+            group.setLongName(groupLongName);
+            ModifyGroupDetailsResponse response = groupsClientService.updateGroupDetails(group);
+            responseSuccess = response.getIsSuccess();
+            validationErrorList = response.getValidationErrorsList();
+
+        }
+        if (!responseSuccess) {
+            for (ValidationError error : validationErrorList) {
+                if (error.getFieldName().equals("shortName")) {
+                    model.addAttribute("shortNameErrorMessage", error.getErrorText());
+                } else if (error.getFieldName().equals("longName")) {
+                    model.addAttribute("longNameErrorMessage", error.getErrorText());
+                }
+            }
+
+            // Add user details to model for displaying in top banner
+            model.addAttribute("user", user);
+
+            //Add event details to model so the user doesn't have to enter them again
+            model.addAttribute("groupId", groupId);
+            model.addAttribute("groupShortName", groupShortName);
+            model.addAttribute("groupLongName", groupLongName);
+
+            return "editGroup";
+        } else {
+            return GROUPS_REDIRECT;
+        }
+
     }
 
     /**
@@ -76,8 +136,8 @@ public class EditGroupController {
      * @return Redirects back to the GET mapping for /groups.
      */
     @DeleteMapping(value="/editGroup-{id}")
-    public String deleteGroupById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String groupId) {
-        if (userAccountClientService.isTeacher(principal)) {
+    public String deleteGroupById(@AuthenticationPrincipal AuthState principle, @PathVariable("id") String groupId) {
+        if (userAccountClientService.isTeacher(principle)) {
             int id = Integer.parseInt(groupId);
             try {
                 groupsClientService.deleteGroupById(id);

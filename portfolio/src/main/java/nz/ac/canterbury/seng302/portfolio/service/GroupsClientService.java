@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
@@ -110,5 +111,14 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
+    }
+
+    public ModifyGroupDetailsResponse updateGroupDetails(Group group) {
+        ModifyGroupDetailsRequest modifyGroupDetailsRequest = ModifyGroupDetailsRequest.newBuilder()
+                .setGroupId(group.getGroupId())
+                .setLongName(group.getLongName())
+                .setShortName(group.getShortName())
+                .build();
+        return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
     }
 }

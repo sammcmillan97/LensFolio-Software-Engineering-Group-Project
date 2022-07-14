@@ -60,3 +60,10 @@
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
+
+.form-error-message {
+    margin-left: 10px;
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}

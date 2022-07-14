@@ -1,5 +1,5 @@
-const shortNameMaxNumChars = 30;
-const longNameMaxNumChars = 50;
+const shortNameMaxNumChars = 20;
+const longNameMaxNumChars = 30;
 
 
 /**
