@@ -48,8 +48,16 @@
                         </div>
                     </div>
                 </div>
+                <!-- Edit and Delete Group Buttons - Only show if user is a teacher-->
+                <div class="group__button-wrapper flex-row" th:if="${userIsTeacher}">
+                    <form action="#" th:action="@{editGroup-{id}(id=${group.getGroupId})}" th:method="get">
+                        <button type="submit">Edit</button>
+                    </form>
+                    <form action="#" th:action="@{editGroup-{id}(id=${group.getGroupId})}" onSubmit="return confirm('Are you sure you want to delete this group?\nThis action cannot be undone.')" th:method="delete" >
+                        <button type="submit">Delete</button>
+                    </form>
 
-
+                </div>
             </div>
         </div>
 
