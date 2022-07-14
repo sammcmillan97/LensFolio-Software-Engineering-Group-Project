@@ -1,0 +1,43 @@
+label.helper, p.helper, .helper-inline{
+    margin-left: 5px;
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: normal;
+    font-size: small;
+    color: dimgrey;
+}
+
+#page-content {
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: normal;
+}
+
+h4 {
+    margin-bottom: 5px;
+}
+
+#profile-image-display {
+    width:150px;
+    height:150px;
+    object-fit:cover;
+}
+
+#root, .helper-inline {
+    margin-left: 30px;
+    display: inline-block;
+}
+
+.error {
+    margin-left: 10px;
+    color: red;
+    margin-top: 20px;
+    margin-bottom: -20px;
+}
+
+.button {
+    padding: 3px 5px 3px 5px;
+}

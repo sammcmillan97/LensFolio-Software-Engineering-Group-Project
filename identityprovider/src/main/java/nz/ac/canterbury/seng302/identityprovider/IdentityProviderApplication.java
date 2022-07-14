@@ -3,13 +3,10 @@ package nz.ac.canterbury.seng302.identityprovider;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import org.slf4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -18,11 +15,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class IdentityProviderApplication implements WebMvcConfigurer {
 
-    private static final Logger log = LoggerFactory.getLogger(IdentityProviderApplication.class);
-
     public static void main(String[] args) {
         SpringApplication.run(IdentityProviderApplication.class, args);
     }
+
+    private static final String DEFAULT_PASSWORD = "password";
+    private static final String DEFAULT_PRONOUNS = "she/her";
 
     @Bean
     public CommandLineRunner demo(UserRepository repository) {

@@ -4,7 +4,6 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
-import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -59,7 +58,6 @@ public class EditUserController {
      */
     @PostMapping("/editUser")
     public String editUser(@AuthenticationPrincipal AuthState principal,
-                           @RequestParam(name="username") String username,
                            @RequestParam(name="email") String email,
                            @RequestParam(name="firstName") String firstName,
                            @RequestParam(name="middleName") String middleName,

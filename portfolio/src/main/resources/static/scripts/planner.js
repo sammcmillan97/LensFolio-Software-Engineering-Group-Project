@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResizableFromEnd: true,
 
         eventOverlap: function( stillEvent, movingEvent) {
-            return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
+            return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && stillEvent.extendedProps.name !== 'Project';
         },
 
         //Listens to sprint drag/drop
@@ -153,8 +153,6 @@ function calculateFullMonthEndDate(endDate) {
     // Ensure the month has two digits
     if (month <= 9) {
         month = "0" + month.toString();
-    } else {
-        month.toString();
     }
 
     // Calculate and return the end date

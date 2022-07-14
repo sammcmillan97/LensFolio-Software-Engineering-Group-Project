@@ -101,10 +101,6 @@ public class User {
         return roles;
     }
 
-    public Collection<UserRole> getRolesList() {
-        return roles;
-    }
-
     public int getId(){return id;}
 
     /**
