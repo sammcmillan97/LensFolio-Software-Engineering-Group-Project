@@ -51,7 +51,7 @@ public class GroupsClientService {
      * @param groupId the id of the group to be deleted
      * @return the response from the server
      */
-    public DeleteGroupResponse deleteGroup(final int groupId) {
+    public DeleteGroupResponse deleteGroupById(final int groupId) {
         DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();

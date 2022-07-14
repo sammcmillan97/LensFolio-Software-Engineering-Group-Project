@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Arrays;
@@ -36,7 +37,6 @@ public class GroupsController {
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
         GroupListResponse groups = groupsClientService.getAllGroups();
         model.addAttribute("groups", groups.getGroups());
-        System.out.println(groups.getGroups().get(1).getMembers());
         return "groups";
     }
 }
