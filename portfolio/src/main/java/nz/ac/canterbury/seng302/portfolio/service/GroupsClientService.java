@@ -113,6 +113,11 @@ public class GroupsClientService {
 
     }
 
+    /**
+     * Builds a request to update the groups information in the database
+     * @param group the group object to be saved
+     * @return a ModifyGroupDetailsResponse that contains the status of the request and any errors found
+     */
     public ModifyGroupDetailsResponse updateGroupDetails(Group group) {
         ModifyGroupDetailsRequest modifyGroupDetailsRequest = ModifyGroupDetailsRequest.newBuilder()
                 .setGroupId(group.getGroupId())

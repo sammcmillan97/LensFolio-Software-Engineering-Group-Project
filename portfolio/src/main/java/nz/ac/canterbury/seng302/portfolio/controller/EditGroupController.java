@@ -1,14 +1,11 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Group;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.DeleteGroupResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.ModifyGroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +28,24 @@ public class EditGroupController {
     private static final String GROUPS_REDIRECT = "redirect:/groups";
 
     /**
-     * The get mapping to return the page to add/edit an group
+     * The get mapping to return the page to add/edit a group
+     * @param principal Authentication principal storing current user information
+     * @param groupId The id in of the group to be edited
+     * @param model ThymeLeaf model
+     * @return The edit group page with the relevant attributes injected
      */
     @GetMapping("/editGroup-{groupId}")
-    public String editGroup(@AuthenticationPrincipal AuthState principle,
+    public String editGroup(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("groupId") String groupId,
                             Model model) {
 
         //Check User is a teacher otherwise return to project page
-        if (!userAccountClientService.isTeacher(principle)) {
-            return "redirect:/projects";
+        if (!userAccountClientService.isTeacher(principal)) {
+            return GROUPS_REDIRECT;
         }
 
         // Add user details to model for displaying in top banner
-        int userId = userAccountClientService.getUserId(principle);
+        int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
@@ -66,18 +67,27 @@ public class EditGroupController {
         return "editGroup";
     }
 
+    /**
+     * Post mapping to save edits or new groups
+     * @param principal Authentication principal storing current user information
+     * @param groupIdString The id in string form of the group to be updated
+     * @param groupShortName The new/updated short name of the group to be updated
+     * @param groupLongName The new/updated long name of the group to be ypdated
+     * @param model ThymeLeaf model
+     * @return a redirect to either the edit group page or the main groups page
+     */
     @PostMapping("/editGroup-{id}")
-    public String saveGroupEdits(@AuthenticationPrincipal AuthState principle,
+    public String saveGroupEdits(@AuthenticationPrincipal AuthState principal,
                               @PathVariable("id") String groupIdString,
                               @RequestParam("groupShortName") String groupShortName,
                               @RequestParam("groupLongName") String groupLongName,
                               Model model) {
         //Check if it is a teacher making the request
-        if (!userAccountClientService.isTeacher(principle)) {
+        if (!userAccountClientService.isTeacher(principal)) {
             return GROUPS_REDIRECT;
         }
 
-        int userId = userAccountClientService.getUserId(principle);
+        int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
 
         int groupId;
@@ -136,8 +146,8 @@ public class EditGroupController {
      * @return Redirects back to the GET mapping for /groups.
      */
     @DeleteMapping(value="/editGroup-{id}")
-    public String deleteGroupById(@AuthenticationPrincipal AuthState principle, @PathVariable("id") String groupId) {
-        if (userAccountClientService.isTeacher(principle)) {
+    public String deleteGroupById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String groupId) {
+        if (userAccountClientService.isTeacher(principal)) {
             int id = Integer.parseInt(groupId);
             try {
                 groupsClientService.deleteGroupById(id);
