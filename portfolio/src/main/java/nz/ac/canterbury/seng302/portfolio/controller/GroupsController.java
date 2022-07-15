@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -39,23 +40,43 @@ public class GroupsController {
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
         GroupListResponse groupListResponse = groupsClientService.getAllGroups();
         List<Group> groups = groupListResponse.getGroups();
-        groups.add(getGrouplessGroup());
         groups.add(getTeacherGroup());
+        groups.add(getGrouplessGroup(groups));
         model.addAttribute("groups", groups);
         System.out.println(groupListResponse.getGroups().get(1).getMembers());
         return "groups";
     }
 
-    protected Group getGrouplessGroup(){
-        Set<User> allUsers = getAllUsers();
-
-        return new Group(-1, "Groupless", "Members without a group", 0, allUsers);
+    /**
+     * Create groupless group by removing users that are in a group
+     * @param groups set of all groups except groupless
+     * @return
+     */
+    protected Group getGrouplessGroup(List<Group> groups){
+        Set<User> grouplessUsers = getAllUsers();
+        for (Group group: groups){
+            for (User user: group.getMembers()){
+                if (grouplessUsers.contains(user)){
+                    grouplessUsers.remove(user);
+                }
+            }
+        }
+        return new Group(-1, "Groupless", "Members without a group", 0, grouplessUsers);
     }
 
+    /**
+     * Create teacher group from user roles
+     * @return
+     */
     protected Group getTeacherGroup(){
         Set<User> allUsers = getAllUsers();
-
-        return new Group(-2, "Teaching staff", "Members with role teacher", 0, allUsers);
+        Set<User> teachers = new HashSet<>();
+        for (User user: allUsers){
+            if (isTeacher(user)){
+                teachers.add(user);
+            }
+        }
+        return new Group(-2, "Teachers", "Teaching Staff", 0, teachers);
     }
 
     /**
@@ -75,12 +96,22 @@ public class GroupsController {
             if (sizeOfSet > 0){
                 users.addAll(returnedUsers);
             }
-            offset += 50;
 
+            //Handle the pagination aspect of service method
             if (sizeOfSet < 50){
                 sizeOfSet = 0;
+            } else {
+                offset += 50;
             }
         }
         return users;
+    }
+
+    protected boolean isGroupless(User user){
+        return true;
+    }
+
+    protected boolean isTeacher(User user) {
+        return user.getRoles().contains(UserRole.TEACHER);
     }
 }
