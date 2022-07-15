@@ -28,6 +28,10 @@ public class Group {
         }
     }
 
+    public Group() {
+
+    }
+
     public int getGroupId() {
         return groupId;
     }
