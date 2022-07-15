@@ -4,7 +4,9 @@ import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Group {
 
@@ -12,7 +14,7 @@ public class Group {
     private String shortName;
     private String longName;
     private int parentProject;
-    private List<User> members = new ArrayList<>();
+    private Set<User> members = new HashSet<>();
 
     /**
      * Create a group based on a GroupDetailsResponse from the identity provider.
@@ -26,6 +28,14 @@ public class Group {
         for (UserResponse userResponse: source.getMembersList()) {
             members.add(new User(userResponse));
         }
+    }
+
+    public Group(int id, String shortname, String longname, int parentproject, Set<User> listOfMembers){
+        groupId = id;
+        shortName = shortname;
+        longName = longname;
+        parentProject = parentproject;
+        members = listOfMembers;
     }
 
     public int getGroupId() {
@@ -60,7 +70,7 @@ public class Group {
         this.parentProject = parentProject;
     }
 
-    public List<User> getMembers() {
+    public Set<User> getMembers() {
         return members;
     }
 

@@ -37,30 +37,25 @@ public class GroupsController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
-        GroupListResponse groups = groupsClientService.getAllGroups();
-        model.addAttribute("groups", groups.getGroups());
-        System.out.println(groups.getGroups().get(1).getMembers());
+        GroupListResponse groupListResponse = groupsClientService.getAllGroups();
+        Set<Group> groups = (Set<Group>) groupListResponse.getGroups();
+        groups.add(getGrouplessGroup());
+        groups.add(getTeacherGroup());
+        model.addAttribute("groups", groups);
+        System.out.println(groupListResponse.getGroups().get(1).getMembers());
         return "groups";
     }
 
-    @GetMapping("/getGrouplessGroup")
-    public String getGrouplessGroup(@AuthenticationPrincipal AuthState principal, Model model){
-        int id = userAccountClientService.getUserId(principal);
-        User user = userAccountClientService.getUserAccountById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
+    public Group getGrouplessGroup(){
+        Set<User> allUsers = getAllUsers();
 
-        return "";
+        return new Group(-1, "Groupless", "Members without a group", 0, allUsers);
     }
 
-    @GetMapping("/getTeacherGroup")
-    public String getTeacherGroup(@AuthenticationPrincipal AuthState principal, Model model){
-        int id = userAccountClientService.getUserId(principal);
-        User user = userAccountClientService.getUserAccountById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
+    public Group getTeacherGroup(){
+        Set<User> allUsers = getAllUsers();
 
-        return "";
+        return new Group(-2, "Teaching staff", "Members with role teacher", 0, allUsers);
     }
 
     /**
