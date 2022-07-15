@@ -41,17 +41,20 @@ public class GroupsController {
         GroupListResponse groupListResponse = groupsClientService.getAllGroups();
         List<Group> groups = groupListResponse.getGroups();
         groups.add(getTeacherGroup());
-        groups.add(getGrouplessGroup(groups));
+        groups.add(getGrouplessGroup());
         model.addAttribute("groups", groups);
         return "groups";
     }
 
     /**
      * Create groupless group by removing users that are in a group
-     * @param groups set of all groups except groupless
      * @return
      */
-    protected Group getGrouplessGroup(List<Group> groups){
+    protected Group getGrouplessGroup(){
+        GroupListResponse groupListResponse = groupsClientService.getAllGroups();
+        List<Group> groups = groupListResponse.getGroups();
+        groups.add(getTeacherGroup());
+
         Set<User> allUsers = getAllUsers();
         Set<User> groupless = new HashSet<>();
         boolean userIsInGroup;
