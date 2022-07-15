@@ -43,7 +43,6 @@ public class GroupsController {
         groups.add(getTeacherGroup());
         groups.add(getGrouplessGroup(groups));
         model.addAttribute("groups", groups);
-        System.out.println(groupListResponse.getGroups().get(1).getMembers());
         return "groups";
     }
 
