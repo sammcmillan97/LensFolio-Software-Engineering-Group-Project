@@ -14,13 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Controller
 public class GroupsController {
+
     @Autowired
     private UserAccountClientService userAccountClientService;
     @Autowired
@@ -53,15 +53,23 @@ public class GroupsController {
      * @return
      */
     protected Group getGrouplessGroup(List<Group> groups){
-        Set<User> grouplessUsers = getAllUsers();
-        for (Group group: groups){
-            for (User user: group.getMembers()){
-                if (grouplessUsers.contains(user)){
-                    grouplessUsers.remove(user);
+        Set<User> allUsers = getAllUsers();
+        Set<User> groupless = new HashSet<>();
+        boolean userIsInGroup;
+        for(User userInAllUsers: allUsers){
+            userIsInGroup = false;
+            for (Group group: groups){
+                for (User userInGroup: group.getMembers()){
+                    if(userInAllUsers.getId()==userInGroup.getId()){
+                        userIsInGroup = true;
+                    }
                 }
             }
+            if (!userIsInGroup){
+                groupless.add(userInAllUsers);
+            }
         }
-        return new Group(-1, "Groupless", "Members without a group", 0, grouplessUsers);
+        return new Group(-1, "Groupless", "Members without a group", 0, groupless);
     }
 
     /**
@@ -105,10 +113,6 @@ public class GroupsController {
             }
         }
         return users;
-    }
-
-    protected boolean isGroupless(User user){
-        return true;
     }
 
     protected boolean isTeacher(User user) {
