@@ -15,12 +15,10 @@ table {
     overflow-wrap: break-word;
     width: 100%;
     border-collapse: collapse;
-    margin: 25px 0;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     font-size: small;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 25px auto;
 }
 
 tbody tr:nth-of-type(even) {
@@ -58,8 +56,8 @@ button {
     border: 1px solid var(--color-secondary);
     border-radius: 5px;
     background-color: var(--color-primary);
-    padding: 2px;
-    padding-right: 4px; /* Needed to make the buttons look better, due to kerning issues with display: inline */
+    /* Needed to make the buttons look better, due to kerning issues with display: inline */
+    padding: 2px 4px 2px 2px;
     margin: 4px;
     display: inline;
 }
@@ -77,14 +75,13 @@ a {
 }
 
 #role-button button {
-    color: black;
     text-decoration: none;
     color: #999;
     transition: background-color .3s;
     background: transparent;
     border: transparent;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #role-button div {

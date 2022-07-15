@@ -13,12 +13,6 @@ tag-checker:
   only:
     - tags
 
-# junit-portfolio:
-#   stage: test
-#   script:
-#     - cd portfolio
-#     - ./gradlew test
-
 junit-identityprovider:
   stage: test
   script:
@@ -30,7 +24,6 @@ junit-portfolio:
   script:
     - cd portfolio
     - ./gradlew test
-
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -63,18 +56,19 @@ deploy-staging-identityprovider:
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/staging-identityprovider/ || true
     - mkdir /home/gitlab-runner/staging-identityprovider/
+    - mkdir -p /home/gitlab-runner/profile-images/staging/
     - cp -r ./build/libs /home/gitlab-runner/staging-identityprovider
     - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
     - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
     - touch /home/gitlab-runner/staging-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD" > /home/gitlab-runner/staging-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD \nIMAGE_FOLDER=$STAGING_IMAGE_FOLDER" > /home/gitlab-runner/staging-identityprovider/.env
     - sudo systemctl restart staging-identityprovider
   artifacts:
     paths:
       - identityprovider/build/libs
   environment:
-    name: staging
-    url: https://csse-s302g4.canterbury.ac.nz/test
+    name: staging-identity
+    url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
 
@@ -96,7 +90,7 @@ deploy-staging-portfolio:
       - portfolio/build/libs
   environment:
     name: staging
-    url: https://csse-s302g4.canterbury.ac.nz/test
+    url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
 
@@ -107,18 +101,19 @@ deploy-production-identityprovider:
     - ./gradlew bootJar
     - rm -rf /home/gitlab-runner/production-identityprovider/ || true
     - mkdir /home/gitlab-runner/production-identityprovider/
+    - mkdir -p /home/gitlab-runner/profile-images/production/
     - cp -r ./build/libs /home/gitlab-runner/production-identityprovider
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
     - touch /home/gitlab-runner/production-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD" > /home/gitlab-runner/production-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER" > /home/gitlab-runner/production-identityprovider/.env
     - sudo systemctl restart production-identityprovider
   artifacts:
     paths:
       - identityprovider/build/libs
   environment:
-    name: production
-    url: https://csse-s302g4.canterbury.ac.nz/prod
+    name: production-identity
+    url: https://csse-s302g4.canterbury.ac.nz/prod/identity
   only:
     - tags
     - master
@@ -141,7 +136,21 @@ deploy-production-portfolio:
       - portfolio/build/libs
   environment:
     name: production
-    url: https://csse-s302g4.canterbury.ac.nz/prod
+    url: https://csse-s302g4.canterbury.ac.nz/prod/portfolio
   only:
     - tags
     - master
+
+sonarqube-report:
+  stage: sonarqube
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - cd identityprovider
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
+    - ./gradlew sonarqube
+    - cd ../portfolio
+    - touch ./.env
+    - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
+    - ./gradlew sonarqube

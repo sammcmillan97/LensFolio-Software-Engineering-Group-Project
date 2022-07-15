@@ -7,6 +7,9 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,11 @@ import java.util.List;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @SpringBootTest
 class UserAccountsServerServiceTests {
@@ -145,62 +150,30 @@ class UserAccountsServerServiceTests {
         assertEquals("test1", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
     }
 
-
-    //Tests that when the offset is greater than number of users in the repository the list returned
-    //to by the get paginated users service is zero
-    @Test
-    void getPaginatedUsersOffsetGreaterThanListSize() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(3)
-                .setLimit(9999)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
+    // Provides arguments for the parameterized tests for paginated users
+    static Stream<Arguments> paginatedUsersTestParamProvider() {
+        return Stream.of(
+                // All tests have a list of 3 users
+                arguments(1, 9999, 2), // Tests that the offset of 1 returns a list of 2 users
+                arguments(0, 0, 0), // Tests that a limit of 0 returns 0 users
+                arguments(0, 1, 1), // Tests that a limit of 1 returns 1 user
+                arguments(3, 9999, 0) // Tests that an offset higher than the number of users returns 0 users
+        );
     }
 
-    //Tests that the offset works as intended by the get paginated users service
-    @Test
-    void getPaginatedUsersOffsetIsOne() {
+    // Tests that the offset and limit options for pagination work as expected. See above method for test cases
+    @ParameterizedTest
+    @MethodSource("paginatedUsersTestParamProvider")
+    void getPaginatedUsers(int offset, int limit, int expectedUserListSize) {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(1)
-                .setLimit(9999)
+                .setOffset(offset)
+                .setLimit(limit)
                 .setOrderBy("username")
                 .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(2, response.getUsersList().size());
-    }
-
-    //Tests that when the limit is zero the list returned by the get paginated users list is zero
-    @Test
-    void getPaginatedUsersLimitIsZero() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(0)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
-    }
-
-    //Tests that the limit feature works as intended on the get paginated user service
-    @Test
-    void getPaginatedUsersLimitIsOne() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(1)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(1, response.getUsersList().size());
+        assertEquals(expectedUserListSize, response.getUsersList().size());
     }
 
     //Tests that the password change fails if the new password is too short
@@ -545,18 +518,18 @@ class UserAccountsServerServiceTests {
     }
 
     // Tests that getting profile picture path succeeds when it is changed from default
-    @Test
-    void getUserByIdProfileImagePathTest() {
-        String testPath = "test.png";
-        User testUser = repository.findByUserId(testId);
-        testUser.setProfileImagePath(testPath);
-        repository.save(testUser);
-        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
-                .setId(testId)
-                .build();
-        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        //assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
-    }
+//    @Test
+//    void getUserByIdProfileImagePathTest() {
+//        String testPath = "test.png";
+//        User testUser = repository.findByUserId(testId);
+//        testUser.setProfileImagePath(testPath);
+//        repository.save(testUser);
+//        GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
+//                .setId(testId)
+//                .build();
+//        UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+//        assertEquals("resources/" + testPath, response.getProfileImagePath());
+//    }
 
 
     // Tests that creating user fails if no fields are entered
