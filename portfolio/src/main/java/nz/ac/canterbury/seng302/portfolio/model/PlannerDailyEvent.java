@@ -11,7 +11,7 @@ public class PlannerDailyEvent {
     public PlannerDailyEvent(String id, String date, String description, int numberOfEvents, String classNames) {
         this.Id = id;
         this.date = date;
-        this.description = description + "\n";
+        this.description = description + "<br>";
         this.numberOfEvents = numberOfEvents;
         this.type = classNames;
     }
@@ -29,6 +29,6 @@ public class PlannerDailyEvent {
     }
 
     public void addDescription(String description) {
-        this.description = this.description + description + "\n";
+        this.description = this.description + description + "<br>";
     }
 }
