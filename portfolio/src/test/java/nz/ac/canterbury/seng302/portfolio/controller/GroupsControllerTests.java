@@ -2,19 +2,14 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.*;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,15 +18,6 @@ class GroupsControllerTests {
 
     @Autowired
     GroupsController groupsController;
-
-    @InjectMocks
-    UserAccountClientService userAccountClientService = new UserAccountClientService();
-
-    @InjectMocks
-    UserListResponse userListRes;
-
-    @Mock
-    UserAccountServiceGrpc.UserAccountServiceBlockingStub userStub;
 
     User student;
     User teacher;
@@ -116,5 +102,10 @@ class GroupsControllerTests {
     void whenUserIsStudent_isTeacherReturnsFalse() {
         assertFalse(groupsController.isTeacher(student));
     }
-    
+
+    @Test
+    void whenUserIsAdmin_isTeacherReturnsFalse() {
+        assertFalse(groupsController.isTeacher(admin));
+    }
+
 }
