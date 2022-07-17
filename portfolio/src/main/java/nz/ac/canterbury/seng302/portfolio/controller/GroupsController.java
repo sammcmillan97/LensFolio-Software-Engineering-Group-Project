@@ -23,6 +23,7 @@ public class GroupsController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
+
     @Autowired
     private GroupsClientService groupsClientService;
 
