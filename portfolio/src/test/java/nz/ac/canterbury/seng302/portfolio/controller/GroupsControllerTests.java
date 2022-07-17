@@ -4,9 +4,7 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.PaginatedUsersResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,8 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -30,6 +26,12 @@ class GroupsControllerTests {
 
     @InjectMocks
     UserAccountClientService userAccountClientService = new UserAccountClientService();
+
+    @InjectMocks
+    UserListResponse userListRes;
+
+    @Mock
+    UserAccountServiceGrpc.UserAccountServiceBlockingStub userStub;
 
     User student;
     User teacher;
@@ -114,20 +116,5 @@ class GroupsControllerTests {
     void whenUserIsStudent_isTeacherReturnsFalse() {
         assertFalse(groupsController.isTeacher(student));
     }
-
-    @Test
-    void givenUsersExist_getAllUsers(){
-        PaginatedUsersResponse paginatedUsersResponse = PaginatedUsersResponse.newBuilder()
-                        .addUsers(0, studentResponse)
-                        .addUsers(1, teacherResponse)
-                        .addUsers(2, adminResponse)
-                        .setResultSetSize(3)
-                        .build();
-        Mockito.when(userAccountClientService.getPaginatedUsers(0, 50, "userId", true)).thenReturn(new UserListResponse(paginatedUsersResponse));
-
-        Set<User> users = groupsController.getAllUsers();
-        assertEquals(3, users.size());
-    }
-
-
+    
 }
