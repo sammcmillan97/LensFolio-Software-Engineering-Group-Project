@@ -2,6 +2,9 @@ let ctrlPressed;
 let shiftPressed;
 let lastRow;
 let currentTable;
+let clipboard;
+let copiedRow;
+let ghostElement
 
 // disable text selection
 document.onselectstart = function() {
@@ -36,6 +39,64 @@ document.addEventListener("keydown", function (event) {
         selectAllInTable()
     }
 }, false)
+
+document.addEventListener("dragstart", function (e) {
+    clearTableSelection()
+    selectRows(clipboard)
+})
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+async function copyMembers(currRow) {
+    currentTable = currRow.parentNode.getElementsByTagName("tr")
+    copiedRow = currRow
+    clipboard = []
+    // Ensure the clicked row is selected
+    if (currRow.className !== "selected") {
+        clipboard.push(currRow)
+    } else {
+        for (let row of currentTable) {
+            if (row.className === "selected") {
+                clipboard.push(row)
+            }
+        }
+    }
+}
+
+function getGroupId(row) {
+    let groupId = row.parentNode.parentNode.id
+    console.log(groupId)
+}
+
+function pasteMembers(currRow) {
+    const newTable = currRow.parentNode
+
+    if (currentTable !== newTable.getElementsByTagName("tr")) {
+        let userIds = [];
+        let userId;
+        for (let element of clipboard) {
+            userId = element.getElementsByClassName("user_id")[0].innerText;
+            userIds.push(parseInt(userId, 10));
+        }
+        let oldGroupId = currRow.parentNode.parentNode.id;
+        let newGroupId = newTable.parentNode.id;
+
+        const url = new URL ("http://localhost:9000/groups/addMembers")
+        for (let user of userIds) {
+            url.searchParams.append("members", user)
+        }
+        url.searchParams.append("groupId", newGroupId)
+
+        fetch(url, {
+            method: "POST"
+        }).then(res => {
+            console.log(res)
+        })
+
+    }
+}
 
 /**
  * Occurs when a row is clicked on
@@ -75,6 +136,12 @@ function selectRowsBetween(indexes) {
 
     for (let i = indexes[0]; i <= indexes[1]; i++) {
         currentTable[i-1].className = 'selected';
+    }
+}
+
+function selectRows(rows) {
+    for (let row of rows) {
+        row.className = "selected"
     }
 }
 

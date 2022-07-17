@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class GroupsClientService {
      * @param groupId the id of the group to get the details for
      * @return the response from the server
      */
-    public GroupDetailsResponse getGroupDetails(final int groupId) {
+    public GroupDetailsResponse getGroupDetailsById(final int groupId) {
         GetGroupDetailsRequest getGroupDetailsRequest = GetGroupDetailsRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();
@@ -51,7 +52,7 @@ public class GroupsClientService {
      * @param groupId the id of the group to be deleted
      * @return the response from the server
      */
-    public DeleteGroupResponse deleteGroup(final int groupId) {
+    public DeleteGroupResponse deleteGroupById(final int groupId) {
         DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();
@@ -110,5 +111,19 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
+    }
+
+    /**
+     * Builds a request to update the groups information in the database
+     * @param group the group object to be saved
+     * @return a ModifyGroupDetailsResponse that contains the status of the request and any errors found
+     */
+    public ModifyGroupDetailsResponse updateGroupDetails(Group group) {
+        ModifyGroupDetailsRequest modifyGroupDetailsRequest = ModifyGroupDetailsRequest.newBuilder()
+                .setGroupId(group.getGroupId())
+                .setLongName(group.getLongName())
+                .setShortName(group.getShortName())
+                .build();
+        return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
     }
 }

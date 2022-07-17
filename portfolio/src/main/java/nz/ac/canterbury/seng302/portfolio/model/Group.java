@@ -48,6 +48,9 @@ public class Group {
         members = listOfMembers;
     }
 
+    public Group() {
+    }
+
     public int getGroupId() {
         return groupId;
     }
