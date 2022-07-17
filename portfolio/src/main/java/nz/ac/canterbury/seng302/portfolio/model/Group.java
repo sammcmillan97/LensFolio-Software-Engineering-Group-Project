@@ -40,7 +40,7 @@ public class Group {
         }
     }
 
-    public Group(int id, String shortname, String longname, int parentproject, Set<User> listOfMembers){
+    public Group(int id, String shortname, String longname, int parentproject, List<User> listOfMembers){
         groupId = id;
         shortName = shortname;
         longName = longname;

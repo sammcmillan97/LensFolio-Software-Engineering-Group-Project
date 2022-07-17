@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,9 @@ public class GroupsController {
 
     private static final String GROUPS_PAGE = "groups";
 
+    private static final int GROUPLESS_GROUP_ID = -1;
+    private static final int TEACHER_GROUP_ID = -2;
+
     /**
      * Get mapping to fetch groups page
      * @param principal Authentication principal storing current user information
@@ -43,13 +47,19 @@ public class GroupsController {
     public String groups(@AuthenticationPrincipal AuthState principal, Model model){
         int id = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userAccountClientService.isTeacher(principal));
+        boolean userIsTeacher = userAccountClientService.isTeacher(principal);
+        boolean userIsAdmin = userAccountClientService.isAdmin(principal);
+
         GroupListResponse groupListResponse = groupsClientService.getAllGroups();
         List<Group> groups = groupListResponse.getGroups();
         groups.add(getTeacherGroup());
         groups.add(getGrouplessGroup());
         model.addAttribute("groups", groups);
+        model.addAttribute("user", user);
+        model.addAttribute("userIsTeacher", userIsTeacher);
+        model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
         return GROUPS_PAGE;
     }
 
@@ -63,14 +73,15 @@ public class GroupsController {
         groups.add(getTeacherGroup());
 
         Set<User> allUsers = getAllUsers();
-        Set<User> groupless = new HashSet<>();
+        List<User> groupless = new ArrayList<>();
         boolean userIsInGroup;
         for(User userInAllUsers: allUsers){
             userIsInGroup = false;
             for (Group group: groups){
                 for (User userInGroup: group.getMembers()){
-                    if(userInAllUsers.getId()==userInGroup.getId()){
+                    if (userInAllUsers.getId() == userInGroup.getId()) {
                         userIsInGroup = true;
+                        break;
                     }
                 }
             }
@@ -87,7 +98,7 @@ public class GroupsController {
      */
     protected Group getTeacherGroup(){
         Set<User> allUsers = getAllUsers();
-        Set<User> teachers = new HashSet<>();
+        List<User> teachers = new ArrayList<>();
         for (User user: allUsers){
             if (isTeacher(user)){
                 teachers.add(user);
@@ -128,24 +139,89 @@ public class GroupsController {
         return user.getRoles().contains(UserRole.TEACHER);
     }
 
-    @RequestMapping(value = "/groups/addMembers", method=RequestMethod.POST)
+    private boolean userInGroup(Integer userId, Integer groupId) {
+        Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
+        for (User member : group.getMembers()) {
+            if (member.getId() == userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @PostMapping("/groups/addMembers")
     @ResponseStatus(HttpStatus.OK)
     public String saveGroupEdits(@AuthenticationPrincipal AuthState principal,
                                  @RequestParam("groupId") Integer groupId,
                                  @RequestParam(value="members") List<Integer> members,
                                  Model model) {
 
+        int id = userAccountClientService.getUserId(principal);
+        User user = userAccountClientService.getUserAccountById(id);
         boolean userIsTeacher = userAccountClientService.isTeacher(principal);
+        boolean userIsAdmin = userAccountClientService.isAdmin(principal);
+
+        Group group = new Group();
         //Check if it is a teacher making the request
         if (!userIsTeacher) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
-        } else {
-            groupsClientService.addGroupMembers(groupId, members);
-            Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
-            model.addAttribute("group", group);
-            model.addAttribute("userIsTeacher", userIsTeacher);
+        } else if (groupId == -2) { // Add to teacher group
+            for (int member : members) {
+                // Only add the role if user isn't already a teacher
+                if (!userAccountClientService.getUserAccountById(member).getRoles().contains(UserRole.TEACHER)) {
+                    userAccountClientService.addRole(member, UserRole.TEACHER);
+                }
 
+            }
+            group = getTeacherGroup();
+        } else if (groupId != -1) { // If not adding to groupless group
+
+            List<Integer> usersToAdd = new ArrayList<>();
+            for (int userId : members) {
+                if (!userInGroup(userId, groupId)) {
+                    usersToAdd.add(userId);
+                }
+            }
+
+            groupsClientService.addGroupMembers(groupId, usersToAdd);
+            group = new Group(groupsClientService.getGroupDetailsById(groupId));
         }
+
+        model.addAttribute("group", group);
+        model.addAttribute("user", user);
+        model.addAttribute("userIsTeacher", userIsTeacher);
+        model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+
+        return "groupTable";
+    }
+
+    @GetMapping("group-{groupId}")
+    public String getGroupTable(@AuthenticationPrincipal AuthState principal,
+                                @PathVariable("groupId") Integer groupId,
+                                Model model) {
+
+        int userId = userAccountClientService.getUserId(principal);
+        User user = userAccountClientService.getUserAccountById(userId);
+        boolean userIsTeacher = userAccountClientService.isTeacher(principal);
+        boolean userIsAdmin = userAccountClientService.isAdmin(principal);
+
+        Group group;
+
+        if (groupId == -2) { // teacher group
+            group = getTeacherGroup();
+        } else if (groupId == -1) { // groupless group
+            group = getGrouplessGroup();
+        } else {
+            group = new Group(groupsClientService.getGroupDetailsById(groupId));
+        }
+        model.addAttribute("group", group);
+        model.addAttribute("user", user);
+        model.addAttribute("userIsTeacher", userIsTeacher);
+        model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
         return "groupTable";
     }
 

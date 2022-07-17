@@ -64,18 +64,26 @@ async function copyMembers(currRow) {
     }
 }
 
-function replaceTable(id, content) {
-    const newGroupTable = document.getElementById(id)
+function updateTable(groupId, content, selectedUserIds) {
+    const newGroupTable = document.getElementById(`group_${groupId}_members`)
     newGroupTable.innerHTML = content
 
+    let userId;
+    let numUsers = 0;
     for (let row of newGroupTable.getElementsByClassName("user_id")) {
+        numUsers += 1
         userId = parseInt(row.innerText, 10)
-        if (userIds.includes(userId)) {
+        if (selectedUserIds.includes(userId)) {
             row.parentElement.className = "selected"
         } else {
             row.parentElement.className = "unselected"
         }
     }
+
+    document.getElementById(`group_${groupId}_delete_button`).onsubmit = () => {return confirm(`Are you sure you want to delete this group?\n` +
+                                                                                                        `Doing so will remove ${numUsers} member(s) from the group.\n` +
+                                                                                                        `This action cannot be undone.`)}
+
 }
 
 /**
@@ -112,17 +120,15 @@ async function pasteMembers(currRow) {
             return res.text()
         })
 
-        replaceTable(`group_${newGroupId}_members`, response)
-
-        if (oldGroupId === -1) {
+        updateTable(newGroupId, response, userIds)
+        if (Number.parseInt(oldGroupId, 10) === -1) {
             url = new URL(`${CONTEXT}/group-${oldGroupId}`)
             const response = await fetch(url, {
-                method: "Get"
+                method: "GET"
             }).then(res => {
                 return res.text()
             })
-
-            replaceTable(`group_${oldGroupId}_members`, response)
+            updateTable(oldGroupId, response, userIds)
         }
 
     }
@@ -165,13 +171,18 @@ function selectRowsBetween(indexes) {
     });
 
     for (let i = indexes[0]; i <= indexes[1]; i++) {
-        currentTable[i-1].className = 'selected';
+        if (currentTable[i - 1].id !== "no-hover") {
+            currentTable[i - 1].className = 'selected';
+        }
     }
 }
 
 function selectRows(rows) {
     for (let row of rows) {
-        row.className = "selected"
+        if (row.id !== "no-hover") {
+            row.className = "selected"
+        }
+
     }
 }
 
@@ -189,7 +200,9 @@ function clearTableSelection() {
  */
 function selectAllInTable() {
     for (let i = 0; i < currentTable.length; i++) {
-        currentTable[i].className = 'selected';
+        if (currentTable[i].id !== "no-hover") {
+            currentTable[i].className = 'selected';
+        }
     }
 }
 
