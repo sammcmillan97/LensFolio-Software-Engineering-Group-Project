@@ -36,6 +36,7 @@ public class PlannerUtil {
 
             for (LocalDate date = eventStart; date.isBefore(eventFinish.plusDays(1)); date = date.plusDays(1)) {
                 String eventDateString = date.toString();
+                System.out.println(eventDateString);
                 if(eventMap.containsKey(eventDateString)) {
                     PlannerDailyEvent tempDailyEvent = eventMap.get(eventDateString);
                     tempDailyEvent.addNumberOfEvents();
@@ -65,6 +66,7 @@ public class PlannerUtil {
 
         for (Deadline deadline: deadlineList) {
             String deadlineDateString = deadline.getDeadlineDate().toString().substring(0, 10);
+            System.out.println(deadlineDateString);
             if (deadlineMap.containsKey(deadlineDateString)) {
                 PlannerDailyEvent tempDailyEvent = deadlineMap.get(deadlineDateString);
                 tempDailyEvent.addNumberOfEvents();
@@ -92,7 +94,8 @@ public class PlannerUtil {
         HashMap<String, PlannerDailyEvent> milestoneMap = new HashMap<>();
 
         for (Milestone milestone: mileStoneList) {
-            String milestoneDateString = milestone.getMilestoneDate().toString();
+            System.out.println(milestone.getMilestoneName());
+            String milestoneDateString = milestone.getMilestoneDate().toString().substring(0, 10);
             if (milestoneMap.containsKey(milestoneDateString)) {
                 PlannerDailyEvent tempDailyEvent = milestoneMap.get(milestoneDateString);
                 tempDailyEvent.addNumberOfEvents();
