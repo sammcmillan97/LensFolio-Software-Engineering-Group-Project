@@ -27,8 +27,7 @@ class GroupListResponseTests {
         PaginatedGroupsResponse source = PaginatedGroupsResponse.newBuilder().addGroups(groupDetailsResponse).build();
         GroupListResponse response = new GroupListResponse(source);
         assertEquals(source.getResultSetSize(), response.getResultSetSize());
-        assertEquals(new Group(groupDetailsResponse), response.getGroups().get(0));
-
-
+        Group expectedGroup = new Group(groupDetailsResponse);
+        assertEquals(expectedGroup, response.getGroups().get(0));
     }
 }
