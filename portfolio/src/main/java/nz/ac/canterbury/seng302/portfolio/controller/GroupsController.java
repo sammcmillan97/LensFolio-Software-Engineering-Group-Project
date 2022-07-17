@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
@@ -52,7 +53,7 @@ public class GroupsController {
 
     /**
      * Create groupless group by removing users that are in a group
-     * @return
+     * @return groupless group
      */
     protected Group getGrouplessGroup(){
         GroupListResponse groupListResponse = groupsClientService.getAllGroups();
@@ -80,7 +81,7 @@ public class GroupsController {
 
     /**
      * Create teacher group from user roles
-     * @return
+     * @return teacher group
      */
     protected Group getTeacherGroup(){
         Set<User> allUsers = getAllUsers();
