@@ -4,7 +4,6 @@ let lastRow;
 let currentTable;
 let clipboard;
 let copiedRow;
-let ghostElement
 
 // disable text selection
 document.onselectstart = function() {
@@ -65,13 +64,32 @@ async function copyMembers(currRow) {
     }
 }
 
-function getGroupId(row) {
-    let groupId = row.parentNode.parentNode.id
-    console.log(groupId)
+function replaceTable(id, content) {
+    const newGroupTable = document.getElementById(id)
+    newGroupTable.innerHTML = content
+
+    for (let row of newGroupTable.getElementsByClassName("user_id")) {
+        userId = parseInt(row.innerText, 10)
+        if (userIds.includes(userId)) {
+            row.parentElement.className = "selected"
+        } else {
+            row.parentElement.className = "unselected"
+        }
+    }
 }
 
-function pasteMembers(currRow) {
-    const newTable = currRow.parentNode
+/**
+ * Fetches the old and new group ids.
+ * Then goes through the clipboard elements and fetches the user ids from them.
+ * Then sends a request to the server to add those users to the new group.
+ * Then updates the new group so that it contains the new users.
+ * If the old group is the "users without a group" group, then it fetches an updated version of that group
+ * @param currRow the row that the selection was dropped on
+ */
+async function pasteMembers(currRow) {
+    let newTable = currRow.parentNode
+    let oldGroupId = currentTable[0].parentNode.parentNode.id;
+    let newGroupId = newTable.parentNode.id;
 
     if (currentTable !== newTable.getElementsByTagName("tr")) {
         let userIds = [];
@@ -80,20 +98,32 @@ function pasteMembers(currRow) {
             userId = element.getElementsByClassName("user_id")[0].innerText;
             userIds.push(parseInt(userId, 10));
         }
-        let oldGroupId = currRow.parentNode.parentNode.id;
-        let newGroupId = newTable.parentNode.id;
 
-        const url = new URL ("http://localhost:9000/groups/addMembers")
+        let url
+        url = new URL (`${CONTEXT}/groups/addMembers`)
         for (let user of userIds) {
             url.searchParams.append("members", user)
         }
         url.searchParams.append("groupId", newGroupId)
 
-        fetch(url, {
+        const response = await fetch(url, {
             method: "POST"
         }).then(res => {
-            console.log(res)
+            return res.text()
         })
+
+        replaceTable(`group_${newGroupId}_members`, response)
+
+        if (oldGroupId === -1) {
+            url = new URL(`${CONTEXT}/group-${oldGroupId}`)
+            const response = await fetch(url, {
+                method: "Get"
+            }).then(res => {
+                return res.text()
+            })
+
+            replaceTable(`group_${oldGroupId}_members`, response)
+        }
 
     }
 }

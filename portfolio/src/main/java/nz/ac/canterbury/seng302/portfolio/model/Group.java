@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Group {
 
@@ -65,6 +64,8 @@ public class Group {
     }
 
     public List<User> getMembers() {
+        Comparator<User> userComparator = Comparator.comparingInt(User::getId);
+        members.sort(userComparator);
         return members;
     }
 

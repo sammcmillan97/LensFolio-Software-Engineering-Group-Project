@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-
-</head>
-<body>
 <table class="table table-active table-sm table__color" th:classappend="${userIsTeacher} ? 'table-hover' : ''" th:id="${group.getGroupId}" th:ondragover="${userIsTeacher} ? 'allowDrop(event)' : ''" >
   <thead>
-  <tr class="unselected" ondragend="pasteMembers(this)" ondragover="allowDrop(event)" th:ondrop="${userIsTeacher} ? 'pasteMembers(this)' : ''">
+  <tr class="unselected" th:ondragover="${userIsTeacher} ? 'allowDrop(event)' : ''" th:ondrop="${userIsTeacher} ? 'pasteMembers(this)' : ''">
     <th scope="col">User Id</th>
     <th scope="col">First Name</th>
     <th scope="col">Last Name</th>
@@ -20,5 +14,3 @@
   </tr>
   </tbody>
 </table>
-</body>
-</html>
