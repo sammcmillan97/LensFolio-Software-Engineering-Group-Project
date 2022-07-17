@@ -66,20 +66,35 @@ async function copyMembers(currRow) {
 }
 
 function getGroupId(row) {
-
+    let groupId = row.parentNode.parentNode.id
+    console.log(groupId)
 }
 
 function pasteMembers(currRow) {
     const newTable = currRow.parentNode
 
     if (currentTable !== newTable.getElementsByTagName("tr")) {
-        let userIds = []
-        let userId
+        let userIds = [];
+        let userId;
         for (let element of clipboard) {
-            userId = element.getElementsByClassName("user_id")[0].innerText
-            userIds.push(parseInt(userId, 10))
+            userId = element.getElementsByClassName("user_id")[0].innerText;
+            userIds.push(parseInt(userId, 10));
         }
-        console.log(userIds)
+        let oldGroupId = currRow.parentNode.parentNode.id;
+        let newGroupId = newTable.parentNode.id;
+
+        const url = new URL ("http://localhost:9000/groups/addMembers")
+        for (let user of userIds) {
+            url.searchParams.append("members", user)
+        }
+        url.searchParams.append("groupId", newGroupId)
+
+        fetch(url, {
+            method: "POST"
+        }).then(res => {
+            console.log(res)
+        })
+
     }
 }
 

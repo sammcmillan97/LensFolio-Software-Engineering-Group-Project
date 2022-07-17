@@ -20,7 +20,7 @@
     <h1>Groups Page</h1>
     <div class="flex-column">
         <!-- Clear tables button -->
-        <a id="clear-all-tables-button" onclick="clearAllTableSelections()">Clear all table selections</a>
+        <a id="clear-all-tables-button" onclick="clearAllTableSelections()" th:if="${userIsTeacher}">Clear all table selections</a>
 
         <div class="group" th:each="group : *{groups}">
             <div class="group__details-wrapper">
@@ -29,16 +29,16 @@
                     <h4>Members</h4>
                     <div class="group__members-wrapper">
                         <div class="group__member" >
-                            <table class="table table-hover table-active table-sm table__color" th:id="'group_' + ${group.getGroupId} + '_members'" ondragover="allowDrop(event)" >
+                            <table class="table table-active table-sm table__color" th:classappend="${userIsTeacher} ? 'table-hover' : ''" th:id="${group.getGroupId}" th:ondragover="${userIsTeacher} ? 'allowDrop(event)' : ''" >
                                 <thead>
-                                <tr class="unselected" ondragend="pasteMembers(this)" ondragover="allowDrop(event)">
+                                <tr class="unselected" th:ondragover="${userIsTeacher} ? 'allowDrop(event)' : ''" th:ondrop="${userIsTeacher} ? 'pasteMembers(this)' : ''">
                                     <th scope="col">User Id</th>
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="member : ${group.getMembers}" draggable="true" ondragover="allowDrop(event)" onmousedown="copyMembers(this)" onmouseup="rowClick(this)" ondrop="pasteMembers(this)" class="unselected">
+                                <tr th:each="member : ${group.getMembers}" th:draggable="${userIsTeacher}" th:ondragover="${userIsTeacher} ? 'allowDrop(event)' : ''" th:onmousedown="${userIsTeacher} ? 'copyMembers(this)' : ''" th:onmouseup="${userIsTeacher} ? 'rowClick(this)' : ''" th:ondrop="${userIsTeacher} ? 'pasteMembers(this)' : ''"  class="unselected">
                                     <th scope="row" class="user_id" th:text="${member.getId}"></th>
                                     <td th:text="${member.getFirstName}"></td>
                                     <td th:text="${member.getLastName}"></td>
