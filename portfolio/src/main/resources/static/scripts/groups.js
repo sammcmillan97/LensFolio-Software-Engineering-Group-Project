@@ -1,6 +1,7 @@
 let ctrlPressed;
 let shiftPressed;
 let lastRow;
+let lastTable;
 let currentTable;
 let clipboard;
 let copiedRow;
@@ -35,7 +36,7 @@ document.addEventListener("keydown", function (event) {
     } else if (event.key === "Shift") {
         shiftPressed = true;
     } else if (event.key === "Escape") {
-        clearTableSelection()
+        clearTableSelection(currentTable)
     } else if (event.key === "a" && ctrlPressed) {
         selectAllInTable()
     }
@@ -48,7 +49,9 @@ document.addEventListener("keydown", function (event) {
  * See copyMembers for more information on how copying works
  */
 document.addEventListener("dragstart", function () {
-    clearTableSelection()
+    clearTableSelection(lastTable)
+    lastRow = null
+    clearTableSelection(currentTable)
     selectRows(clipboard)
 })
 
@@ -62,12 +65,13 @@ function allowDrop(ev) {
 }
 
 /**
- * Triggered when the user clicks and drags on a row.
+ * Triggered when the user clicks on a row.
  * If the row is selected, copies all selected users
  * If not, only copies the dragged user
  * @param currRow the clicked on row
  */
 function copyMembers(currRow) {
+    lastTable = currentTable
     currentTable = currRow.parentNode.getElementsByTagName("tr")
     copiedRow = currRow
     clipboard = []
@@ -98,12 +102,14 @@ function updateTable(groupId, content, selectedUserIds) {
     // Update the table
     const newGroupTable = document.getElementById(`group_${groupId}_members`)
     newGroupTable.innerHTML = content
-    let tableRows = newGroupTable.getElementsByClassName("user_id")
-
+    let tableIdRows = newGroupTable.getElementsByClassName("user_id")
+    let tableRows = []
     // Select the new users
     let userId;
     let numUsers = 0;
-    for (let row of tableRows) {
+    for (let row of tableIdRows) {
+        tableRows.push(row.parentElement)
+
         numUsers += 1
         userId = parseInt(row.innerText, 10)
         if (selectedUserIds.includes(userId) && row.id !== "no-hover") {
@@ -112,10 +118,13 @@ function updateTable(groupId, content, selectedUserIds) {
             row.parentElement.className = "unselected"
         }
     }
-    if (groupId !== GROUPLESS_GROUP_ID && selectedUserIds.length > 0) {
-        removeButtonVisible([tableRows[0].parentElement], true);
-    } else {
-        removeButtonVisible([tableRows[0].parentElement], false);
+    if (groupId !== GROUPLESS_GROUP_ID ) {
+        currentTable = tableRows
+        if (selectedUserIds.length > 0) {
+            removeButtonVisible(tableRows, true);
+        } else if (tableRows.length > 0){
+            removeButtonVisible(tableRows, false);
+        }
     }
 
     // Update the delete group button alert to have the correct number of members
@@ -142,6 +151,9 @@ async function pasteMembers(currRow) {
 
     // Only paste the users if it's not the same group
     if (currentTable !== newTable.getElementsByTagName("tr")) {
+        clearTableSelection(currentTable)
+        lastRow = null
+
 
         // Fetch the user ids of the members to be added from the table
         let userIds = [];
@@ -183,7 +195,13 @@ async function pasteMembers(currRow) {
  */
 function rowClick(currRow) {
     // Set the current table to the one that the clicked on row belongs to
+
     currentTable = currRow.parentNode.getElementsByTagName("tr")
+    if (lastTable !== currentTable) {
+        clearTableSelection(lastTable)
+        lastRow = null
+    }
+
     if (ctrlPressed) { // Toggle the clicked on row if Control is pressed
         toggleRow(currRow)
         removeButtonVisible(currentTable, countSelectedRows(currentTable) !== 0);
@@ -196,10 +214,11 @@ function rowClick(currRow) {
         }
         removeButtonVisible(currentTable, true);
     } else { // Otherwise, clear any other selected rows and mark the clicked on row
-        clearTableSelection()
+        clearTableSelection(currentTable)
         toggleRow(currRow)
         removeButtonVisible(currentTable, true);
     }
+
 }
 
 /**
@@ -243,13 +262,15 @@ function selectRows(rows) {
 }
 
 /**
- * Unselects all items in the current table
+ * Unselects all items in the given table
  */
-function clearTableSelection() {
-    for (let i = 0; i < currentTable.length; i++) {
-        currentTable[i].className = 'unselected';
+function clearTableSelection(table) {
+    if (table && table.length > 0) {
+        for (let i = 0; i < table.length; i++) {
+            table[i].className = 'unselected';
+        }
+        removeButtonVisible(table, false);
     }
-    removeButtonVisible(currentTable, false);
 }
 
 /**
@@ -262,28 +283,6 @@ function selectAllInTable() {
         }
     }
     removeButtonVisible(currentTable, true);
-}
-
-/**
- * Unselects all items in all tables
- */
-function clearAllTableSelections() {
-    if (currentTable) {
-        // Fetch all tables by getting all elements with the same class name as the current table
-        const allTables = document.getElementsByClassName(currentTable[0].parentNode.parentNode.className)
-
-        let tableRows;
-        // Iterate through each table, fetch the table elements, then mark them all as unselected
-        for (const table of allTables) {
-            tableRows = table.getElementsByTagName("tr");
-
-            // Mark each item in the table as unselected
-            for (let i = 1; i < tableRows.length; i++) { // starts at 1 to skip header row
-                tableRows[i].className = 'unselected';
-            }
-            removeButtonVisible(tableRows, false);
-        }
-    }
 }
 
 /**

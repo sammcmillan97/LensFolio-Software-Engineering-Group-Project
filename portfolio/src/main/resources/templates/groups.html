@@ -28,8 +28,6 @@
 <div id="page-content" class="constrict">
     <h1>Groups Page</h1>
     <div class="flex-column">
-        <!-- Clear tables button -->
-        <a id="clear-all-tables-button" onclick="clearAllTableSelections()" th:if="${userIsTeacher}">Clear all table selections</a>
 
         <div class="group" th:each="group : *{groups}" th:with="tableDropable=${userIsTeacher && group.getGroupId != GROUPLESS_GROUP_ID && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}">
             <div class="group__details-wrapper">
