@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (info.event.extendedProps.eventType === "daily-milestone") {
                     parent.parentElement.parentElement.parentElement.classList.add('milestonePlanner');
                     parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
-                                                data-placement="top" data-html="true"
+                                                data-placement="top" data-html=true 
                                                 title=${"'" + info.event.extendedProps.description + "'"} 
                                                 class="bi bi-trophy-fill"></i>`), parent.firstChild);
                 } else if (info.event.extendedProps.eventType === "daily-deadline") {

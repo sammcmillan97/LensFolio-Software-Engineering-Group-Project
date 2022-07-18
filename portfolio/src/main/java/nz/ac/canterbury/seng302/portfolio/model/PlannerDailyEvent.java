@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
+
 public class PlannerDailyEvent {
 
     public String Id;
@@ -32,4 +33,5 @@ public class PlannerDailyEvent {
     public void addDescription(String description) {
         this.description = this.description + description + "\n";
     }
+
 }
