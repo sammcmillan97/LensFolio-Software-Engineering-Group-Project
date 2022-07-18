@@ -28,9 +28,9 @@
                 </li>
                 <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
-                        <a th:href="@{projects}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">
+                        <a th:href="@{projectDetails-{id}(id=${currentProject.getId})}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/projectDetails') ? 'active':''}">
                             <span class="bi bi-kanban navigation_icon"></span>
-                            Projects
+                            Project
                         </a>
                     </h5>
                 </li>
@@ -45,10 +45,18 @@
                 <li class="site-navigation__item">
                   <h5 class="site-navigation__label">
                     <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">
-                      <span class="bi bi-user navigation_icon"> </span>
-                      List of Users
+                      <span class="bi bi-person-lines-fill navigation_icon"> </span>
+                      Users
                     </a>
                   </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">
+                            <span class="bi bi-chevron-down navigation_icon"> </span>
+                            Projects
+                        </a>
+                    </h5>
                 </li>
             </ul>
     </nav>

@@ -15,6 +15,7 @@ public class PortfolioUser {
     private int id;
     private int userId;
     private String userListSortType;
+    private int currentProject;
 
     private boolean isUserListSortAscending;
 
@@ -61,4 +62,7 @@ public class PortfolioUser {
         this.isUserListSortAscending = userListSortAscending;
     }
 
+    public void setCurrentProject(int projectId) {this.currentProject = projectId;}
+
+    public int getCurrentProject(int projectId) { return this.currentProject;}
 }
