@@ -1,8 +1,10 @@
-package nz.ac.canterbury.seng302.portfolio.util;
+package nz.ac.canterbury.seng302.portfolio.Util;
+
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ class PlannerUtilTest {
         PlannerDailyEvent event = eventMap.get("2022-01-01");
         Assertions.assertEquals("Test Event\n", event.description);
         Assertions.assertEquals("e2022-01-01", event.Id);
-        Assertions.assertEquals("event", event.classNames);
+        Assertions.assertEquals("daily-event", event.type);
         Assertions.assertEquals(1, event.numberOfEvents);
         Assertions.assertEquals(1, eventMap.get("2022-01-02").numberOfEvents);
         Assertions.assertEquals(1, eventMap.get("2022-01-03").numberOfEvents);
@@ -94,7 +96,7 @@ class PlannerUtilTest {
         Assertions.assertEquals("2022-01-01", deadline.date);
         Assertions.assertEquals("Test Deadline\n", deadline.description);
         Assertions.assertEquals(1, deadline.numberOfEvents);
-        Assertions.assertEquals("deadline", deadline.classNames);
+        Assertions.assertEquals("daily-deadline", deadline.type);
     }
 
     @Test
@@ -108,7 +110,7 @@ class PlannerUtilTest {
         Assertions.assertEquals(1, deadlineMap.size());
         Assertions.assertEquals("Test Deadline1\nTest Deadline2\n", deadline.description);
         Assertions.assertEquals(2, deadline.numberOfEvents);
-        Assertions.assertEquals("deadline", deadline.classNames);
+        Assertions.assertEquals("daily-deadline", deadline.type);
     }
 
 }
