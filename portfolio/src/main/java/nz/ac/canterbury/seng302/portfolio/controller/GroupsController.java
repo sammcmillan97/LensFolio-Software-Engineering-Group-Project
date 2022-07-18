@@ -152,7 +152,6 @@ public class GroupsController {
     private boolean userInGroup(int userId, int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
         for (User member : group.getMembers()) {
-            System.out.println(member.getId());
             if (member.getId() == userId) {
                 return true;
             }

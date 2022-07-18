@@ -118,8 +118,8 @@ function updateTable(groupId, content, selectedUserIds) {
             row.parentElement.className = "unselected"
         }
     }
+    currentTable = tableRows
     if (groupId !== GROUPLESS_GROUP_ID ) {
-        currentTable = tableRows
         if (selectedUserIds.length > 0) {
             removeButtonVisible(tableRows, true);
         } else if (tableRows.length > 0){
@@ -127,11 +127,14 @@ function updateTable(groupId, content, selectedUserIds) {
         }
     }
 
-    // Update the delete group button alert to have the correct number of members
-    const groupDeleteButton = document.getElementById(`group_${groupId}_delete_button`)
-    groupDeleteButton.onsubmit = () => {return confirm(`Are you sure you want to delete this group?\n` +
-                                                       `Doing so will remove ${numUsers} member(s) from the group.\n` +
-                                                       `This action cannot be undone.`)}
+    if (groupId >= 0) {
+        // Update the delete group button alert to have the correct number of members
+        const groupDeleteButton = document.getElementById(`group_${groupId}_delete_button`)
+        groupDeleteButton.onsubmit = () => {return confirm(`Are you sure you want to delete this group?\n` +
+                                                           `Doing so will remove ${numUsers} member(s) from the group.\n` +
+                                                           `This action cannot be undone.`)}
+    }
+
 
 }
 
@@ -142,10 +145,10 @@ function updateTable(groupId, content, selectedUserIds) {
  * Then sends a request to the server to add those users to the new group.
  * Then updates the new group so that it contains the new users.
  * If the old group is the "users without a group" group, then it fetches an updated version of that group
- * @param currRow the row that the selection was dropped on
+ * @param currGroup the group that the selection was dropped on
  */
-async function pasteMembers(currRow) {
-    let newTable = currRow.parentNode
+async function pasteMembers(currGroup) {
+    let newTable = currGroup.getElementsByTagName("tbody")[0]
     let oldGroupId = currentTable[0].parentNode.parentNode.id;
     let newGroupId = newTable.parentNode.id;
 
@@ -182,12 +185,10 @@ async function pasteMembers(currRow) {
         if (Number.parseInt(newGroupId, 10) === GROUPLESS_GROUP_ID) {
             for (let id of allGroupIds) {
                 if (id !== GROUPLESS_GROUP_ID) {
-                    updateTableById(id, [])
+                    await updateTableById(id, [])
                 }
             }
         }
-
-        updateTable(newGroupId, response, userIds)
 
         // If the old group was the groupless group, update that group
         // Only needs to be done for groupless as moving people from other groups
@@ -195,6 +196,10 @@ async function pasteMembers(currRow) {
         if (Number.parseInt(oldGroupId, 10) === GROUPLESS_GROUP_ID) {
             await updateTableById(GROUPLESS_GROUP_ID, userIds)
         }
+
+        updateTable(newGroupId, response, userIds)
+
+        expandGroup(currGroup);
 
 
     }
@@ -413,4 +418,13 @@ async function updateTableById(groupId, userIds) {
         return res.text()
     })
     updateTable(groupId, response, userIds)
+}
+
+/**
+ * Takes the group html element and makes it expanded
+ * @param group html element
+ */
+function expandGroup(group) {
+    group.getElementsByClassName("group__details collapse")[0].className = "group__details collapse show"
+    group.getElementsByClassName("group__name")[0].setAttribute("aria-expanded", "true")
 }
