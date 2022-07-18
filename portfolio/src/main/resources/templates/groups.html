@@ -6,12 +6,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
     <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
-    <script th:src="@{scripts/groups.js}"></script>
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/groups.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
     <script th:inline="javascript">
         const CONTEXT = [[${@environment.getProperty('PORTFOLIO_CONTEXT')}]];
+        const CURRENT_USER_ID = [[${user.getId}]];
+        const GROUPLESS_GROUP_ID = [[${GROUPLESS_GROUP_ID}]];
+        const TEACHER_GROUP_ID = [[${TEACHER_GROUP_ID}]];
+        const userIsTeacher = [[${userIsTeacher}]];
+        const userIsAdmin = [[${userIsAdmin}]];
+
+
     </script>
 </head>
 <body>
@@ -54,7 +60,7 @@
                 <!-- Edit and Delete Group Buttons - Only show if user is a teacher-->
                 <div class="group__button-wrapper flex-row" th:if="${userIsTeacher}">
 
-                    <button onclick="removeSelectedUsers(this)" th:id="'group_' + ${group.getGroupId} + '_remove_users_button'">Remove Selected Users</button>
+                    <button onclick="removeSelectedUsers(this)" hidden="hidden" th:class="'group_' + ${group.getGroupId} + '_remove_users_button'">Remove Selection</button>
                     <form th:action="@{editGroup-{id}(id=${group.getGroupId})}" th:method="get">
                         <button type="submit">Edit</button>
                     </form>
@@ -74,4 +80,5 @@
 
 
 </body>
+<script th:src="@{scripts/groups.js}"></script>
 </html>

@@ -82,6 +82,7 @@ function copyMembers(currRow) {
             }
         }
     }
+    removeButtonVisible(currentTable, true);
 }
 
 /**
@@ -97,11 +98,12 @@ function updateTable(groupId, content, selectedUserIds) {
     // Update the table
     const newGroupTable = document.getElementById(`group_${groupId}_members`)
     newGroupTable.innerHTML = content
+    let tableRows = newGroupTable.getElementsByClassName("user_id")
 
     // Select the new users
     let userId;
     let numUsers = 0;
-    for (let row of newGroupTable.getElementsByClassName("user_id")) {
+    for (let row of tableRows) {
         numUsers += 1
         userId = parseInt(row.innerText, 10)
         if (selectedUserIds.includes(userId) && row.id !== "no-hover") {
@@ -109,6 +111,11 @@ function updateTable(groupId, content, selectedUserIds) {
         } else {
             row.parentElement.className = "unselected"
         }
+    }
+    if (groupId !== GROUPLESS_GROUP_ID && selectedUserIds.length > 0) {
+        removeButtonVisible([tableRows[0].parentElement], true);
+    } else {
+        removeButtonVisible([tableRows[0].parentElement], false);
     }
 
     // Update the delete group button alert to have the correct number of members
@@ -146,7 +153,7 @@ async function pasteMembers(currRow) {
 
         // Build the url with parameters for the members to be added
         let url
-        url = new URL (`${CONTEXT}/group-${newGroupId}-addMembers`)
+        url = new URL (`${CONTEXT}/group-${newGroupId}-members`)
         for (let user of userIds) {
             url.searchParams.append("members", user)
         }
@@ -164,13 +171,7 @@ async function pasteMembers(currRow) {
         // Only needs to be done for groupless as moving people from other groups
         // doesn't remove them from the old group
         if (Number.parseInt(oldGroupId, 10) === -1) {
-            url = new URL(`${CONTEXT}/group-${oldGroupId}-membersTable`)
-            const response = await fetch(url, {
-                method: "GET"
-            }).then(res => {
-                return res.text()
-            })
-            updateTable(oldGroupId, response, userIds)
+            await updateTableById(GROUPLESS_GROUP_ID, userIds)
         }
     }
 }
@@ -185,11 +186,19 @@ function rowClick(currRow) {
     currentTable = currRow.parentNode.getElementsByTagName("tr")
     if (ctrlPressed) { // Toggle the clicked on row if Control is pressed
         toggleRow(currRow)
+        removeButtonVisible(currentTable, countSelectedRows(currentTable) !== 0);
     } else if (shiftPressed) { // Select all rows between (inclusive) the current and last clicked on rows
-        selectRowsBetween([lastRow.rowIndex, currRow.rowIndex])
+        // Just select the current row if no other rows have been clicked on
+        if (!lastRow) {
+            toggleRow(currRow)
+        } else {
+            selectRowsBetween([lastRow.rowIndex, currRow.rowIndex])
+        }
+        removeButtonVisible(currentTable, true);
     } else { // Otherwise, clear any other selected rows and mark the clicked on row
         clearTableSelection()
         toggleRow(currRow)
+        removeButtonVisible(currentTable, true);
     }
 }
 
@@ -228,6 +237,7 @@ function selectRows(rows) {
     for (let row of rows) {
         if (row.id !== "no-hover") {
             row.className = "selected"
+            removeButtonVisible(currentTable, true);
         }
     }
 }
@@ -239,6 +249,7 @@ function clearTableSelection() {
     for (let i = 0; i < currentTable.length; i++) {
         currentTable[i].className = 'unselected';
     }
+    removeButtonVisible(currentTable, false);
 }
 
 /**
@@ -250,6 +261,7 @@ function selectAllInTable() {
             currentTable[i].className = 'selected';
         }
     }
+    removeButtonVisible(currentTable, true);
 }
 
 /**
@@ -269,22 +281,125 @@ function clearAllTableSelections() {
             for (let i = 1; i < tableRows.length; i++) { // starts at 1 to skip header row
                 tableRows[i].className = 'unselected';
             }
+            removeButtonVisible(tableRows, false);
         }
     }
 }
 
-function removeSelectedUsers(button) {
+/**
+ * Checks that the user is doing a valid action, then prompts them for confirmation on whether they're sure
+ * they want to remove users from the group
+ * Then removes the selecte users from the group and updates both the current group and the groupless group
+ * @param button the button that was clicked on
+ */
+async function removeSelectedUsers(button) {
 
-    const selectedRows = button.parentNode.parentNode.getElementsByTagName("tr")
+    const groupId = button.parentNode.parentNode.getElementsByTagName("table")[0].id
+    const selectedRows = button.parentNode.parentNode.getElementsByClassName("selected")
 
-    // Fetch the user ids of the members to be added from the table
+    // Fetch the user ids of the members to be removed from the group
     let userIds = [];
     let userId;
     for (let element of selectedRows) {
-        console.log(element)
         userId = element.getElementsByClassName("user_id")[0].innerText;
         userIds.push(parseInt(userId, 10));
     }
 
-    console.log(userIds)
+    if (userIds.length === 0) {
+        alert("Error: Please select users to remove")
+        return
+    }
+    // Check that the user is allowed to remove group members
+    if (!userIsTeacher && !userIsAdmin) {
+        alert("Error: You do not have permission to remove group members.")
+        return
+
+    // Check that the user is not trying to remove members from the groupless group
+    } else if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID) {
+        alert("Error: You cannot remove members from the groupless group.")
+        return
+
+    // Check that the user isn't removing their own teaching role when they're not an admin
+    } else if (userIds.includes(CURRENT_USER_ID) && parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin)) {
+        alert("Error: You cannot remove your own teaching role.")
+        return
+    }
+
+    const removeConfirmation = confirm(`Are you sure you want to remove ${userIds.length} user(s) from the group?`)
+
+    if (removeConfirmation) {
+        // Build the url with parameters for the members to be removed
+        let url
+        url = new URL (`${CONTEXT}/group-${groupId}-members`)
+        for (let user of userIds) {
+            url.searchParams.append("members", user)
+        }
+        removeButtonVisible(selectedRows, false);
+        // Send a post request to update the groups members
+        // Receives the updated table HTML content as a response
+        const response = await fetch(url, {
+            method: "DELETE"
+        }).then(res => {
+            return res.text()
+        })
+
+        // Update the group table. Don't select any members
+        updateTable(groupId, response, [])
+
+        // Update the groupless group. Don't select any members
+        await updateTableById(GROUPLESS_GROUP_ID, [])
+
+    }
+}
+
+/**
+ * Changes the visibility of the remove button for the given table, depending
+ * on the "visible" parameter
+ * @param table The table to change the visibility of the remove button for
+ * @param visible Boolean value, whether the button should be visible
+ */
+function removeButtonVisible(table, visible) {
+    const groupId = table[0].parentNode.parentNode.id
+
+    // Don't do anything if it's the groupless group
+    if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID) {
+        return;
+    }
+
+    // Get the button object
+    const buttonObject = table[0].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByClassName(`group_${groupId}_remove_users_button`)[0]
+    // Change the visibility of the button
+    if (!visible) {
+        buttonObject.setAttribute("hidden", "hidden");
+    } else if (buttonObject.getAttribute("hidden")) {
+        buttonObject.removeAttribute("hidden");
+    }
+}
+
+
+/**
+ * Counts the number of selected rows in the given table
+ * @param table Table rows to search in
+ * @returns An integer number of rows with class 'selected'
+ */
+function countSelectedRows(table) {
+    return table[0].parentNode.getElementsByClassName("selected").length
+}
+
+
+/**
+ * Sends a get request to update the given table
+ * Selects the given user ids
+ * @param groupId Group to be updated
+ * @param userIds User ids to be selected
+ * @returns An updated group table in HTML form
+ */
+async function updateTableById(groupId, userIds) {
+    let url = new URL(`${CONTEXT}/group-${groupId}-members`)
+    const response = await fetch(url, {
+        method: "GET"
+    }).then(res => {
+        return res.text()
+    })
+    updateTable(groupId, response, userIds)
 }
