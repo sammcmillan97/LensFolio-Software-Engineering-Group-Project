@@ -193,6 +193,11 @@ public class UserAccountClientService {
         return roles.contains("teacher") || roles.contains("courseadministrator");
     }
 
+    public boolean isAdmin(AuthState principal) {
+        String roles = getRoles(principal);
+        return roles.contains("courseadministrator");
+    }
+
     /**
      * Add role to a user
      * @param userId of user being altered
