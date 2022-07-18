@@ -18,10 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class GroupsController {
@@ -54,7 +51,14 @@ public class GroupsController {
         List<Group> groups = groupListResponse.getGroups();
         groups.add(getTeacherGroup());
         groups.add(getGrouplessGroup());
+
+        List<Integer> allGroupIds = new ArrayList<>();
+        for (Group g : groups) {
+            allGroupIds.add(g.getGroupId());
+        }
+
         model.addAttribute("groups", groups);
+        model.addAttribute("allGroupIds", allGroupIds);
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userIsTeacher);
         model.addAttribute("userIsAdmin", userIsAdmin);
@@ -164,9 +168,9 @@ public class GroupsController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return An updated group table
      */
-    @PostMapping("/group-{groupId}-addMembers")
+    @PostMapping("/group-{groupId}-members")
     @ResponseStatus(HttpStatus.OK)
-    public String saveGroupEdits(@AuthenticationPrincipal AuthState principal,
+    public String addMembers(@AuthenticationPrincipal AuthState principal,
                                  @PathVariable("groupId") Integer groupId,
                                  @RequestParam(value="members") List<Integer> members,
                                  Model model) {
@@ -176,7 +180,7 @@ public class GroupsController {
         boolean userIsTeacher = userAccountClientService.isTeacher(principal);
         boolean userIsAdmin = userAccountClientService.isAdmin(principal);
 
-        Group group = new Group();
+        Group group;
         //Check if it is a teacher making the request
         if (!userIsTeacher) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
@@ -189,7 +193,22 @@ public class GroupsController {
                 }
             }
             group = getTeacherGroup();
-        } else if (groupId != -1) { // If not adding to groupless group
+        } else if (groupId == -1) {
+
+            // Remove each user from all their groups
+            for (int memberId : members) {
+                for (Group tempGroup : groupsClientService.getAllGroups().getGroups()) {
+                    if (userInGroup(memberId, tempGroup.getGroupId())) {
+                        groupsClientService.removeGroupMembers(tempGroup.getGroupId(), List.of(memberId));
+                    }
+                }
+                if (userAccountClientService.getUserAccountById(memberId).getRoles().contains(UserRole.TEACHER)) {
+                    userAccountClientService.removeRole(memberId, UserRole.TEACHER);
+                }
+            }
+            group = getGrouplessGroup();
+
+        } else { // Adding to a regular group
             // Figure out what users to add to the group
             List<Integer> usersToAdd = new ArrayList<>();
             for (int userId : members) {
@@ -200,7 +219,7 @@ public class GroupsController {
             }
 
             // Add the users to the group and fetch an updated group object
-            if (usersToAdd.size() > 0) {
+            if (!usersToAdd.isEmpty()) {
                 groupsClientService.addGroupMembers(groupId, usersToAdd);
             }
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
@@ -224,8 +243,8 @@ public class GroupsController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return An updated group table
      */
-    @GetMapping("group-{groupId}-membersTable")
-    public String getGroupTable(@AuthenticationPrincipal AuthState principal,
+    @GetMapping("group-{groupId}-members")
+    public String getMembers(@AuthenticationPrincipal AuthState principal,
                                 @PathVariable("groupId") Integer groupId,
                                 Model model) {
 
@@ -249,6 +268,66 @@ public class GroupsController {
         model.addAttribute("userIsAdmin", userIsAdmin);
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+        return "groupTable";
+    }
+
+    /**
+     * Takes a group id and a list of members, removes those members from the group,
+     * then returns an updated group table as HTML
+     * @param principal Authentication principal storing current user information
+     * @param groupId The group id to remove members from
+     * @param members A list of member ids to be removed from the group
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return An updated group table
+     */
+    @DeleteMapping("/group-{groupId}-members")
+    @ResponseStatus(HttpStatus.OK)
+    public String removeMembers(@AuthenticationPrincipal AuthState principal,
+                                 @PathVariable("groupId") Integer groupId,
+                                 @RequestParam(value="members") List<Integer> members,
+                                 Model model) {
+
+        int id = userAccountClientService.getUserId(principal);
+        User user = userAccountClientService.getUserAccountById(id);
+        boolean userIsTeacher = userAccountClientService.isTeacher(principal);
+        boolean userIsAdmin = userAccountClientService.isAdmin(principal);
+
+        Group group = new Group();
+        //Check if it is a teacher making the request
+        if (!userIsTeacher) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
+        } else if (groupId == -2) { // Remove from teacher group
+            for (int member : members) {
+                // Only remove the role if user is a teacher
+                if (userAccountClientService.getUserAccountById(member).getRoles().contains(UserRole.TEACHER)) {
+                    userAccountClientService.removeRole(member, UserRole.TEACHER);
+                }
+            }
+            group = getTeacherGroup();
+        } else if (groupId != -1) { // Not the groupless group
+            // Figure out what users to remove from the group
+            List<Integer> usersToRemove = new ArrayList<>();
+            for (int userId : members) {
+                // Only remove the user if they are in the group
+                if (userInGroup(userId, groupId)) {
+                    usersToRemove.add(userId);
+                }
+            }
+
+            // Remove the users from the group and fetch an updated group object
+            if (!usersToRemove.isEmpty()) {
+                groupsClientService.removeGroupMembers(groupId, usersToRemove);
+            }
+            group = new Group(groupsClientService.getGroupDetailsById(groupId));
+        }
+
+        model.addAttribute("group", group);
+        model.addAttribute("user", user);
+        model.addAttribute("userIsTeacher", userIsTeacher);
+        model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+
         return "groupTable";
     }
 
