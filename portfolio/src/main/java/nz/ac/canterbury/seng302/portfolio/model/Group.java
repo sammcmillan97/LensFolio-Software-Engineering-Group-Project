@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Group {
 
@@ -13,6 +12,19 @@ public class Group {
     private String longName;
     private int parentProject;
     private List<User> members = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return groupId == group.groupId && parentProject == group.parentProject && shortName.equals(group.shortName) && longName.equals(group.longName) && members.equals(group.members);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(groupId, shortName, longName, parentProject, members);
+    }
 
     /**
      * Create a group based on a GroupDetailsResponse from the identity provider.
@@ -28,8 +40,15 @@ public class Group {
         }
     }
 
-    public Group() {
+    public Group(int id, String shortname, String longname, int parentproject, List<User> listOfMembers){
+        groupId = id;
+        shortName = shortname;
+        longName = longname;
+        parentProject = parentproject;
+        members = listOfMembers;
+    }
 
+    public Group() {
     }
 
     public int getGroupId() {
@@ -65,18 +84,9 @@ public class Group {
     }
 
     public List<User> getMembers() {
+        Comparator<User> userComparator = Comparator.comparingInt(User::getId);
+        members.sort(userComparator);
         return members;
     }
 
-    public boolean equals(Object groupObject) {
-        if (groupObject == null) return false;
-        if (groupObject == this) return true;
-        if (!(groupObject instanceof Group group)) return false;
-        return this.groupId == group.groupId
-                && this.parentProject == group.parentProject
-                && this.shortName.equals(group.shortName)
-                && this.longName.equals(group.longName)
-                && this.members.equals(group.members);
-
-    }
 }

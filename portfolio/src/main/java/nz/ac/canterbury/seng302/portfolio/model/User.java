@@ -193,4 +193,9 @@ public class User {
                 && this.id == user.id;
 
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, firstName, middleName, lastName, nickname, bio, personalPronouns, email, roles, created, profileImagePath, id, userObject);
+    }
 }

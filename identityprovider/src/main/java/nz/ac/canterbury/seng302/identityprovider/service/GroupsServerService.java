@@ -348,6 +348,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                 userResponses.add(member.toUserResponse());
             }
             reply
+                    .setGroupId(groupId)
                     .setShortName(group.getShortName())
                     .setLongName(group.getLongName())
                     .addAllMembers(userResponses);
