@@ -60,7 +60,7 @@
                         </h5>
                         <div class="dropdown-content">
                             <h5 class="site-navigation__sublabel" th:each="project : ${allProjects}">
-                                <a class="site-navigation__sublink" th:href="@{planner}" th:text="${project.getName}"></a>
+                                <a th:href="@{setCurrentProject-{id}(id=${project.getId})}" th:text="${project.getName}"></a>
                             </h5>
                         </div>
                     </div>
@@ -70,9 +70,3 @@
 </body>
 
 </html>
-
-<!--                        <select name="projects" id="select-projects">
-                            <div th:each="project : ${allProjects}">
-                                <option th:value="${project.getName}"></option>
-                            </div>
-                        </select>-->

@@ -32,14 +32,18 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ModelAttribute("currentProject")
     public Project getCurrentProject(@AuthenticationPrincipal AuthState principal){
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int id;
+        try {
+            id = Integer.parseInt(principal.getClaimsList().stream()
+                    .filter(claim -> claim.getType().equals("nameid"))
+                    .findFirst()
+                    .map(ClaimDTO::getValue)
+                    .orElse("-100"));
 
-        PortfolioUser user = portfolioUserService.getUserById(id);
-        return portfolioUserService.getCurrentProject(user.getUserId());
+            PortfolioUser user = portfolioUserService.getUserById(id);
+            return portfolioUserService.getCurrentProject(user.getUserId());
+        } catch (Exception e) {
+            return projectService.getAllProjects().get(0);
+        }
     }
-
 }

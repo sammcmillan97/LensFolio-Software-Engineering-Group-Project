@@ -88,7 +88,8 @@ public class PortfolioUserService {
      */
     public Project getCurrentProject(int userId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
-        Project project = projectRepository.findById(portfolioUser.getCurrentProject());
+        int id = portfolioUser.getCurrentProject();
+        Project project = projectRepository.findById(id);
         if (project==null){
             return projectRepository.findAll().iterator().next();
         } else {
@@ -97,8 +98,17 @@ public class PortfolioUserService {
 
     }
 
-    public void setCurrentProject(int userId, int projectId){
+    /**
+     *
+     * @param userId
+     * @param projectId
+     */
+    public void setProject(int userId, int projectId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
+        if (portfolioUser==null) {
+            PortfolioUser portfolioUser1 = new PortfolioUser(userId);
+            repository.save(portfolioUser1);
+        }
         portfolioUser.setCurrentProject(projectId);
         repository.save(portfolioUser);
     }

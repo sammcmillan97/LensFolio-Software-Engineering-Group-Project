@@ -15,9 +15,8 @@ public class PortfolioUser {
     private int id;
     private int userId;
     private String userListSortType;
-    private int currentProject;
-
     private boolean isUserListSortAscending;
+    private int currentProject;
 
     /**
      * Create a portfolio user.
@@ -28,10 +27,15 @@ public class PortfolioUser {
         this.userId = userId;
         this.userListSortType = userListSortType;
         this.isUserListSortAscending = isUserListSortAscending;
+        this.currentProject = 1;
     }
 
     // Empty constructor is needed for JPA
     protected PortfolioUser() {
+    }
+
+    public PortfolioUser(int id){
+        this.userId = id;
     }
 
     public int getId() {
