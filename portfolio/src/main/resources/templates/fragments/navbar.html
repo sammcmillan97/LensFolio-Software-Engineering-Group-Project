@@ -60,7 +60,7 @@
                         </h5>
                         <div class="dropdown-content">
                             <h5 class="site-navigation__sublabel" th:each="project : ${allProjects}">
-                                <a class="site-navigation__sublink" rel="noopener" th:href="" th:text="${project.getName}"></a>
+                                <a class="site-navigation__sublink" th:href="@{planner}" th:text="${project.getName}"></a>
                             </h5>
                         </div>
                     </div>
