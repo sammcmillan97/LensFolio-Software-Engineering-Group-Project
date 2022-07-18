@@ -51,15 +51,28 @@
                   </h5>
                 </li>
                 <li class="site-navigation__item">
-                    <h5 class="site-navigation__label">
-                        <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">
-                            <span class="bi bi-chevron-down navigation_icon"> </span>
-                            Projects
-                        </a>
-                    </h5>
+                    <div class="dropdown">
+                        <h5 class="site-navigation__label">
+                            <a id="projects-button" class="site-navigation__link">
+                                <span class="bi bi-chevron-down navigation_icon"> </span>
+                                Projects
+                            </a>
+                        </h5>
+                        <div class="dropdown-content">
+                            <h5 class="site-navigation__sublabel" th:each="project : ${allProjects}">
+                                <a class="site-navigation__sublink" rel="noopener" th:href="" th:text="${project.getName}"></a>
+                            </h5>
+                        </div>
+                    </div>
                 </li>
             </ul>
     </nav>
 </body>
 
 </html>
+
+<!--                        <select name="projects" id="select-projects">
+                            <div th:each="project : ${allProjects}">
+                                <option th:value="${project.getName}"></option>
+                            </div>
+                        </select>-->

@@ -37,9 +37,7 @@
                 <p class="profile_body__content"><strong >Roles</strong><p><div id="role-button" th:each="role: ${user.roleStrings}" th:text="${role}"></div> </p> </p>
             </div>
 
-            <div th:each="project : ${allProjects}">
-                <h2 th:text="${project.getName}"></h2>
-            </div>
+
 
 
         </div>
