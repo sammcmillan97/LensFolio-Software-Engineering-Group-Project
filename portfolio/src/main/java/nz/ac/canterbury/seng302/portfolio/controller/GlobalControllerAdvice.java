@@ -43,7 +43,11 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
             PortfolioUser user = portfolioUserService.getUserById(id);
             return portfolioUserService.getCurrentProject(user.getUserId());
         } catch (Exception e) {
-            return projectService.getAllProjects().get(0);
+            if (projectService.getAllProjects().size()==0){
+                return new Project();
+            } else {
+                return projectService.getAllProjects().get(0);
+            }
         }
     }
 }
