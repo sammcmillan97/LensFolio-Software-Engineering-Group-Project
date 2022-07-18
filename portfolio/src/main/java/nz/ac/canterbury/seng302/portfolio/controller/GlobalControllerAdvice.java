@@ -1,7 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
@@ -18,10 +20,10 @@ import java.util.List;
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Autowired
-    UserAccountClientService userAccountClientService;
+    private ProjectService projectService;
 
     @Autowired
-    private ProjectService projectService;
+    private PortfolioUserService portfolioUserService;
 
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
@@ -29,8 +31,15 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ModelAttribute("currentProject")
-    public Project getCurrentProject(){
-        return projectService.getAllProjects().get(0);
+    public Project getCurrentProject(@AuthenticationPrincipal AuthState principal){
+        int id = Integer.parseInt(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
+
+        PortfolioUser user = portfolioUserService.getUserById(id);
+        return portfolioUserService.getCurrentProject(user.getUserId());
     }
 
 }

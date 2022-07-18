@@ -64,5 +64,5 @@ public class PortfolioUser {
 
     public void setCurrentProject(int projectId) {this.currentProject = projectId;}
 
-    public int getCurrentProject(int projectId) { return this.currentProject;}
+    public int getCurrentProject() { return this.currentProject;}
 }
