@@ -272,3 +272,19 @@ function clearAllTableSelections() {
         }
     }
 }
+
+function removeSelectedUsers(button) {
+
+    const selectedRows = button.parentNode.parentNode.getElementsByTagName("tr")
+
+    // Fetch the user ids of the members to be added from the table
+    let userIds = [];
+    let userId;
+    for (let element of selectedRows) {
+        console.log(element)
+        userId = element.getElementsByClassName("user_id")[0].innerText;
+        userIds.push(parseInt(userId, 10));
+    }
+
+    console.log(userIds)
+}
