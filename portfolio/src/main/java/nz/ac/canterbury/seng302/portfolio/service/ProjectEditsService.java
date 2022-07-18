@@ -104,9 +104,11 @@ public class ProjectEditsService {
     /**
      * Create a new project refresh. It is linked to a specific project.
      * It will time out after 5 seconds.
+     * It is necessary to remove any edits from the project as they are no longer relevant.
      * @param projectId The id of the project
      */
     public void refreshProject(int projectId) {
+        projectEditList.removeIf(edit -> edit.isFromProject(projectId));
         projectRefreshList.add(new ProjectRefresh(projectId));
     }
 

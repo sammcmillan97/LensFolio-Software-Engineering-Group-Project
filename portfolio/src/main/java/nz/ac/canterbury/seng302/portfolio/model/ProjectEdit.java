@@ -55,6 +55,15 @@ public class ProjectEdit {
     }
 
     /**
+     * Checks if an edit was made by on a specific project.
+     * @param projectId The id of the user
+     * @return True if edit was from this project
+     */
+    public boolean isFromProject(int projectId) {
+        return this.projectId == projectId;
+    }
+
+    /**
      * Simply return the edit string.
      * @return The string representing the edit
      */
