@@ -18,10 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class GroupsController {
@@ -54,7 +51,14 @@ public class GroupsController {
         List<Group> groups = groupListResponse.getGroups();
         groups.add(getTeacherGroup());
         groups.add(getGrouplessGroup());
+
+        List<Integer> allGroupIds = new ArrayList<>();
+        for (Group g : groups) {
+            allGroupIds.add(g.getGroupId());
+        }
+
         model.addAttribute("groups", groups);
+        model.addAttribute("allGroupIds", allGroupIds);
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userIsTeacher);
         model.addAttribute("userIsAdmin", userIsAdmin);
@@ -148,6 +152,7 @@ public class GroupsController {
     private boolean userInGroup(int userId, int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
         for (User member : group.getMembers()) {
+            System.out.println(member.getId());
             if (member.getId() == userId) {
                 return true;
             }
@@ -176,7 +181,7 @@ public class GroupsController {
         boolean userIsTeacher = userAccountClientService.isTeacher(principal);
         boolean userIsAdmin = userAccountClientService.isAdmin(principal);
 
-        Group group = new Group();
+        Group group;
         //Check if it is a teacher making the request
         if (!userIsTeacher) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
@@ -189,7 +194,22 @@ public class GroupsController {
                 }
             }
             group = getTeacherGroup();
-        } else if (groupId != -1) { // If not adding to groupless group
+        } else if (groupId == -1) {
+
+            // Remove each user from all their groups
+            for (int memberId : members) {
+                for (Group tempGroup : groupsClientService.getAllGroups().getGroups()) {
+                    if (userInGroup(memberId, tempGroup.getGroupId())) {
+                        groupsClientService.removeGroupMembers(tempGroup.getGroupId(), List.of(memberId));
+                    }
+                }
+                if (userAccountClientService.getUserAccountById(memberId).getRoles().contains(UserRole.TEACHER)) {
+                    userAccountClientService.removeRole(memberId, UserRole.TEACHER);
+                }
+            }
+            group = getGrouplessGroup();
+
+        } else { // Adding to a regular group
             // Figure out what users to add to the group
             List<Integer> usersToAdd = new ArrayList<>();
             for (int userId : members) {

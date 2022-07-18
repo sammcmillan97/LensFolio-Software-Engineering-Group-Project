@@ -177,14 +177,26 @@ async function pasteMembers(currRow) {
         }).then(res => {
             return res.text()
         })
+
+        // If adding to the groupless group, update all the tables and don't select anything in them
+        if (Number.parseInt(newGroupId, 10) === GROUPLESS_GROUP_ID) {
+            for (let id of allGroupIds) {
+                if (id !== GROUPLESS_GROUP_ID) {
+                    updateTableById(id, [])
+                }
+            }
+        }
+
         updateTable(newGroupId, response, userIds)
 
         // If the old group was the groupless group, update that group
         // Only needs to be done for groupless as moving people from other groups
         // doesn't remove them from the old group
-        if (Number.parseInt(oldGroupId, 10) === -1) {
+        if (Number.parseInt(oldGroupId, 10) === GROUPLESS_GROUP_ID) {
             await updateTableById(GROUPLESS_GROUP_ID, userIds)
         }
+
+
     }
 }
 

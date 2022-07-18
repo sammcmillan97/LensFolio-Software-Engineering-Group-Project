@@ -16,7 +16,7 @@
         const TEACHER_GROUP_ID = [[${TEACHER_GROUP_ID}]];
         const userIsTeacher = [[${userIsTeacher}]];
         const userIsAdmin = [[${userIsAdmin}]];
-
+        const allGroupIds = [[${allGroupIds}]];
 
     </script>
 </head>
@@ -29,7 +29,7 @@
     <h1>Groups Page</h1>
     <div class="flex-column">
 
-        <div class="group" th:each="group : *{groups}" th:with="tableDropable=${userIsTeacher && group.getGroupId != GROUPLESS_GROUP_ID && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}">
+        <div class="group" th:each="group : *{groups}" th:with="tableDropable=${userIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}">
             <div class="group__details-wrapper">
                 <h2 class="group__name" th:text="${group.getShortName} + ' - ' + ${group.getLongName}" type="button" data-bs-toggle="collapse" th:data-bs-target="'#group_' + ${group.getGroupId}" aria-expanded="false" th:aria-controls="group_ + ${group.getGroupId}"></h2>
                 <div class="group__details collapse" th:id="group_ + ${group.getGroupId}">
