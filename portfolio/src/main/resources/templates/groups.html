@@ -41,7 +41,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="member : ${group.getMembers}" th:with="rowDraggable=${(userIsTeacher && group.getGroupId != TEACHER_GROUP_ID) || userIsAdmin }" th:id="${!rowDraggable} ? 'no-hover' : ''" th:draggable="${rowDraggable}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:onmousedown="${rowDraggable} ? 'copyMembers(this)' : ''" th:onmouseup="${rowDraggable} ? 'rowClick(this)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''"  class="unselected">
+                                <tr th:each="member : ${group.getMembers}" th:with="rowDraggable=${userIsTeacher}" th:id="${!rowDraggable} ? 'no-hover' : ''" th:draggable="${rowDraggable}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:onmousedown="${rowDraggable} ? 'copyMembers(this)' : ''" th:onmouseup="${rowDraggable} ? 'rowClick(this)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''"  class="unselected">
                                     <th scope="row" class="user_id" th:text="${member.getId}"></th>
                                     <td th:text="${member.getFirstName}"></td>
                                     <td th:text="${member.getLastName}"></td>

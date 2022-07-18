@@ -41,7 +41,7 @@ public class GroupsController {
      * Get mapping to fetch groups page
      * @param principal Authentication principal storing current user information
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return The user or teacher groups html page depending on the logged in user
+     * @return The  groups html page
      */
     @GetMapping("/groups")
     public String groups(@AuthenticationPrincipal AuthState principal, Model model){
@@ -139,7 +139,13 @@ public class GroupsController {
         return user.getRoles().contains(UserRole.TEACHER);
     }
 
-    private boolean userInGroup(Integer userId, Integer groupId) {
+    /**
+     * Checks if the given user is in the given group
+     * @param userId User id of the user to check
+     * @param groupId Group id of the group to check
+     * @return A boolean, true if the user is in the group, false otherwise
+     */
+    private boolean userInGroup(int userId, int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
         for (User member : group.getMembers()) {
             if (member.getId() == userId) {
@@ -149,10 +155,19 @@ public class GroupsController {
         return false;
     }
 
-    @PostMapping("/groups/addMembers")
+    /**
+     * Takes a group id and a list of members, adds those members to the group,
+     * then returns an updated group table as HTML
+     * @param principal Authentication principal storing current user information
+     * @param groupId The group id to add members to
+     * @param members A list of member ids to be added to the group
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return An updated group table
+     */
+    @PostMapping("/group-{groupId}-addMembers")
     @ResponseStatus(HttpStatus.OK)
     public String saveGroupEdits(@AuthenticationPrincipal AuthState principal,
-                                 @RequestParam("groupId") Integer groupId,
+                                 @PathVariable("groupId") Integer groupId,
                                  @RequestParam(value="members") List<Integer> members,
                                  Model model) {
 
@@ -166,24 +181,28 @@ public class GroupsController {
         if (!userIsTeacher) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
         } else if (groupId == -2) { // Add to teacher group
+            // Give the users the teacher role
             for (int member : members) {
                 // Only add the role if user isn't already a teacher
                 if (!userAccountClientService.getUserAccountById(member).getRoles().contains(UserRole.TEACHER)) {
                     userAccountClientService.addRole(member, UserRole.TEACHER);
                 }
-
             }
             group = getTeacherGroup();
         } else if (groupId != -1) { // If not adding to groupless group
-
+            // Figure out what users to add to the group
             List<Integer> usersToAdd = new ArrayList<>();
             for (int userId : members) {
+                // Only add the user if they aren't already in the group
                 if (!userInGroup(userId, groupId)) {
                     usersToAdd.add(userId);
                 }
             }
 
-            groupsClientService.addGroupMembers(groupId, usersToAdd);
+            // Add the users to the group and fetch an updated group object
+            if (usersToAdd.size() > 0) {
+                groupsClientService.addGroupMembers(groupId, usersToAdd);
+            }
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
         }
 
@@ -197,7 +216,15 @@ public class GroupsController {
         return "groupTable";
     }
 
-    @GetMapping("group-{groupId}")
+    /**
+     * Takes a groupId and returns a group table as HTML
+     * Used to update the group tables on the groups page
+     * @param principal Authentication principal storing current user information
+     * @param groupId The group id to fetch
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return An updated group table
+     */
+    @GetMapping("group-{groupId}-membersTable")
     public String getGroupTable(@AuthenticationPrincipal AuthState principal,
                                 @PathVariable("groupId") Integer groupId,
                                 Model model) {
