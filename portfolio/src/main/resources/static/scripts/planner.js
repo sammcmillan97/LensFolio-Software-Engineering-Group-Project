@@ -279,6 +279,36 @@ function changeText(text) {
     moveChoiceTo(document.getElementById('text-change'), -1)
 }
 
+function checkResponse(data){
+    var jsondata = JSON.parse(data);
+    if (jsondata.refresh) {
+        window.location.reload();
+    }
+}
+
+function editPolling(){
+//This promise will resolve when the network call succeeds
+    var networkPromise = fetch('/projects-editStatus?id=' + projectId);
+
+//This promise will resolve when 2 seconds have passed
+    var timeOutPromise = new Promise(function(resolve, reject) {
+        setTimeout(resolve, 2000, 'Timeout Done');
+    });
+
+    networkPromise.then(response => response.text())
+        .then(data => checkResponse(data));
+
+    Promise.all(
+        [networkPromise, timeOutPromise]).then(function(values) {
+        editPolling();
+    });
+}
+
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+//dummy fetch so that if the user reloads the page manually it does not reload for them again automatically
+fetch('/projects-editStatus?id=' + projectId);
+setTimeout(function () {
+    editPolling();
+}, 1000);
