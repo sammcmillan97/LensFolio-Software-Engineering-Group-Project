@@ -7,6 +7,7 @@ public class PlannerDailyEvent {
     public String description;
     public int numberOfEvents;
     public String type;
+    public String classNames;
 
     public PlannerDailyEvent(String id, String date, String description, int numberOfEvents, String classNames) {
         this.Id = id;
