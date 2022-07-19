@@ -154,6 +154,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+/**
+ * Helper function to convert the FC events into event/deadline/milestones Icons
+ * @param htmlString
+ * @returns {ChildNode}
+ */
 function createElementFromHTML(htmlString) {
     let template = document.createElement('template');
     template.innerHTML = htmlString.trim();
@@ -210,6 +215,9 @@ function addSprintsToCalendar() {
     }
 }
 
+/**
+ * Adds Events/Deadlines/Milestones to the FC for adding icons
+ */
 function addEventsToCalendar() {
     for (let event of events) {
         calendar.addEvent(event)
@@ -279,6 +287,9 @@ function changeText(text) {
     moveChoiceTo(document.getElementById('text-change'), -1)
 }
 
+/**
+ *Used for live updating the planner, refreshes the page when a event/deadline/milestone has been added/edited
+ */
 function checkResponse(data){
     var jsondata = JSON.parse(data);
     if (jsondata.refresh) {
@@ -300,6 +311,9 @@ function checkResponse(data){
     }
 }
 
+/**
+ * Used in live updating for checking if the current project is being edited
+ */
 function editPolling(){
 //This promise will resolve when the network call succeeds
     var networkPromise = fetch('/projects-editStatus?id=' + projectId);
