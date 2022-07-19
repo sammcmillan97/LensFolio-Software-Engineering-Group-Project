@@ -30,13 +30,8 @@ public class EditUserController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
 
-        User user = userAccountClientService.getUserAccountById(id);
+        User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         return "editUser";
     }
@@ -68,11 +63,7 @@ public class EditUserController {
                            Model model) {
 
         //get userId using the Authentication Principle
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int id = userAccountClientService.getUserId(principal);
 
         //should add validation to ensure that other a user can only edit themselves (or possibly include admin privileges
 

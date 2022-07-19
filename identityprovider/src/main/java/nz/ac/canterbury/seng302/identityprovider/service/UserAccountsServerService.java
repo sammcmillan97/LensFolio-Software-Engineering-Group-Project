@@ -48,6 +48,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     @Value("${ENV}")
     private String env;
 
+    private static final String ALIAS_SORT = "alias";
+    private static final String ROLES_SORT = "roles";
+    private static final String USERNAME_SORT = "username";
+    private static final String NAME_SORT = "name";
+
     @Autowired
     private UserRepository repository;
 
@@ -55,10 +60,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Checks if the requesting user is authenticated.
      * @return True if the requesting user is authenticated
      */
-    private boolean isAuthenticated() {
+    protected boolean isAuthenticated() {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
+
 
     /**
      * Checks if the requesting user is authenticated as the claimed user.
@@ -118,13 +124,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
-            case ("name") -> //Compare method for ordering by name
+            case (NAME_SORT) -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case (USERNAME_FIELD) -> // Compare method for ordering by username
+            case (USERNAME_SORT) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
-            case ("alias") -> //compare method for ordering by alias
+            case (ALIAS_SORT) -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
-            case ("roles") -> //Compare method for ordering by roles
+            case (ROLES_SORT) -> //Compare method for ordering by roles
                     this::paginatedUsersRolesSort;
             default -> //Default compare method uses sort by name
                     this::paginatedUsersNameSort;
@@ -471,6 +477,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
+     * Method to get UserById
+     * So outside services can access users the user service
+     * @param userId The userId
+     * @return The User being returned
+     */
+    @VisibleForTesting
+    public User getUserById(int userId) {
+        return repository.findByUserId(userId);
+    }
+
+    /**
      * If the user is authenticated as any valid user, attempt to get the information of the requested user
      * @param request The request to get the user's information
      * @param responseObserver The observer to send the response over
@@ -494,9 +511,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param request A get user by id request according to user_accounts.proto
      * @return A user response according to user_accounts.proto
      */
-    @VisibleForTesting
-    UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
-        UserResponse.Builder reply = UserResponse.newBuilder();
+    public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
+        UserResponse reply;
 
         if (repository.existsById(request.getId())) {
             User user = repository.findByUserId(request.getId());
@@ -516,8 +532,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             } else {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
+            reply = user.toUserResponse();
+        } else {
+            reply = UserResponse.newBuilder().build();
         }
-        return reply.build();
+        return reply;
     }
 
     /**
@@ -1012,6 +1031,19 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             return null;
         }
 
+    /**
+     * Checks if the user has the teacher or course administrator role
+     * @return true if it meets the required conditions or else false
+     */
+    protected boolean isTeacher() {
+        User user = repository.findByUserId(getAuthStateUserId());
+        Set<UserRole> roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == UserRole.TEACHER || userRole == UserRole.COURSE_ADMINISTRATOR) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

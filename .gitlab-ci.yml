@@ -61,7 +61,7 @@ deploy-staging-identityprovider:
     - cp ../runner/staging-identityprovider.sh /home/gitlab-runner/staging-identityprovider.sh
     - chmod u+x /home/gitlab-runner/staging-identityprovider.sh
     - touch /home/gitlab-runner/staging-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD \nIMAGE_FOLDER=$STAGING_IMAGE_FOLDER" > /home/gitlab-runner/staging-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_IDENTITY_URL \nDATABASE_USERNAME=$DB_STAGING_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_IDENTITY_PASSWORD \nIMAGE_FOLDER=$STAGING_IMAGE_FOLDER \nIDENTITY_CONTEXT=$STAGING_IDENTITY_CONTEXT"> /home/gitlab-runner/staging-identityprovider/.env
     - sudo systemctl restart staging-identityprovider
   artifacts:
     paths:
@@ -83,7 +83,7 @@ deploy-staging-portfolio:
     - cp ../runner/staging-portfolio.sh /home/gitlab-runner/staging-portfolio.sh
     - chmod u+x /home/gitlab-runner/staging-portfolio.sh
     - touch /home/gitlab-runner/staging-portfolio/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_STAGING_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_PORTFOLIO_PASSWORD" > /home/gitlab-runner/staging-portfolio/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_STAGING_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_STAGING_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_STAGING_PORTFOLIO_PASSWORD \nPORTFOLIO_CONTEXT=$STAGING_PORTFOLIO_CONTEXT" > /home/gitlab-runner/staging-portfolio/.env
     - sudo systemctl restart staging-portfolio
   artifacts:
     paths:
@@ -106,7 +106,7 @@ deploy-production-identityprovider:
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
     - touch /home/gitlab-runner/production-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER" > /home/gitlab-runner/production-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER \nIDENTITY_CONTEXT=$PRODUCTION_IDENTITY_CONTEXT"> /home/gitlab-runner/production-identityprovider/.env
     - sudo systemctl restart production-identityprovider
   artifacts:
     paths:
@@ -129,7 +129,7 @@ deploy-production-portfolio:
     - cp ../runner/production-portfolio.sh /home/gitlab-runner/production-portfolio.sh
     - chmod u+x /home/gitlab-runner/production-portfolio.sh
     - touch /home/gitlab-runner/production-portfolio/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_PRODUCTION_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_PORTFOLIO_PASSWORD" > /home/gitlab-runner/production-portfolio/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_PORTFOLIO_URL \nDATABASE_USERNAME=$DB_PRODUCTION_PORTFOLIO_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_PORTFOLIO_PASSWORD \nPORTFOLIO_CONTEXT=$PRODUCTION_PORTFOLIO_CONTEXT" > /home/gitlab-runner/production-portfolio/.env
     - sudo systemctl restart production-portfolio
   artifacts:
     paths:

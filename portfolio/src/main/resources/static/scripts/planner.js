@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //allow resizing of start/end date
         eventResizableFromStart: true,
         eventResizableFromEnd: true,
+        contentHeight: "auto",
 
         eventOverlap: function( stillEvent, movingEvent) {
             return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && stillEvent.extendedProps.name !== 'Project';

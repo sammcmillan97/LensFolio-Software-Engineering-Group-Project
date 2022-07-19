@@ -51,6 +51,14 @@
                   </h5>
                 </li>
                 <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{groups}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'groups') ? 'active':''}">
+                            <span class="bi bi-people navigation_icon"> </span>
+                            Groups
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
                     <div class="dropdown">
                         <h5 class="site-navigation__label">
                             <a id="projects-button" th:href="@{projects}" class="site-navigation__link">

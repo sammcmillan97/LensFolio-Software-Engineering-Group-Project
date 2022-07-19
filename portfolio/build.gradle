@@ -65,6 +65,8 @@ dependencies {
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
     testImplementation "org.junit.vintage:junit-vintage-engine:${junitVersion}"
 
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
+
     // https://mvnrepository.com/artifact/org.webjars/bootstrap
     implementation group: 'org.webjars', name: 'bootstrap', version: '5.1.3'
 
