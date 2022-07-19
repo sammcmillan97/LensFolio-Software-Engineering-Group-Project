@@ -511,7 +511,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return A user response according to user_accounts.proto
      */
     public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
-        UserResponse reply;
+        UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
             User user = repository.findByUserId(request.getId());
@@ -532,7 +532,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
         }
-        return reply;
+        return reply.build();
     }
 
     /**
