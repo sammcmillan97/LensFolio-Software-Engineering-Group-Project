@@ -36,7 +36,7 @@
                 </li>
                 <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
-                        <a th:href="@{planner}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
+                        <a th:href="@{planner-{id}(id=${currentProject.getId})}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
                             <span class="bi bi-calendar navigation_icon"> </span>
                             Planner
                         </a>
