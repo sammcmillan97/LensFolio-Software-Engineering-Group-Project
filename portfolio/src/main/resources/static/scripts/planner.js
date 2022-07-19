@@ -282,7 +282,21 @@ function changeText(text) {
 function checkResponse(data){
     var jsondata = JSON.parse(data);
     if (jsondata.refresh) {
-        window.location.reload();
+        //Refresh the calendar, uses a form in order to refresh while preserving the user's position on the calendar
+        let form = document.createElement('form');
+
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', `reload-planner-${projectId}`);
+
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', calendar.getDate());
+        form.appendChild(pagDate);
+
+        //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
