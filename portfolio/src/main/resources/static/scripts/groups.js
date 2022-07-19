@@ -154,10 +154,7 @@ async function pasteMembers(currGroup) {
 
     // Only paste the users if it's not the same group
     if (oldGroupId !== newGroupId) {
-        clearTableSelection(currentTable)
-        lastRow = null
         const teacherIds = getTeacherIds()
-
 
         // Fetch the user ids of the members to be added from the table
         let userIds = [];
@@ -181,6 +178,9 @@ async function pasteMembers(currGroup) {
                 return;
             }
         }
+
+        clearTableSelection(currentTable)
+        lastRow = null
 
         // Build the url with parameters for the members to be added
         let url
