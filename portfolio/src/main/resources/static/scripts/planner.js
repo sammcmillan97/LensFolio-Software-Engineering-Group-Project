@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
         //true when user is TEACHER or ADMIN
-        editable: (isAdmin()),
+        //editable: (isAdmin()),
         //disallow dragging entire event
         eventStartEditable: false,
         // lazyFetching: false,
         // showNonCurrentDates: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
-        eventResizableFromEnd: true,
+        // eventResizableFromEnd: true,
 
         eventOverlap: function( stillEvent, movingEvent) {
             return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
@@ -110,6 +110,70 @@ document.addEventListener('DOMContentLoaded', function() {
             resizeSprint( eventDropInfo );
         },
 
+        eventMouseEnter: function( info ) {
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+                return;
+            }
+
+            $(".fc-event").css("cursor", "pointer");
+
+            if (!info.event.extendedProps.selected) {
+                info.event.setExtendedProp("oldBackground", info.event.backgroundColor);
+                info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
+            }
+        },
+
+        eventMouseLeave: function( info ) {
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+            return;
+            }
+            $(".fc-event").css("cursor", "default");
+            if (!info.event.extendedProps.selected) {
+                info.event.setProp("backgroundColor", info.event.extendedProps.oldBackground);
+            }
+        },
+
+        eventClick: function (info) {
+
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+                return;
+            }
+
+            //let events = info.view.calendar.getEvents();
+
+            if (!info.event.extendedProps.selected) {
+                // // Deselects all events
+                // for (calEvent of events) {
+                //     if (calEvent.extendedProps.isSprint) {
+                //         calEvent.setExtendedProp("selected", false);
+                //         calEvent.setProp("durationEditable", false);
+                //         calEvent.setProp("backgroundColor", calEvent.extendedProps.defaultColor);
+                //         calEvent.setProp("borderColor", '#13CEE2');
+                //         $(".fc-event").css("border-right", "solid 0px #13CEE2");
+                //         $(".fc-event").css("border-left", "solid 0px #13CEE2");
+                //     }
+                // }
+
+                // Selects this event
+                info.event.setExtendedProp("selected", true);
+                info.event.setProp("durationEditable", true);
+                //info.event.setExtendedProp("oldBackground", info.event.backgroundColor);
+                info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
+                //info.event.setProp("borderColor", '#c2080b');
+                // $(".fc-event-resizer-start").parent().css("border-left", "solid 5px red");
+                // $(".fc-event-resizer-end").parent().css("border-right", "solid 5px red");
+
+            } else {
+                // Deselects this event
+                info.event.setExtendedProp("selected", false);
+                info.event.setProp("durationEditable", false);
+                info.event.setProp("backgroundColor", info.event.extendedProps.oldBackground);
+                //info.event.setProp("borderColor", '#13CEE2');
+                // $(".fc-event").css("border-right", "solid 0px #13CEE2");
+                // $(".fc-event").css("border-left", "solid 0px #13CEE2");
+            }
+        },
+
         eventDidMount: function (info) {
             console.log("Here: " + info.event.extendedProps.eventType)
             info.event.setProp("textColor", "black");
@@ -118,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 parent.style.display = 'flex';
                 parent.style.justifyContent = 'flex-start';
                 parent.style.alignItems = 'center';
+                //info.event.setProp("editable", false);
                 if (info.event.extendedProps.eventType === "daily-milestone") {
                     parent.parentElement.parentElement.parentElement.classList.add('milestonePlanner');
                     parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
@@ -158,6 +223,33 @@ function createElementFromHTML(htmlString) {
     let template = document.createElement('template');
     template.innerHTML = htmlString.trim();
     return template.content.firstChild;
+}
+
+/**
+ * Pulled from Craig Buckler's post. https://www.sitepoint.com/javascript-generate-lighter-darker-color/
+ * Adapted slightly to account for deprecated javascript.
+ * @param hex
+ * @param lum
+ * @returns {string}
+ */
+function colorLuminance(hex, lum) {
+
+    // validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+    if (hex.length < 6) {
+        hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    }
+    lum = lum || 0;
+
+    // convert to decimal and change luminosity
+    let rgb = "#", c, i;
+    for (i = 0; i < 3; i++) {
+        c = parseInt(hex.substring(i*2,i*2+2), 16);
+        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+        rgb += ("00"+c).substring(c.length);
+    }
+
+    return rgb;
 }
 
 /**
