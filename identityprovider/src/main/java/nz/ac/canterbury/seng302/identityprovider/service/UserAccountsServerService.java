@@ -39,7 +39,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
     private static final String IMAGE_FOLDER = "profile-images/";
 
-    @Value("${CONTEXT}")
+    @Value("${IDENTITY_CONTEXT}")
     private String context;
 
     @Value("${IMAGE_SRC}")
@@ -512,7 +512,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @return A user response according to user_accounts.proto
      */
     public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
-        UserResponse reply;
+        UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
             User user = repository.findByUserId(request.getId());
@@ -528,15 +528,12 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + "ProfilePicture-" + user.getProfileImagePath());
+                reply.setProfileImagePath(context + "/ProfilePicture-" + user.getProfileImagePath());
             } else {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
-            reply = user.toUserResponse();
-        } else {
-            reply = UserResponse.newBuilder().build();
         }
-        return reply;
+        return reply.build();
     }
 
     /**
@@ -1019,7 +1016,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return hasOneRole;
     }
 
-    public byte[] getProfilePicture(String filename){
+    public byte[] getProfilePicture(String filename) {
         try {
             File currentDirFile = new File(".");
             String helper = currentDirFile.getAbsolutePath();
@@ -1030,6 +1027,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } catch (Exception e) {
             return null;
         }
+    }
 
     /**
      * Checks if the user has the teacher or course administrator role
