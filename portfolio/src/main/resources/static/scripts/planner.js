@@ -191,24 +191,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (info.event.extendedProps.eventType === "daily-milestone") {
                 parent.parentElement.parentElement.parentElement.classList.add('milestonePlannerGrid');
                 parent.parentElement.parentElement.classList.add('milestonePlanner');
-                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
-                                            data-placement="top" data-html=true 
-                                            title=${"'" + info.event.extendedProps.description + "'"} 
-                                            class="bi bi-trophy-fill"></i>`), parent.firstChild);
+                let node = createElementFromHTML(`<i data-toggle="tooltip"
+                                            data-placement="top" data-html=true
+                                            class="bi bi-trophy-fill"></i>`);
+                node.title = info.event.extendedProps.description
+                parent.insertBefore(node, parent.firstChild);
             } else if (info.event.extendedProps.eventType === "daily-deadline") {
                 parent.parentElement.parentElement.parentElement.classList.add('deadlinePlannerGrid');
                 parent.parentElement.parentElement.classList.add('deadlinePlanner');
-                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
+                let node = createElementFromHTML(`<i data-toggle="tooltip" 
                                             data-placement="top" data-html="true"
-                                            title=${"'" + info.event.extendedProps.description + "'"} 
-                                            class="bi bi-alarm-fill"></i>`), parent.firstChild);
+                                            class="bi bi-alarm-fill"></i>`);
+                node.title = info.event.extendedProps.description
+                parent.insertBefore(node, parent.firstChild);
             } else if (info.event.extendedProps.eventType === "daily-event") {
                 parent.parentElement.parentElement.parentElement.classList.add('eventPlannerGrid');
                 parent.parentElement.parentElement.classList.add('eventPlanner');
-                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
-                                            data-placement="top" data-html="true"
-                                            title=${"'" + info.event.extendedProps.description + "'"} 
-                                            class="bi bi-calendar-event-fill"></i>`), parent.firstChild);
+                let node = createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true" 
+                                            class="bi bi-calendar-event-fill"></i>`);
+                node.title = info.event.extendedProps.description
+                parent.insertBefore(node, parent.firstChild);
             }
         },
     });
@@ -240,14 +243,12 @@ function createElementFromHTML(htmlString) {
  * @returns {string}
  */
 function colorLuminance(hex, lum) {
-
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');
     if (hex.length < 6) {
         hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
     }
     lum = lum || 0;
-
     // convert to decimal and change luminosity
     let rgb = "#", c, i;
     for (i = 0; i < 3; i++) {
@@ -255,7 +256,6 @@ function colorLuminance(hex, lum) {
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
         rgb += ("00"+c).substring(c.length);
     }
-
     return rgb;
 }
 
