@@ -43,7 +43,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String USERNAME_SORT = "username";
     private static final String NAME_SORT = "name";
 
-    @Value("${CONTEXT}")
+    @Value("${IDENTITY_CONTEXT}")
     private String context;
 
     @Value("${IMAGE_SRC}")
@@ -527,7 +527,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath(context + "ProfilePicture-" + user.getProfileImagePath());
+                reply.setProfileImagePath(context + "/ProfilePicture-" + user.getProfileImagePath());
             } else {
                 reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
@@ -1015,7 +1015,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         return hasOneRole;
     }
 
-    public byte[] getProfilePicture(String filename){
+    public byte[] getProfilePicture(String filename) {
         try {
             File currentDirFile = new File(".");
             String helper = currentDirFile.getAbsolutePath();
