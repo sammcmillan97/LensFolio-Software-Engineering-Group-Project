@@ -177,31 +177,38 @@ document.addEventListener('DOMContentLoaded', function() {
         eventDidMount: function (info) {
             console.log("Here: " + info.event.extendedProps.eventType)
             info.event.setProp("textColor", "black");
-            if (info.event.extendedProps.eventType) {
-                let parent = info.el.querySelector(".fc-event-title").parentElement;
-                parent.style.display = 'flex';
-                parent.style.justifyContent = 'flex-start';
-                parent.style.alignItems = 'center';
-                //info.event.setProp("editable", false);
-                if (info.event.extendedProps.eventType === "daily-milestone") {
-                    parent.parentElement.parentElement.parentElement.classList.add('milestonePlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
-                                                data-placement="top" data-html=true 
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-trophy-fill"></i>`), parent.firstChild);
-                } else if (info.event.extendedProps.eventType === "daily-deadline") {
-                    parent.parentElement.parentElement.parentElement.classList.add('deadlinePlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
-                                                data-placement="top" data-html="true"
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-alarm-fill"></i>`), parent.firstChild);
-                } else if (info.event.extendedProps.eventType === "daily-event") {
-                    parent.parentElement.parentElement.parentElement.classList.add('eventPlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
-                                                data-placement="top" data-html="true"
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-calendar-event-fill"></i>`), parent.firstChild);
-                }
+            if (info.event.extendedProps.eventType === 'Sprint' || !info.event.extendedProps.eventType) {
+                return;
+            }
+            let parent = info.el.querySelector(".fc-event-title").parentElement;
+            parent.style.display = 'flex';
+            parent.style.justifyContent = 'flex-start';
+            parent.style.alignItems = 'center';
+            parent.parentElement.parentElement.parentElement.style.border = '0';
+            parent.parentElement.parentElement.parentElement.style.backgroundColor = 'transparent';
+            parent.parentElement.parentElement.parentElement.style.position = 'absolute';
+            //info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
+            if (info.event.extendedProps.eventType === "daily-milestone") {
+                parent.parentElement.parentElement.parentElement.classList.add('milestonePlannerGrid');
+                parent.parentElement.parentElement.classList.add('milestonePlanner');
+                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
+                                            data-placement="top" data-html=true 
+                                            title=${"'" + info.event.extendedProps.description + "'"} 
+                                            class="bi bi-trophy-fill"></i>`), parent.firstChild);
+            } else if (info.event.extendedProps.eventType === "daily-deadline") {
+                parent.parentElement.parentElement.parentElement.classList.add('deadlinePlannerGrid');
+                parent.parentElement.parentElement.classList.add('deadlinePlanner');
+                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true"
+                                            title=${"'" + info.event.extendedProps.description + "'"} 
+                                            class="bi bi-alarm-fill"></i>`), parent.firstChild);
+            } else if (info.event.extendedProps.eventType === "daily-event") {
+                parent.parentElement.parentElement.parentElement.classList.add('eventPlannerGrid');
+                parent.parentElement.parentElement.classList.add('eventPlanner');
+                parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true"
+                                            title=${"'" + info.event.extendedProps.description + "'"} 
+                                            class="bi bi-calendar-event-fill"></i>`), parent.firstChild);
             }
         },
     });

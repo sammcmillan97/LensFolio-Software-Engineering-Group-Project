@@ -22,24 +22,26 @@
     white-space: pre-line;
 }
 
-.milestonePlanner, .deadlinePlanner, .eventPlanner {
-    background: white;
-    border-color: white;
-    position: relative;
-    width: 30px;
-    height: 18px;
-    line-height: 17px;
-    left: 0;
+.milestonePlannerGrid, .deadlinePlannerGrid, .eventPlannerGrid {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    bottom: -20px;
 }
 
-/*.milestonePlanner {*/
-/*    bottom: -44px;*/
-/*}*/
+.milestonePlanner, .deadlinePlanner, .eventPlanner {
+    background: transparent;
+    position: absolute;
+}
 
-/*.deadlinePlanner {*/
-/*    bottom: -61.5px;*/
-/*}*/
+.deadlinePlannerGrid{
+    bottom: -60px;
+}
 
-/*.eventPlanner {*/
-/*    bottom: -77px;*/
-/*}*/
+.eventPlannerGrid {
+    bottom: -80px;
+}
+
+.milestonePlannerGrid {
+    bottom: -100px;
+}
