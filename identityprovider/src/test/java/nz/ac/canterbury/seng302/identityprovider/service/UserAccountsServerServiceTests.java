@@ -534,7 +534,9 @@ class UserAccountsServerServiceTests {
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        assertEquals("resources/" + testPath, response.getProfileImagePath());
+        System.out.println("resources/" + testPath);
+        System.out.println(response.getProfileImagePath());
+        assertEquals("http://localhost:8080/ProfilePicture-" + testPath, response.getProfileImagePath());
     }
 
 
