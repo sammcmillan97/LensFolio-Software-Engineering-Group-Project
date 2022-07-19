@@ -43,6 +43,14 @@
                     </h5>
                 </li>
                 <li class="site-navigation__item">
+                  <h5 class="site-navigation__label">
+                    <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">
+                      <span class="bi bi-user navigation_icon"> </span>
+                      List of Users
+                    </a>
+                  </h5>
+                </li>
+                <li class="site-navigation__item">
                     <h5 class="site-navigation__label">
                         <a th:href="@{groups}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'groups') ? 'active':''}">
                             <span class="bi bi-people navigation_icon"> </span>

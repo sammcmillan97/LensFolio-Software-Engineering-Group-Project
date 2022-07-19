@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit Milestone</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/addEditImportantDate.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div id="projectId" style="display: none;" th:text="${projectId}"></div>
+  <div id="nameOfEdited" style="display: none;" th:text="${milestoneName}"></div>
+    <div id="form__wrapper">
+
+        <header class="form__header flex-column">
+            <div th:if="${milestoneId == '-1'}">
+                <h1> Create new Milestone</h1>
+            </div>
+            <div th:if="${milestoneId != '-1'}">
+                <h1 th:text="'Editing: ' + ${milestone.milestoneName}"></h1>
+            </div>
+        </header>
+
+        <!-- Add/Edit Milestone Form -->
+        <form id="form__body" class="flex-column" th:action="@{editMilestone-{milestone}-{project}(project=${parentProjectId}, milestone=${milestoneId})}" th:method="post">
+            <label for="form__name-field">Name *</label>
+            <input type="text" id="form__name-field" class="edit-input" name="milestoneName" maxlength="30" placeholder="Milestone name" th:value="${milestone.milestoneName}" required onkeyup="countCharacters()">
+            <span id="char_count">30/30 characters remain</span>
+
+            <label for="form__date-field">Date *</label>
+            <input type="date" id="form__date-field" class="edit-input" name="milestoneDate" th:placeholder="${milestoneDate}" th:value="${milestoneDate}" th:min="${minMilestoneDate}" th:max="${maxMilestoneDate}" required>
+            <button type="submit" class="form__button">Save Changes</button>
+            <a class="form__button" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
+        </form>
+    </div>
+</div>
+<script rel="script" th:src="@{scripts/addEditDeadlines.js}"></script>
+<script rel="script" th:src="@{scripts/sendProjectEditNotifications.js}"></script>
+</body>
+</html>

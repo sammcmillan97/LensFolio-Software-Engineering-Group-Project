@@ -12,8 +12,11 @@ import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StreamUtils;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,10 +37,20 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+    private static final String IMAGE_FOLDER = "profile-images/";
     private static final String ALIAS_SORT = "alias";
     private static final String ROLES_SORT = "roles";
     private static final String USERNAME_SORT = "username";
     private static final String NAME_SORT = "name";
+
+    @Value("${CONTEXT}")
+    private String context;
+
+    @Value("${IMAGE_SRC}")
+    private String imageSrc;
+
+    @Value("${ENV}")
+    private String env;
 
     @Autowired
     private UserRepository repository;
@@ -231,20 +244,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     }
                 } else {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
-
                     try {
                         output.write(fileContent);
                         output.write(request.getFileContent().toByteArray());
                     } catch (IOException e) {
                         responseObserver.onError(e);
                     }
-
                     fileContent = output.toByteArray();
                 }
                 FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                         .setStatus(FileUploadStatus.IN_PROGRESS).setMessage("In progress").build();
                 responseObserver.onNext(response);
-
             }
 
             @Override
@@ -254,19 +264,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 } else {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
-
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+                            File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
-                        user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
-                        String filepath = "src/main/resources/" + user.getProfileImagePath();
+
+                        user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
+                        repository.save(user);
+
+                        String filepath = imageSrc + env + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
-                        try (OutputStream os = new FileOutputStream(file)) {
+
+                        try {
+                            OutputStream os = new FileOutputStream(file);
                             os.write(fileContent);
-                            repository.save(user);
                             FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                     .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
                             responseObserver.onNext(response);
@@ -278,10 +291,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         //not authenticated as user, illegal action
                         responseObserver.onError(new IllegalStateException());
                     }
-
                 }
             }
-
             @Override
             public void onError(Throwable throwableError) {
                 // Client should never throw an error, so server does not need to handle them.
@@ -320,12 +331,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
-            if (oldPhoto.delete()) {
-                user.setProfileImagePath(null);
-                repository.save(user);
-                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-            } else {
+            try {
+                File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
+                boolean success = oldPhoto.delete();
+                if (success) {
+                    user.setProfileImagePath(null);
+                    repository.save(user);
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+                } else {
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
+                }
+            } catch (Exception e) {
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
@@ -499,9 +515,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
         if (repository.existsById(request.getId())) {
             User user = repository.findByUserId(request.getId());
-            reply = user.toUserResponse();
-        } else {
-            reply = UserResponse.newBuilder().build();
+            reply.setUsername(user.getUsername())
+                    .setFirstName(user.getFirstName())
+                    .setMiddleName(user.getMiddleName())
+                    .setLastName(user.getLastName())
+                    .setNickname(user.getNickname())
+                    .setBio(user.getBio())
+                    .setPersonalPronouns(user.getPersonalPronouns())
+                    .setEmail(user.getEmail())
+                    .setCreated(user.getTimeCreated())
+                    .setId(user.getUserId())
+                    .addAllRoles(user.getRoles());
+            if (user.getProfileImagePath() != null) {
+                reply.setProfileImagePath(context + "ProfilePicture-" + user.getProfileImagePath());
+            } else {
+                reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
+            }
         }
         return reply;
     }
@@ -984,6 +1013,20 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             hasOneRole = true;
         }
         return hasOneRole;
+    }
+
+    public byte[] getProfilePicture(String filename){
+        try {
+            File currentDirFile = new File(".");
+            String helper = currentDirFile.getAbsolutePath();
+            helper = helper.substring(0, helper.length() - 1);
+            Path photoRelPath = Path.of(helper + "profile-images/" + env + filename);
+            InputStream inputStream = new FileInputStream(photoRelPath.toFile());
+            return StreamUtils.copyToByteArray(inputStream);
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     /**

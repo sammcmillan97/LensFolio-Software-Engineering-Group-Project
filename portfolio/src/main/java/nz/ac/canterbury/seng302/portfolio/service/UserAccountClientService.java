@@ -112,6 +112,7 @@ public class UserAccountClientService {
         return userStub.changeUserPassword(changePasswordRequest);
     }
 
+
     public EditUserResponse editUser(final int userId, final String firstName, final String middleName,
                                      final String lastName, final String nickname, final String bio,
                                      final String personalPronouns, final String email)  {

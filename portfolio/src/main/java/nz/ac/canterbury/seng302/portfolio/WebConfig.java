@@ -14,6 +14,6 @@ public class WebConfig implements WebServerFactoryCustomizer<ConfigurableServlet
         factory.addErrorPages(
                 new ErrorPage(HttpStatus.FORBIDDEN, "/errors"),
                 new ErrorPage(HttpStatus.NOT_FOUND, "/errors"),
-                new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/face"));
+                new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/errors"));
     }
 }
