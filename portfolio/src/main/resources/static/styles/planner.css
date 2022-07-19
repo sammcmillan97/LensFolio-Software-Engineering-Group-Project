@@ -29,11 +29,6 @@
     bottom: -20px;
 }
 
-.milestonePlanner, .deadlinePlanner, .eventPlanner {
-    background: transparent;
-    position: absolute;
-}
-
 .deadlinePlannerGrid{
     bottom: -60px;
 }

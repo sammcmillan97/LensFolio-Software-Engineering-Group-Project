@@ -91,15 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
-        //true when user is TEACHER or ADMIN
-        //editable: (isAdmin()),
         //disallow dragging entire event
         eventStartEditable: false,
-        // lazyFetching: false,
-        // showNonCurrentDates: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
-        // eventResizableFromEnd: true,
 
         eventOverlap: function( stillEvent, movingEvent) {
             return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
@@ -110,19 +105,19 @@ document.addEventListener('DOMContentLoaded', function() {
             resizeSprint( eventDropInfo );
         },
 
+        // Hovers over sprint changing colour.
         eventMouseEnter: function( info ) {
             if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
                 return;
             }
-
             $(".fc-event").css("cursor", "pointer");
-
             if (!info.event.extendedProps.selected) {
                 info.event.setExtendedProp("oldBackground", info.event.backgroundColor);
                 info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
             }
         },
 
+        // Changes sprint color back when mouse leaves.
         eventMouseLeave: function( info ) {
             if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
             return;
@@ -133,86 +128,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
 
+        // Selects sprint to allow resizing.
         eventClick: function (info) {
-
             if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
                 return;
             }
-
-            //let events = info.view.calendar.getEvents();
-
             if (!info.event.extendedProps.selected) {
-                // // Deselects all events
-                // for (calEvent of events) {
-                //     if (calEvent.extendedProps.isSprint) {
-                //         calEvent.setExtendedProp("selected", false);
-                //         calEvent.setProp("durationEditable", false);
-                //         calEvent.setProp("backgroundColor", calEvent.extendedProps.defaultColor);
-                //         calEvent.setProp("borderColor", '#13CEE2');
-                //         $(".fc-event").css("border-right", "solid 0px #13CEE2");
-                //         $(".fc-event").css("border-left", "solid 0px #13CEE2");
-                //     }
-                // }
-
-                // Selects this event
                 info.event.setExtendedProp("selected", true);
                 info.event.setProp("durationEditable", true);
-                //info.event.setExtendedProp("oldBackground", info.event.backgroundColor);
                 info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
-                //info.event.setProp("borderColor", '#c2080b');
-                // $(".fc-event-resizer-start").parent().css("border-left", "solid 5px red");
-                // $(".fc-event-resizer-end").parent().css("border-right", "solid 5px red");
-
             } else {
-                // Deselects this event
                 info.event.setExtendedProp("selected", false);
                 info.event.setProp("durationEditable", false);
                 info.event.setProp("backgroundColor", info.event.extendedProps.oldBackground);
-                //info.event.setProp("borderColor", '#13CEE2');
-                // $(".fc-event").css("border-right", "solid 0px #13CEE2");
-                // $(".fc-event").css("border-left", "solid 0px #13CEE2");
             }
         },
 
+        // Shapes event html after added to DOM.
         eventDidMount: function (info) {
-            console.log("Here: " + info.event.extendedProps.eventType)
             info.event.setProp("textColor", "black");
             if (info.event.extendedProps.eventType === 'Sprint' || !info.event.extendedProps.eventType) {
                 return;
             }
-            let parent = info.el.querySelector(".fc-event-title").parentElement;
-            parent.style.display = 'flex';
-            parent.style.justifyContent = 'flex-start';
-            parent.style.alignItems = 'center';
-            parent.parentElement.parentElement.parentElement.style.border = '0';
-            parent.parentElement.parentElement.parentElement.style.backgroundColor = 'transparent';
-            parent.parentElement.parentElement.parentElement.style.position = 'absolute';
-            //info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
-            if (info.event.extendedProps.eventType === "daily-milestone") {
-                parent.parentElement.parentElement.parentElement.classList.add('milestonePlannerGrid');
-                parent.parentElement.parentElement.classList.add('milestonePlanner');
-                let node = createElementFromHTML(`<i data-toggle="tooltip"
-                                            data-placement="top" data-html=true
-                                            class="bi bi-trophy-fill"></i>`);
-                node.title = info.event.extendedProps.description
-                parent.insertBefore(node, parent.firstChild);
-            } else if (info.event.extendedProps.eventType === "daily-deadline") {
-                parent.parentElement.parentElement.parentElement.classList.add('deadlinePlannerGrid');
-                parent.parentElement.parentElement.classList.add('deadlinePlanner');
-                let node = createElementFromHTML(`<i data-toggle="tooltip" 
-                                            data-placement="top" data-html="true"
-                                            class="bi bi-alarm-fill"></i>`);
-                node.title = info.event.extendedProps.description
-                parent.insertBefore(node, parent.firstChild);
-            } else if (info.event.extendedProps.eventType === "daily-event") {
-                parent.parentElement.parentElement.parentElement.classList.add('eventPlannerGrid');
-                parent.parentElement.parentElement.classList.add('eventPlanner');
-                let node = createElementFromHTML(`<i data-toggle="tooltip" 
-                                            data-placement="top" data-html="true" 
-                                            class="bi bi-calendar-event-fill"></i>`);
-                node.title = info.event.extendedProps.description
-                parent.insertBefore(node, parent.firstChild);
-            }
+            shapeIcons( info );
         },
     });
 
@@ -229,6 +167,54 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+/**
+ * This function adds icons to calendar and changes the css of the event the icon is for.
+ * @param info
+ */
+function shapeIcons( info ) {
+    let iconParent = info.el.querySelector(".fc-event-title").parentElement;
+    let iconEventContainer = iconParent.parentElement.parentElement.parentElement;
+    let iconGridCell = iconParent.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+    // Aligns icon with event title, counter number next to icon.
+    iconParent.style.display = 'flex';
+    iconParent.style.justifyContent = 'flex-start';
+    iconParent.style.alignItems = 'center';
+    // These styles won't work with the __PlannerGrid classes added later.
+    iconEventContainer.style.border = '0';
+    iconEventContainer.style.backgroundColor = 'transparent';
+    iconEventContainer.style.position = 'absolute';
+    // Sets the cell to min height so milestones, deadline and events icons always stay on cell.
+    iconGridCell.style.minHeight = '135px';
+    // Format milestones, deadline and events calendar events to add icons.
+    if (info.event.extendedProps.eventType === "daily-milestone") {
+        iconEventContainer.classList.add('milestonePlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip"
+                                            data-placement="top" data-html=true
+                                            class="bi bi-trophy-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    } else if (info.event.extendedProps.eventType === "daily-deadline") {
+        iconEventContainer.classList.add('deadlinePlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true"
+                                            class="bi bi-alarm-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    } else if (info.event.extendedProps.eventType === "daily-event") {
+        iconEventContainer.classList.add('eventPlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true" 
+                                            class="bi bi-calendar-event-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    }
+}
+
+/**
+ * Creates node element from html string.
+ * @param htmlString
+ * @returns {ChildNode}
+ */
 function createElementFromHTML(htmlString) {
     let template = document.createElement('template');
     template.innerHTML = htmlString.trim();
