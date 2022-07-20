@@ -95,7 +95,7 @@
             <header class="project__header flex-column">
                 <h1 id="project__name" th:text="${project.getName}"></h1>
                 <h2 id="project__date" th:text="|${project.getStartDateString} - ${project.getEndDateString}|"></h2>
-                <p id="user__rolesList" th:text="${user.getRolesList()}"></p>
+                <p hidden="hidden" id="user__rolesList" th:text="${user.getRolesList()}"></p>
             </header>
 
             <div id="calendar__container">
