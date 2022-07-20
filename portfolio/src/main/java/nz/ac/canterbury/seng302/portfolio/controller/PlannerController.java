@@ -43,8 +43,8 @@ public class PlannerController {
     @Autowired
     private UserAccountClientService userService;
 
-    private boolean sprintUpdated = false;
-    private String sprintDate;
+    private boolean plannerUpdated = false;
+    private String plannerDate;
 
     private String redirectToProjects = "redirect:/projects";
 
@@ -88,9 +88,9 @@ public class PlannerController {
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
 
-        if (sprintUpdated) {
-            model.addAttribute("recentUpdate", sprintDate);
-            sprintUpdated = false;
+        if (plannerUpdated) {
+            model.addAttribute("recentUpdate", plannerDate);
+            plannerUpdated = false;
         }
 
         return "planner";
@@ -129,9 +129,9 @@ public class PlannerController {
         model.addAttribute("project", project);
         model.addAttribute("sprints", sprintService.getByParentProjectId(project.getId()));
 
-        if (sprintUpdated) {
-            model.addAttribute("recentUpdate", sprintDate);
-            sprintUpdated = false;
+        if (plannerUpdated) {
+            model.addAttribute("recentUpdate", plannerDate);
+            plannerUpdated = false;
         }
 
         return "planner";
@@ -151,11 +151,26 @@ public class PlannerController {
             tempEndDate.setTime(endDate);
             tempEndDate.add(Calendar.DATE, -1);
             sprintService.updateEndDate(Integer.parseInt(sprintId), tempEndDate.getTime());
-            sprintUpdated = true;
-            sprintDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
+            plannerUpdated = true;
+            plannerDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
         } catch ( Exception e ) {
-            sprintUpdated = false;
+            plannerUpdated = false;
         }
+        return "redirect:/planner-" + projectId;
+    }
+
+    /**
+     *Updates the planner after another user has added/edited an event/milestone/deadline
+     * @param paginationDate The current date that the user is on in the planner
+     * @return The planner page
+     */
+    @PostMapping("/reload-planner-{projectId}")
+    public String reloadPlanner(@AuthenticationPrincipal AuthState principal,
+                          Model model,
+                          @PathVariable String projectId,
+                          @RequestParam Date paginationDate) {
+        plannerDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
+        plannerUpdated = true;
         return "redirect:/planner-" + projectId;
     }
 

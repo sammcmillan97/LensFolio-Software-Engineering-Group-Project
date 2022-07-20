@@ -295,6 +295,9 @@ function addSprintsToCalendar() {
     }
 }
 
+/**
+ * Adds Events/Deadlines/Milestones to the FC for adding icons
+ */
 function addEventsToCalendar() {
     for (let event of events) {
         calendar.addEvent(event)
@@ -364,13 +367,33 @@ function changeText(text) {
     moveChoiceTo(document.getElementById('text-change'), -1)
 }
 
+/**
+ *Used for live updating the planner, refreshes the page when a event/deadline/milestone has been added/edited
+ */
 function checkResponse(data){
     var jsondata = JSON.parse(data);
     if (jsondata.refresh) {
-        window.location.reload();
+        //Refresh the calendar, uses a form in order to refresh while preserving the user's position on the calendar
+        let form = document.createElement('form');
+
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', `reload-planner-${projectId}`);
+
+        let pagDate = document.createElement('input');
+        pagDate.setAttribute('type', 'hidden');
+        pagDate.setAttribute('name', 'paginationDate');
+        pagDate.setAttribute('value', calendar.getDate());
+        form.appendChild(pagDate);
+
+        //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
+/**
+ * Used in live updating for checking if the current project is being edited
+ */
 function editPolling(){
 //This promise will resolve when the network call succeeds
     var networkPromise = fetch('/projects-editStatus?id=' + projectId);

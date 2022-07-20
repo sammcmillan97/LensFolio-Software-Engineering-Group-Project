@@ -68,6 +68,7 @@ public class MilestoneService {
         if (milestoneRepository.findById(milestoneId) == null) {
             throw new UnsupportedOperationException("Milestone does not exist");
         }
+        projectEditsService.refreshProject(milestoneRepository.findById(milestoneId).getMilestoneParentProjectId());
         milestoneRepository.deleteById(milestoneId);
     }
 
@@ -77,9 +78,9 @@ public class MilestoneService {
      * @param milestoneId The milestone ID
      * @param milestoneName The new deadline name
      * @param milestoneDate The new deadline date
-     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     * @throws UnsupportedOperationException Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
      */
-    public void updateMilestone(int parentProjectId, int milestoneId, String milestoneName, Date milestoneDate) throws Exception {
+    public void updateMilestone(int parentProjectId, int milestoneId, String milestoneName, Date milestoneDate) throws UnsupportedOperationException {
         Milestone milestone = getMilestoneById(milestoneId);
         Project parentProject = projectService.getProjectById(parentProjectId);
         Date projectStartDate = parentProject.getStartDate();
@@ -97,9 +98,9 @@ public class MilestoneService {
      * @param parentProjectId The parent project of the milestone
      * @param milestoneName The new milestone name
      * @param milestoneDate The new milestone date
-     * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
+     * @throws UnsupportedOperationException Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
      */
-    public void createNewMilestone(int parentProjectId, String milestoneName, Date milestoneDate) throws Exception {
+    public void createNewMilestone(int parentProjectId, String milestoneName, Date milestoneDate) throws UnsupportedOperationException {
         Project parentProject = projectService.getProjectById(parentProjectId);
         Date projectStartDate = parentProject.getStartDate();
         Date projectEndDate = parentProject.getEndDate();
