@@ -71,12 +71,8 @@ public class ProfilePictureController {
             return "/addProfilePicture";
         }
 
-        //get userId using the Authentication Principle
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals(NAME_ID_CLAIM_TYPE))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        //get userId using the Authentication Principal
+        int id = userAccountClientService.getUserId(principal);
 
         try {
             Base64.Decoder decoder = Base64.getDecoder();

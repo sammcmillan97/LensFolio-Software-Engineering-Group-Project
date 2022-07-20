@@ -49,11 +49,7 @@ public class AddEditEventController {
         }
 
         // Add user details to model for displaying in top banner
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 

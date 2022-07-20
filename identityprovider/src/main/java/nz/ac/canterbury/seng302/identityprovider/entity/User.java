@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -72,6 +73,10 @@ public class User {
     private Timestamp timeCreated;
 
     private String profileImagePath;
+
+    @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private Set<Group> groups = new HashSet<>();
+
 
     /**
      * Create a user for use in backend database.
@@ -234,6 +239,18 @@ public class User {
         this.roles.remove(role);
     }
 
+    public void joinGroup(Group group) {
+        this.groups.add(group);
+    }
+
+    public void leaveGroup(Group group) {
+        this.groups.remove(group);
+    }
+
+    public Set<Group> getGroups() {
+        return this.groups;
+    }
+
 
 
     /**
@@ -266,6 +283,60 @@ public class User {
                 .setNanos(time.getNano()).build();
     }
 
+    public UserResponse toUserResponse() {
+        UserResponse.Builder reply = UserResponse.newBuilder();
+        reply.setUsername(this.getUsername())
+                .setFirstName(this.getFirstName())
+                .setMiddleName(this.getMiddleName())
+                .setLastName(this.getLastName())
+                .setNickname(this.getNickname())
+                .setBio(this.getBio())
+                .setPersonalPronouns(this.getPersonalPronouns())
+                .setEmail(this.getEmail())
+                .setCreated(this.getTimeCreated())
+                .setId(this.getUserId())
+                .addAllRoles(this.getRoles());
+        if (this.getProfileImagePath() != null) {
+            reply.setProfileImagePath("resources/" + this.getProfileImagePath());
+        } else {
+            reply.setProfileImagePath("resources/profile-images/default/default.jpg");
+        }
+        return reply.build();
+    }
 
 
+
+
+    /**
+     * Checks if all the variables of two user objects are the same
+     * @param userObject The user to check against
+     * @return true if the users are identical
+     */
+    @Override
+    public boolean equals(Object userObject) {
+        if (userObject == null) return false;
+        if (userObject == this) return true;
+        if (!(userObject instanceof User user)) return false;
+        return this.firstName.equals(user.firstName)
+                && this.middleName.equals(user.middleName)
+                && this.lastName.equals(user.lastName)
+                && this.bio.equals(user.bio)
+                && this.email.equals(user.email)
+                && this.username.equals(user.username)
+                && this.nickname.equals(user.nickname)
+                && this.personalPronouns.equals(user.personalPronouns)
+                && this.roles.equals(user.roles)
+                && this.timeCreated.equals(user.timeCreated)
+                && this.userId == user.userId;
+    }
+
+    /**
+     * Creates a hash for the User with the given the provided variables, so they can be removed and added to a set
+     * @return The hash value
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.firstName, this.middleName, this.lastName, this.bio, this.email, this.email, this.username,
+                this.nickname, this.personalPronouns, this.roles, this.timeCreated, this.userId);
+    }
 }
