@@ -247,14 +247,18 @@ h5 {
     display: block;
 }
 
-.dropdown-content a {
+.site-navigation__sublink {
+    /* Position & size */
     display: block;
     color: #FFFFFF;
-    padding: 5px;
     text-decoration: none;
+    padding: 5px;
 }
 
-.dropdown-content a:hover {
-    color: #FFFFFF;
+.site-navigation__sublink.active {
+    background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
+}
+
+.site-navigation__sublink:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }

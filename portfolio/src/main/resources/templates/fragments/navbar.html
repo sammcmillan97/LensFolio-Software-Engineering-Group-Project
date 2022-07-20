@@ -61,14 +61,14 @@
                 <li class="site-navigation__item">
                     <div class="dropdown">
                         <h5 class="site-navigation__label">
-                            <a id="projects-button" th:href="@{projects}" class="site-navigation__link">
+                            <a id="projects-button" th:href="@{projects}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'projects') ? 'active':''}">
                                 <span class="bi bi-chevron-down navigation_icon"> </span>
                                 Projects
                             </a>
                         </h5>
-                        <div class="dropdown-content">
+                        <div class="dropdown-content" >
                             <h5 class="site-navigation__sublabel" th:each="project : ${allProjects}">
-                                <a th:href="@{setCurrentProject-{id}(id=${project.getId})}" th:text="${project.getName}"></a>
+                                <a class="site-navigation__sublink" th:href="@{setCurrentProject-{id}(id=${project.getId})}" th:text="${project.getName}" th:classappend="${(project.getId == currentProject.getId) ? 'active':''}"></a>
                             </h5>
                         </div>
                     </div>
