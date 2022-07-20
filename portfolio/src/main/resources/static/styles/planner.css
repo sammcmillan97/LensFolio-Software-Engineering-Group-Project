@@ -17,3 +17,29 @@
     padding-right: 10px;
     padding-bottom: 1em;
 }
+
+.tooltip-inner {
+    white-space: pre-line;
+}
+
+.milestonePlanner, .deadlinePlanner, .eventPlanner {
+    background: white;
+    border-color: white;
+    position: relative;
+    width: 30px;
+    height: 18px;
+    line-height: 17px;
+    left: 0;
+}
+
+/*.milestonePlanner {*/
+/*    bottom: -44px;*/
+/*}*/
+
+/*.deadlinePlanner {*/
+/*    bottom: -61.5px;*/
+/*}*/
+
+/*.eventPlanner {*/
+/*    bottom: -77px;*/
+/*}*/

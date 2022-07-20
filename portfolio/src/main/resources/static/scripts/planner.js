@@ -49,10 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const fullMonthStartDate = calculateFullMonthStartDate(projectStartDate);
     const fullMonthEndDate = calculateFullMonthEndDate(dayAfterProjectEndDate);
-
+    $("body").tooltip({selector: '[data-toggle=tooltip]'});
 
     calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
+        themeSystem: 'bootstrap5',
         validRange: {
             start: fullMonthStartDate,
             end: fullMonthEndDate
@@ -87,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 display: 'background',
                 backgroundColor: "#F4EAE6"
             }
-
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
@@ -95,6 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: (isAdmin()),
         //disallow dragging entire event
         eventStartEditable: false,
+        // lazyFetching: false,
+        // showNonCurrentDates: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
         eventResizableFromEnd: true,
@@ -107,9 +109,40 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResize: function (eventDropInfo) {
             resizeSprint( eventDropInfo );
         },
+
+        eventDidMount: function (info) {
+            console.log("Here: " + info.event.extendedProps.eventType)
+            info.event.setProp("textColor", "black");
+            if (info.event.extendedProps.eventType) {
+                let parent = info.el.querySelector(".fc-event-title").parentElement;
+                parent.style.display = 'flex';
+                parent.style.justifyContent = 'flex-start';
+                parent.style.alignItems = 'center';
+                if (info.event.extendedProps.eventType === "daily-milestone") {
+                    parent.parentElement.parentElement.parentElement.classList.add('milestonePlanner');
+                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
+                                                data-placement="top" data-html=true 
+                                                title=${"'" + info.event.extendedProps.description + "'"} 
+                                                class="bi bi-trophy-fill"></i>`), parent.firstChild);
+                } else if (info.event.extendedProps.eventType === "daily-deadline") {
+                    parent.parentElement.parentElement.parentElement.classList.add('deadlinePlanner');
+                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
+                                                data-placement="top" data-html="true"
+                                                title=${"'" + info.event.extendedProps.description + "'"} 
+                                                class="bi bi-alarm-fill"></i>`), parent.firstChild);
+                } else if (info.event.extendedProps.eventType === "daily-event") {
+                    parent.parentElement.parentElement.parentElement.classList.add('eventPlanner');
+                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
+                                                data-placement="top" data-html="true"
+                                                title=${"'" + info.event.extendedProps.description + "'"} 
+                                                class="bi bi-calendar-event-fill"></i>`), parent.firstChild);
+                }
+            }
+        },
     });
 
     addSprintsToCalendar();
+    addEventsToCalendar();
     calendar.render();
     let today = new Date();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -120,6 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
         changeText('No Changes Made')
     }
 });
+
+function createElementFromHTML(htmlString) {
+    let template = document.createElement('template');
+    template.innerHTML = htmlString.trim();
+    return template.content.firstChild;
+}
 
 /**
  * Calculates the date of the beginning of the given month
@@ -168,6 +207,12 @@ function addSprintsToCalendar() {
     for (let sprint of sprints) {
         console.log(sprint)
         calendar.addEvent(sprint);
+    }
+}
+
+function addEventsToCalendar() {
+    for (let event of events) {
+        calendar.addEvent(event)
     }
 }
 
@@ -233,3 +278,37 @@ function changeText(text) {
     cal.appendChild(con);
     moveChoiceTo(document.getElementById('text-change'), -1)
 }
+
+function checkResponse(data){
+    var jsondata = JSON.parse(data);
+    if (jsondata.refresh) {
+        window.location.reload();
+    }
+}
+
+function editPolling(){
+//This promise will resolve when the network call succeeds
+    var networkPromise = fetch('/projects-editStatus?id=' + projectId);
+
+//This promise will resolve when 2 seconds have passed
+    var timeOutPromise = new Promise(function(resolve, reject) {
+        setTimeout(resolve, 2000, 'Timeout Done');
+    });
+
+    networkPromise.then(response => response.text())
+        .then(data => checkResponse(data));
+
+    Promise.all(
+        [networkPromise, timeOutPromise]).then(function(values) {
+        editPolling();
+    });
+}
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+//dummy fetch so that if the user reloads the page manually it does not reload for them again automatically
+fetch('/projects-editStatus?id=' + projectId);
+setTimeout(function () {
+    editPolling();
+}, 1000);

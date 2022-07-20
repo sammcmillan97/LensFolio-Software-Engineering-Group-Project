@@ -7,6 +7,7 @@
     --color-accent: #A82810;
 }
 
+
 /* Hide scrollbar */
 html::-webkit-scrollbar {
     /* Chrome, Safari, Opera */
@@ -25,7 +26,7 @@ html {
 
 /******************** Project Details ********************/
 
-#project, .project__button-wrapper button, .sprint__button-wrapper button {
+#project, .project__button-wrapper button, .sprint__button-wrapper button, .event__button-wrapper button {
     position: relative;
 
     padding-top: 0;
@@ -90,7 +91,7 @@ html {
 
 /********************Sprints ********************/
 
-.sprint, #new-sprint-button {
+.sprint, .event__outside, .new-sprint-button, .new-event-button {
     display: block;
     position: relative;
 
@@ -101,24 +102,52 @@ html {
     margin-top: 1rem;
 }
 
-.sprint:last-child {
-    border-bottom: 1px solid var(--color-accent);
+.event {
+    display: block;
+    position: relative;
+
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+    padding: 0 2rem 0 2rem;
 }
 
-.sprint__name {
+.event_title_child {
+    display: inline-block;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+
+.bi-alarm {
+    font-size: 2.5rem;
+}
+
+
+.bi-trophy {
+    font-size: 2.5rem;
+}
+
+.bi-calendar-event {
+    font-size: 40px;
+}
+/*.sprint:last-child, .event:last-child {*/
+/*    border-bottom: 1px solid var(--color-accent);*/
+/*}*/
+
+.sprint__name, .event__name {
     margin: 0 10rem 0 0;
     padding: 0;
     height: 5rem;
     line-height: 5rem;
 }
 
-.sprint__button-wrapper {
+.sprint__button-wrapper, .event__button-wrapper {
     position: absolute;
     top: 1rem;
     right: 0;
 }
 
-.sprint__button-wrapper button {
+.sprint__button-wrapper button, .event__button-wrapper button {
     /* Position & Size */
     margin-right: 1rem;
     padding: 0;
@@ -131,28 +160,109 @@ html {
     font-weight: 400;
 }
 
-
-.sprint .sprint__details {
-    border-top: 1px solid var(--color-accent);
+.sprint {
     padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
-.sprint__date {
-    margin: 0;
+.break{
+    border-top: 1px solid var(--color-accent);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
-#new-sprint-button {
+.event__details {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sprint__date, .event__start-date, .event__end-date, .event__date {
+    margin: 0rem 0rem 1rem;
+}
+
+.new-sprint-button, .new-event-button {
     padding: 0;
     height: 3rem;
+    width: 100%;
     line-height: 3rem;
 
     font-size: 1.5rem;
     text-decoration: none;
-    color: initial;
+    color: black;
     text-align: center;
 }
+.new-sprint-button {
+    margin-right: 0.5rem;
+}
 
-.sprint__button-wrapper button:hover, #new-sprint-button:hover {
+.new-event-button {
+    margin-left: 0.5rem;
+}
+
+.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint-button:hover, .new-event-button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
+}
+
+#new-buttons {
+    justify-content: space-evenly;
+}
+
+/* Adapted from w3schools https://www.w3schools.com/howto/howto_js_snackbar.asp */
+#editNotification {
+  visibility: hidden;
+  min-width: 250px;
+  max-width: 250px;
+  margin-left: -280px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 15px;
+  padding: 8px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  position: fixed;
+  z-index: 1;
+  left: 100%;
+  bottom: 30px;
+}
+
+#editNotification.show {
+  visibility: visible;
+}
+
+.carousel-buttons {
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+    gap: 15px;
+}
+
+
+.btn-outline-primary {
+    color: black;
+    border-color: var(--color-accent);
+    background-color: var(--color-complement);
+    border-radius: 2em;
+    height: 3rem;
+    box-shadow: none !important;
+    width: 100%;
+    font-size: 1.5rem;
+    /*margin: 0.5rem 0.5rem 0.5rem 1rem;*/
+}
+
+.btn-outline-primary:hover {
+    color: black;
+    background-color: rgba(168, 40, 16, 0.3);
+    border-color: var(--color-accent);
+    box-shadow: none !important;
+}
+
+.btn-outline-primary:active {
+    color: black;
+    background-color: var(--color-tertiary);
+    border-color: var(--color-accent);
+    box-shadow: none !important;
 }
