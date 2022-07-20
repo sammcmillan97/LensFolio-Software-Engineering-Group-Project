@@ -1,9 +1,6 @@
-package nz.ac.canterbury.seng302.portfolio.Util;
+package nz.ac.canterbury.seng302.portfolio.util;
 
-import nz.ac.canterbury.seng302.portfolio.model.Deadline;
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.*;
 import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +19,7 @@ class PlannerUtilTest {
     Project project;
     List<Event> eventList;
     List<Deadline> deadlineList;
+    List<Milestone> milestoneList;
 
     /**
      * Initialise the database with projects before each test
@@ -31,7 +29,7 @@ class PlannerUtilTest {
         this.project = new Project("Project Name", "Test Project", Date.valueOf("2022-01-01"), Date.valueOf("2022-01-10"));
         eventList = new ArrayList<>();
         deadlineList = new ArrayList<>();
-
+        milestoneList = new ArrayList<>();
     }
 
     @Test
@@ -41,12 +39,12 @@ class PlannerUtilTest {
         Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventList);
         Assertions.assertEquals(3, eventMap.size());
         PlannerDailyEvent event = eventMap.get("2022-01-01");
-        Assertions.assertEquals("Test Event\n", event.description);
-        Assertions.assertEquals("e2022-01-01", event.Id);
-        Assertions.assertEquals("daily-event", event.type);
-        Assertions.assertEquals(1, event.numberOfEvents);
-        Assertions.assertEquals(1, eventMap.get("2022-01-02").numberOfEvents);
-        Assertions.assertEquals(1, eventMap.get("2022-01-03").numberOfEvents);
+        Assertions.assertEquals("Test Event\n", event.getDescription());
+        Assertions.assertEquals("e2022-01-01", event.getId());
+        Assertions.assertEquals("daily-event", event.getType());
+        Assertions.assertEquals(1, event.getNumberOfEvents());
+        Assertions.assertEquals(1, eventMap.get("2022-01-02").getNumberOfEvents());
+        Assertions.assertEquals(1, eventMap.get("2022-01-03").getNumberOfEvents());
         Assertions.assertNull(eventMap.get("2021-12-31"));
         Assertions.assertNull(eventMap.get("2022-01-04"));
     }
@@ -57,7 +55,7 @@ class PlannerUtilTest {
         eventList.add(testEvent);
         Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventList);
         Assertions.assertEquals(1, eventMap.size());
-        Assertions.assertEquals(1, eventMap.get("2022-01-01").numberOfEvents);
+        Assertions.assertEquals(1, eventMap.get("2022-01-01").getNumberOfEvents());
     }
 
     @Test
@@ -66,8 +64,8 @@ class PlannerUtilTest {
         eventList.add(testEvent);
         Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventList);
         Assertions.assertEquals(10, eventMap.size());
-        Assertions.assertEquals(1, eventMap.get("2022-01-01").numberOfEvents);
-        Assertions.assertEquals(1, eventMap.get("2022-01-10").numberOfEvents);
+        Assertions.assertEquals(1, eventMap.get("2022-01-01").getNumberOfEvents());
+        Assertions.assertEquals(1, eventMap.get("2022-01-10").getNumberOfEvents());
     }
 
     @Test
@@ -79,10 +77,10 @@ class PlannerUtilTest {
         Map<String, PlannerDailyEvent> eventMap = PlannerUtil.getEventsForCalender(eventList);
         PlannerDailyEvent overlappingEvent = eventMap.get("2022-01-02");
         Assertions.assertEquals(3, eventMap.size());
-        Assertions.assertEquals(1, eventMap.get("2022-01-01").numberOfEvents);
-        Assertions.assertEquals(2, overlappingEvent.numberOfEvents);
-        Assertions.assertEquals("Test Event 1\nTest Event 2\n", overlappingEvent.description);
-        Assertions.assertEquals(1, eventMap.get("2022-01-03").numberOfEvents);
+        Assertions.assertEquals(1, eventMap.get("2022-01-01").getNumberOfEvents());
+        Assertions.assertEquals(2, overlappingEvent.getNumberOfEvents());
+        Assertions.assertEquals("Test Event 1\nTest Event 2\n", overlappingEvent.getDescription());
+        Assertions.assertEquals(1, eventMap.get("2022-01-03").getNumberOfEvents());
     }
 
     @Test
@@ -92,11 +90,11 @@ class PlannerUtilTest {
         Map<String, PlannerDailyEvent> deadlineMap = PlannerUtil.getDeadlinesForCalender(deadlineList);
         PlannerDailyEvent deadline = deadlineMap.get("2022-01-01");
         Assertions.assertEquals(1, deadlineMap.size());
-        Assertions.assertEquals("d2022-01-01", deadline.Id);
-        Assertions.assertEquals("2022-01-01", deadline.date);
-        Assertions.assertEquals("Test Deadline\n", deadline.description);
-        Assertions.assertEquals(1, deadline.numberOfEvents);
-        Assertions.assertEquals("daily-deadline", deadline.type);
+        Assertions.assertEquals("d2022-01-01", deadline.getId());
+        Assertions.assertEquals("2022-01-01", deadline.getDate());
+        Assertions.assertEquals("Test Deadline\n", deadline.getDescription());
+        Assertions.assertEquals(1, deadline.getNumberOfEvents());
+        Assertions.assertEquals("daily-deadline", deadline.getType());
     }
 
     @Test
@@ -108,9 +106,38 @@ class PlannerUtilTest {
         Map<String, PlannerDailyEvent> deadlineMap = PlannerUtil.getDeadlinesForCalender(deadlineList);
         PlannerDailyEvent deadline = deadlineMap.get("2022-01-01");
         Assertions.assertEquals(1, deadlineMap.size());
-        Assertions.assertEquals("Test Deadline1\nTest Deadline2\n", deadline.description);
-        Assertions.assertEquals(2, deadline.numberOfEvents);
-        Assertions.assertEquals("daily-deadline", deadline.type);
+        Assertions.assertEquals("Test Deadline1\nTest Deadline2\n", deadline.getDescription());
+        Assertions.assertEquals(2, deadline.getNumberOfEvents());
+        Assertions.assertEquals("daily-deadline", deadline.getType());
     }
+
+    @Test
+    void whenOneMilestoneExists_testGetMilestoneForCalender() {
+        Milestone testMilestone = new Milestone(project.getId(), "Test Milestone", java.sql.Date.valueOf("2022-01-01"));
+        milestoneList.add(testMilestone);
+        Map<String, PlannerDailyEvent> milestoneMap = PlannerUtil.getMilestonesForCalender(milestoneList);
+        PlannerDailyEvent milestone = milestoneMap.get("2022-01-01");
+        Assertions.assertEquals(1, milestoneMap.size());
+        Assertions.assertEquals("m2022-01-01", milestone.getId());
+        Assertions.assertEquals("2022-01-01", milestone.getDate());
+        Assertions.assertEquals("Test Milestone\n", milestone.getDescription());
+        Assertions.assertEquals(1, milestone.getNumberOfEvents());
+        Assertions.assertEquals("daily-milestone", milestone.getType());
+    }
+
+    @Test
+    void whenTwoMilestonesOccurOnSameDay_testGetMilestonesForCalender() {
+        Milestone testMilestone1 = new Milestone(project.getId(), "Test Milestone1", java.sql.Date.valueOf("2022-01-01"));
+        Milestone testMilestone2 = new Milestone(project.getId(), "Test Milestone2", java.sql.Date.valueOf("2022-01-01"));
+        milestoneList.add(testMilestone1);
+        milestoneList.add(testMilestone2);
+        Map<String, PlannerDailyEvent> milestoneMap = PlannerUtil.getMilestonesForCalender(milestoneList);
+        PlannerDailyEvent milestone = milestoneMap.get("2022-01-01");
+        Assertions.assertEquals(1, milestoneMap.size());
+        Assertions.assertEquals("Test Milestone1\nTest Milestone2\n", milestone.getDescription());
+        Assertions.assertEquals(2, milestone.getNumberOfEvents());
+        Assertions.assertEquals("daily-milestone", milestone.getType());
+    }
+
 
 }

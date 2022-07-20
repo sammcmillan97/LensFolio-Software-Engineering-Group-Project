@@ -43,38 +43,38 @@
 
     <!-- Save deadline information, so it can be accessed by the calendar for deadline icons -->
     <script type="text/javascript" th:inline="javascript" th:each="deadline, iterInfo: ${deadlines}">
-        tempEvent = {
-            id: [[${deadline.value.Id}]],
-            title: [[${deadline.value.numberOfEvents}]],
-            eventType: [[${deadline.value.type}]],
-            start: [[${deadline.value.date}]],
-            description: [[${deadline.value.description}]],
+        tempDeadline = {
+            id: [[${deadline.value.getId}]],
+            title: [[${deadline.value.getNumberOfEvents}]],
+            eventType: [[${deadline.value.getType}]],
+            start: [[${deadline.value.getDate}]],
+            description: [[${deadline.value.getDescription}]],
         }
-        events.push(tempEvent);
+        events.push(tempDeadline);
     </script>
 
     <!-- Save event information, so it can be accessed by the calendar for event icons -->
     <script type="text/javascript" th:inline="javascript" th:each="event, iterInfo: ${events}">
         tempEvent = {
-            id: [[${event.value.Id}]],
-            title: [[${event.value.numberOfEvents}]],
-            eventType: [[${event.value.type}]],
-            start: [[${event.value.date}]],
-            description: [[${event.value.description}]],
+            id: [[${event.value.getId}]],
+            title: [[${event.value.getNumberOfEvents}]],
+            eventType: [[${event.value.getType}]],
+            start: [[${event.value.getDate}]],
+            description: [[${event.value.getDescription}]],
         }
         events.push(tempEvent);
     </script>
 
     <!-- Save milestone information, so it can be accessed by the calendar for milestone icons -->
     <script type="text/javascript" th:inline="javascript" th:each="milestone, iterInfo: ${milestones}">
-        tempEvent = {
-            id: [[${milestone.value.Id}]],
-            title: [[${milestone.value.numberOfEvents}]],
-            eventType: [[${milestone.value.type}]],
-            start: [[${milestone.value.date}]],
-            description: [[${milestone.value.description}]],
+        tempMilestone = {
+            id: [[${milestone.value.getId}]],
+            title: [[${milestone.value.getNumberOfEvents}]],
+            eventType: [[${milestone.value.getType}]],
+            start: [[${milestone.value.getDate}]],
+            description: [[${milestone.value.getDescription}]],
         }
-        events.push(tempEvent);
+        events.push(tempMilestone);
     </script>
 
     <script rel="script" th:src="@{scripts/planner.js}"></script>
