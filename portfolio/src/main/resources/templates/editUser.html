@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Edit Profile</title>
     <link rel="stylesheet" th:href="@{styles/editUser.css}">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 
 </head>
 <body>
@@ -13,7 +15,7 @@
         <div id="page-content" class="constrict">
             <div class="container">
                 <!-- form puts the params to the register controller-->
-                <form th:action="@{/editUser}" method="post">
+                <form th:action="@{editUser}" method="post">
                     <div class="wrapper">
                         <h1>Editing <span th:text="${user.username}" th:remove="tag">title</span>'s Profile</h1>
                         <h2>Please enter your details below</h2>

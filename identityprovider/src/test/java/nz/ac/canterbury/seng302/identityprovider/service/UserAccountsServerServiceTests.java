@@ -2,29 +2,40 @@ package nz.ac.canterbury.seng302.identityprovider.service;
 
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
+import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static nz.ac.canterbury.seng302.shared.identityprovider.UserRole.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @SpringBootTest
-class UserAccountsServiceServiceTests {
+class UserAccountsServerServiceTests {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
+    @Spy
     @Autowired
     private UserAccountsServerService userService;
 
@@ -39,21 +50,24 @@ class UserAccountsServiceServiceTests {
     private final String testPassword = "test password";
     private final UserRole studentRole = STUDENT;
     private final UserRole teacherRole = TEACHER;
+    private final UserRole adminRole = COURSE_ADMINISTRATOR;
 
     private int testId;
     private Timestamp testCreated;
 
+
     @BeforeEach
     public void setup() {
-        repository.deleteAll();
-        User testUser = repository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
+        groupRepository.deleteAll();
+        userRepository.deleteAll();
+        User testUser = userRepository.save(new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword));
         testId = testUser.getUserId();
         testCreated = testUser.getTimeCreated();
     }
 
     //Method for adding users to be used in the 'getPaginatedUser' tests
     public void addUsers() {
-        repository.deleteAll();
+        userRepository.deleteAll();
         User testUser1 = new User("test1", "Adam", "", "Adam", "A", "", "test/tester", "Test@emai.com", "password");
         User testUser2 = new User("test2", "Bruce", "Bruce", "Bruce", "B", "", "test/tester", "Test@email.com", "password");
         User testUser3 = new User("test3", "Adam", "", "Adama", "3", "", "test/tester", "Test@email.com", "password");
@@ -61,9 +75,9 @@ class UserAccountsServiceServiceTests {
         testUser2.addRole(UserRole.TEACHER);
         testUser2.addRole(UserRole.STUDENT);
         testUser3.addRole(UserRole.STUDENT);
-        repository.save(testUser1);
-        repository.save(testUser2);
-        repository.save(testUser3);
+        userRepository.save(testUser1);
+        userRepository.save(testUser2);
+        userRepository.save(testUser3);
     }
 
     //Tests that sort by name works correctly on the get paginated users service
@@ -142,62 +156,30 @@ class UserAccountsServiceServiceTests {
         assertEquals("test1", response.getUsersList().get(response.getUsersList().size() - 1).getUsername());
     }
 
-
-    //Tests that when the offset is greater than number of users in the repository the list returned
-    //to by the get paginated users service is zero
-    @Test
-    void getPaginatedUsersOffsetGreaterThanListSize() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(3)
-                .setLimit(9999)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
+    // Provides arguments for the parameterized tests for paginated users
+    static Stream<Arguments> paginatedUsersTestParamProvider() {
+        return Stream.of(
+                // All tests have a list of 3 users
+                arguments(1, 9999, 2), // Tests that the offset of 1 returns a list of 2 users
+                arguments(0, 0, 0), // Tests that a limit of 0 returns 0 users
+                arguments(0, 1, 1), // Tests that a limit of 1 returns 1 user
+                arguments(3, 9999, 0) // Tests that an offset higher than the number of users returns 0 users
+        );
     }
 
-    //Tests that the offset works as intended by the get paginated users service
-    @Test
-    void getPaginatedUsersOffsetIsOne() {
+    // Tests that the offset and limit options for pagination work as expected. See above method for test cases
+    @ParameterizedTest
+    @MethodSource("paginatedUsersTestParamProvider")
+    void getPaginatedUsers(int offset, int limit, int expectedUserListSize) {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(1)
-                .setLimit(9999)
+                .setOffset(offset)
+                .setLimit(limit)
                 .setOrderBy("username")
                 .setIsAscendingOrder(true)
                 .build();
         PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(2, response.getUsersList().size());
-    }
-
-    //Tests that when the limit is zero the list returned by the get paginated users list is zero
-    @Test
-    void getPaginatedUsersLimitIsZero() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(0)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(0, response.getUsersList().size());
-    }
-
-    //Tests that the limit feature works as intended on the get paginated user service
-    @Test
-    void getPaginatedUsersLimitIsOne() {
-        addUsers();
-        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
-                .setOffset(0)
-                .setLimit(1)
-                .setOrderBy("username")
-                .setIsAscendingOrder(true)
-                .build();
-        PaginatedUsersResponse response = userService.getPaginatedUsersHandler(getPaginatedUsersRequest);
-        assertEquals(1, response.getUsersList().size());
+        assertEquals(expectedUserListSize, response.getUsersList().size());
     }
 
     //Tests that the password change fails if the new password is too short
@@ -212,7 +194,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("password", response.getValidationErrors(0).getFieldName());
         assertEquals("Password must be at least 8 characters", response.getValidationErrors(0).getErrorText());
         assertFalse(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+        assertTrue(userRepository.findByUserId(testId).checkPassword(testPassword));
     }
 
     //Test the max length for the new password field
@@ -225,7 +207,7 @@ class UserAccountsServiceServiceTests {
                 .build();
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
         assertTrue(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword("a".repeat(64)));
+        assertTrue(userRepository.findByUserId(testId).checkPassword("a".repeat(64)));
     }
 
     //Tests that the password change fails if the new password is too long
@@ -241,7 +223,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("password", response.getValidationErrors(0).getFieldName());
         assertEquals("Password must be less than 65 characters", response.getValidationErrors(0).getErrorText());
         assertFalse(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+        assertTrue(userRepository.findByUserId(testId).checkPassword(testPassword));
     }
 
     //Tests that password change fails if the user does not exist
@@ -256,7 +238,7 @@ class UserAccountsServiceServiceTests {
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
         assertEquals("Password change failed: Validation failed", response.getMessage());
         assertFalse(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+        assertTrue(userRepository.findByUserId(testId).checkPassword(testPassword));
     }
 
     //Tests that password change fails if the password is incorrect
@@ -271,7 +253,7 @@ class UserAccountsServiceServiceTests {
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
         assertEquals("Password change failed: Validation failed", response.getMessage());
         assertFalse(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword(testPassword));
+        assertTrue(userRepository.findByUserId(testId).checkPassword(testPassword));
     }
 
     //Tests that password change succeeds if password is correct
@@ -286,7 +268,7 @@ class UserAccountsServiceServiceTests {
         ChangePasswordResponse response = userService.changeUserPasswordHandler(changePasswordRequest);
         assertEquals("Successfully changed password", response.getMessage());
         assertTrue(response.getIsSuccess());
-        assertTrue(repository.findByUserId(testId).checkPassword(newPassword));
+        assertTrue(userRepository.findByUserId(testId).checkPassword(newPassword));
     }
 
     // Tests that editing a user fails if no fields are entered
@@ -316,7 +298,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
 
         // Check user hasn't been changed
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName, testUser.getFirstName());
         assertEquals(testMiddleName, testUser.getMiddleName());
@@ -354,7 +336,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
 
         // Check user hasn't been changed
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName, testUser.getFirstName());
         assertEquals(testMiddleName, testUser.getMiddleName());
@@ -383,7 +365,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(response.getIsSuccess());
 
         // Check that user info has been changed to correct values
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals("a".repeat(64), testUser.getFirstName());
         assertEquals("a".repeat(64), testUser.getMiddleName());
@@ -445,7 +427,7 @@ class UserAccountsServiceServiceTests {
         assertFalse(response.getIsSuccess());
 
         // Check user hasn't been changed
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName, testUser.getFirstName());
         assertEquals(testMiddleName, testUser.getMiddleName());
@@ -474,7 +456,7 @@ class UserAccountsServiceServiceTests {
         assertTrue(response.getIsSuccess());
 
         // Check that user info has been changed to correct values
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         assertEquals(testUsername, testUser.getUsername());
         assertEquals(testFirstName + "new", testUser.getFirstName());
         assertEquals(testMiddleName + "new", testUser.getMiddleName());
@@ -527,11 +509,11 @@ class UserAccountsServiceServiceTests {
     // Tests that getting roles succeeds when roles have been changed from their defaults
     @Test
     void getUserByIdRolesTest() {
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         testUser.addRole(UserRole.TEACHER);
         testUser.removeRole(UserRole.STUDENT);
         testUser.addRole(UserRole.COURSE_ADMINISTRATOR);
-        repository.save(testUser);
+        userRepository.save(testUser);
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
@@ -545,14 +527,14 @@ class UserAccountsServiceServiceTests {
     @Test
     void getUserByIdProfileImagePathTest() {
         String testPath = "test.png";
-        User testUser = repository.findByUserId(testId);
+        User testUser = userRepository.findByUserId(testId);
         testUser.setProfileImagePath(testPath);
-        repository.save(testUser);
+        userRepository.save(testUser);
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        //assertEquals("http://localhost:8080/resources/" + testPath, response.getProfileImagePath());
+        assertEquals("http://localhost:8080/ProfilePicture-" + testPath, response.getProfileImagePath());
     }
 
 
@@ -606,7 +588,7 @@ class UserAccountsServiceServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername("a".repeat(64))
                 .setPassword("a".repeat(64))
-                .setFirstName("a".repeat(64))
+                .setFirstName("a".repeat(64)) 
                 .setMiddleName("a".repeat(64))
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
@@ -745,7 +727,7 @@ class UserAccountsServiceServiceTests {
         assertEquals("Register attempt succeeded", response.getMessage());
         assertTrue(response.getIsSuccess());
         int newTestId = response.getNewUserId();
-        User testUser = repository.findByUserId(newTestId);
+        User testUser = userRepository.findByUserId(newTestId);
         assertEquals(testUsername + "2", testUser.getUsername());
         assertEquals(testFirstName + "a", testUser.getFirstName());
         assertEquals(testMiddleName + "a", testUser.getMiddleName());
@@ -766,7 +748,7 @@ class UserAccountsServiceServiceTests {
                 .setRole(teacherRole)
                 .build();
         UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
-        User updatedUser = repository.findByUserId(testId);
+        User updatedUser = userRepository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
         assertEquals("Role successfully added", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
@@ -783,7 +765,7 @@ class UserAccountsServiceServiceTests {
                 .setRole(studentRole)
                 .build();
         UserRoleChangeResponse response = userService.addRoleToUserHandler(modifyRoleOfUserRequest);
-        User updatedUser = repository.findByUserId(testId);
+        User updatedUser = userRepository.findByUserId(testId);
         assertFalse(response.getIsSuccess());
         assertEquals("Unable to add role. User already has given role", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
@@ -794,17 +776,20 @@ class UserAccountsServiceServiceTests {
     //Tests that role can be removed from a user
     @Test
     void removeRoleFromUserTest() {
-        repository.deleteAll();
+        userRepository.deleteAll();
         User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
         userA.addRole(teacherRole);
-        User testUser = repository.save(userA);
+        User testUser = userRepository.save(userA);
         testId = testUser.getUserId();
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(teacherRole)
                 .build();
-        UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
-        User updatedUser = repository.findByUserId(testId);
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = userRepository.findByUserId(testId);
         assertTrue(response.getIsSuccess());
         Set<UserRole> roleSet = new HashSet<>();
         roleSet.add(studentRole);
@@ -812,15 +797,66 @@ class UserAccountsServiceServiceTests {
         assertEquals("Role successfully removed", response.getMessage());
     }
 
-    //Tests that role can be added to a user
+    //Tests that an admin can't remove their own admin role
     @Test
-    void removeRoleTeacherFromStudentTest() {
+    void whenHasAdminRole_testRemoveOwnAdminRole() {
+        userRepository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = userRepository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(testId).when(spyUserService).getAuthStateUserId();
+
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = userRepository.findByUserId(testId);
+        assertFalse(response.getIsSuccess());
+
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        roleSet.add(adminRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Unable to remove role. Cannot remove own course administrator role", response.getMessage());
+    }
+
+    //Tests that an admin can remove someone elses admin role
+    @Test
+    void whenHasAdminRole_testRemoveOtherAdminRole() {
+        userRepository.deleteAll();
+        User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
+        userA.addRole(adminRole);
+        User testUser = userRepository.save(userA);
+        testId = testUser.getUserId();
+        ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
+                .setUserId(testId)
+                .setRole(adminRole)
+                .build();
+
+        UserAccountsServerService spyUserService = Mockito.spy(userService);
+        Mockito.doReturn(1).when(spyUserService).getAuthStateUserId();
+        UserRoleChangeResponse response = spyUserService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
+        User updatedUser = userRepository.findByUserId(testId);
+        assertTrue(response.getIsSuccess());
+        Set<UserRole> roleSet = new HashSet<>();
+        roleSet.add(studentRole);
+        assertEquals(roleSet, updatedUser.getRoles());
+        assertEquals("Role successfully removed", response.getMessage());
+    }
+
+    //Tests that you can't remove a role that a user doesn't have
+    @Test
+    void whenOnlyHasStudentRole_testRemoveTeacherRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(teacherRole)
                 .build();
         UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
-        User updatedUser = repository.findByUserId(testId);
+        User updatedUser = userRepository.findByUserId(testId);
         assertFalse(response.getIsSuccess());
         assertEquals("Unable to remove role. User doesn't have given role", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
@@ -828,15 +864,15 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    //Tests that role can be added to a user
+    //Tests that the users last role can't be removed
     @Test
-    void removeRoleStudentFromStudentTest() {
+    void whenOnlyHasStudentRole_testRemoveStudentRole() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(studentRole)
                 .build();
         UserRoleChangeResponse response = userService.removeRoleFromUserHandler(modifyRoleOfUserRequest);
-        User updatedUser = repository.findByUserId(testId);
+        User updatedUser = userRepository.findByUserId(testId);
         assertFalse(response.getIsSuccess());
         assertEquals("Unable to remove role. User only has one role", response.getMessage());
         Set<UserRole> roleSet = new HashSet<>();
@@ -844,45 +880,82 @@ class UserAccountsServiceServiceTests {
         assertEquals(roleSet, updatedUser.getRoles());
     }
 
-    // Check that no user has permissions to modify an admin role
+    // Check that a student does not have permissions to modify a student role
     @Test
-    void isValidatedForRoleTestNotValidForAdmin() {
-        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    void whenHasStudentRole_testModifyStudentRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        userRepository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, STUDENT));
     }
 
-    // Check that a teacher does not have permissions to modify a teacher role
+    // Check that a student does not have permissions to modify a teacher role
     @Test
-    void isValidatedForRoleTestNotValidForTeacherOnTeacher() {
-        User updatedUser = repository.findByUserId(testId);
-        updatedUser.addRole(TEACHER);
-        repository.save(updatedUser);
+    void whenHasStudentRole_testModifyTeacherRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        userRepository.save(updatedUser);
         assertFalse(userService.isValidatedForRole(testId, TEACHER));
     }
 
-    // Check that an admin does have permissions to modify a teacher role
+    // Check that a student does not have permissions to modify an admin role
     @Test
-    void isValidatedForRoleTestValidForTeacherOnAdmin() {
-        User updatedUser = repository.findByUserId(testId);
-        updatedUser.addRole(COURSE_ADMINISTRATOR);
-        repository.save(updatedUser);
-        assertTrue(userService.isValidatedForRole(testId, TEACHER));
-    }
-
-    // Check that a student does not have permissions to modify a student role
-    @Test
-    void isValidatedForRoleTestNotValidForStudentOnStudent() {
-        User updatedUser = repository.findByUserId(testId);
-        repository.save(updatedUser);
-        assertFalse(userService.isValidatedForRole(testId, STUDENT));
+    void whenHasStudentRole_testModifyAdminRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        userRepository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
     }
 
     // Check that a teacher does have permissions to modify a student role
     @Test
-    void isValidatedForRoleTestValidForStudentOnTeacher() {
-        User updatedUser = repository.findByUserId(testId);
+    void whenHasTeacherRole_testModifyStudentRole() {
+        User updatedUser = userRepository.findByUserId(testId);
         updatedUser.addRole(TEACHER);
-        repository.save(updatedUser);
+        userRepository.save(updatedUser);
         assertTrue(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that a teacher does not have permissions to modify a teacher role
+    @Test
+    void whenHasTeacherRole_testModifyTeacherRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        userRepository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that a teacher does not have permissions to modify an admin role
+    @Test
+    void whenHasTeacherRole_testModifyAdminRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        updatedUser.addRole(TEACHER);
+        userRepository.save(updatedUser);
+        assertFalse(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
+    }
+
+    // Check that an admin does have permissions to modify a student role
+    @Test
+    void whenHasAdminRole_testModifyStudentRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        userRepository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, STUDENT));
+    }
+
+    // Check that an admin does have permissions to modify a teacher role
+    @Test
+    void whenHasAdminRole_testModifyTeacherRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        userRepository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, TEACHER));
+    }
+
+    // Check that an admin does have permissions to modify an admin role
+    @Test
+    void whenHasAdminRole_testModifyAdminRole() {
+        User updatedUser = userRepository.findByUserId(testId);
+        updatedUser.addRole(COURSE_ADMINISTRATOR);
+        userRepository.save(updatedUser);
+        assertTrue(userService.isValidatedForRole(testId, COURSE_ADMINISTRATOR));
     }
 
 }

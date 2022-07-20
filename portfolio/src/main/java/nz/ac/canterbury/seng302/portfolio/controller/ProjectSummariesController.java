@@ -8,7 +8,6 @@ import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -42,12 +41,7 @@ public class ProjectSummariesController {
     @GetMapping("/projects")
     public String projects(@AuthenticationPrincipal AuthState principal, Model model) {
         // Add user details to model
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-        User user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
 
         List<Project> projects = projectService.getAllProjects();

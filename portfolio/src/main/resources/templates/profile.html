@@ -7,6 +7,8 @@
     <title>Profile</title>
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/profile.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+
     <script rel="script" th:src="@{scripts/profile.js}"></script>
 </head>
 
@@ -34,7 +36,6 @@
                 <div class="profile_body__content" th:if="${user.bio != ''}"><strong >Bio</strong><p id="profile__user-biography" th:text="${user.bio}" /> </div>
                 <p class="profile_body__content"><strong >Roles</strong><p><div id="role-button" th:each="role: ${user.roleStrings}" th:text="${role}"></div> </p> </p>
             </div>
-
         </div>
     </div>
 </body>

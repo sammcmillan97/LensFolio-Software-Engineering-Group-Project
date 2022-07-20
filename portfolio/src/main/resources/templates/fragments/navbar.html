@@ -5,6 +5,7 @@
     <title>Navigation Bar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -12,28 +13,67 @@
     <nav th:fragment="navbar" id="site-navigation">
         <link rel="stylesheet" th:href="@{styles/navbar.css}">
         <script rel="text/javascript" th:src="@{scripts/navbar.js}"></script>
-        <ul class="site-navigation__list">
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{profile}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">Profile</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{projects}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/projects' ? 'active':''}">Projects</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{planner}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">Planner</a>
-                </h5>
-            </li>
-            <li class="site-navigation__item">
-                <h5>
-                    <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">List of Users</a>
-                </h5>
-            </li>
-        </ul>
+        <div class="nav_head">
+            <h2>LENSfolio</h2>
+            <hr id="nav_line">
+        </div>
+            <ul class="site-navigation__list">
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{profile}" class="site-navigation__link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}">
+                            <span class="bi bi-person-circle navigation_icon" ></span>
+                            Profile
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{projectDetails-{id}(id=${currentProject.getId})}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/projectDetails') ? 'active':''}">
+                            <span class="bi bi-kanban navigation_icon"></span>
+                            Project
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{planner-{id}(id=${currentProject.getId})}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'planner') ? 'active':''}">
+                            <span class="bi bi-calendar navigation_icon"> </span>
+                            Planner
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                  <h5 class="site-navigation__label">
+                    <a th:href="@{userList}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/userList') ? 'active':''}">
+                      <span class="bi bi-person-lines-fill navigation_icon"> </span>
+                      Users
+                    </a>
+                  </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <h5 class="site-navigation__label">
+                        <a th:href="@{groups}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'groups') ? 'active':''}">
+                            <span class="bi bi-people navigation_icon"> </span>
+                            Groups
+                        </a>
+                    </h5>
+                </li>
+                <li class="site-navigation__item">
+                    <div class="dropdown">
+                        <h5 class="site-navigation__label">
+                            <a id="projects-button" th:href="@{projects}" class="site-navigation__link" th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), 'projects') ? 'active':''}">
+                                <span class="bi bi-chevron-down navigation_icon"> </span>
+                                Projects
+                            </a>
+                        </h5>
+                        <div class="dropdown-content" >
+                            <h5 class="site-navigation__sublabel" th:each="project : ${allProjects}">
+                                <a class="site-navigation__sublink" th:href="@{setCurrentProject-{id}(id=${project.getId})}" th:text="${project.getName}" th:classappend="${(project.getId == currentProject.getId) ? 'active':''}"></a>
+                            </h5>
+                        </div>
+                    </div>
+                </li>
+            </ul>
     </nav>
 </body>
 

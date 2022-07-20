@@ -22,8 +22,12 @@ import java.util.Locale;
 @Controller
 public class LoginController {
 
+    private static final String LOGIN = "login";
+
     @Autowired
     private AuthenticateClientService authenticateClientService;
+
+    private static final String COOKIE_NAME = "lens-session-token";
 
     /**
      * Gets the mapping to the login page html and renders it
@@ -34,9 +38,9 @@ public class LoginController {
     public String login(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
-                "lens-session-token"
+                COOKIE_NAME
         );
-        return "login";
+        return LOGIN;
     }
 
     /**
@@ -44,14 +48,25 @@ public class LoginController {
      * @param response Login response
      * @return the mapping to the login html page.
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(HttpServletResponse response) {
+        return "redirect:/" + LOGIN;
+    }
+
+    /**
+     * Logs the user out, then gets the mapping to the login page html and renders it
+     * @param response Login response
+     * @return the mapping to the login html page.
+     */
+    @RequestMapping("/logout")
+    public String logout(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
-                "lens-session-token"
+                COOKIE_NAME
         );
-        return "redirect:/login";
+        return "redirect:/" + LOGIN;
     }
+
 
     /**
      * Attempts to authenticate with the Identity Provider via gRPC.
@@ -84,22 +99,23 @@ public class LoginController {
             loginReply = authenticateClientService.authenticate(username.toLowerCase(Locale.ROOT), password);
         } catch (StatusRuntimeException e){
             model.addAttribute("loginMessage", "Error connecting to Identity Provider...");
-            return "login";
+            return LOGIN;
         }
         if (loginReply.getSuccess()) {
             var domain = request.getHeader("host");
             CookieUtil.create(
                 response,
-                "lens-session-token",
+                    COOKIE_NAME,
                     loginReply.getToken(),
                 true,
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
+
             return "redirect:/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());
-            return "login";
+            return LOGIN;
         }
     }
 

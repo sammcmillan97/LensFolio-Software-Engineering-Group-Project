@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Update Profile Picture</title>
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{styles/addProfilePicture.css}">
 </head>
 <body>
     <!-- Import the application's header bar. -->
@@ -27,7 +29,7 @@
                         <br>
                     </row>
                     <row>
-                        <img th:src="'../identity/'+${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
+                        <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
 
                         <div id="root"></div>
                     </row>
@@ -57,151 +59,4 @@
 </body>
 </html>
 
-<script>
-    let profileImageInput = document.getElementById("img-input");
-
-    const MAX_PIXELS = 150;
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; //1MB
-    let excessWidth= 0;
-    let excessHeight=0;
-    let maxSize=0;
-
-    function calculateSize(width, height) {
-        if (width === height) {
-            return 0, 0, width;
-        } else {
-            if (width > height) {
-                maxSize = height;
-            } else {
-                maxSize = width;
-            }
-        }
-        excessWidth = width - maxSize;
-        excessHeight = height - maxSize;
-    }
-
-    function dataURItoBlob(dataURI) {
-      // convert base64 to raw binary data held in a string
-      // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-      var byteString = atob(dataURI.split(',')[1]);
-
-      // separate out the mime component
-      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-
-      // write the bytes of the string to an ArrayBuffer
-      var ab = new ArrayBuffer(byteString.length);
-
-      // create a view into the buffer
-      var ia = new Uint8Array(ab);
-
-      // set the bytes of the buffer to the correct values
-      for (var i = 0; i < byteString.length; i++) {
-          ia[i] = byteString.charCodeAt(i);
-      }
-
-      // write the ArrayBuffer to a blob, and you're done
-      var blob = new Blob([ab], {type: mimeString});
-      return blob;
-    }
-
-    profileImageInput.onchange = function() {
-        //ensure that an image upload doesn't exceed 5MB
-
-
-        if (document.getElementById("root").childElementCount !== 0) {
-            //delete canvas before new one is created
-            let children = document.getElementById("root").childNodes;
-            let oldCanvas = document.getElementById("root").removeChild(children[0]);
-        }
-        const [file] = profileImageInput.files
-        if (file) {
-            const blobURL = URL.createObjectURL(file);
-            const img = new Image();
-            img.src = blobURL;
-            img.onerror = function() {
-                URL.revokeObjectURL(this.src);
-                console.log("Cannot load image");
-            }
-            img.onload = function () {
-                URL.revokeObjectURL(this.src);
-                const canvas = document.createElement("canvas");
-                canvas.width = MAX_PIXELS;
-                canvas.height = MAX_PIXELS;
-                calculateSize(img.width, img.height);
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, excessWidth/2, excessHeight/2, maxSize, maxSize, 0, 0, MAX_PIXELS, MAX_PIXELS);
-                document.getElementById("root").appendChild(canvas);
-
-                let imageData = ctx.getImageData(0, 0, MAX_PIXELS, MAX_PIXELS);
-                let byteArray = imageData.data;
-                let blob = dataURItoBlob(canvas.toDataURL("image/png"));
-                //set file type
-                document.getElementById("fileType").value="png";
-                //set bytes
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = function() {
-                    base64data = reader.result;
-                    document.getElementById("fileContent").value=base64data;
-                    console.log(base64data);
-                }
-            }
-        }
-    };
-</script>
-
-
-<style>
-
-    label.helper, p.helper, .helper-inline{
-        margin-left: 5px;
-        margin-top: 5px;
-        font-style: italic;
-        font-weight: normal;
-        font-size: small;
-        color: dimgrey;
-    }
-
-    #page-content {
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        font-weight: normal;
-    }
-
-    h4 {
-        margin-bottom: 5px;
-    }
-
-    #profile-image-display {
-        width:150px;
-        height:150px;
-        object-fit:cover;
-    }
-
-    #root, .helper-inline {
-        margin-left: 30px;
-        display: inline-block;
-    }
-
-    .error {
-        margin-left: 10px;
-        color: red;
-        margin-top: 20px;
-        margin-bottom: -20px;
-    }
-
-    .button {
-        padding: 3px 5px 3px 5px;
-    }
-
-    #submit-button {
-
-    }
-
-    #delete-button {
-
-    }
-</style>
+<script rel="script" th:src="@{scripts/addProfilePicture.js}"></script>

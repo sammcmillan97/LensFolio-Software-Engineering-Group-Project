@@ -17,3 +17,26 @@
     padding-right: 10px;
     padding-bottom: 1em;
 }
+
+.tooltip-inner {
+    white-space: pre-line;
+}
+
+.milestonePlannerGrid, .deadlinePlannerGrid, .eventPlannerGrid {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    bottom: -20px;
+}
+
+.deadlinePlannerGrid{
+    bottom: -60px;
+}
+
+.eventPlannerGrid {
+    bottom: -80px;
+}
+
+.milestonePlannerGrid {
+    bottom: -100px;
+}

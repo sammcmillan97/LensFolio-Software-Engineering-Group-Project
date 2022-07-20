@@ -1,19 +1,20 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
-import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.portfolio.service.*;
+import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -28,7 +29,15 @@ public class ProjectDetailsController {
     @Autowired
     private SprintService sprintService;
     @Autowired
+    private EventService eventService;
+    @Autowired
+    private DeadlineService deadlineService;
+    @Autowired
+    private MilestoneService milestoneService;
+    @Autowired
     private UserAccountClientService userAccountClientService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * The Get mapping for displaying the details of a specific project through the project details page. Will display a
@@ -39,14 +48,9 @@ public class ProjectDetailsController {
      * @return The project page displaying the selected projects details
      */
     @GetMapping("/projectDetails-{id}")
-    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) throws Exception {
+    public String projectDetails(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable("id") String id) {
         // Add user details to model
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-        User user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
 
         /* Add project details to the model */
@@ -56,7 +60,20 @@ public class ProjectDetailsController {
             model.addAttribute("project", project);
 
             List<Sprint> sprintList = sprintService.getByParentProjectId(projectId);
-            model.addAttribute("sprints", sprintList);
+            ProjectDetailsUtil.colorSprints(sprintList);
+            List<Event> eventList = eventService.getByEventParentProjectId(projectId);
+            ProjectDetailsUtil.embedEvents(eventList, sprintList);
+            List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projectId);
+            ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
+            List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projectId);
+            ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
+            List<Pair<Integer, String>> importantDates = ProjectDetailsUtil.getOrderedImportantDates(eventList, sprintList, deadlineList, milestoneList);
+
+            model.addAttribute("sprintList", sprintList);
+            model.addAttribute("eventList", eventList);
+            model.addAttribute("deadlineList", deadlineList);
+            model.addAttribute("milestoneList", milestoneList);
+            model.addAttribute("importantDates", importantDates);
         } catch (NoSuchElementException e) {
             return "redirect:/projects";
         }

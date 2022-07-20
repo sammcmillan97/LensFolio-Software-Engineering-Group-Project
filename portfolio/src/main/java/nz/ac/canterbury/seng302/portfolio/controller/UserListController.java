@@ -31,11 +31,7 @@ public class UserListController {
     @GetMapping("/userList")
     public String userList(@AuthenticationPrincipal AuthState principal,
                            Model model) {
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int id = userAccountClientService.getUserId(principal);
         String sortType = portfolioUserService.getUserListSortType(id);
         String isAscending = String.valueOf(portfolioUserService.isUserListSortAscending(id));
         User user = userAccountClientService.getUserAccountById(id);
@@ -57,11 +53,7 @@ public class UserListController {
                                @RequestParam(name = "sortType", required = false) String sortType,
                                @RequestParam(name = "isAscending", required = false) String isAscending)
                                {
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int id = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         if (!goodPage(page)) {
@@ -100,6 +92,7 @@ public class UserListController {
         model.addAttribute("isCourseAdmin", role.contains("courseadministrator"));
         model.addAttribute("isTeacher", role.contains("teacher") || role.contains("courseadministrator"));
         model.addAttribute("users", users);
+        model.addAttribute("currentUserId", id);
         model.addAttribute("firstPage", 1);
         model.addAttribute("previousPage", pageInt == 1 ? pageInt : pageInt - 1);
         model.addAttribute("currentPage", pageInt);

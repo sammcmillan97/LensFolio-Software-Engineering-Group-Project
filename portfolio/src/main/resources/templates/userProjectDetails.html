@@ -4,9 +4,11 @@
 <head>
     <title th:text="${project.getName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+    <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/projectDetails.css}">
-    <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -17,6 +19,8 @@
 
 <!-- Page content -->
 <div id="page-content" class="constrict">
+    <div id="editNotification"></div>
+    <div id="projectId" style="display: none;" th:text="${project.getId}"></div>
     <!-- Project -->
     <div id="project">
         <!-- Name, Date -->
@@ -33,21 +37,47 @@
         <!-- Description -->
         <p id="project__description" th:text="${project.getDescription()}"></p>
     </div>
-
-    <!-- Project Sprints -->
-    <div id="project__sprints-wrapper flex-column">
-        <div class="sprint" th:each="sprint : ${sprints}">
-            <h2 class="sprint__name" th:text="|${sprint.getLabel} - ${sprint.getName}|"></h2>
-
-            <!-- Sprint Details -->
-            <div class="sprint__details">
-                <h4 class="sprint__date" th:text="|${sprint.getStartDateString} ---> ${sprint.getEndDateString}|"></h4>
-                <p class="sprint__description" th:text="${sprint.getDescription}"></p>
-            </div>
-        </div>
+  <div class="carousel-buttons flex-row">
+    <button type="button" class="btn btn-outline-primary allButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0">
+      <span>All</span>
+    </button>
+    <button type="button" class="btn btn-outline-primary sprintButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1">
+      <span>Sprints</span>
+    </button>
+    <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2">
+      <span>Events</span>
+    </button>
+    <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3">
+      <span>Deadlines</span>
+    </button>
+    <button type="button" class="btn btn-outline-primary eventButton" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4">
+      <span>Milestones</span>
+    </button>
+  </div>
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div th:replace="fragments/importantDatesStudent"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragments/sprintsStudent"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragments/eventsStudent"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragments/deadlinesStudent"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragments/milestonesStudent"></div>
+      </div>
     </div>
+  </div>
 
 </div>
+
+    <script rel="script" th:src="@{scripts/projectDetails.js}"></script>
+
 </body>
 
 </html>
