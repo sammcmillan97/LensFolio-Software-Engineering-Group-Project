@@ -98,6 +98,7 @@ public class LoginController {
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
+
             return "redirect:/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());

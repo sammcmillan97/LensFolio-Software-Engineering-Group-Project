@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -35,6 +36,8 @@ public class PlannerController {
     private SprintService sprintService;
     @Autowired
     private UserAccountClientService userService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     private boolean sprintUpdated = false;
     private String sprintDate;

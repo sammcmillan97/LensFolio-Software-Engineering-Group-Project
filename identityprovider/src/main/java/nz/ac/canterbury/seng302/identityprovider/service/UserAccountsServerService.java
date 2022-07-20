@@ -1026,7 +1026,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } catch (Exception e) {
             return null;
         }
-
     }
 
     /**

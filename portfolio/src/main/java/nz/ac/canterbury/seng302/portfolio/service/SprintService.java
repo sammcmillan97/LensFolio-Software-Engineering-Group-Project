@@ -66,7 +66,7 @@ public class SprintService {
         repository.deleteById(sprintId);
     }
 
-    public void updateStartDate(int sprintId, Date newDate) throws UnsupportedOperationException {
+    public void updateStartDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
@@ -89,7 +89,7 @@ public class SprintService {
         }
     }
 
-    public void updateEndDate(int sprintId, Date newDate) throws UnsupportedOperationException {
+    public void updateEndDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();

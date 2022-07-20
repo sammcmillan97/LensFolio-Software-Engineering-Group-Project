@@ -106,7 +106,7 @@ deploy-production-identityprovider:
     - cp ../runner/production-identityprovider.sh /home/gitlab-runner/production-identityprovider.sh
     - chmod u+x /home/gitlab-runner/production-identityprovider.sh
     - touch /home/gitlab-runner/production-identityprovider/.env
-    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIDENTITY_CONTEXT=$PRODUCTION_IDENTITY_CONTEXT \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER" > /home/gitlab-runner/production-identityprovider/.env
+    - echo -e "SPRING_PROFILES_ACTIVE=deploy \nDATABASE_URL=$DB_PRODUCTION_IDENTITY_URL \nDATABASE_USERNAME=$DB_PRODUCTION_IDENTITY_USERNAME \nDATABASE_PASSWORD=$DB_PRODUCTION_IDENTITY_PASSWORD \nIMAGE_FOLDER=$PRODUCTION_IMAGE_FOLDER \nIDENTITY_CONTEXT=$PRODUCTION_IDENTITY_CONTEXT" > /home/gitlab-runner/production-identityprovider/.env
     - sudo systemctl restart production-identityprovider
   artifacts:
     paths:

@@ -47,11 +47,11 @@ public class GroupsController {
         boolean userIsTeacher = userAccountClientService.isTeacher(principal);
         boolean userIsAdmin = userAccountClientService.isAdmin(principal);
 
+
         GroupListResponse groupListResponse = groupsClientService.getAllGroups();
         List<Group> groups = groupListResponse.getGroups();
         groups.add(getTeacherGroup());
         groups.add(getGrouplessGroup());
-
         List<Integer> allGroupIds = new ArrayList<>();
         for (Group g : groups) {
             allGroupIds.add(g.getGroupId());

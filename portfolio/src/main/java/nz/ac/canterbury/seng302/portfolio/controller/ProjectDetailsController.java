@@ -36,6 +36,8 @@ public class ProjectDetailsController {
     private MilestoneService milestoneService;
     @Autowired
     private UserAccountClientService userAccountClientService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * The Get mapping for displaying the details of a specific project through the project details page. Will display a
