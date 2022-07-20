@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,6 @@ public class LoginController {
     private AuthenticateClientService authenticateClientService;
 
     private static final String COOKIE_NAME = "lens-session-token";
-    private static final String LOGIN = "login";
 
     /**
      * Gets the mapping to the login page html and renders it
