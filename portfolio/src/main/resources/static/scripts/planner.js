@@ -91,15 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         initialView: 'dayGridMonth',
         initialDate: projectStartDate,
-        //true when user is TEACHER or ADMIN
-        editable: (isAdmin()),
         //disallow dragging entire event
         eventStartEditable: false,
-        // lazyFetching: false,
-        // showNonCurrentDates: false,
         //allow resizing of start/end date
         eventResizableFromStart: true,
-        eventResizableFromEnd: true,
 
         eventOverlap: function( stillEvent, movingEvent) {
             return !(stillEvent.extendedProps.eventType === 'Sprint' && movingEvent.extendedProps.eventType === 'Sprint') && !(stillEvent.extendedProps.name === 'Project');
@@ -110,34 +105,52 @@ document.addEventListener('DOMContentLoaded', function() {
             resizeSprint( eventDropInfo );
         },
 
-        eventDidMount: function (info) {
-            console.log("Here: " + info.event.extendedProps.eventType)
-            info.event.setProp("textColor", "black");
-            if (info.event.extendedProps.eventType) {
-                let parent = info.el.querySelector(".fc-event-title").parentElement;
-                parent.style.display = 'flex';
-                parent.style.justifyContent = 'flex-start';
-                parent.style.alignItems = 'center';
-                if (info.event.extendedProps.eventType === "daily-milestone") {
-                    parent.parentElement.parentElement.parentElement.classList.add('milestonePlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip"
-                                                data-placement="top" data-html=true 
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-trophy-fill"></i>`), parent.firstChild);
-                } else if (info.event.extendedProps.eventType === "daily-deadline") {
-                    parent.parentElement.parentElement.parentElement.classList.add('deadlinePlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
-                                                data-placement="top" data-html="true"
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-alarm-fill"></i>`), parent.firstChild);
-                } else if (info.event.extendedProps.eventType === "daily-event") {
-                    parent.parentElement.parentElement.parentElement.classList.add('eventPlanner');
-                    parent.insertBefore(createElementFromHTML(`<i data-toggle="tooltip" 
-                                                data-placement="top" data-html="true"
-                                                title=${"'" + info.event.extendedProps.description + "'"} 
-                                                class="bi bi-calendar-event-fill"></i>`), parent.firstChild);
-                }
+        // Hovers over sprint changing colour.
+        eventMouseEnter: function( info ) {
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+                return;
             }
+            $(".fc-event").css("cursor", "pointer");
+            if (!info.event.extendedProps.selected) {
+                info.event.setExtendedProp("oldBackground", info.event.backgroundColor);
+                info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
+            }
+        },
+
+        // Changes sprint color back when mouse leaves.
+        eventMouseLeave: function( info ) {
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+            return;
+            }
+            $(".fc-event").css("cursor", "default");
+            if (!info.event.extendedProps.selected) {
+                info.event.setProp("backgroundColor", info.event.extendedProps.oldBackground);
+            }
+        },
+
+        // Selects sprint to allow resizing.
+        eventClick: function (info) {
+            if ((info.event.extendedProps.eventType !== 'Sprint') || !isAdmin()) {
+                return;
+            }
+            if (!info.event.extendedProps.selected) {
+                info.event.setExtendedProp("selected", true);
+                info.event.setProp("durationEditable", true);
+                info.event.setProp("backgroundColor", colorLuminance(info.event.backgroundColor, -0.1));
+            } else {
+                info.event.setExtendedProp("selected", false);
+                info.event.setProp("durationEditable", false);
+                info.event.setProp("backgroundColor", info.event.extendedProps.oldBackground);
+            }
+        },
+
+        // Shapes event html after added to DOM.
+        eventDidMount: function (info) {
+            info.event.setProp("textColor", "black");
+            if (info.event.extendedProps.eventType === 'Sprint' || !info.event.extendedProps.eventType) {
+                return;
+            }
+            shapeIcons( info );
         },
     });
 
@@ -155,7 +168,50 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Helper function to convert the FC events into event/deadline/milestones Icons
+ * This function adds icons to calendar and changes the css of the event the icon is for.
+ * @param info
+ */
+function shapeIcons( info ) {
+    let iconParent = info.el.querySelector(".fc-event-title").parentElement;
+    let iconEventContainer = iconParent.parentElement.parentElement.parentElement;
+    let iconGridCell = iconParent.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+    // Aligns icon with event title, counter number next to icon.
+    iconParent.style.display = 'flex';
+    iconParent.style.justifyContent = 'flex-start';
+    iconParent.style.alignItems = 'center';
+    // These styles won't work with the __PlannerGrid classes added later.
+    iconEventContainer.style.border = '0';
+    iconEventContainer.style.backgroundColor = 'transparent';
+    iconEventContainer.style.position = 'absolute';
+    // Sets the cell to min height so milestones, deadline and events icons always stay on cell.
+    iconGridCell.style.minHeight = '135px';
+    // Format milestones, deadline and events calendar events to add icons.
+    if (info.event.extendedProps.eventType === "daily-milestone") {
+        iconEventContainer.classList.add('milestonePlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip"
+                                            data-placement="top" data-html=true
+                                            class="bi bi-trophy-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    } else if (info.event.extendedProps.eventType === "daily-deadline") {
+        iconEventContainer.classList.add('deadlinePlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true"
+                                            class="bi bi-alarm-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    } else if (info.event.extendedProps.eventType === "daily-event") {
+        iconEventContainer.classList.add('eventPlannerGrid');
+        let node = createElementFromHTML(`<i data-toggle="tooltip" 
+                                            data-placement="top" data-html="true" 
+                                            class="bi bi-calendar-event-fill"></i>`);
+        node.title = info.event.extendedProps.description
+        iconParent.insertBefore(node, iconParent.firstChild);
+    }
+}
+
+/**
+ * Creates node element from html string.
  * @param htmlString
  * @returns {ChildNode}
  */
@@ -163,6 +219,30 @@ function createElementFromHTML(htmlString) {
     let template = document.createElement('template');
     template.innerHTML = htmlString.trim();
     return template.content.firstChild;
+}
+
+/**
+ * Pulled from Craig Buckler's post. https://www.sitepoint.com/javascript-generate-lighter-darker-color/
+ * Adapted slightly to account for deprecated javascript.
+ * @param hex
+ * @param lum
+ * @returns {string}
+ */
+function colorLuminance(hex, lum) {
+    // validate hex string
+    hex = String(hex).replace(/[^0-9a-f]/gi, '');
+    if (hex.length < 6) {
+        hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    }
+    lum = lum || 0;
+    // convert to decimal and change luminosity
+    let rgb = "#", c, i;
+    for (i = 0; i < 3; i++) {
+        c = parseInt(hex.substring(i*2,i*2+2), 16);
+        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+        rgb += ("00"+c).substring(c.length);
+    }
+    return rgb;
 }
 
 /**

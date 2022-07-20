@@ -3,28 +3,49 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 public class PlannerDailyEvent {
 
-    public String Id;
-    public String date;
-    public String description;
-    public int numberOfEvents;
-    public String type;
-    public String classNames;
+    private final String id;
+    private final String date;
+    private String description;
+    private int numberOfEvents;
+    private final String type;
 
-    public PlannerDailyEvent(String id, String date, String description, int numberOfEvents, String classNames) {
-        this.Id = id;
+    public PlannerDailyEvent(String id, String date, String description, int numberOfEvents, String type) {
+        this.id = id;
         this.date = date;
         this.description = description + "\n";
         this.numberOfEvents = numberOfEvents;
-        this.type = classNames;
+        this.type = type;
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
     public String getDate() {
         return date;
     }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNumberOfEvents() {
+        return numberOfEvents;
+    }
+
+    public void setNumberOfEvents(int numberOfEvents) {
+        this.numberOfEvents = numberOfEvents;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 
     public void addNumberOfEvents() {
         this.numberOfEvents += 1;
