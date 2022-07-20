@@ -118,22 +118,17 @@ public class GroupsController {
     protected Set<User> getAllUsers() {
         Set<User> users = new HashSet<>();
         int offset = 0;
-        int sizeOfSet = 1;
+        boolean endOfUsersReached = false;
 
-        while (sizeOfSet > 0) {
-            UserListResponse userListResponse = userAccountClientService.getPaginatedUsers(offset, 50, "userId", true);
+        while (!endOfUsersReached) {
+            UserListResponse userListResponse = userAccountClientService.getPaginatedUsers(offset, 500, "userId", true);
             List<User> returnedUsers = userListResponse.getUsers();
-            sizeOfSet = userListResponse.getResultSetSize();
 
-            if (sizeOfSet > 0){
+            if (!returnedUsers.isEmpty()){
                 users.addAll(returnedUsers);
-            }
-
-            //Handle the pagination aspect of service method
-            if (sizeOfSet < 50){
-                sizeOfSet = 0;
+                offset += 500;
             } else {
-                offset += 50;
+                endOfUsersReached = true;
             }
         }
         return users;
