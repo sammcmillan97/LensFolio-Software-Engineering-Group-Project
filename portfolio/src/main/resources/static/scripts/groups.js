@@ -153,18 +153,34 @@ async function pasteMembers(currGroup) {
     let newGroupId = newTable.parentNode.id;
 
     // Only paste the users if it's not the same group
-    if (currentTable !== newTable.getElementsByTagName("tr")) {
-        clearTableSelection(currentTable)
-        lastRow = null
-
+    if (oldGroupId !== newGroupId) {
+        const teacherIds = getTeacherIds()
 
         // Fetch the user ids of the members to be added from the table
         let userIds = [];
         let userId;
+        let movingTeacherToGroupless = false
         for (let element of clipboard) {
             userId = element.getElementsByClassName("user_id")[0].innerText;
             userIds.push(parseInt(userId, 10));
+
+            // Check if the user is a teacher and trying to move a teacher to the groupless group
+            if (parseInt(newGroupId, 10) === GROUPLESS_GROUP_ID && (userIsTeacher && !userIsAdmin) && teacherIds.includes(parseInt(userId, 10))) {
+                movingTeacherToGroupless = true
+            }
         }
+
+        // If the user is a teacher and trying to move a teacher to the groupless group
+        if (movingTeacherToGroupless) {
+            // Confirm that the user wants to remove a teacher from all other groups
+            const confirmation = confirm("Note: You cannot remove teaching roles. \nAt least one selected user is a teacher, this will remove them from all other groups, but not remove their teaching role\nDo you want to continue?")
+            if (!confirmation) {
+                return;
+            }
+        }
+
+        clearTableSelection(currentTable)
+        lastRow = null
 
         // Build the url with parameters for the members to be added
         let url
@@ -377,8 +393,11 @@ async function removeSelectedUsers(button) {
 function removeButtonVisible(table, visible) {
     const groupId = table[0].parentNode.parentNode.id
 
-    // Don't do anything if it's the groupless group
+    // Don't do anything if it's the groupless group or if
+    // it's the teacher group and the user is a teacher
     if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID) {
+        return;
+    } else if (parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin)) {
         return;
     }
 
@@ -427,4 +446,17 @@ async function updateTableById(groupId, userIds) {
 function expandGroup(group) {
     group.getElementsByClassName("group__details collapse")[0].className = "group__details collapse show"
     group.getElementsByClassName("group__name")[0].setAttribute("aria-expanded", "true")
+}
+
+/**
+ * Returns a list of user ids of all users in the teachers group
+ */
+function getTeacherIds() {
+    const teacherRows = document.getElementById("group_" + TEACHER_GROUP_ID).getElementsByClassName("user_id");
+
+    let teacherIds = []
+    for (let teacher of teacherRows) {
+        teacherIds.push(parseInt(teacher.innerText, 10))
+    }
+    return teacherIds
 }
