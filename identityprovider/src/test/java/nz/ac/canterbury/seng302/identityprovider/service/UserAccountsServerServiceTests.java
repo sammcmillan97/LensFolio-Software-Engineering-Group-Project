@@ -588,7 +588,7 @@ class UserAccountsServerServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername("a".repeat(64))
                 .setPassword("a".repeat(64))
-                .setFirstName("a".repeat(64))
+                .setFirstName("a".repeat(64)) 
                 .setMiddleName("a".repeat(64))
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
