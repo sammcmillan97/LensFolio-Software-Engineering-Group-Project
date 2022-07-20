@@ -394,7 +394,7 @@ function checkResponse(data){
  */
 function editPolling(){
 //This promise will resolve when the network call succeeds
-    var networkPromise = fetch('/projects-editStatus?id=' + projectId);
+    var networkPromise = fetch('projects-editStatus?id=' + projectId);
 
 //This promise will resolve when 2 seconds have passed
     var timeOutPromise = new Promise(function(resolve, reject) {
@@ -414,7 +414,7 @@ $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 //dummy fetch so that if the user reloads the page manually it does not reload for them again automatically
-fetch('/projects-editStatus?id=' + projectId);
+fetch('projects-editStatus?id=' + projectId);
 setTimeout(function () {
     editPolling();
 }, 1000);
