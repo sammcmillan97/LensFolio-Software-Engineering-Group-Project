@@ -39,9 +39,6 @@ public class DevTools {
         onlyAdmin.addRole(UserRole.COURSE_ADMINISTRATOR);
         onlyAdmin.removeRole(UserRole.STUDENT);
         userRepository.save(onlyAdmin);
-        for (int i = 0; i < 100; i++) {
-            userRepository.save(new User("test" + i,"Test", "", "Clone","Tester", "", "", "tester@gmail.com", ADMIN_PASSWORD));
-        }
     }
 
     @RequestMapping("/deleteExampleUsers")
@@ -53,11 +50,6 @@ public class DevTools {
         Iterator<String> usernameIterator = usernames.iterator();
         while(usernameIterator.hasNext()) {
             testUser = userRepository.findByUsername(usernameIterator.next());
-            userRepository.deleteById(testUser.getUserId());
-        }
-
-        for (int i = 0; i < 100; i++) {
-            testUser = userRepository.findByUsername("test" + i);
             userRepository.deleteById(testUser.getUserId());
         }
     }
