@@ -38,6 +38,10 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
     private static final String IMAGE_FOLDER = "profile-images/";
+    private static final String ALIAS_SORT = "alias";
+    private static final String ROLES_SORT = "roles";
+    private static final String USERNAME_SORT = "username";
+    private static final String NAME_SORT = "name";
 
     @Value("${IDENTITY_CONTEXT}")
     private String context;
@@ -47,11 +51,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
 
     @Value("${ENV}")
     private String env;
-
-    private static final String ALIAS_SORT = "alias";
-    private static final String ROLES_SORT = "roles";
-    private static final String USERNAME_SORT = "username";
-    private static final String NAME_SORT = "name";
 
     @Autowired
     private UserRepository repository;
