@@ -30,14 +30,7 @@ public class ProfileController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-
-        int id = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-
-        User user = userService.getUserAccountById(id);
+        User user = userService.getUserAccountByPrincipal(principal);
 
         model.addAttribute("user", user);
         return "profile";

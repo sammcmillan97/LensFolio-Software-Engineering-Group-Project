@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
-import io.cucumber.java.an.Y;
 import nz.ac.canterbury.seng302.shared.identityprovider.PaginatedUsersResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ class UserListResponseTests {
         PaginatedUsersResponse source = PaginatedUsersResponse.newBuilder().addUsers(userResponse).build();
         UserListResponse response = new UserListResponse(source);
         assertEquals(source.getResultSetSize(), response.getResultSetSize());
-        assertEquals(userResponse.getFirstName(), response.getUsers().get(0).getFirstName());
+        assertEquals(new User(userResponse), response.getUsers().get(0));
     }
 
 }

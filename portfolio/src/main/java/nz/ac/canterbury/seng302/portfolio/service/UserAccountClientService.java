@@ -39,7 +39,8 @@ public class UserAccountClientService {
      * Creates a request to be sent to the IDP for requesting a paginated list of user responses
      * @param offset The number of users to be sliced from the original list of users from the DB
      * @param limit The max number of users to be returned to the list
-     * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles" Ends with "A" or "D" for descending or Ascending
+     * @param orderBy How the list of users will be sorted: "name", "username", "alias" and "roles"
+     * @param isAscending Whether the list is ascending or descending
      * @return A list of paginated, sorted and ordered user responses
      */
     public UserListResponse getPaginatedUsers(int offset, int limit, String orderBy, boolean isAscending) {
@@ -111,6 +112,7 @@ public class UserAccountClientService {
         return userStub.changeUserPassword(changePasswordRequest);
     }
 
+
     public EditUserResponse editUser(final int userId, final String firstName, final String middleName,
                                      final String lastName, final String nickname, final String bio,
                                      final String personalPronouns, final String email)  {
@@ -133,6 +135,29 @@ public class UserAccountClientService {
                 .build();
         UserResponse response = userStub.getUserAccountById(getUserByIdRequest);
         return new User(response);
+    }
+
+    /**
+     * Uses the AuthState of the logged in user to get their user object
+     * @param principal Authentication principal storing current user information
+     * @return the logged in user's User object
+     */
+    public User getUserAccountByPrincipal(AuthState principal){
+        int userId = getUserId(principal);
+        return getUserAccountById(userId);
+    }
+
+    /**
+     * Uses the AuthState of the logged in user to get their user id
+     * @param principal Authentication principal storing current user information
+     * @return the logged in user's id
+     */
+    public int getUserId(AuthState principal) {
+        return Integer.parseInt(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
     }
 
     public UserRegisterResponse register(final String username, final String password, final String firstName,
@@ -169,6 +194,11 @@ public class UserAccountClientService {
         return roles.contains("teacher") || roles.contains("courseadministrator");
     }
 
+    public boolean isAdmin(AuthState principal) {
+        String roles = getRoles(principal);
+        return roles.contains("courseadministrator");
+    }
+
     /**
      * Add role to a user
      * @param userId of user being altered
@@ -195,6 +225,11 @@ public class UserAccountClientService {
                 .setRole(role)
                 .build();
         return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
+    }
+
+    //TO-DO
+    public int getCurrentProject(){
+        return 1;
     }
 
 }

@@ -77,7 +77,7 @@ h5 {
     display: none;
     position: absolute;
     background-color: var(--color-secondary);
-    min-width: 160px;
+    min-width: 200px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
@@ -158,6 +158,7 @@ h5 {
     line-height: 3rem;
     border-radius: 4px;
     margin: 0.5rem 1rem 0.5rem 1rem;
+    /*width: 210px;*/
 
     /* Behaviour */
     cursor: pointer;
@@ -192,4 +193,72 @@ h5 {
 
 #page-content.expanded, #page-header.expanded {
     margin-left: 0;
+}
+
+/******************** Project Selection ********************/
+.dropdown {
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    pagging: 0;
+}
+
+#projects-button {
+    /* Position & size */
+    display: block;
+    height: 3rem;
+    line-height: 3rem;
+    border-radius: 4px;
+    margin: 0.5rem 1rem 0.5rem 1rem;
+    /*width: 210px;*/
+
+    /* Behaviour */
+    cursor: pointer;
+
+    /* Text */
+    text-decoration: none;
+    font-weight: 200;
+    color: var(--color-complement);
+    text-align: left;
+    text-indent: 1rem;
+}
+
+#projects-button.active {
+    background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
+}
+
+#projects-button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content.active {
+    background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.site-navigation__sublink {
+    /* Position & size */
+    display: block;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.site-navigation__sublink.active {
+    background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
+}
+
+.site-navigation__sublink:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }

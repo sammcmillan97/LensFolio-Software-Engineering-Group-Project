@@ -12,8 +12,11 @@ import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StreamUtils;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +37,20 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private static final String PRONOUNS_FIELD = "personalPronouns";
     private static final String PASSWORD_FIELD = "password";
     private static final String CURRENT_PASSWORD_FIELD = "currentPassword";
+    private static final String IMAGE_FOLDER = "profile-images/";
+    private static final String ALIAS_SORT = "alias";
+    private static final String ROLES_SORT = "roles";
+    private static final String USERNAME_SORT = "username";
+    private static final String NAME_SORT = "name";
+
+    @Value("${IDENTITY_CONTEXT}")
+    private String context;
+
+    @Value("${IMAGE_SRC}")
+    private String imageSrc;
+
+    @Value("${ENV}")
+    private String env;
 
     @Autowired
     private UserRepository repository;
@@ -42,10 +59,11 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * Checks if the requesting user is authenticated.
      * @return True if the requesting user is authenticated
      */
-    private boolean isAuthenticated() {
+    protected boolean isAuthenticated() {
         AuthState authState = AuthenticationServerInterceptor.AUTH_STATE.get();
         return authState.getIsAuthenticated();
     }
+
 
     /**
      * Checks if the requesting user is authenticated as the claimed user.
@@ -105,13 +123,13 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
         //Sorting the list based on the requested order string
         Comparator<UserResponse> comparator = switch (request.getOrderBy()) {
-            case ("name") -> //Compare method for ordering by name
+            case (NAME_SORT) -> //Compare method for ordering by name
                     this::paginatedUsersNameSort;
-            case ("username") -> // Compare method for ordering by username
+            case (USERNAME_SORT) -> // Compare method for ordering by username
                     Comparator.comparing(UserResponse::getUsername);
-            case ("alias") -> //compare method for ordering by alias
+            case (ALIAS_SORT) -> //compare method for ordering by alias
                     Comparator.comparing(UserResponse::getNickname);
-            case ("roles") -> //Compare method for ordering by roles
+            case (ROLES_SORT) -> //Compare method for ordering by roles
                     this::paginatedUsersRolesSort;
             default -> //Default compare method uses sort by name
                     this::paginatedUsersNameSort;
@@ -226,20 +244,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     }
                 } else {
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
-
                     try {
                         output.write(fileContent);
                         output.write(request.getFileContent().toByteArray());
                     } catch (IOException e) {
                         responseObserver.onError(e);
                     }
-
                     fileContent = output.toByteArray();
                 }
                 FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                         .setStatus(FileUploadStatus.IN_PROGRESS).setMessage("In progress").build();
                 responseObserver.onNext(response);
-
             }
 
             @Override
@@ -249,19 +264,22 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                 } else {
                     if (isAuthenticatedAsUser(metaData.getUserId())) {
                         User user = repository.findByUserId(metaData.getUserId());
-
                         if (user.getProfileImagePath() != null) {
-                            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
+                            File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
                             if (!oldPhoto.delete()) {
                                 responseObserver.onError(new FileNotFoundException());
                             }
                         }
-                        user.setProfileImagePath("profile-images/" + user.getUsername() + "." + metaData.getFileType());
-                        String filepath = "src/main/resources/" + user.getProfileImagePath();
+
+                        user.setProfileImagePath(user.getUsername() + "." +  metaData.getFileType());
+                        repository.save(user);
+
+                        String filepath = imageSrc + env + user.getUsername() + "." + metaData.getFileType();
                         File file = new File(filepath);
-                        try (OutputStream os = new FileOutputStream(file)) {
+
+                        try {
+                            OutputStream os = new FileOutputStream(file);
                             os.write(fileContent);
-                            repository.save(user);
                             FileUploadStatusResponse response = FileUploadStatusResponse.newBuilder()
                                     .setStatus(FileUploadStatus.SUCCESS).setMessage("Success").build();
                             responseObserver.onNext(response);
@@ -273,10 +291,8 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                         //not authenticated as user, illegal action
                         responseObserver.onError(new IllegalStateException());
                     }
-
                 }
             }
-
             @Override
             public void onError(Throwable throwableError) {
                 // Client should never throw an error, so server does not need to handle them.
@@ -315,12 +331,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         DeleteUserProfilePhotoResponse response;
         User user = repository.findByUserId(request.getUserId());
         if (user.getProfileImagePath() != null) {
-            File oldPhoto = new File("src/main/resources/" + user.getProfileImagePath());
-            if (oldPhoto.delete()) {
-                user.setProfileImagePath(null);
-                repository.save(user);
-                response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
-            } else {
+            try {
+                File oldPhoto = new File(imageSrc + env + user.getProfileImagePath());
+                boolean success = oldPhoto.delete();
+                if (success) {
+                    user.setProfileImagePath(null);
+                    repository.save(user);
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(true).build();
+                } else {
+                    response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
+                }
+            } catch (Exception e) {
                 response = DeleteUserProfilePhotoResponse.newBuilder().setIsSuccess(false).build();
             }
         } else {
@@ -455,6 +476,17 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     }
 
     /**
+     * Method to get UserById
+     * So outside services can access users the user service
+     * @param userId The userId
+     * @return The User being returned
+     */
+    @VisibleForTesting
+    public User getUserById(int userId) {
+        return repository.findByUserId(userId);
+    }
+
+    /**
      * If the user is authenticated as any valid user, attempt to get the information of the requested user
      * @param request The request to get the user's information
      * @param responseObserver The observer to send the response over
@@ -478,8 +510,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param request A get user by id request according to user_accounts.proto
      * @return A user response according to user_accounts.proto
      */
-    @VisibleForTesting
-    UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
+    public UserResponse getUserAccountByIdHandler(GetUserByIdRequest request) {
         UserResponse.Builder reply = UserResponse.newBuilder();
 
         if (repository.existsById(request.getId())) {
@@ -496,9 +527,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
                     .setId(user.getUserId())
                     .addAllRoles(user.getRoles());
             if (user.getProfileImagePath() != null) {
-                reply.setProfileImagePath("resources/" + user.getProfileImagePath());
+                reply.setProfileImagePath(context + "/ProfilePicture-" + user.getProfileImagePath());
             } else {
-                reply.setProfileImagePath("resources/profile-images/default/default.jpg");
+                reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
             }
         }
         return reply.build();
@@ -718,7 +749,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkPersonalPronouns(String personalPronouns) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern pronounsPattern = Pattern.compile(".+/.+"); // matches any/any
+        Pattern pronounsPattern = Pattern.compile(".{1,15}/.{1,15}"); // matches any/any
         Matcher pronounsMatcher = pronounsPattern.matcher(personalPronouns);
         boolean validPronouns = pronounsMatcher.find();
 
@@ -742,7 +773,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
     private List<ValidationError> checkEmail(String email) {
         List<ValidationError> validationErrors = new ArrayList<>();
 
-        Pattern emailPattern = Pattern.compile(".+@.+\\..+"); // matches any@any.any
+        Pattern emailPattern = Pattern.compile(".{1,50}@.{1,50}\\..{1,50}"); // matches any@any.any
         Matcher emailMatcher = emailPattern.matcher(email);
         boolean validEmail = emailMatcher.find();
         if (email.equals("")) {
@@ -777,7 +808,6 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         }
 
         if (password.length() > 64) {
-            System.out.println("Password too long");
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Password must be less than 65 characters").setFieldName(PASSWORD_FIELD).build();
             validationErrors.add(validationError);
         }
@@ -983,6 +1013,34 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
             hasOneRole = true;
         }
         return hasOneRole;
+    }
+
+    public byte[] getProfilePicture(String filename) {
+        try {
+            File currentDirFile = new File(".");
+            String helper = currentDirFile.getAbsolutePath();
+            helper = helper.substring(0, helper.length() - 1);
+            Path photoRelPath = Path.of(helper + "profile-images/" + env + filename);
+            InputStream inputStream = new FileInputStream(photoRelPath.toFile());
+            return StreamUtils.copyToByteArray(inputStream);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Checks if the user has the teacher or course administrator role
+     * @return true if it meets the required conditions or else false
+     */
+    protected boolean isTeacher() {
+        User user = repository.findByUserId(getAuthStateUserId());
+        Set<UserRole> roles = user.getRoles();
+        for (UserRole userRole : roles) {
+            if (userRole == UserRole.TEACHER || userRole == UserRole.COURSE_ADMINISTRATOR) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

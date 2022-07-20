@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +26,9 @@ public class LoginController {
     @Autowired
     private AuthenticateClientService authenticateClientService;
 
+    private static final String COOKIE_NAME = "lens-session-token";
+    private static final String LOGIN = "login";
+
     /**
      * Gets the mapping to the login page html and renders it
      * @param response Login response
@@ -34,6 +36,10 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
+        CookieUtil.clear(
+                response,
+                COOKIE_NAME
+        );
         return LOGIN;
     }
 
@@ -42,7 +48,7 @@ public class LoginController {
      * @param response Login response
      * @return the mapping to the login html page.
      */
-    @RequestMapping("/")
+    @GetMapping("/")
     public String home(HttpServletResponse response) {
         return "redirect:/" + LOGIN;
     }
@@ -56,7 +62,7 @@ public class LoginController {
     public String logout(HttpServletResponse response) {
         CookieUtil.clear(
                 response,
-                "lens-session-token"
+                COOKIE_NAME
         );
         return "redirect:/" + LOGIN;
     }
@@ -99,12 +105,13 @@ public class LoginController {
             var domain = request.getHeader("host");
             CookieUtil.create(
                 response,
-                "lens-session-token",
+                    COOKIE_NAME,
                     loginReply.getToken(),
                 true,
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
+
             return "redirect:/profile";
         } else {
             model.addAttribute("loginMessage", loginReply.getMessage());

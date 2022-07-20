@@ -42,6 +42,8 @@ public class PlannerController {
 
     @Autowired
     private UserAccountClientService userService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     private boolean plannerUpdated = false;
     private String plannerDate;
@@ -60,7 +62,7 @@ public class PlannerController {
                           Model model) {
 
         int projectId = Integer.parseInt(id);
-        Project project = null;
+        Project project;
 
         try {
             project = projectService.getProjectById(projectId);
@@ -107,7 +109,7 @@ public class PlannerController {
                           Model model) {
 
         List<Project> projects = projectService.getAllProjects();
-        Project project = null;
+        Project project;
         if (!projects.isEmpty()) {
             project = projects.get(0);
         } else {
@@ -116,14 +118,8 @@ public class PlannerController {
             endDate.add(Calendar.MONTH, 8);
             project = new Project("Default Project", "Random Description", startDate.getTime(), endDate.getTime());
         }
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
 
-
-        User user = userService.getUserAccountById(userId);
+        User user = userService.getUserAccountByPrincipal(principal);
 
         model.addAttribute("user", user);
         model.addAttribute("project", project);

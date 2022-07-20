@@ -45,11 +45,7 @@ public class ProjectEditsController {
                                  @RequestParam String id) {
         boolean isAuthenticated = authenticateClientService.checkAuthState().getIsAuthenticated();
         boolean isTeacher = userAccountClientService.isTeacher(principal) && isAuthenticated;
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int userId = userAccountClientService.getUserId(principal);
 
         int projectId;
         try {
@@ -80,11 +76,7 @@ public class ProjectEditsController {
                                  @RequestParam String id,
                                  @RequestParam String name) {
         boolean isTeacher = userAccountClientService.isTeacher(principal) && authenticateClientService.checkAuthState().getIsAuthenticated();
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
+        int userId = userAccountClientService.getUserId(principal);
         int projectId;
         try {
             projectId = Integer.parseInt(id);

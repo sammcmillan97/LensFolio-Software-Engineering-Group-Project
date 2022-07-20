@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +36,10 @@ public class EditProjectController {
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
                                   "04/Nov/2022");
 
+    private static final String PROJECT_REDIRECT = "redirect:/projects";
+    private static final String EDIT_PROJECT_REDIRECT = "redirect:/editProject-";
+    private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+
     /**
      * Method to return a calendar object representing the very beginning of a day
      * @return Calendar object
@@ -61,16 +64,11 @@ public class EditProjectController {
     @GetMapping("/editProject-{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return PROJECT_REDIRECT;
         }
 
         // Add user details to model
-        int userId = Integer.parseInt(principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("nameid"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("-100"));
-        User user = userAccountClientService.getUserAccountById(userId);
+        User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
 
         int id = Integer.parseInt(projectId);
@@ -104,19 +102,19 @@ public class EditProjectController {
         model.addAttribute("projectId", project.getId());
         model.addAttribute("projectName", project.getName());
         model.addAttribute("projectDescription", project.getDescription());
-        model.addAttribute("projectStartDateString", Project.dateToString(project.getStartDate(), "yyyy-MM-dd"));
-        model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), "yyyy-MM-dd"));
+        model.addAttribute("projectStartDateString", Project.dateToString(project.getStartDate(), DATE_FORMAT_STRING));
+        model.addAttribute("projectEndDateString", Project.dateToString(project.getEndDate(), DATE_FORMAT_STRING));
 
         // A project can only be added up to a year ago
         Calendar cal = getCalendarDay();
         cal.add(Calendar.YEAR, -1);
         java.util.Date minStartDate = java.util.Date.from(cal.toInstant());
-        model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, "yyyy-MM-dd"));
+        model.addAttribute("minProjectStartDate", Project.dateToString(minStartDate, DATE_FORMAT_STRING));
 
         // A project must end within 10 years from today
         cal.add(Calendar.YEAR, 11);
         java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
-        model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, "yyyy-MM-dd"));
+        model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, DATE_FORMAT_STRING));
 
         // Check if the project has any sprints
         List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
@@ -153,7 +151,6 @@ public class EditProjectController {
      * @param projectStartDate The project start date to be edited
      * @param projectEndDate The project end date to be edited
      * @param projectDescription The project description to be edited
-     * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return Edit project page
      */
     @PostMapping("/editProject-{id}")
@@ -163,11 +160,10 @@ public class EditProjectController {
             @RequestParam(value="projectName") String projectName,
             @RequestParam(value="projectStartDate") Date projectStartDate,
             @RequestParam(value="projectEndDate") Date projectEndDate,
-            @RequestParam(value="projectDescription") String projectDescription,
-            Model model
+            @RequestParam(value="projectDescription") String projectDescription
     ) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+            return PROJECT_REDIRECT;
         }
 
         // Ensure request parameters represent a valid project
@@ -176,22 +172,22 @@ public class EditProjectController {
         try {
             id = Integer.parseInt(projectId);
         } catch (NumberFormatException e) {
-            return "redirect:/projects";
+            return PROJECT_REDIRECT;
         }
 
         // Check the project name isn't null, empty, too long or consists of whitespace
         if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
-            return "redirect:/editProject-" + projectId;
+            return EDIT_PROJECT_REDIRECT + projectId;
             // Check project name is
         }
 
         if (projectDescription.length() > 255) {
-            return "redirect:/projects/edit/" + projectId;
+            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // Check dates are not null
         if (projectEndDate == null || projectStartDate == null) {
-            return "redirect:/projects/edit/" + projectId;
+            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -202,14 +198,14 @@ public class EditProjectController {
         projectStartCal.setTime(projectStartDate);
 
         if (projectStartCal.before(yearAgoCal)) {
-            return "redirect:/editProject-" + projectId;
+            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // Ensure projectEndDate occurs after projectStartDate
         Calendar projectEndCal = getCalendarDay();
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
-            return "redirect:/editProject-" + projectId;
+            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // If editing existing project
@@ -224,7 +220,7 @@ public class EditProjectController {
                 savedProject = projectService.saveProject(existingProject);
 
             } catch(Exception ignored) {
-                return "redirect:/editProject-" + projectId;
+                return EDIT_PROJECT_REDIRECT + projectId;
             }
 
         // Otherwise, create a new project with given values
@@ -244,16 +240,17 @@ public class EditProjectController {
      */
     @DeleteMapping(value="/editProject-{id}")
     public String deleteProjectById(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId) {
-        if (!userAccountClientService.isTeacher(principal)) {
-            return "redirect:/projects";
+        if (userAccountClientService.isTeacher(principal)) {
+            int id = Integer.parseInt(projectId);
+            try {
+                projectService.deleteProjectById(id);
+            } catch (Exception ignored) {
+                // Don't do anything if delete fails
+            }
         }
 
-        int id = Integer.parseInt(projectId);
-        try {
-            projectService.deleteProjectById(id);
-        } catch (Exception e) {
-        }
-        return "redirect:/projects";
+
+        return PROJECT_REDIRECT;
     }
 
 }

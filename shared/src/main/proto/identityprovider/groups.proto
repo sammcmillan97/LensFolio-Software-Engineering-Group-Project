@@ -3,6 +3,7 @@ syntax = "proto3";
 package nz.ac.canterbury.seng302;
 import "identityprovider/user_accounts.proto";
 import "util/validation_error.proto";
+import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
 option java_package = "nz.ac.canterbury.seng302.shared.identityprovider";
@@ -65,10 +66,23 @@ message GetGroupDetailsRequest {
   int32 GroupId = 1;
 }
 
-message GetGroupDetailsResponse {
-  string ShortName = 1;
-  string LongName = 2;
-  repeated UserResponse Members = 3;
+message GroupDetailsResponse {
+  int32 GroupId = 1;
+  string ShortName = 2;
+  string LongName = 3;
+  repeated UserResponse Members = 4;
+}
+
+message GetPaginatedGroupsRequest {
+  int32 Offset = 1;
+  int32 Limit = 2;
+  string OrderBy = 3;
+  bool IsAscendingOrder = 4;
+}
+
+message PaginatedGroupsResponse {
+  repeated GroupDetailsResponse Groups = 1;
+  int32 ResultSetSize = 2;
 }
 
 service GroupsService {
@@ -77,5 +91,9 @@ service GroupsService {
   rpc RemoveGroupMembers (RemoveGroupMembersRequest) returns (RemoveGroupMembersResponse);
   rpc ModifyGroupDetails (ModifyGroupDetailsRequest) returns (ModifyGroupDetailsResponse);
   rpc DeleteGroup (DeleteGroupRequest) returns (DeleteGroupResponse);
-  rpc GetGroupDetails (GetGroupDetailsRequest) returns (GetGroupDetailsResponse);
+  rpc GetGroupDetails (GetGroupDetailsRequest) returns (GroupDetailsResponse);
+  rpc GetPaginatedGroups (GetPaginatedGroupsRequest) returns (PaginatedGroupsResponse);
+  // Calls for special groups
+  rpc GetTeachingStaffGroup (google.protobuf.Empty) returns (GroupDetailsResponse);
+  rpc GetMembersWithoutAGroup (google.protobuf.Empty) returns (GroupDetailsResponse);
 }

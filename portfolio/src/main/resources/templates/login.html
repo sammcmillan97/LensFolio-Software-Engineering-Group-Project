@@ -12,7 +12,6 @@
         <div class="title"><span>Login</span></div>
         <p th:text="${loginMessage}" />
         <form th:action="${'login'}" method="post">
-<!--            <p th:if="${error}" class="error">Incorrect UserName & Password</p>-->
             <div class="row">
                 <label>
                     <input type="text" required placeholder="Username" th:name="username">

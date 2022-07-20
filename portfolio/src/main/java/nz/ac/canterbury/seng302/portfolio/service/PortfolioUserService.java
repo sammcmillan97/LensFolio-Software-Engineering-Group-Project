@@ -1,15 +1,22 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioUserRepository;
+import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class PortfolioUserService {
 
     @Autowired
     private PortfolioUserRepository repository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     /**
      * Gets a user by their id. Creates a default user with that id if none exists.
@@ -72,6 +79,38 @@ public class PortfolioUserService {
         PortfolioUser user = getUserById(id);
         user.setUserListSortAscending(userListSortIsAscending);
         repository.save(user);
+    }
+
+    /**
+     * Get authenticated user's current project
+     * @param userId of authenticated user
+     * @return current selected project else first in project repo
+     */
+    public Project getCurrentProject(int userId){
+        PortfolioUser portfolioUser = repository.findByUserId(userId);
+        int id = portfolioUser.getCurrentProject();
+        Project project = projectRepository.findById(id);
+        if (project==null){
+            return projectRepository.findAll().iterator().next();
+        } else {
+            return project;
+        }
+
+    }
+
+    /**
+     *
+     * @param userId
+     * @param projectId
+     */
+    public void setProject(int userId, int projectId){
+        PortfolioUser portfolioUser = repository.findByUserId(userId);
+        if (portfolioUser==null) {
+            PortfolioUser portfolioUser1 = new PortfolioUser(userId);
+            repository.save(portfolioUser1);
+        }
+        portfolioUser.setCurrentProject(projectId);
+        repository.save(portfolioUser);
     }
 
 }
