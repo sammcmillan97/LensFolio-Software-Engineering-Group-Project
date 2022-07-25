@@ -36,10 +36,6 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String login(HttpServletResponse response) {
-        CookieUtil.clear(
-                response,
-                COOKIE_NAME
-        );
         return LOGIN;
     }
 
