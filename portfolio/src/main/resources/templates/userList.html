@@ -49,7 +49,7 @@
         <tbody>
             <div th:each="listedUser : ${users}">
                 <tr>
-                    <td><span th:text="${listedUser.fullName}"> Name </span></td>
+                    <td><a th:href="@{profile-{id}(id=${listedUser.id})}" th:text="${listedUser.fullName}">Name</a></td>
                     <td><span th:text="${listedUser.username}"> Username </span></td>
                     <td><span th:text="${listedUser.nickname}"> Alias </span></td>
                     <td>

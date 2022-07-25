@@ -25,10 +25,31 @@ public class PortfolioController {
      * Display the user's portfolio page.
      * @param principal Authentication state of client
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return The string "evidenceList"
+     * @return The portfolio page.
+     */
+    @GetMapping("/portfolio")
+    public String portfolio(
+            @AuthenticationPrincipal AuthState principal,
+            Model model
+    ) {
+        User user = userService.getUserAccountByPrincipal(principal);
+        model.addAttribute("user", user);
+        model.addAttribute("pageUser", user);
+        model.addAttribute("owner", true);
+        return "portfolio";
+    }
+
+    /**
+     * Display a user's portfolio page.
+     * If the user does not exist redirects to the requesters profile page.
+     * Users who try to view their own page are taken to a page with edit permissions.
+     * @param principal Authentication state of client
+     * @param userId The ID of the user whose portfolio we are viewing
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The portfolio page, or a redirect to profile if the user does not exist.
      */
     @GetMapping("/portfolio-{userId}")
-    public String profile(
+    public String viewPortfolio(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("userId") int userId,
             Model model
@@ -39,7 +60,10 @@ public class PortfolioController {
         model.addAttribute("pageUser", pageUser);
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
+        } else if (user.getId() == pageUser.getId()) {
+            return "redirect:/portfolio"; // Take user to their own portfolio if they try to view it
         } else {
+            model.addAttribute("owner", false);
             return "portfolio";
         }
     }
