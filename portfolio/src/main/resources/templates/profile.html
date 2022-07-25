@@ -35,7 +35,7 @@
                 <p class="profile_body__content"><strong >Date of Registration </strong>  <p th:text="${user.memberSince}" /> </p>
                 <div class="profile_body__content" th:if="${pageUser.bio != ''}"><strong >Bio</strong><p id="profile__user-biography" th:text="${pageUser.bio}" /> </div>
                 <p class="profile_body__content"><strong >Roles</strong><p><div id="role-button" th:each="role: ${pageUser.roleStrings}" th:text="${role}"></div> </p> </p>
-                <a th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}}">Portfolio</a>
+                <a class="btn btn-fill-tertiary" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}}">Portfolio</a>
             </div>
         </div>
     </div>
