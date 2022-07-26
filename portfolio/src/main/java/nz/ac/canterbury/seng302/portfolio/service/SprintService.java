@@ -58,6 +58,7 @@ public class SprintService {
     }
 
     public void saveSprint(Sprint sprint) {
+        projectEditsService.refreshProject(sprint.getParentProjectId());
         repository.save(sprint);
     }
 
