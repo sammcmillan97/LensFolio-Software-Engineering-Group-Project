@@ -179,22 +179,11 @@ public class UserAccountClientService {
     }
 
     protected Collection<UserRole> getRoles(AuthState principal) {
-        User user = getUserAccountByPrincipal(principal);
-        return user.getRoles();
+        return getUserAccountByPrincipal(principal).getRoles();
     }
 
     public boolean isLoggedIn(AuthState principal) {
         return principal != null;
-    }
-
-    public boolean isTeacher(AuthState principal) {
-        Collection<UserRole> roles = getRoles(principal);
-        return roles.contains(UserRole.TEACHER) || roles.contains(UserRole.COURSE_ADMINISTRATOR);
-    }
-
-    public boolean isAdmin(AuthState principal) {
-        Collection<UserRole> roles = getRoles(principal);
-        return roles.contains(UserRole.COURSE_ADMINISTRATOR);
     }
 
     /**
@@ -223,6 +212,22 @@ public class UserAccountClientService {
                 .setRole(role)
                 .build();
         return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
+    }
+
+    public boolean isTeacher(AuthState principal) {
+        return isTeacherHandler(getRoles(principal));
+    }
+
+    public boolean isTeacherHandler(Collection<UserRole> roles){
+        return roles.contains(UserRole.TEACHER) || roles.contains(UserRole.COURSE_ADMINISTRATOR);
+    }
+
+    public boolean isAdmin(AuthState principal) {
+        return isAdminHandler(getRoles(principal));
+    }
+
+    protected boolean isAdminHandler(Collection<UserRole> roles){
+        return roles.contains(UserRole.COURSE_ADMINISTRATOR);
     }
 
 }
