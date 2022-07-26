@@ -11,14 +11,16 @@ public class Evidence {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int ownerId; // ID of the user who owns this evidence piece
+    private int projectId; // ID of the project this evidence relates to
     private String title;
     private String description;
     private Date date;
 
     public Evidence() {}
 
-    public Evidence(int ownerId, String title, String description, Date date) {
+    public Evidence(int ownerId, int projectId, String title, String description, Date date) {
         this.ownerId = ownerId;
+        this.projectId = projectId;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -27,8 +29,8 @@ public class Evidence {
     @Override
     public String toString() {
         return String.format(
-                "Sprint[id=%d, ownerId=%d, title='%s', description='%s', date='%s']",
-                id, ownerId, title, description, date);
+                "Sprint[id=%d, ownerId=%d, projectId=%d, title='%s', description='%s', date='%s']",
+                id, ownerId, projectId, title, description, date);
     }
 
     public int getId() {
@@ -37,6 +39,10 @@ public class Evidence {
 
     public int getOwnerId() {
         return ownerId;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 
     public String getTitle() {

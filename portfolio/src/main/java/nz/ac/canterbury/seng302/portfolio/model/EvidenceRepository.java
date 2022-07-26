@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EvidenceRepository extends CrudRepository<Sprint, Integer> {
+public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     Evidence findById(int id);
-    List<Evidence> findByOwnerId(int ownerId);
+    List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
 }
