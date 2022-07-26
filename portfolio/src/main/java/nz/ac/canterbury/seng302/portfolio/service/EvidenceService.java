@@ -43,7 +43,7 @@ public class EvidenceService {
     }
 
     public void saveEvidence(Evidence evidence) {
-        Project project = projectService.getProjectById(evidence.getId());
+        Project project = projectService.getProjectById(evidence.getProjectId());
         if (!project.getStartDate().after(evidence.getDate()) && !project.getEndDate().before(evidence.getDate())) {
             repository.save(evidence);
         } else {
