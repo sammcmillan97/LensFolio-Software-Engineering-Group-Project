@@ -24,7 +24,6 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ProfileController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileControllerTests {
