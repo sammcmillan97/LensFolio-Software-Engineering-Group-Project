@@ -18,7 +18,8 @@
 
 <div id="page-content" class="constrict">
     <div class="container">
-        Hello World!
+        <a th:if="${owner}" class="add-evidence-button" th:href="@{'add-evidence'}">Add Evidence</a>
+        <p> Hello World! </p>
         <p th:text="(${owner} ? 'Your portfolio' : 'Not your portfolio')"></p>
         <a class="btn btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
