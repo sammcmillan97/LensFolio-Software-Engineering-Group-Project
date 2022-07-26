@@ -225,9 +225,4 @@ public class UserAccountClientService {
         return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
     }
 
-    //TO-DO
-    public int getCurrentProject(){
-        return 1;
-    }
-
 }

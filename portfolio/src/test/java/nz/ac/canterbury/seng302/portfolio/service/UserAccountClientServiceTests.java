@@ -1,24 +1,30 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import com.google.protobuf.Timestamp;
-import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 class UserAccountClientServiceTests {
-    
+
+    @Autowired
+    UserAccountClientService userAccountClientService;
+
+    @Test
+    void testLoggedIn_PrincipalIsNull(){
+        AuthState principal = null;
+        assertFalse(userAccountClientService.isLoggedIn(principal));
+    }
+
+    @Test
+    void testLoggedIn_PrincipalIsNotNull(){
+        AuthState principal = AuthState.newBuilder()
+                .addClaims(ClaimDTO.newBuilder().setType("role").setValue("student").build())
+                .build();
+        assertTrue(userAccountClientService.isLoggedIn(principal));
+    }
 }
