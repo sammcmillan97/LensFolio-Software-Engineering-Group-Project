@@ -1,0 +1,22 @@
+.btn-fill-tertiary:hover {
+    color: #f78e55;
+    border-color: #f78e55;
+    background-color: #f4ebe6;
+    height: 3rem;
+    box-shadow: none !important;
+    width: 100%;
+    font-size: 1.5rem;
+}
+
+.btn-fill-tertiary {
+    color: white;
+    border-color: var(--color-accent);
+    background-color: #e06c41;
+    border-radius: 3px;
+    padding: 5px;
+    height: 3rem;
+    box-shadow: none !important;
+    width: 100%;
+    font-size: 1.5rem;
+    text-decoration: none;
+}

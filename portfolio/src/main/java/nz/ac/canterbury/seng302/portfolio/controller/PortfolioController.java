@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Objects;
 
 /**
- * The controller for handling backend of the profile page
+ * The controller for handling backend of the evidence list page
  */
 @Controller
-public class ProfileController {
+public class PortfolioController {
 
     @Autowired
     private UserAccountClientService userService;
 
     /**
-     * Display the user's profile page.
+     * Display the user's portfolio page.
      * @param principal Authentication state of client
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return The string "profile"
+     * @return The portfolio page.
      */
-    @GetMapping("/profile")
-    public String profile(
+    @GetMapping("/portfolio")
+    public String portfolio(
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
@@ -36,18 +36,20 @@ public class ProfileController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
-        return "profile";
+        return "portfolio";
     }
 
     /**
-     * Display another user's profile page. If the user does not exist redirect to the requesters profile page.
+     * Display a user's portfolio page.
+     * If the user does not exist redirects to the requesters profile page.
+     * Users who try to view their own page are taken to a page with edit permissions.
      * @param principal Authentication state of client
-     * @param userId The ID of the user whose profile we are viewing
+     * @param userId The ID of the user whose portfolio we are viewing
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return The string "profile"
+     * @return The portfolio page, or a redirect to profile if the user does not exist.
      */
-    @GetMapping("/profile-{userId}")
-    public String viewProfile(
+    @GetMapping("/portfolio-{userId}")
+    public String viewPortfolio(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("userId") int userId,
             Model model
@@ -56,11 +58,13 @@ public class ProfileController {
         model.addAttribute("user", user);
         User pageUser = userService.getUserAccountById(userId);
         model.addAttribute("pageUser", pageUser);
-        if (Objects.equals(pageUser.getUsername(), "") || user.getId() == pageUser.getId()) {
+        if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
+        } else if (user.getId() == pageUser.getId()) {
+            return "redirect:/portfolio"; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
-            return "profile";
+            return "portfolio";
         }
     }
 }
