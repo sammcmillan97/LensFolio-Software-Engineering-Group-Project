@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/portfolio.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+    <title>Add Evidence</title>
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<div id="page-content" class="constrict">
+    <div class="container">
+        <p> Hello World! This page is to be done in another task. </p>
+        <p th:text="'Your name is : ' + ${user.fullName}"></p>
+        <a class="btn btn-fill-tertiary" th:href="portfolio">Back</a>
+    </div>
+</div>
+</body>
+</html>
