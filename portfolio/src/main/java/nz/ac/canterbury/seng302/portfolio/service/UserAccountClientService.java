@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -177,12 +178,9 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
-    private String getRoles(AuthState principal) {
-        return principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("role"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("NOT FOUND");
+    private Collection<UserRole> getRoles(AuthState principal) {
+        User user = getUserAccountByPrincipal(principal);
+        return user.getRoles();
     }
 
     public boolean isLoggedIn(AuthState principal) {
@@ -190,13 +188,13 @@ public class UserAccountClientService {
     }
 
     public boolean isTeacher(AuthState principal) {
-        String roles = getRoles(principal);
-        return roles.contains("teacher") || roles.contains("courseadministrator");
+        Collection<UserRole> roles = getRoles(principal);
+        return roles.contains(UserRole.TEACHER) || roles.contains(UserRole.COURSE_ADMINISTRATOR);
     }
 
     public boolean isAdmin(AuthState principal) {
-        String roles = getRoles(principal);
-        return roles.contains("courseadministrator");
+        Collection<UserRole> roles = getRoles(principal);
+        return roles.contains(UserRole.COURSE_ADMINISTRATOR);
     }
 
     /**
