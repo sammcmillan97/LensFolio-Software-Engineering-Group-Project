@@ -47,19 +47,38 @@ class EvidenceServiceTests {
         evidenceRepository.deleteAll();
     }
 
-    //When the date of the evidence is out of range of the project, test it is rejected.
+    //When the date of the evidence is out of range of the project near the start, test it is rejected.
     @Test
-    void whenDateOutOfRangeTestEvidenceRejected() {
+    void whenDateOutOfRangeAtStartTestEvidenceRejected() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-8"));
         assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Date not valid");
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
         assertEquals(0, evidenceList.size());
     }
 
-    //When the date of the evidence is in the range of the project, test it is accpeted.
+    //When the date of the evidence is in the range of the project near the start, test it is accepeted.
     @Test
-    void whenDateInRangeTestEvidenceSaved() {
+    void whenDateInRangeAtStartTestEvidenceSaved() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-9"));
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        assertEquals(evidence.getDescription(), evidenceList.get(0).getDescription());
+    }
+
+    //When the date of the evidence is out of range of the project near the end, test it is rejected.
+    @Test
+    void whenDateOutOfRangeAtEndTestEvidenceRejected() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-17"));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Date not valid");
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
+    //When the date of the evidence is in the range of the project near the start, test it is accepeted.
+    @Test
+    void whenDateInRangeAtEndTestEvidenceSaved() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-16"));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
         assertEquals(1, evidenceList.size());

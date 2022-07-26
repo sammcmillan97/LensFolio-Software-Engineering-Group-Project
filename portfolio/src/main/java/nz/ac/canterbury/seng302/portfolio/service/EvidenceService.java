@@ -42,8 +42,18 @@ public class EvidenceService {
         }
     }
 
+    /**
+     * Saves a piece of evidence. Makes sure the project the evidence is for exists.
+     * Also makes sure the project start and end dates are within the project bounds.
+     * @param evidence The evidence to save
+     */
     public void saveEvidence(Evidence evidence) {
-        Project project = projectService.getProjectById(evidence.getProjectId());
+        Project project;
+        try {
+            project = projectService.getProjectById(evidence.getProjectId());
+        } catch (NoSuchElementException exception) {
+            throw new IllegalArgumentException("Project does not exist");
+        }
         if (!project.getStartDate().after(evidence.getDate()) && !project.getEndDate().before(evidence.getDate())) {
             repository.save(evidence);
         } else {
@@ -51,6 +61,10 @@ public class EvidenceService {
         }
     }
 
+    /**
+     * Deletes a piece of evidence.
+     * @param id The ID of the evidence to delete
+     */
     public void deleteById(int id) {
         repository.deleteById(id);
     }
