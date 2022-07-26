@@ -134,28 +134,6 @@ public class EditSprintController {
     }
 
     /**
-     * Gets the next sprint number for a given project
-     * @param projectId The parent project for which to find the next sprint number
-     * @return The sprint number of the project's next sprint
-     */
-    private int getNextSprintNumber(int projectId) {
-        // Number of first sprint is 1
-        int nextSprintNumber = 1;
-
-        // If there are any sprints with sprint number equal or greater to current sprint number
-        // set nextSprintNumber one greater
-        List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
-        for (Sprint sprint : sprints) {
-            int sprintNumber = sprint.getNumber();
-            if (sprintNumber >= nextSprintNumber) {
-                nextSprintNumber = sprintNumber + 1;
-            }
-        }
-
-        return nextSprintNumber;
-    }
-
-    /**
      * Decrements the sprint number of every one of a project's sprints with a sprint number
      * greater than a given sprint number.
      *

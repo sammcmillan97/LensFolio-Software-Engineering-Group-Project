@@ -67,6 +67,11 @@ public class SprintService {
         repository.deleteById(sprintId);
     }
 
+    public void createSprint(int parentProjectId) {
+        int sprintNumber = getNextSprintNumber(int projectId);
+
+    }
+
     public void updateStartDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
@@ -111,5 +116,26 @@ public class SprintService {
             sprintToChange.setEndDate(newDate);
             saveSprint(sprintToChange);
         }
+    }
+
+    /**
+     * Gets the next sprint number for a given project
+     * @param projectId The parent project for which to find the next sprint number
+     * @return The sprint number of the project's next sprint
+     */
+    private int getNextSprintNumber(int projectId) {
+        // Number of first sprint is 1
+        int nextSprintNumber = 1;
+
+        // If there are any sprints with sprint number equal or greater to current sprint number
+        // set nextSprintNumber one greater
+        List<Sprint> sprints = getByParentProjectId(projectId);
+        for (Sprint sprint : sprints) {
+            int sprintNumber = sprint.getNumber();
+            if (sprintNumber >= nextSprintNumber) {
+                nextSprintNumber = sprintNumber + 1;
+            }
+        }
+        return nextSprintNumber;
     }
 }
