@@ -25,6 +25,7 @@ public class EvidenceService {
     public List<Evidence> getEvidenceForPortfolio(int userId, int projectId) {
         List<Evidence> evidence = repository.findByOwnerIdAndProjectId(userId, projectId);
         evidence.sort(Comparator.comparing(Evidence::getDate));
+        Collections.reverse(evidence);
         return evidence;
     }
 
