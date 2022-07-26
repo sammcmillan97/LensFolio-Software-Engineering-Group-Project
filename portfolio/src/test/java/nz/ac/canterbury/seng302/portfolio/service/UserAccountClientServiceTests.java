@@ -1,51 +1,24 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class UserAccountClientServiceTests {
-
-    @Autowired
-    UserAccountClientService userAccountClientService;
-
-    //Test a roleless user is not a teacher
-    @Test
-    void testIsTeacherWithNone() {
-        AuthState principal = AuthState.newBuilder().build();
-        assertFalse(userAccountClientService.isTeacher(principal));
-    }
-
-    //Test a teacher is a teacher
-    @Test
-    void testIsTeacherWithTeacher() {
-        AuthState principal = AuthState.newBuilder()
-                .addClaims(ClaimDTO.newBuilder().setType("role").setValue("teacher").build())
-                .build();
-        assertTrue(userAccountClientService.isTeacher(principal));
-    }
-
-    //Test a student is not a teacher
-    @Test
-    void testIsTeacherWithStudent() {
-        AuthState principal = AuthState.newBuilder()
-                .addClaims(ClaimDTO.newBuilder().setType("role").setValue("student").build())
-                .build();
-        assertFalse(userAccountClientService.isTeacher(principal));
-    }
-
-    //Test a many-roled course admin is a teacher
-    @Test
-    void testIsTeacherWithAdmin() {
-        AuthState principal = AuthState.newBuilder()
-                .addClaims(ClaimDTO.newBuilder().setType("role").setValue("student,courseadministrator,tutor").build())
-                .build();
-        assertTrue(userAccountClientService.isTeacher(principal));
-    }
-
+    
 }

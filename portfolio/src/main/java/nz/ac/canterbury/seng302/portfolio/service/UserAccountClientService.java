@@ -178,7 +178,7 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
-    private Collection<UserRole> getRoles(AuthState principal) {
+    protected Collection<UserRole> getRoles(AuthState principal) {
         User user = getUserAccountByPrincipal(principal);
         return user.getRoles();
     }
