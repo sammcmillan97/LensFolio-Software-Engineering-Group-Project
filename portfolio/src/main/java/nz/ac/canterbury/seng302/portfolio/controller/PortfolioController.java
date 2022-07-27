@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Objects;
 
 /**
- * The controller for handling backend of the evidence list page
+ * The controller for handling backend of the portfolio page
  */
 @Controller
 public class PortfolioController {

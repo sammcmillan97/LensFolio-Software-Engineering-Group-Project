@@ -6,7 +6,6 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
