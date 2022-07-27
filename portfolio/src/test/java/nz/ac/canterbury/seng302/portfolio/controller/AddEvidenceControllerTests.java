@@ -83,7 +83,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(get("/add-evidence"))
+        mockMvc.perform(get("/addEvidence"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -97,7 +97,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
+        mockMvc.perform(post("/addEvidence")
                         .param("title", "test title")
                         .param("description", "test description")
                         .param("date", "2002-02-16"))
@@ -116,7 +116,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
+        mockMvc.perform(post("/addEvidence")
                         .param("title", "test title")
                         .param("description", "test description")
                         .param("date", "2002-02-16"))
@@ -133,7 +133,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
+        mockMvc.perform(post("/addEvidence")
                         .param("title", "test title")
                         .param("description", "test description")
                         .param("date", "bad date"))

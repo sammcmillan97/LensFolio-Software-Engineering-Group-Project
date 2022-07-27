@@ -42,7 +42,7 @@ public class AddEvidenceController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The add evidence page.
      */
-    @GetMapping("/add-evidence")
+    @GetMapping("/addEvidence")
     public String addEvidence(
             @AuthenticationPrincipal AuthState principal,
             Model model
@@ -75,7 +75,7 @@ public class AddEvidenceController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return A redirect to the portfolio page, or staying on the add evidence page
      */
-    @PostMapping("/add-evidence")
+    @PostMapping("/addEvidence")
     public String saveEvidence(
             @AuthenticationPrincipal AuthState principal,
             @RequestParam(name="title") String title,
