@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class AddEvidenceController {
     private static final String ADD_EVIDENCE = "addEvidence";
 
     @Autowired
+    private ProjectService projectService;
+
+    @Autowired
     private UserAccountClientService userService;
 
     @Autowired
@@ -35,6 +39,8 @@ public class AddEvidenceController {
 
     @Autowired
     private EvidenceService evidenceService;
+
+    private static final String TIMEFORMAT = "yyyy-MM-dd";
 
     /**
      * Display the add evidence page.
@@ -52,16 +58,26 @@ public class AddEvidenceController {
 
         int userId = userService.getUserId(principal);
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        Project project = projectService.getProjectById(projectId);
 
         Evidence evidence;
 
-        Date evidenceDate = new Date();
+        Date evidenceDate;
+        Date currentDate = new Date();
+
+        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+            evidenceDate = currentDate;
+        } else {
+            evidenceDate = project.getStartDate();
+        }
 
         evidence = new Evidence(userId, projectId, "title", "description", evidenceDate);
 
         model.addAttribute("evidenceTitle", evidence.getTitle());
         model.addAttribute("evidenceDescription", evidence.getDescription());
-        model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), "yyyy-MM-dd'T'HH:mm"));
+        model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
+        model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
+        model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
         return ADD_EVIDENCE;
     }
 
@@ -78,16 +94,16 @@ public class AddEvidenceController {
     @PostMapping("/addEvidence")
     public String saveEvidence(
             @AuthenticationPrincipal AuthState principal,
-            @RequestParam(name="title") String title,
-            @RequestParam(name="description") String description,
-            @RequestParam(name="date") String dateString,
+            @RequestParam(name="evidenceTitle") String title,
+            @RequestParam(name="evidenceDescription") String description,
+            @RequestParam(name="evidenceDate") String dateString,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         Date date;
         try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+            date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
