@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -36,6 +38,9 @@ class AddEvidenceControllerTests {
 
     @MockBean
     UserAccountClientService userService;
+
+    @MockBean
+    ProjectService projectService;
 
     @MockBean
     PortfolioUserService portfolioUserService;
@@ -80,10 +85,12 @@ class AddEvidenceControllerTests {
     void whenGetAddEvidencePage_testReturnsAddEvidence() throws Exception {
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
+        Mockito.when(portfolioUserService.getUserById(any(Integer.class))).thenReturn(new PortfolioUser(1, "name", true));
+        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(get("/add-evidence"))
+        mockMvc.perform(get("/addEvidence"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -97,10 +104,10 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
-                        .param("title", "test title")
-                        .param("description", "test description")
-                        .param("date", "2002-02-16"))
+        mockMvc.perform(post("/addEvidence")
+                        .param("evidenceTitle", "test title")
+                        .param("evidenceDescription", "test description")
+                        .param("evidenceDate", "2002-02-16"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/portfolio"));
     }
@@ -112,14 +119,14 @@ class AddEvidenceControllerTests {
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
         Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
         Mockito.when(portfolioUserService.getUserById(1)).thenReturn(new PortfolioUser(1, "name", true));
-        Mockito.doThrow(IllegalArgumentException.class).when(evidenceService).saveEvidence(Mockito.any());
+        Mockito.doThrow(IllegalArgumentException.class).when(evidenceService).saveEvidence(any());
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
-                        .param("title", "test title")
-                        .param("description", "test description")
-                        .param("date", "2002-02-16"))
+        mockMvc.perform(post("/addEvidence")
+                        .param("evidenceTitle", "test title")
+                        .param("evidenceDescription", "test description")
+                        .param("evidenceDate", "2002-02-16"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -133,10 +140,10 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(post("/add-evidence")
-                        .param("title", "test title")
-                        .param("description", "test description")
-                        .param("date", "bad date"))
+        mockMvc.perform(post("/addEvidence")
+                        .param("evidenceTitle", "test title")
+                        .param("evidenceDescription", "test description")
+                        .param("evidenceDate", "bad date"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
