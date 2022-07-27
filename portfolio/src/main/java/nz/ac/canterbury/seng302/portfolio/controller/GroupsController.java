@@ -6,17 +6,14 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.AddGroupMembersResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -30,6 +27,8 @@ public class GroupsController {
     private GroupsClientService groupsClientService;
 
     private static final String GROUPS_PAGE = "groups";
+    private static final String GROUPS_REDIRECT = "redirect:/groups";
+    private static final String GROUPS_TABLE = "groupTable";
 
     private static final int GROUPLESS_GROUP_ID = -1;
     private static final int TEACHER_GROUP_ID = -2;
@@ -67,6 +66,14 @@ public class GroupsController {
         return GROUPS_PAGE;
     }
 
+    protected List<Group> getAllGroups(){
+        GroupListResponse groupListResponse = groupsClientService.getAllGroups();
+        List<Group> groups = groupListResponse.getGroups();
+        groups.add(getTeacherGroup());
+        groups.add(getGrouplessGroup());
+        return groups;
+    }
+
     /**
      * Create groupless group by removing users that are in a group
      * @return groupless group
@@ -93,7 +100,7 @@ public class GroupsController {
                 groupless.add(userInAllUsers);
             }
         }
-        return new Group(-1, "Groupless", "Members without a group", 0, groupless);
+        return new Group(GROUPLESS_GROUP_ID, "Groupless", "Members without a group", 0, groupless);
     }
 
     /**
@@ -108,7 +115,7 @@ public class GroupsController {
                 teachers.add(user);
             }
         }
-        return new Group(-2, "Teachers", "Teaching Staff", 0, teachers);
+        return new Group(TEACHER_GROUP_ID, "Teachers", "Teaching Staff", 0, teachers);
     }
 
     /**
@@ -178,8 +185,21 @@ public class GroupsController {
         Group group;
         //Check if it is a teacher making the request
         if (!userIsTeacher) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
-        } else if (groupId == -2) { // Add to teacher group
+            if (groupId == GROUPLESS_GROUP_ID){
+                group = getGrouplessGroup();
+            } else if (groupId == TEACHER_GROUP_ID) {
+                group = getTeacherGroup();
+            } else {
+                group = new Group(groupsClientService.getGroupDetailsById(groupId));
+            }
+            model.addAttribute("group", group);
+            model.addAttribute("user", user);
+            model.addAttribute("userIsTeacher", userIsTeacher);
+            model.addAttribute("userIsAdmin", userIsAdmin);
+            model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+            model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+            return GROUPS_TABLE;
+        } else if (groupId == TEACHER_GROUP_ID) { // Add to teacher group
             // Give the users the teacher role
             for (int member : members) {
                 // Only add the role if user isn't already a teacher
@@ -188,7 +208,7 @@ public class GroupsController {
                 }
             }
             group = getTeacherGroup();
-        } else if (groupId == -1) {
+        } else if (groupId == GROUPLESS_GROUP_ID) {
 
             // Remove each user from all their groups
             for (int memberId : members) {
@@ -227,7 +247,7 @@ public class GroupsController {
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
 
-        return "groupTable";
+        return GROUPS_TABLE;
     }
 
     /**
@@ -250,9 +270,9 @@ public class GroupsController {
 
         Group group;
 
-        if (groupId == -2) { // teacher group
+        if (groupId == TEACHER_GROUP_ID) { // teacher group
             group = getTeacherGroup();
-        } else if (groupId == -1) { // groupless group
+        } else if (groupId == GROUPLESS_GROUP_ID) { // groupless group
             group = getGrouplessGroup();
         } else {
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
@@ -263,7 +283,7 @@ public class GroupsController {
         model.addAttribute("userIsAdmin", userIsAdmin);
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
-        return "groupTable";
+        return GROUPS_TABLE;
     }
 
     /**
@@ -290,8 +310,21 @@ public class GroupsController {
         Group group = new Group();
         //Check if it is a teacher making the request
         if (!userIsTeacher) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized to make these changes\n");
-        } else if (groupId == -2) { // Remove from teacher group
+            if (groupId == GROUPLESS_GROUP_ID){
+                group = getGrouplessGroup();
+            } else if (groupId == TEACHER_GROUP_ID) {
+                group = getTeacherGroup();
+            } else {
+                group = new Group(groupsClientService.getGroupDetailsById(groupId));
+            }
+            model.addAttribute("group", group);
+            model.addAttribute("user", user);
+            model.addAttribute("userIsTeacher", userIsTeacher);
+            model.addAttribute("userIsAdmin", userIsAdmin);
+            model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
+            model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+            return GROUPS_TABLE;
+        } else if (groupId == TEACHER_GROUP_ID) { // Remove from teacher group
             for (int member : members) {
                 // Only remove the role if user is a teacher
                 if (userAccountClientService.getUserAccountById(member).getRoles().contains(UserRole.TEACHER)) {
@@ -299,7 +332,7 @@ public class GroupsController {
                 }
             }
             group = getTeacherGroup();
-        } else if (groupId != -1) { // Not the groupless group
+        } else if (groupId != GROUPLESS_GROUP_ID) { // Not the groupless group
             // Figure out what users to remove from the group
             List<Integer> usersToRemove = new ArrayList<>();
             for (int userId : members) {
@@ -323,7 +356,7 @@ public class GroupsController {
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
 
-        return "groupTable";
+        return GROUPS_TABLE;
     }
 
 }
