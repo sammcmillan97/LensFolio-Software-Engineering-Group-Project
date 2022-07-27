@@ -24,7 +24,9 @@
       <h1 class="group_short_name" th:text="${group.getShortName()}"></h1>
       <h2 class="group_long_name" th:text="${group.getLongName()}"></h2>
     </header>
-    <p class="group_description" th:text="${group.getLongName()}"></p>
+    <div class="member-container" th:each="member: ${group.getMembers()}">
+      <div th:replace="fragments/groupMember"></div>
+    </div>
   </div>
 </div>
 </body>

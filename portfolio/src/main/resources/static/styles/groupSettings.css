@@ -47,14 +47,14 @@ html {
     text-outline: var(--color-accent);
 }
 
-.group_short_name {
+.group-short-name {
     font-weight: 400;
     margin: 0 0 1rem 0;
     width: calc(100% - 15rem);
     word-wrap: break-word;
 }
 
-.group_short_name {
+.group-short-name {
     font-weight: 200;
     margin: 0;
 }
