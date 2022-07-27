@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -86,6 +89,7 @@ public class EditSprintController {
         } catch (NoSuchElementException e) {
             return PROJECTS_REDIRECT;
         }
+        model.addAttribute("projectId", projectId);
 
         //editing existing sprint
         if (sprintId != -1) {
@@ -113,28 +117,18 @@ public class EditSprintController {
         return "editSprint";
     }
 
-    /**
-     * The post mapping to edit a sprint ID
-     * @param principal Authentication principal storing current user information
-     * @param projectIdString The parent project ID of the sprint that is being edited
-     * @param sprintIdString The ID of the sprint that is being edited
-     * @param sprintName The name of the sprint being edited
-     * @param sprintStartDate The start date of the sprint being edited
-     * @param sprintEndDate The end date of the sprint being edited
-     * @param sprintDescription The description of the sprint being edited
-     * @return The edit sprints page
-     */
+
     @PostMapping("/editSprint-{sprintId}-{parentProjectId}")
     public String sprintSave(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("parentProjectId") String projectIdString,
             @PathVariable("sprintId") String sprintIdString,
             @RequestParam(value="sprintName") String sprintName,
-            @RequestParam(value="sprintStartDate") java.sql.Date sprintStartDate,
-            @RequestParam(value="sprintEndDate") java.sql.Date sprintEndDate,
+            @RequestParam(value="sprintStartDate") String sprintStartDateString,
+            @RequestParam(value="sprintEndDate") String sprintEndDateString,
             @RequestParam(value="sprintDescription") String sprintDescription,
             Model model
-    ) {
+    ) throws ParseException {
         if (!userAccountClientService.isTeacher(principal)) {
             return PROJECTS_REDIRECT;
         }
@@ -146,11 +140,16 @@ public class EditSprintController {
         Sprint sprint;
         Project project;
 
+        Date sprintStartDate = new SimpleDateFormat(TIME_FORMAT).parse(sprintStartDateString);
+        Date sprintEndDate = new SimpleDateFormat(TIME_FORMAT).parse(sprintEndDateString);
+
+        System.out.println(projectIdString);
+        System.out.println(sprintIdString);
         try {
             projectId = Integer.parseInt(projectIdString);
             sprintId = Integer.parseInt(sprintIdString);
         } catch (NumberFormatException e) {
-            return PROJECTS_REDIRECT;
+            return PROJECTS_REDIRECT ;
         }
 
         try {
@@ -158,19 +157,50 @@ public class EditSprintController {
         } catch (NoSuchElementException e) {
             return PROJECTS_REDIRECT;
         }
+        model.addAttribute("projectId", projectId);
 
-        if( sprintId != -1) {
-            try {
-                sprint = sprintService.getSprintById(sprintId);
-            } catch (NoSuchElementException e) {
-                return PROJECTS_REDIRECT;
-            }
-            sprintService.editSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
-        } else {
-            sprintService.createNewSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+        System.out.println("reached");
+
+        boolean validation = false;
+        if (!sprintService.checkSprintStartDate(sprintId, projectId, sprintStartDate)) {
+            model.addAttribute("startDateError", "Sprint start date can't be inside another sprint");
+            validation = true;
         }
+        if(!sprintService.checkSprintEndDate(sprintId, projectId, sprintStartDate)) {
+            model.addAttribute("endDateError", "Sprint start date can't be inside another sprint");
+            validation = true;
+        }
+        if(!sprintService.checkSprintDates(sprintId, projectId, sprintStartDate, sprintEndDate)) {
+            model.addAttribute("dateError", "Sprints can't ");
+            validation = true;
+        }
+        if (validation) {
+            // Add sprint details to model
+            model.addAttribute("sprintName", sprintName);
+            model.addAttribute("sprintLabel", "Sprint " + sprintService.getNextSprintNumber(projectId));
+            model.addAttribute("sprintDescription", sprintDescription);
+            model.addAttribute("sprintStartDate", sprintStartDateString);
+            model.addAttribute("sprintEndDate", sprintEndDateString);
+
+            // Add date boundaries for sprint to model
+            model.addAttribute("minSprintStartDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
+            model.addAttribute("maxSprintEndDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
+            return "editSprint";
+        }
+
+//        if (sprintId != -1) {
+//            try {
+//                sprint = sprintService.getSprintById(sprintId);
+//            } catch (NoSuchElementException e) {
+//                return PROJECTS_REDIRECT;
+//            }
+//            sprintService.editSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+//        } else {
+//            sprintService.createNewSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+//        }
         return "redirect:/projectDetails-" + projectIdString;
     }
+
 
     /**
      * The delete mapping for deleting sprints from a project
