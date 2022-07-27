@@ -34,6 +34,10 @@ public class GroupSettingsController {
         int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         Group group = new Group(groupsClientService.getGroupDetailsById(Integer.parseInt(id)));
+        System.out.println(user.getProfileImagePath());
+        for (User member :group.getMembers()) {
+            System.out.println(member.getProfileImagePath());
+        }
         model.addAttribute("group", group);
         model.addAttribute("user", user);
         return SETTINGS_PAGE;

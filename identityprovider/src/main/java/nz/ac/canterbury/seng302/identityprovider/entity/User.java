@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.SecureRandom;
@@ -76,6 +77,9 @@ public class User {
 
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Group> groups = new HashSet<>();
+
+    @Value("${IDENTITY_CONTEXT}")
+    private String context;
 
 
     /**
@@ -297,9 +301,9 @@ public class User {
                 .setId(this.getUserId())
                 .addAllRoles(this.getRoles());
         if (this.getProfileImagePath() != null) {
-            reply.setProfileImagePath("resources/" + this.getProfileImagePath());
+            reply.setProfileImagePath(context + "/ProfilePicture-" + this.getProfileImagePath());
         } else {
-            reply.setProfileImagePath("resources/profile-images/default/default.jpg");
+            reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
         }
         return reply.build();
     }
