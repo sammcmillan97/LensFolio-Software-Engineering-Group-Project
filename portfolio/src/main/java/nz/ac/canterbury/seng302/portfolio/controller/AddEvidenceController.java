@@ -71,7 +71,7 @@ public class AddEvidenceController {
             evidenceDate = project.getStartDate();
         }
 
-        evidence = new Evidence(userId, projectId, "title", "description", evidenceDate);
+        evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
         model.addAttribute("evidenceTitle", evidence.getTitle());
         model.addAttribute("evidenceDescription", evidence.getDescription());
