@@ -50,7 +50,7 @@ class EvidenceServiceTests {
 
     //When the date of the evidence is out of range of the project near the start, test it is rejected.
     @Test
-    void whenDateOutOfRangeAtStartTestEvidenceRejected() {
+    void whenDateOutOfRangeAtStart_testEvidenceRejected() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-8"));
         assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Date not valid");
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -59,7 +59,7 @@ class EvidenceServiceTests {
 
     //When the date of the evidence is in the range of the project near the start, test it is accepted.
     @Test
-    void whenDateInRangeAtStartTestEvidenceSaved() {
+    void whenDateInRangeAtStart_testEvidenceSaved() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-9"));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -69,7 +69,7 @@ class EvidenceServiceTests {
 
     //When the date of the evidence is out of range of the project near the end, test it is rejected.
     @Test
-    void whenDateOutOfRangeAtEndTestEvidenceRejected() {
+    void whenDateOutOfRangeAtEnd_testEvidenceRejected() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-17"));
         assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Date not valid");
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -78,7 +78,7 @@ class EvidenceServiceTests {
 
     //When the date of the evidence is in the range of the project near the end, test it is accepted.
     @Test
-    void whenDateInRangeAtEndTestEvidenceSaved() {
+    void whenDateInRangeAtEnd_testEvidenceSaved() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-16"));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -88,7 +88,7 @@ class EvidenceServiceTests {
 
     //When evidence has an invalid project, check that it does
     @Test
-    void whenProjectDoesNotExistTestEvidenceRejected() {
+    void whenProjectDoesNotExist_testEvidenceRejected() {
         Evidence evidence = new Evidence(0, -1, "Test", "Test Evidence", Date.valueOf("2022-05-17"));
         assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Project does not exist");
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -97,7 +97,7 @@ class EvidenceServiceTests {
 
     //When evidence is deleted, check that it has been.
     @Test
-    void whenEvidenceDeletedTestIsGone() {
+    void whenEvidenceDeleted_testIsDeleted() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-16"));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -109,7 +109,7 @@ class EvidenceServiceTests {
 
     //When evidence is added, check that can be accessed.
     @Test
-    void whenEvidenceAddedTestCanGet() {
+    void whenEvidenceAdded_testEvidenceExists() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", "Test Evidence", Date.valueOf("2022-05-16"));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
@@ -119,13 +119,13 @@ class EvidenceServiceTests {
 
     //When evidence is not added, check that it can't be accessed.
     @Test
-    void whenEvidenceNotAddedTestCantGet() {
+    void whenEvidenceNotAdded_testCantGet() {
         assertThrows(NoSuchElementException.class, () -> evidenceService.getEvidenceById(-1), "Evidence not found");
     }
 
-    //When evidence is deleted, check that it has been.
+    //When evidence is added, check that it is chronologically ordered.
     @Test
-    void whenEvidenceAddedTestIsInOrder() {
+    void whenEvidenceAdded_testIsInOrder() {
         Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "One", "Test Evidence", Date.valueOf("2022-05-16"));
