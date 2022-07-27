@@ -33,8 +33,8 @@ public class EditMilestoneController {
     @Autowired
     MilestoneService milestoneService;
 
-    private final String timeFormat = "yyyy-MM-dd";
-    private final String redirectToProjects = "redirect:/projects";
+    private static final String timeFormat = "yyyy-MM-dd";
+    private static final String redirectToProjects = "redirect:/projects";
 
     /**
      * The get mapping to return the page with the form to add/edit milestones
