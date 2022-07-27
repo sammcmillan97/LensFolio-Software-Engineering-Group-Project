@@ -534,9 +534,10 @@ class UserAccountsServerServiceTests {
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
+        System.out.println("resources/" + testPath);
+        System.out.println(response.getProfileImagePath());
         assertEquals("http://localhost:8080/ProfilePicture-" + testPath, response.getProfileImagePath());
     }
-
 
     // Tests that creating user fails if no fields are entered
     @Test
@@ -588,7 +589,7 @@ class UserAccountsServerServiceTests {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername("a".repeat(64))
                 .setPassword("a".repeat(64))
-                .setFirstName("a".repeat(64)) 
+                .setFirstName("a".repeat(64))
                 .setMiddleName("a".repeat(64))
                 .setLastName("a".repeat(64))
                 .setNickname("a".repeat(64))
