@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
@@ -102,7 +101,6 @@ public class EditSprintController {
         } else {
             sprint = sprintService.createDefaultSprint(projectId);
         }
-
         // Add sprint details to model
         model.addAttribute("sprintName", sprint.getName());
         model.addAttribute("sprintLabel", sprint.getLabel());
@@ -113,7 +111,6 @@ public class EditSprintController {
         // Add date boundaries for sprint to model
         model.addAttribute("minSprintStartDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxSprintEndDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
-
         return "editSprint";
     }
 
@@ -142,16 +139,12 @@ public class EditSprintController {
 
         Date sprintStartDate = new SimpleDateFormat(TIME_FORMAT).parse(sprintStartDateString);
         Date sprintEndDate = new SimpleDateFormat(TIME_FORMAT).parse(sprintEndDateString);
-
-        System.out.println(projectIdString);
-        System.out.println(sprintIdString);
         try {
             projectId = Integer.parseInt(projectIdString);
             sprintId = Integer.parseInt(sprintIdString);
         } catch (NumberFormatException e) {
             return PROJECTS_REDIRECT ;
         }
-
         try {
             project = projectService.getProjectById(projectId);
         } catch (NoSuchElementException e) {
@@ -159,25 +152,27 @@ public class EditSprintController {
         }
         model.addAttribute("projectId", projectId);
 
-        System.out.println("reached");
-
+        //Date validation
         boolean validation = false;
-        if (!sprintService.checkSprintStartDate(sprintId, projectId, sprintStartDate)) {
-            model.addAttribute("startDateError", "Sprint start date can't be inside another sprint");
+        String startDateError = (sprintService.checkSprintStartDate(sprintId, projectId, sprintStartDate));
+        String endDateError = (sprintService.checkSprintEndDate(sprintId, projectId, sprintEndDate));
+        String datesError = (sprintService.checkSprintDates(sprintId, projectId, sprintStartDate, sprintEndDate));
+        if (!Objects.equals(startDateError, "")) {
+            model.addAttribute("startDateError", startDateError);
             validation = true;
         }
-        if(!sprintService.checkSprintEndDate(sprintId, projectId, sprintStartDate)) {
-            model.addAttribute("endDateError", "Sprint start date can't be inside another sprint");
+        if (!Objects.equals(endDateError, "")) {
+            model.addAttribute("endDateError", endDateError);
             validation = true;
         }
-        if(!sprintService.checkSprintDates(sprintId, projectId, sprintStartDate, sprintEndDate)) {
-            model.addAttribute("dateError", "Sprints can't ");
+        if (!Objects.equals(datesError, "")) {
+            model.addAttribute("dateError", datesError);
             validation = true;
         }
+
         if (validation) {
             // Add sprint details to model
             model.addAttribute("sprintName", sprintName);
-            model.addAttribute("sprintLabel", "Sprint " + sprintService.getNextSprintNumber(projectId));
             model.addAttribute("sprintDescription", sprintDescription);
             model.addAttribute("sprintStartDate", sprintStartDateString);
             model.addAttribute("sprintEndDate", sprintEndDateString);
@@ -188,16 +183,16 @@ public class EditSprintController {
             return "editSprint";
         }
 
-//        if (sprintId != -1) {
-//            try {
-//                sprint = sprintService.getSprintById(sprintId);
-//            } catch (NoSuchElementException e) {
-//                return PROJECTS_REDIRECT;
-//            }
-//            sprintService.editSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
-//        } else {
-//            sprintService.createNewSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
-//        }
+        if (sprintId != -1) {
+            try {
+                sprintService.getSprintById(sprintId);
+            } catch (NoSuchElementException e) {
+                return PROJECTS_REDIRECT;
+            }
+            sprintService.editSprint(projectId, sprintId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+        } else {
+            sprintService.createNewSprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
+        }
         return "redirect:/projectDetails-" + projectIdString;
     }
 

@@ -2,7 +2,7 @@
  * Updates the soonest end date which a sprint may be given.
  */
 function updateMinEndDate() {
-    let startDate = document.getElementById("sprint-form__start-date-field").valueAsNumber;
+    let startDate = document.getElementById("sprint-form__start-date-field").value;
     document.getElementById("sprint-form__end-date-field").setAttribute('min', startDate);
 }
 
@@ -10,7 +10,7 @@ function updateMinEndDate() {
  * Updates the latest start date which a sprint may be given.
  */
 function updateMaxStartDate() {
-    let endDate = document.getElementById("sprint-form__end-date-field").valueAsNumber;
+    let endDate = document.getElementById("sprint-form__end-date-field").value;
     document.getElementById("sprint-form__start-date-field").setAttribute('max', getDateString(endDate));
 }
 

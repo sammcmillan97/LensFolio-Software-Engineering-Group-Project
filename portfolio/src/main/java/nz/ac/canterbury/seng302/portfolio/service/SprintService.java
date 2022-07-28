@@ -3,7 +3,6 @@ package nz.ac.canterbury.seng302.portfolio.service;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.SprintRepository;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +41,6 @@ public class SprintService {
         }
     }
 
-    public List<Sprint> getByParentProjectId(int projectId) {
-        return repository.findByParentProjectId(projectId);
-    }
-
     public Map<Integer, List<Sprint>> getAllByParentProjectId() {
         List<Project> projects = projectService.getAllProjects();
 
@@ -58,6 +53,17 @@ public class SprintService {
         return sprintsByParentProject;
     }
 
+    public List<Sprint> getSprintsByProjectInOrder(int projectId) {
+        List<Sprint> sprints = getByParentProjectId(projectId);
+        Comparator<Sprint> comparator = Comparator.comparing(Sprint::getStartDate);
+        sprints.sort(comparator);
+        return sprints;
+    }
+
+    public List<Sprint> getByParentProjectId(int projectId) {
+        return repository.findByParentProjectId(projectId);
+    }
+
     public void saveSprint(Sprint sprint) {
         projectEditsService.refreshProject(sprint.getParentProjectId());
         repository.save(sprint);
@@ -68,116 +74,108 @@ public class SprintService {
         repository.deleteById(sprintId);
     }
 
+    public void editSprint(int projectId, int sprintId, String sprintName, String sprintDescription,  Date sprintStartDate,
+                           Date sprintEndDate) {
+        Sprint sprint;
+        try {
+            sprint = getSprintById(sprintId);
+            sprint.setName(sprintName);
+            sprint.setDescription(sprintDescription);
+            sprint.setStartDate(sprintStartDate);
+            sprint.setEndDate(sprintEndDate);
+            saveSprint(sprint);
+            updateSprintNumbers(projectId);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void createNewSprint(int projectId, String sprintName, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
+        saveSprint(new Sprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate));
+        updateSprintNumbers(projectId);
+    }
+
     /**
      * Create a new sprint and populate it with default values for the sprint form
      * @param parentProjectId
      * @return
      */
     public Sprint createDefaultSprint(int parentProjectId) {
-        int sprintNumber = getNextSprintNumber(parentProjectId);
-        Date defaultStartDate = getDefaultSprintStartDate(parentProjectId, sprintNumber);
-        Date defaultEndDate = getDefaultSprintEndDate(parentProjectId, sprintNumber);
-        return new Sprint(parentProjectId, "New Sprint", sprintNumber, "", defaultStartDate, defaultEndDate);
-    }
+        Date defaultStartDate = getDefaultSprintStartDate(parentProjectId);
+        Date defaultEndDate = getDefaultSprintEndDate(parentProjectId);
+        return new Sprint(parentProjectId, "New Sprint", "", defaultStartDate, defaultEndDate);
 
-
-    /**
-     * Gets the next sprint number for a given project
-     * @param projectId The parent project for which to find the next sprint number
-     * @return The sprint number of the project's next sprint
-     */
-    public int getNextSprintNumber(int projectId) {
-        // Number of first sprint is 1
-        int nextSprintNumber = 1;
-
-        // If there are any sprints with sprint number equal or greater to current sprint number
-        // set nextSprintNumber one greater
-        List<Sprint> sprints = getByParentProjectId(projectId);
-        for (Sprint sprint : sprints) {
-            int sprintNumber = sprint.getNumber();
-            if (sprintNumber >= nextSprintNumber) {
-                nextSprintNumber = sprintNumber + 1;
-            }
-        }
-        return nextSprintNumber;
     }
 
 
     /**
      * Gets the soonest available date occurring after all of a project's sprints that occur before a given sprint
      * @param projectId The parent project for which to find the next available date
-     * @param sprintNumber The position of the sprint in question in the order of a project's sprints
      * @return The soonest available date occurring after all the project's sprints occurring before the given sprint
      */
-    private Date getDefaultSprintStartDate(int projectId, int sprintNumber) {
-        // Try to find project matching id
+    private Date getDefaultSprintStartDate(int projectId) {
         Project parentProject;
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
             return null;
         }
-
-        // Set min start initially to one day after project start date
         Calendar minStartDate = getCalendarDay();
         minStartDate.setTime(parentProject.getStartDate());
+        List<Sprint> sprints = getSprintsByProjectInOrder(projectId);
+        Calendar calSprintStartDate = getCalendarDay();
+        //If first sprint in project start date
+        if(sprints.isEmpty()) {
+            return parentProject.getStartDate();
 
-        // If there are any sprints before the given sprint, set min start to one day after latest end
-        List<Sprint> sprints = getByParentProjectId(projectId);
-        for (Sprint sprint : sprints) {
-            // Skip sprints after the given sprint
-            if (sprint.getNumber() >= sprintNumber) {
-                continue;
-            }
-            Date endDate = sprint.getEndDate();
-            Calendar calDate = getCalendarDay();
-            calDate.setTime(endDate);
-            // If min start date is on or before the current sprint's end date
-            if (!minStartDate.after(calDate)) {
-                minStartDate.setTime(endDate);
-                minStartDate.add(Calendar.DATE, 1);
-            }
+            // Otherwise, return the day after the current last sprint's end date if this is after the project
+            // end date it will just return the project end date even though sprints may overlap
+            // (could be implemented better but wasn't sure how exactly).
+        } else {
+            Sprint lastSprint = sprints.get(sprints.size() -1);
+            calSprintStartDate.setTime(lastSprint.getEndDate());
+            calSprintStartDate.add(Calendar.DATE, 1);
         }
-        return minStartDate.getTime();
+
+        if (!calSprintStartDate.getTime().before(parentProject.getEndDate())) {
+            return parentProject.getEndDate();
+        }
+        return calSprintStartDate.getTime();
     }
 
     /**
      * Gets the latest available date occurring before any following sprints begin, or the project ends.
      * @param projectId The parent project for which to find the latest available date
-     * @param sprintNumber The position of the sprint in question in the order of a project's sprints
      * @return The latest available date occurring before any following sprints begin, or the project ends
      */
-    private Date getDefaultSprintEndDate(int projectId, int sprintNumber) {
-        // Try to find project matching id
+    private Date getDefaultSprintEndDate(int projectId) {
         Project parentProject;
         try {
             parentProject = projectService.getProjectById(projectId);
         } catch (Exception e) {
             return null;
         }
-
-        // Set max end initially to project end date
-        Calendar maxEndDate = getCalendarDay();
-        maxEndDate.setTime(parentProject.getEndDate());
-
-        // If there are any sprints after the given sprint, set max end date to day before next sprint start date
-        List<Sprint> sprints = getByParentProjectId(projectId);
-        for (Sprint sprint : sprints) {
-            // Skip sprints before the given sprint
-            if (sprintNumber >= sprint.getNumber()) {
-                continue;
-            }
-
-            Date startDate = sprint.getStartDate();
-            Calendar startCal = getCalendarDay();
-            startCal.setTime(startDate);
-            // If max end date is after the current sprint's start date
-            if (maxEndDate.after(startCal)) {
-                maxEndDate.setTime(startDate);
-                maxEndDate.add(Calendar.DATE, -1);
-            }
+        Calendar minStartDate = getCalendarDay();
+        minStartDate.setTime(parentProject.getStartDate());
+        List<Sprint> sprints = getSprintsByProjectInOrder(projectId);
+        Calendar calSprintEndDate = getCalendarDay();
+        //If first sprint in project default end is 3 weeks after parent project start date
+        if(sprints.isEmpty()) {
+            calSprintEndDate.setTime(parentProject.getStartDate());
+            calSprintEndDate.add(Calendar.DATE, 21);
+            // Otherwise, the end date is 22 days after the current last sprint's end date if this is after the project
+            // end date it will just return the project end date even though sprints may overlap
+            // (could be implemented better but wasn't sure how exactly).
+        } else {
+            Sprint lastSprint = sprints.get(sprints.size() -1);
+            calSprintEndDate.setTime(lastSprint.getEndDate());
+            calSprintEndDate.add(Calendar.DATE, 22);
         }
-        return maxEndDate.getTime();
+
+        if (!calSprintEndDate.getTime().before(parentProject.getEndDate())) {
+            return parentProject.getEndDate();
+        }
+        return calSprintEndDate.getTime();
     }
 
     /**
@@ -194,42 +192,45 @@ public class SprintService {
         return cal;
     }
 
-    public boolean checkSprintStartDate(int sprintId, int projectId, Date  startDate) {
+    public String checkSprintStartDate(int sprintId, int projectId, Date  startDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for(Sprint sprint: sprints) {
-            if(sprint.getId() != sprintId && startDate.after(sprint.getStartDate()) && startDate.before(sprint.getEndDate())) {
-                return false;
+            if(sprint.getId() != sprintId && !(startDate.before(sprint.getStartDate())) && !(startDate.after(sprint.getEndDate()))) {
+                return "Start date is currently inside sprint '" + sprint.getName() + "': " +
+                        sprint.getStartDateString() + "-" + sprint.getEndDateString();
             }
         }
-        return true;
+        return "";
     }
 
-    public boolean checkSprintEndDate(int sprintId, int projectId, Date endDate) {
+    public String checkSprintEndDate(int sprintId, int projectId, Date endDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for(Sprint sprint: sprints) {
-            if(sprint.getId() != sprintId && endDate.after(sprint.getStartDate()) && endDate.before(sprint.getEndDate())) {
-                return false;
+            if(sprint.getId() != sprintId && !(endDate.before(sprint.getStartDate())) && !(endDate.after(sprint.getEndDate()))) {
+                return "End date is currently inside sprint '" + sprint.getName() + "': " +
+                        sprint.getStartDateString() + "-" + sprint.getEndDateString();
             }
         }
-        return true;
+        return "";
     }
 
-    public boolean checkSprintDates(int sprintId, int projectId, Date startDate, Date endDate) {
+    public String checkSprintDates(int sprintId, int projectId, Date startDate, Date endDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
-            if (sprint.getId() != sprintId && startDate.before(sprint.getStartDate()) && endDate.after(sprint.getStartDate())) {
-                return false;
+            if (sprint.getId() != sprintId && !(startDate.after(sprint.getStartDate())) && !(endDate.before(sprint.getStartDate()))) {
+                return "Sprints can't encase other sprints";
             }
         }
-        return true;
+        return "";
     }
 
-
-    public List<Sprint> getSprintsByProjectInOrder(int projectId) {
-        List<Sprint> sprints = getByParentProjectId(projectId);
-        Comparator<Sprint> comparator = Comparator.comparing(Sprint::getStartDate);
-        sprints.sort(comparator);
-        return sprints;
+    private void updateSprintNumbers(int projectId) {
+        List<Sprint> sprints = getSprintsByProjectInOrder(projectId);
+        for (int i = 0; i < sprints.size(); i++) {
+            Sprint sprint = sprints.get(i);
+            sprint.setNumber(i + 1);
+            saveSprint(sprint);
+        }
     }
 
     public void updateStartDate(int sprintId, Date newDate) {
@@ -244,7 +245,6 @@ public class SprintService {
                 throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
             }
         }
-
         if (newDate.compareTo(sprintToChange.getEndDate()) > 0) {
             throw new UnsupportedOperationException("Sprint start date must not be after end date");
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
@@ -261,13 +261,11 @@ public class SprintService {
         Date projectEndDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getEndDate();
         List<Sprint> sprints = getByParentProjectId(sprintToChange.getParentProjectId());
         sprints.sort(Comparator.comparing(Sprint::getNumber));
-
         for (Sprint sprint :sprints) {
             if ((sprint.getNumber() > sprintToChange.getNumber()) && (newDate.compareTo(sprint.getStartDate()) >= 0)) {
                 throw new UnsupportedOperationException(("Sprint must not be within another sprint"));
             }
         }
-
         if (newDate.compareTo(sprintToChange.getStartDate()) < 0) {
             throw new UnsupportedOperationException("Sprint end date must not be before start date");
         } else if (newDate.compareTo(projectStartDate) < 0 || newDate.compareTo(projectEndDate) > 0) {
@@ -277,5 +275,4 @@ public class SprintService {
             saveSprint(sprintToChange);
         }
     }
-
 }
