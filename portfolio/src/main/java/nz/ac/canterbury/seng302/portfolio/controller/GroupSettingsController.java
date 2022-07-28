@@ -33,7 +33,11 @@ public class GroupSettingsController {
     public String groups(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable String id){
         int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
-        Group group = new Group(groupsClientService.getGroupDetailsById(Integer.parseInt(id)));
+        GroupDetailsResponse response = groupsClientService.getGroupDetailsById(Integer.parseInt(id));
+        if (response.getGroupId() == 0) {
+            return "redirect:/groups";
+        }
+        Group group = new Group(response);
         model.addAttribute("group", group);
         model.addAttribute("user", user);
         return SETTINGS_PAGE;
