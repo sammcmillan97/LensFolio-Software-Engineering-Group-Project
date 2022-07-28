@@ -262,7 +262,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
         ModifyGroupDetailsResponse reply;
-        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+        if (userAccountsServerService.isAuthenticated()) {
             reply = modifyGroupDetailsHandler(request);
         } else {
             reply = ModifyGroupDetailsResponse.newBuilder()

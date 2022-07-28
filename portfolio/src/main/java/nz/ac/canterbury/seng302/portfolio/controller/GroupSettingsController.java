@@ -37,7 +37,7 @@ public class GroupSettingsController {
         int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         GroupDetailsResponse response = groupsClientService.getGroupDetailsById(Integer.parseInt(id));
-        if (response.getGroupId() == 0|| !groupsController.isTeacher(user)|| !groupsController.userInGroup(userId, Integer.parseInt(id))) {
+        if (response.getGroupId() == 0) {
             return "redirect:/groups";
         }
         Group group = new Group(response);
