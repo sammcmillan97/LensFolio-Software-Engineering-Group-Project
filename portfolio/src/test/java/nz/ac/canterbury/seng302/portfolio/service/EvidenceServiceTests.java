@@ -95,6 +95,24 @@ class EvidenceServiceTests {
         assertEquals(0, evidenceList.size());
     }
 
+    //When fields are made of only special characters, they should be rejected.
+    @Test
+    void whenTitleOnlySpecialCharacters_testEvidenceRejected() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "!!&683 7;'.} {-++++", "Test Evidence", Date.valueOf("2022-05-14"));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Title not valid");
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
+    //When fields are only one letter long, they should be rejected.
+    @Test
+    void whenDescriptionOneLetterLong_testEvidenceRejected() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Title", "T", Date.valueOf("2022-05-14"));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Description not valid");
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
     //When evidence is deleted, check that it has been.
     @Test
     void whenEvidenceDeleted_testIsDeleted() {
