@@ -262,7 +262,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
         ModifyGroupDetailsResponse reply;
-        if (userAccountsServerService.isAuthenticated()) {
+        if (userAccountsServerService.isAuthenticated() && (userAccountsServerService.isTeacher()||userInGroup(request.getGroupId()))) {
             reply = modifyGroupDetailsHandler(request);
         } else {
             reply = ModifyGroupDetailsResponse.newBuilder()
@@ -481,5 +481,22 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .addAllMembers(members);
         }
         return reply.build();
+    }
+
+    /**
+     * Check if user in group
+     * Used for checking edit privileges
+     * @param groupId of group being checked
+     * @return true if user in group, else false
+     */
+    protected boolean userInGroup(int groupId) {
+        Group group = groupRepository.findByGroupId(groupId);
+        int userId = userAccountsServerService.getAuthStateUserId();
+        for (User user : group.getMembers()) {
+            if (user.getUserId() == userId) {
+                return true;
+            }
+        }
+        return false;
     }
 }
