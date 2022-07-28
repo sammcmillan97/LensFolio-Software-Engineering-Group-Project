@@ -371,7 +371,7 @@ class GroupsServerServiceTests {
         GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
         List<UserResponse> userResponses = new ArrayList<>();
         for (User member : group.getMembers()) {
-            userResponses.add(member.toUserResponse());
+            userResponses.add(userService.getUserAccountByIdHandler(member.getUserIdRequest()));
         }
         assertEquals("ShortName", response.getShortName());
         assertEquals("LongName", response.getLongName());

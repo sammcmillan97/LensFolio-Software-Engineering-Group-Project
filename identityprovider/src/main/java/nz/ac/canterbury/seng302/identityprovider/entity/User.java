@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.shared.identityprovider.GetUserByIdRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,6 +79,7 @@ public class User {
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Group> groups = new HashSet<>();
 
+    @Transient
     @Value("${IDENTITY_CONTEXT}")
     private String context;
 
@@ -308,7 +310,11 @@ public class User {
         return reply.build();
     }
 
-
+    public GetUserByIdRequest getUserIdRequest() {
+        GetUserByIdRequest.Builder id = GetUserByIdRequest.newBuilder();
+        id.setId(this.userId);
+        return id.build();
+    }
 
 
     /**
