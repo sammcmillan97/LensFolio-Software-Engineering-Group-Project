@@ -1,0 +1,60 @@
+:root {
+    /* CSS variables */
+    --color-primary: #FBAA60;
+    --color-secondary: #FADFC6FF;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/* Hide scrollbar */
+html::-webkit-scrollbar {
+    /* Chrome, Safari, Opera */
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
+/******************** Project Details ********************/
+
+#group {
+    position: relative;
+
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+
+    overflow: hidden;
+}
+
+#group header {
+    padding: 3rem 2rem 3rem 2rem;
+    border-bottom: 1px solid var(--color-accent);
+
+    background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
+    color: var(--color-complement);
+    text-outline: var(--color-accent);
+}
+
+.group-short-name {
+    font-weight: 400;
+    margin: 0 0 1rem 0;
+    width: calc(100% - 15rem);
+    word-wrap: break-word;
+}
+
+.group-short-name {
+    font-weight: 200;
+    margin: 0;
+}
