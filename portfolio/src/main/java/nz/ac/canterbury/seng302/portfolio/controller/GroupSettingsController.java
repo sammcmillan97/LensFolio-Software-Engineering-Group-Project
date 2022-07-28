@@ -23,6 +23,9 @@ public class GroupSettingsController {
     @Autowired
     private GroupsClientService groupsClientService;
 
+    @Autowired
+    private GroupsController groupsController;
+
     /**
      * Get mapping to fetch group settings page
      * @param principal Authentication principal storing current user information
@@ -34,7 +37,7 @@ public class GroupSettingsController {
         int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         GroupDetailsResponse response = groupsClientService.getGroupDetailsById(Integer.parseInt(id));
-        if (response.getGroupId() == 0) {
+        if (response.getGroupId() == 0|| !groupsController.isTeacher(user)|| !groupsController.userInGroup(userId, Integer.parseInt(id))) {
             return "redirect:/groups";
         }
         Group group = new Group(response);
@@ -42,4 +45,5 @@ public class GroupSettingsController {
         model.addAttribute("user", user);
         return SETTINGS_PAGE;
     }
+
 }

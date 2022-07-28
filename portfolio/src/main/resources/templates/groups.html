@@ -16,6 +16,7 @@
         const TEACHER_GROUP_ID = [[${TEACHER_GROUP_ID}]];
         const userIsTeacher = [[${userIsTeacher}]];
         const userIsAdmin = [[${userIsAdmin}]];
+        const userIsMember = [[${userIsMember}]];
         const allGroupIds = [[${allGroupIds}]];
 
     </script>
@@ -57,9 +58,11 @@
                 </div>
                 <!-- Edit and Delete Group Buttons - Only show if user is a teacher-->
                 <div class="group__button-wrapper flex-row">
-                  <form th:action="@{groupSettings-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
-                    <button type="submit">Settings</button>
-                  </form>
+                    <div th:if="${userIsTeacher || userIsAdmin || #lists.contains(group.getMembers, user)}">
+                        <form th:action="@{groupSettings-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
+                            <button type="submit">Settings</button>
+                        </form>
+                    </div>
                   <div class="flex-row" th:if="${userIsTeacher}">
                     <button onclick="removeSelectedUsers(this)" hidden="hidden" th:class="'group_' + ${group.getGroupId} + '_remove_users_button'">Remove Selection</button>
                     <form th:action="@{editGroup-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
