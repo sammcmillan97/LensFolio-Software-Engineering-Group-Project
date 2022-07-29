@@ -22,7 +22,12 @@
     <div id="event-form__wrapper">
         <!-- Name, Date -->
         <header class="event-form__header flex-column">
-            <h1 id="event__name" th:text="${eventName}"></h1>
+            <div th:if="${eventId == '-1'}">
+                <h1> Create New Event</h1>
+            </div>
+            <div th:if="${eventId != '-1'}">
+                <h1 th:text="'Editing: ' + ${eventName}"></h1>
+            </div>
         </header>
 
         <!-- Add/Edit Event Form -->

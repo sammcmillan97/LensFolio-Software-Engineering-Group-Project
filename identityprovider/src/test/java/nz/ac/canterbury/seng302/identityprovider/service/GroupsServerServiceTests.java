@@ -343,6 +343,28 @@ class GroupsServerServiceTests {
     }
 
     @Test
+    void whenGroupExists_andGroupHasUsers_testDeleteGroupDoesntDeleteUsers() {
+        setupForPaginationTests();
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(3, groups.size());
+        DeleteGroupRequest request = DeleteGroupRequest.newBuilder()
+                .setGroupId(testGroupId)
+                .build();
+        DeleteGroupResponse response = groupServerService.deleteGroupHandler(request);
+        assertTrue(response.getIsSuccess());
+        assertEquals("Group deleted successfully", response.getMessage());
+        groups = groupRepository.findAll();
+        assertEquals(2, groups.size());
+        int groupId2 = groupRepository.findByShortName("Group 2").getGroupId();
+        int groupId3 = groupRepository.findByShortName("Group 3").getGroupId();
+        Group group2 = groupRepository.findByGroupId(groupId2);
+        Group group3 = groupRepository.findByGroupId(groupId3);
+
+        assertEquals(2, group2.getMembers().size());
+        assertEquals(1, group3.getMembers().size());
+    }
+
+    @Test
     void whenNoGroupsExist_testDeleteGroup() {
         Set<Group> groups = groupRepository.findAll();
         assertEquals(0, groups.size());

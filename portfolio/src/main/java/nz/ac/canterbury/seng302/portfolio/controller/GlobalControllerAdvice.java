@@ -2,7 +2,6 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -25,6 +24,9 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+    @Autowired
+    private UserAccountClientService userAccountClientService;
+
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
@@ -43,11 +45,29 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
             PortfolioUser user = portfolioUserService.getUserById(id);
             return portfolioUserService.getCurrentProject(user.getUserId());
         } catch (Exception e) {
-            if (projectService.getAllProjects().size()==0){
+            if (projectService.getAllProjects().isEmpty()){
                 return new Project();
             } else {
                 return projectService.getAllProjects().get(0);
             }
+        }
+    }
+
+    @ModelAttribute("authUserIsTeacher")
+    public boolean userIsTeacher(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isTeacher(principal);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @ModelAttribute("authUserIsAdmin")
+    public boolean userIsAdmin(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isAdmin(principal);
+        } catch (Exception e) {
+            return false;
         }
     }
 }
