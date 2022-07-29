@@ -37,6 +37,9 @@ public class PortfolioGroup {
 
     public PortfolioGroup(int groupId) {
         this.groupId = groupId;
+        this.gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
+        this.gitlabProjectId = -1;
+        this.gitlabAccessToken = null;
         this.currentProject = 1;
     }
 
