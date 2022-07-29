@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,6 +24,12 @@ public class PortfolioController {
 
     @Autowired
     private UserAccountClientService userService;
+
+    @Autowired
+    private EvidenceService evidenceService;
+
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * Display the user's portfolio page.
@@ -58,6 +68,12 @@ public class PortfolioController {
         model.addAttribute("user", user);
         User pageUser = userService.getUserAccountById(userId);
         model.addAttribute("pageUser", pageUser);
+
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+
+        model.addAttribute(evidenceList);
+
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
