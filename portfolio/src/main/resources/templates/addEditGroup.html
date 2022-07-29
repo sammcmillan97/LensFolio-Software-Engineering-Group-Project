@@ -23,7 +23,12 @@
     <div id="group-form__wrapper">
         <!-- Name, Date -->
         <header class="group-form__header flex-column">
-            <h1 id="event__name" th:text="${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            <div th:if="${groupId == '-1'}">
+                <h1> Create New Group</h1>
+            </div>
+            <div th:if="${groupId != '-1'}">
+                <h1 th:text="'Editing: ' + ${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            </div>
         </header>
 
         <!-- Add/Edit Event Form -->

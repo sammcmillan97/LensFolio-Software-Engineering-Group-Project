@@ -23,7 +23,7 @@
 
         <header class="form__header flex-column">
             <div th:if="${milestoneId == '-1'}">
-                <h1> Create new Milestone</h1>
+                <h1> Create New Milestone</h1>
             </div>
             <div th:if="${milestoneId != '-1'}">
                 <h1 th:text="'Editing: ' + ${milestone.milestoneName}"></h1>
