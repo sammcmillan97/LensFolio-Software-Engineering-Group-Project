@@ -24,9 +24,16 @@
       <h1 class="group_short_name" th:text="${group.getShortName()}"></h1>
       <h2 class="group_long_name" th:text="${group.getLongName()}"></h2>
     </header>
-    <div class="repository_settings_container" th:if="${userInGroup}">
-      <form id="group_repository_settings_form" class="flex-column" th:onsubmit="updateRepositorySettings">
+    <div class="repository_settings_container" th:if="${userInGroup || authUserIsTeacher}">
+      <form id="group-repository-form__form" class="flex-column" th:onsubmit="updateRepositorySettings">
+        <label for="group_repository_api_key">Repository API Key *</label>
+        <input type="text" id="group_repository_api_key" class="edit-input" name="repositoryApiKey">
 
+        <label for="group_repository_id">Repository ID *</label>
+        <input type="text" id="group_repository_id" class="edit-input" name="repositoryId">
+
+        <label for="group_repository_server_url">Repository Server URL *</label>
+        <input type="text" id="group_repository_server_url" class="edit-input" name="repositoryServerUrl" value="https://eng-git.canterbury.ac.nz">
       </form>
     </div>
     <div class="member_container">

@@ -128,7 +128,7 @@ public class GroupsClientService {
         return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
     }
 
-    public boolean userIdInGroup(int groupId, int userId) {
+    public boolean userInGroup(int groupId, int userId) {
         Group group = new Group(getGroupDetailsById(groupId));
         for (User u : group.getMembers()) {
             if (u.getId() == userId) {

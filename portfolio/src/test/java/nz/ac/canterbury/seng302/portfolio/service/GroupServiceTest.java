@@ -51,7 +51,7 @@ public class GroupServiceTest {
         int testUserId = testUser.getId();
         GroupsClientService spyGroupService = Mockito.spy(groupsClientService);
         Mockito.doReturn(groupResponse).when(spyGroupService).getGroupDetailsById(testGroupId);
-        assertTrue(spyGroupService.userIdInGroup(testGroupId, testUserId));
+        assertTrue(spyGroupService.userInGroup(testGroupId, testUserId));
     }
 
     // Test that a user is in a group when they are not in it
@@ -68,6 +68,6 @@ public class GroupServiceTest {
         int testUserId = 1;
         GroupsClientService spyGroupService = Mockito.spy(groupsClientService);
         Mockito.doReturn(groupResponse).when(spyGroupService).getGroupDetailsById(testGroupId);
-        assertFalse(spyGroupService.userIdInGroup(testGroupId, testUserId));
+        assertFalse(spyGroupService.userInGroup(testGroupId, testUserId));
     }
 }
