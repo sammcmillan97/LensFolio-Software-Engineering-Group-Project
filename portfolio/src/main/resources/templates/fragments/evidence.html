@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 
 <!-- List of Evidence -->
-<div id="project__sprints-wrapper flex-column">
-    <div class="event__outside" th:each="evidence: ${evidenceList}">
-        <div class="event_title_child">
-            <h2 class="evidence__title" type="button" data-bs-toggle="collapse" aria-controls="evidence_details" aria-expanded="false" data-bs-target="#evidence_details" th:text="${evidence.getTitle}"></h2>
+<div id="evidence__form-wrapper flex-column">
+    <div class="evidence__collapsed" th:each="evidence: ${evidenceList}">
+        <div class="evidence_title_child">
+            <h2 class="evidence__title" type="button" data-bs-toggle="collapse" aria-controls="evidence_details" aria-expanded="false" data-bs-target="#evidence_details" th:text="${evidence.getTitle} + ' - '"></h2>
+            <h3 class="evidence__date" type="button" data-bs-toggle="collapse" aria-controls="evidence_details" aria-expanded="false" data-bs-target="#evidence_details" th:text="${evidence.getDateString} "></h3>
         </div>
+
         <!-- Evidence Details -->
         <div class="evidence__details collapse" id="evidence_details">
-            <div class="event__details flex-row" >
-                <h4 class="event__date" th:text="${evidence.getDateString} "></h4>
-                <h4 class="event__date" th:text="${evidence.getDescription} "></h4>
+            <div class="evidence__details_expanded flex-row" >
+                <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
             </div>
         </div>
     </div>
