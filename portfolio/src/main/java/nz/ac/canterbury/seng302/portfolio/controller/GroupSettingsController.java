@@ -23,6 +23,9 @@ public class GroupSettingsController {
     @Autowired
     private GroupsClientService groupsClientService;
 
+    @Autowired
+    private GroupsController groupsController;
+
     /**
      * Get mapping to fetch group settings page
      * @param principal Authentication principal storing current user information
@@ -43,4 +46,5 @@ public class GroupSettingsController {
         model.addAttribute("user", user);
         return SETTINGS_PAGE;
     }
+
 }
