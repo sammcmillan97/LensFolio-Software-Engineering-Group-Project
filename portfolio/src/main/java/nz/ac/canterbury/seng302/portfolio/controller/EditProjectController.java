@@ -1,8 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectDateService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -24,10 +22,13 @@ import java.util.Objects;
  */
 @Controller
 public class EditProjectController {
+
     @Autowired
     ProjectService projectService;
+
     @Autowired
-    SprintService sprintService;
+    ProjectDateService projectDateService;
+
     @Autowired
     UserAccountClientService userAccountClientService;
 
@@ -115,28 +116,14 @@ public class EditProjectController {
         java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, DATE_FORMAT_STRING));
 
-        // Check if the project has any sprints
-        List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
-        if (! projectSprints.isEmpty()) {
-            // Find the first sprint start date and last sprint end date
-            java.util.Date firstSprintStartDate = null;
-            java.util.Date lastSprintEndDate = null;
-            for (Sprint s: projectSprints) {
-                // Find the earliest sprint
-                if (Objects.equals(s.getNumber(), 1)) {
-                    firstSprintStartDate = s.getStartDate();
-                }
-                // Find the last sprint
-                if (Objects.equals(s.getNumber(), projectSprints.size())) {
-                    lastSprintEndDate = s.getEndDate();
-                }
-            }
-            // Add the attributes to the model
-            model.addAttribute("projectHasSprints", true);
-            model.addAttribute("projectFirstSprintStartDate", firstSprintStartDate);
-            model.addAttribute("projectLastSprintEndDate", lastSprintEndDate);
+        List<java.util.Date> restrictionDates = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+
+        if (!restrictionDates.isEmpty()){
+            model.addAttribute("projectHasDateRestrictions", true);
+            model.addAttribute("restrictedStartDate", restrictionDates.get(0));
+            model.addAttribute("restrictedEndDate", restrictionDates.get(1));
         } else {
-            model.addAttribute("projectHasSprints", false);
+            model.addAttribute("projectHasDateRestrictions", false);
         }
 
         return "editProject";
@@ -207,6 +194,16 @@ public class EditProjectController {
             return EDIT_PROJECT_REDIRECT + projectId;
         }
 
+        List<java.util.Date> restrictionDates = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+        if (!restrictionDates.isEmpty()) {
+            if (projectStartCal.before(restrictionDates.get(0))) {
+                return EDIT_PROJECT_REDIRECT + projectId;
+            }
+            if (!projectEndCal.after(restrictionDates.get(1))) {
+                return EDIT_PROJECT_REDIRECT + projectId;
+            }
+        }
+
         // If editing existing project
         Project savedProject;
         if (id > 0) {
@@ -247,8 +244,6 @@ public class EditProjectController {
                 // Don't do anything if delete fails
             }
         }
-
-
         return PROJECT_REDIRECT;
     }
 

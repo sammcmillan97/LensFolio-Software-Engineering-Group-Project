@@ -45,6 +45,10 @@ public class EvidenceService {
         }
     }
 
+    public List<Evidence> getEvidenceByProjectId(int projectId) {
+        return repository.findByProjectId(projectId);
+    }
+
     /**
      * Saves a piece of evidence. Makes sure the project the evidence is for exists.
      * ALso makes sure the description and title are not one character, and contain at least one letter.
