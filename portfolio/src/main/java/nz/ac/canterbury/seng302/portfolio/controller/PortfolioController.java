@@ -46,6 +46,14 @@ public class PortfolioController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
+
+        int userId = user.getId();
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+
+        model.addAttribute("evidenceList", evidenceList);
+        System.out.println(evidenceList);
+        System.out.println("HELLOO");
         return "portfolio";
     }
 
@@ -72,7 +80,7 @@ public class PortfolioController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
 
-        model.addAttribute(evidenceList);
+        model.addAttribute("evidenceList", evidenceList);
 
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
