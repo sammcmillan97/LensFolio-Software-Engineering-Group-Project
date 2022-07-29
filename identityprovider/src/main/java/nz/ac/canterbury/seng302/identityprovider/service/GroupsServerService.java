@@ -345,7 +345,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             Set<User> members = group.getMembers();
             List<UserResponse> userResponses = new ArrayList<>();
             for (User member : members) {
-                userResponses.add(member.toUserResponse());
+                userResponses.add(userAccountsServerService.getUserAccountByIdHandler(member.getUserIdRequest()));
             }
             reply
                     .setGroupId(groupId)

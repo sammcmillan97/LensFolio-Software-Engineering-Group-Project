@@ -24,8 +24,10 @@
       <h1 class="group_short_name" th:text="${group.getShortName()}"></h1>
       <h2 class="group_long_name" th:text="${group.getLongName()}"></h2>
     </header>
-    <div class="member-container" th:each="member: ${group.getMembers()}">
-      <div th:replace="fragments/groupMember"></div>
+    <div class="member-container">
+      <div class="member-block" th:each="member: ${group.getMembers()}">
+        <div th:replace="fragments/groupMember"></div>
+      </div>
     </div>
   </div>
 </div>

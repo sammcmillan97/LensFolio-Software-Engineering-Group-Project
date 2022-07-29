@@ -38,6 +38,7 @@ public class GroupSettingsController {
             return "redirect:/groups";
         }
         Group group = new Group(response);
+        System.out.println(user.getProfileImagePath());
         model.addAttribute("group", group);
         model.addAttribute("user", user);
         return SETTINGS_PAGE;
