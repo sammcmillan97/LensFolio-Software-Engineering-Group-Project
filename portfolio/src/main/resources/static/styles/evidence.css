@@ -1,0 +1,19 @@
+
+.evidence__title {
+    margin: 0 15rem 0 0;
+    padding: 0;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.evidence__title:hover {
+    color: var(--color-accent);
+}
+
+.evidence__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    visibility: visible;
+}
