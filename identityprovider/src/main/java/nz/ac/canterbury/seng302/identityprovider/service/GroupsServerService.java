@@ -262,7 +262,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
         ModifyGroupDetailsResponse reply;
-        if (userAccountsServerService.isAuthenticated() && (userAccountsServerService.isTeacher()||userInGroup(request.getGroupId()))) {
+        if (userAccountsServerService.isAuthenticated() && (userAccountsServerService.isTeacher()||userInGroup(request.getGroupId(), userAccountsServerService.getAuthStateUserId()))) {
             reply = modifyGroupDetailsHandler(request);
         } else {
             reply = ModifyGroupDetailsResponse.newBuilder()
@@ -489,9 +489,8 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
      * @param groupId of group being checked
      * @return true if user in group, else false
      */
-    protected boolean userInGroup(int groupId) {
+    protected boolean userInGroup(int groupId, int userId) {
         Group group = groupRepository.findByGroupId(groupId);
-        int userId = userAccountsServerService.getAuthStateUserId();
         for (User user : group.getMembers()) {
             if (user.getUserId() == userId) {
                 return true;
