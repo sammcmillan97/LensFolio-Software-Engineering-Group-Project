@@ -60,11 +60,11 @@ public class EvidenceService {
         }
         Pattern fieldPattern = Pattern.compile("[a-zA-Z]+");
         Matcher titleMatcher = fieldPattern.matcher(evidence.getTitle());
-        if (!titleMatcher.find() || evidence.getTitle().length() == 1) {
+        if (!titleMatcher.find() || evidence.getTitle().length() < 2 || evidence.getTitle().length() > 64) {
             throw new IllegalArgumentException("Title not valid");
         }
         Matcher descriptionMatcher = fieldPattern.matcher(evidence.getDescription());
-        if (!descriptionMatcher.find() || evidence.getDescription().length() == 1) {
+        if (!descriptionMatcher.find() || evidence.getDescription().length() < 50 || evidence.getDescription().length() > 1024) {
             throw new IllegalArgumentException("Description not valid");
         }
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {

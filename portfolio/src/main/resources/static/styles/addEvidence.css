@@ -59,6 +59,7 @@
 .form-error-message {
     margin-left: 10px;
     color: red;
+    font-size: small;
     margin-top: -5px;
     margin-bottom: 10px;
 }
