@@ -6,11 +6,9 @@ import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.AddGroupMembersResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,6 +28,8 @@ public class GroupsController {
     private GroupsClientService groupsClientService;
 
     private static final String GROUPS_PAGE = "groups";
+
+    private static final String USER_IS_MEMBER = "userIsMember";
 
     private static final int GROUPLESS_GROUP_ID = -1;
     private static final int TEACHER_GROUP_ID = -2;
@@ -144,7 +144,7 @@ public class GroupsController {
      * @param groupId Group id of the group to check
      * @return A boolean, true if the user is in the group, false otherwise
      */
-    private boolean userInGroup(int userId, int groupId) {
+    protected boolean userInGroup(int userId, int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
         for (User member : group.getMembers()) {
             if (member.getId() == userId) {
@@ -261,6 +261,7 @@ public class GroupsController {
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userIsTeacher);
         model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute(USER_IS_MEMBER, userInGroup(userId, groupId));
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
         return "groupTable";
