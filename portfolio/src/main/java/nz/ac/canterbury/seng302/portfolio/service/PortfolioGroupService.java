@@ -90,4 +90,25 @@ public class PortfolioGroupService {
         group.setGitlabAccessToken(gitlabAccessToken);
         groupRepository.save(group);
     }
+
+    /**
+     * Gets the group's current repository name. This is for the group settings page
+     * @param groupId The group's id from the identity provider
+     * @return the group's current repository name
+     */
+    public String getRepositoryName(int groupId) {
+        PortfolioGroup group = getGroupById(groupId);
+        return group.getRepositoryName();
+    }
+
+    /**
+     * Sets the group's repository name. This is for the group settings page
+     * @param groupId The group's id from the identity provider
+     * @param repositoryName the group's new repository name
+     */
+    public void setRepositoryName(int groupId, String repositoryName) {
+        PortfolioGroup group = getGroupById(groupId);
+        group.setRepositoryName(repositoryName);
+        groupRepository.save(group);
+    }
 }

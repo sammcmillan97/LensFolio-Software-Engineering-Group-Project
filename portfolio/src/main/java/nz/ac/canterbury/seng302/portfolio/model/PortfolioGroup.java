@@ -15,10 +15,11 @@ public class PortfolioGroup {
     private int id;
     private int groupId;
 
-    private int currentProject;
-    private String gitlabServerUrl;
-    private int gitlabProjectId;
-    private String gitlabAccessToken;
+    private int currentProject = 1;
+    private String gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
+    private int gitlabProjectId = -1;
+    private String gitlabAccessToken = null;
+    private String repositoryName = "";
 
     /**
      * Create a portfolio group
@@ -31,16 +32,25 @@ public class PortfolioGroup {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
+    }
+
+    /**
+     * Create a portfolio group
+     * @param groupId Should be the same as the group's id from the identity provider
+     * @param gitlabServerUrl The group's gitlab server url
+     * @param gitlabProjectId The group's gitlab project id
+     * @param gitlabAccessToken The group's gitlab access token
+     */
+    public PortfolioGroup(int groupId, String gitlabServerUrl, int gitlabProjectId, String gitlabAccessToken, String repositoryName) {
+        this.groupId = groupId;
+        this.gitlabServerUrl = gitlabServerUrl;
+        this.gitlabProjectId = gitlabProjectId;
         this.gitlabAccessToken = gitlabAccessToken;
-        this.currentProject = 1;
+        this.repositoryName = repositoryName;
     }
 
     public PortfolioGroup(int groupId) {
         this.groupId = groupId;
-        this.gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
-        this.gitlabProjectId = -1;
-        this.gitlabAccessToken = null;
-        this.currentProject = 1;
     }
 
     protected PortfolioGroup() {
@@ -81,6 +91,14 @@ public class PortfolioGroup {
 
     public void setGitlabAccessToken(String gitlabAccessToken) {
         this.gitlabAccessToken = gitlabAccessToken;
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
+    }
+
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
     public int getCurrentProject() {

@@ -97,4 +97,20 @@ class PortfolioGroupServiceTest {
         assertEquals(testAccessToken, resultAccessToken);
     }
 
+    //Test that getting the default repository name works (should be empty string)
+    @Test
+    void getRepositoryNameTest() {
+        String resultRepositoryName = groupService.getRepositoryName(3);
+        assertEquals("", resultRepositoryName);
+    }
+
+    //Test that setting the repository name works properly
+    @Test
+    void setRepositoryNameTest() {
+        String testRepositoryName = "randomAccessToken";
+        groupService.setRepositoryName(3, testRepositoryName);
+        String resultRepositoryName = groupService.getRepositoryName(3);
+        assertEquals(testRepositoryName, resultRepositoryName);
+    }
+
 }
