@@ -26,6 +26,9 @@
     </header>
     <div class="repository_settings_container" th:if="${userInGroup || authUserIsTeacher}">
       <form id="group-repository-form__form" class="flex-column" th:onsubmit="updateRepositorySettings">
+        <label for="group_repository_name">Repository Name *</label>
+        <input type="text" id="group_repository_name" class="edit-input" name="repositoryName">
+
         <label for="group_repository_api_key">Repository API Key *</label>
         <input type="text" id="group_repository_api_key" class="edit-input" name="repositoryApiKey">
 
