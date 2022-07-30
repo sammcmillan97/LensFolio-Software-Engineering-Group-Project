@@ -41,6 +41,9 @@ public class SprintService {
         }
     }
 
+    /**
+     * Method for returning a map of all sprints linked to project selection page.
+     */
     public Map<Integer, List<Sprint>> getAllByParentProjectId() {
         List<Project> projects = projectService.getAllProjects();
 
@@ -53,6 +56,11 @@ public class SprintService {
         return sprintsByParentProject;
     }
 
+    /**
+     * Method for getting all sprints in chronological order
+     * @param projectId The parent project of the sprints
+     * @return List of sprints in chronological order
+     */
     public List<Sprint> getSprintsByProjectInOrder(int projectId) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         Comparator<Sprint> comparator = Comparator.comparing(Sprint::getStartDate);
@@ -60,20 +68,36 @@ public class SprintService {
         return sprints;
     }
 
+    /**
+     * Get a list of sprints by parent project ID
+     * @param projectId The parent project of the sprints
+     * @return List of sprints
+     */
     public List<Sprint> getByParentProjectId(int projectId) {
         return repository.findByParentProjectId(projectId);
     }
 
+    /**
+     * Saves a sprint to the repository
+     */
     public void saveSprint(Sprint sprint) {
         projectEditsService.refreshProject(sprint.getParentProjectId());
+        updateSprintNumbers(sprint.getParentProjectId());
         repository.save(sprint);
     }
 
+    /**
+     * Deletes a sprint from the repository
+     */
     public void deleteById(int sprintId) {
         projectEditsService.refreshProject(repository.findById(sprintId).getParentProjectId());
+        updateSprintNumbers(repository.findById(sprintId).getParentProjectId());
         repository.deleteById(sprintId);
     }
 
+    /**
+     * For editing updating sprint values
+     */
     public void editSprint(int projectId, int sprintId, String sprintName, String sprintDescription,  Date sprintStartDate,
                            Date sprintEndDate) {
         Sprint sprint;
@@ -84,21 +108,20 @@ public class SprintService {
             sprint.setStartDate(sprintStartDate);
             sprint.setEndDate(sprintEndDate);
             saveSprint(sprint);
-            updateSprintNumbers(projectId);
         } catch (NoSuchElementException e) {
             System.out.println(e.getMessage());
         }
     }
 
+    /**
+     * Proxy method for saving a new sprint
+     */
     public void createNewSprint(int projectId, String sprintName, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
         saveSprint(new Sprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate));
-        updateSprintNumbers(projectId);
     }
 
     /**
-     * Create a new sprint and populate it with default values for the sprint form
-     * @param parentProjectId
-     * @return
+     * Create a new sprint and populate it with default values to be used in the sprint form placeholder values
      */
     public Sprint createDefaultSprint(int parentProjectId) {
         Date defaultStartDate = getDefaultSprintStartDate(parentProjectId);
@@ -109,9 +132,8 @@ public class SprintService {
 
 
     /**
-     * Gets the soonest available date occurring after all of a project's sprints that occur before a given sprint
+     * Gets the date 1 day after the current latest sprint or the project end date if the former is out bounds
      * @param projectId The parent project for which to find the next available date
-     * @return The soonest available date occurring after all the project's sprints occurring before the given sprint
      */
     private Date getDefaultSprintStartDate(int projectId) {
         Project parentProject;
@@ -144,9 +166,8 @@ public class SprintService {
     }
 
     /**
-     * Gets the latest available date occurring before any following sprints begin, or the project ends.
+     * Gets the date 3 weeks after the current latest sprint or the project end date if the former is out bounds
      * @param projectId The parent project for which to find the latest available date
-     * @return The latest available date occurring before any following sprints begin, or the project ends
      */
     private Date getDefaultSprintEndDate(int projectId) {
         Project parentProject;
@@ -192,6 +213,13 @@ public class SprintService {
         return cal;
     }
 
+    /**
+     * Checks that the selected start date does not fall within current sprint dates
+     * @param sprintId The sprint ID of the sprint being checked
+     * @param projectId THe parent project ID
+     * @param startDate The selected start date
+     * @return String "" if it fine or "An error message if it's not
+     */
     public String checkSprintStartDate(int sprintId, int projectId, Date  startDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for(Sprint sprint: sprints) {
@@ -203,6 +231,13 @@ public class SprintService {
         return "";
     }
 
+    /**
+     * Checks that the selected end date does not fall within current sprint dates
+     * @param sprintId The sprint ID of the sprint being checked
+     * @param projectId The parent project ID
+     * @param endDate The selected end date
+     * @return String "" if it fine or "An error message if it's not
+     */
     public String checkSprintEndDate(int sprintId, int projectId, Date endDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for(Sprint sprint: sprints) {
@@ -214,6 +249,14 @@ public class SprintService {
         return "";
     }
 
+    /**
+     * Checks that a sprint does not encase other sprints
+     * @param sprintId The sprint ID of the sprint being checked
+     * @param projectId The parent project ID
+     * @param startDate The selected start date
+     * @param endDate The selected end date
+     * @return String "" if it fine or "An error message if it's not
+     */
     public String checkSprintDates(int sprintId, int projectId, Date startDate, Date endDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
@@ -224,6 +267,10 @@ public class SprintService {
         return "";
     }
 
+    /***
+     * Updates all sprint numbers within a project called after a sprint has been edited, created or deleted
+     * @param projectId The parent ID project of the sprints
+     */
     private void updateSprintNumbers(int projectId) {
         List<Sprint> sprints = getSprintsByProjectInOrder(projectId);
         for (int i = 0; i < sprints.size(); i++) {
@@ -233,6 +280,11 @@ public class SprintService {
         }
     }
 
+    /**
+     * Validates and updates a sprint start date. Used by the sprint resizing in planner
+     * @param sprintId The sprint ID of the sprint being changed
+     * @param newDate The new start date
+     */
     public void updateStartDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();
@@ -255,6 +307,11 @@ public class SprintService {
         }
     }
 
+    /**
+     *Validates and updates a sprint end date. Used by the sprint resizing in planner
+     * @param sprintId The sprint ID of the sprint being changed
+     * @param newDate The new end date
+     */
     public void updateEndDate(int sprintId, Date newDate) {
         Sprint sprintToChange = getSprintById(sprintId);
         Date projectStartDate = projectService.getProjectById(sprintToChange.getParentProjectId()).getStartDate();

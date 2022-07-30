@@ -35,24 +35,6 @@ public class EditSprintController {
 
 
     /**
-     * Decrements the sprint number of every one of a project's sprints with a sprint number
-     * greater than a given sprint number.
-     *
-     * This is a helper function for deleting sprints.
-     * @param parentProjectId The project whose sprints to decrement sprint numbers
-     * @param minimumSprintNumber Any of the project's sprints with number greater than minimumSprintNumber will be decremented
-     */
-    private void decrementSprintNumbersGreaterThan(int parentProjectId, int minimumSprintNumber) {
-        List<Sprint> sprints = sprintService.getByParentProjectId(parentProjectId);
-        for (Sprint sprint : sprints) {
-            int sprintNumber = sprint.getNumber();
-            if (minimumSprintNumber < sprintNumber) {
-                sprint.setNumber(sprintNumber - 1);
-            }
-        }
-    }
-
-    /**
      * The get mapping to return the page to edit a sprint of a certain Project ID
      * @param principal Authentication principal storing current user information
      * @param projectIdString The Project ID of parent project of the sprint being displayed
@@ -114,7 +96,18 @@ public class EditSprintController {
         return "editSprint";
     }
 
-
+    /**
+     * Post request handler for adding/editing sprints
+     * @param principal principal Authentication state of client
+     * @param projectIdString The ID string of the parent project of the sprint
+     * @param sprintIdString The ID string of the sprint being edited/created
+     * @param sprintName The new sprint name
+     * @param sprintStartDateString The new sprint start date
+     * @param sprintEndDateString The new sprint end date
+     * @param sprintDescription The new sprint description
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Project details page or sprint from depending on if validation passes.
+     */
     @PostMapping("/editSprint-{sprintId}-{parentProjectId}")
     public String sprintSave(
             @AuthenticationPrincipal AuthState principal,
@@ -212,8 +205,6 @@ public class EditSprintController {
             return PROJECTS_REDIRECT;
         }
 
-        int sprintNumber = sprintService.getSprintById(Integer.parseInt(sprintId)).getNumber();
-        decrementSprintNumbersGreaterThan(Integer.parseInt(parentProjectId), sprintNumber);
         sprintService.deleteById(Integer.parseInt(sprintId));
         return PROJECTS_REDIRECT + parentProjectId;
     }
