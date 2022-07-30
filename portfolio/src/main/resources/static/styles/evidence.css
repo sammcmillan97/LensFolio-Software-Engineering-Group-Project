@@ -56,7 +56,7 @@ html {
     cursor: pointer;
 }
 
-.evidence__title:hover, .evidence__date:hover {
+.evidence_title_child:hover {
     color: var(--color-accent);
 }
 

@@ -3,13 +3,13 @@
 <!-- List of Evidence -->
 <div id="evidence__form-wrapper flex-column">
     <div class="evidence__collapsed" th:each="evidence: ${evidenceList}">
-        <div class="evidence_title_child">
-            <h2 class="evidence__title" type="button" data-bs-toggle="collapse" aria-controls="evidence_details" aria-expanded="false" data-bs-target="#evidence_details" th:text="${evidence.getTitle} + ' - '"></h2>
-            <h3 class="evidence__date" type="button" data-bs-toggle="collapse" aria-controls="evidence_details" aria-expanded="false" data-bs-target="#evidence_details" th:text="${evidence.getDateString} "></h3>
+        <div class="evidence_title_child" type="button" data-bs-toggle="collapse" th:aria-controls="evidence_ + ${evidence.getId}" aria-expanded="false" th:data-bs-target="'#evidence_' + ${evidence.getId}">
+            <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
+            <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
         </div>
 
         <!-- Evidence Details -->
-        <div class="evidence__details collapse" id="evidence_details">
+        <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
             <div class="evidence__details_expanded flex-row" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
             </div>

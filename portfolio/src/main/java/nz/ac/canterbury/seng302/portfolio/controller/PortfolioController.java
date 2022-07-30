@@ -52,8 +52,6 @@ public class PortfolioController {
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
 
         model.addAttribute("evidenceList", evidenceList);
-        System.out.println(evidenceList);
-        System.out.println("HELLOO");
         return "portfolio";
     }
 
