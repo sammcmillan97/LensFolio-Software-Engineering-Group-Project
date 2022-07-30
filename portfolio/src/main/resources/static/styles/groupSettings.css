@@ -103,3 +103,25 @@ html {
     margin: 0;
     padding: 0;
 }
+
+#group-repository-form__wrapper {
+    display: block;
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+#group-repository-form__form {
+    padding: 1rem 2rem 1rem 2rem;
+}
+
+#group-repository-form__form label {
+    margin-bottom: 0.5rem;
+}
+
+#group-repository-form__form input, #group-repository-form__form textarea {
+    margin: 0 0 1rem 1rem;
+    border: none;
+    border-bottom: 2px solid lightgray;
+}
