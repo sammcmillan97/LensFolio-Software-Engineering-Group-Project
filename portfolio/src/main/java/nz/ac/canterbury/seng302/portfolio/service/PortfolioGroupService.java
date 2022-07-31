@@ -111,4 +111,13 @@ public class PortfolioGroupService {
         group.setRepositoryName(repositoryName);
         groupRepository.save(group);
     }
+
+    public void updateRepositoryInformation(int groupId, String repositoryName, String repositoryApiKey, int repositoryId, String repositoryServerUrl) {
+        PortfolioGroup group = getGroupById(groupId);
+        group.setRepositoryName(repositoryName);
+        group.setGitlabAccessToken(repositoryApiKey);
+        group.setGitlabProjectId(repositoryId);
+        group.setGitlabServerUrl(repositoryServerUrl);
+        groupRepository.save(group);
+    }
 }
