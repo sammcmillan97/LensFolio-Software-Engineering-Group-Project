@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,58 +25,55 @@ public class ProjectDateService {
     @Autowired
     private EvidenceService evidenceService;
 
-    public List<Date> getDateRestrictions(int projectId) {
+    public DateRestrictions getDateRestrictions(int projectId) {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         List<Event> events = eventService.getByEventParentProjectId(projectId);
         List<Milestone> milestones = milestoneService.getByMilestoneParentProjectId(projectId);
         List<Deadline> deadlines = deadlineService.getByDeadlineParentProjectId(projectId);
         List<Evidence> evidences = evidenceService.getEvidenceByProjectId(projectId);
 
-        List<Date> startDates = new ArrayList<>();
-        List<Date> endDates = new ArrayList<>();
+        List<DateRestriction> startDates = new ArrayList<>();
+        List<DateRestriction> endDates = new ArrayList<>();
 
-        for (Sprint sprint : sprints){
-            startDates.add(sprint.getStartDate());
-            endDates.add(sprint.getEndDate());
+        for (Sprint sprint : sprints) {
+            startDates.add(new DateRestriction(sprint.getStartDate(), "a sprint"));
+            endDates.add(new DateRestriction(sprint.getEndDate(), "a sprint"));
         }
         for (Event event : events) {
-            startDates.add(event.getEventStartDate());
-            endDates.add(event.getEventEndDate());
+            startDates.add(new DateRestriction(event.getEventStartDate(), "an event"));
+            endDates.add(new DateRestriction(event.getEventEndDate(), "an event"));
         }
         for (Milestone milestone : milestones) {
-            startDates.add(milestone.getMilestoneDate());
-            endDates.add(milestone.getMilestoneDate());
+            startDates.add(new DateRestriction(milestone.getMilestoneDate(), "a milestone"));
+            endDates.add(new DateRestriction(milestone.getMilestoneDate(), "a milestone"));
         }
         for (Deadline deadline : deadlines) {
-            startDates.add(deadline.getDeadlineDate());
-            endDates.add(deadline.getDeadlineDate());
+            startDates.add(new DateRestriction(deadline.getDeadlineDate(), "a deadline"));
+            endDates.add(new DateRestriction(deadline.getDeadlineDate(), "a deadline"));
         }
         for (Evidence evidence : evidences) {
-            startDates.add(evidence.getDate());
-            endDates.add(evidence.getDate());
+            startDates.add(new DateRestriction(evidence.getDate(), "a user's piece of evidence"));
+            endDates.add(new DateRestriction(evidence.getDate(), "a user's piece of evidence"));
         }
 
         if (startDates.isEmpty()) {
-            return new ArrayList<>();
+            return new DateRestrictions();
         }
 
-        Date firstStartDate = startDates.get(0);
-        for (Date startDate: startDates) {
-            if (startDate.before(firstStartDate)) {
+        DateRestriction firstStartDate = startDates.get(0);
+        for (DateRestriction startDate: startDates) {
+            if (startDate.date().before(firstStartDate.date())) {
                 firstStartDate = startDate;
             }
         }
 
-        Date lastEndDate = endDates.get(0);
-        for (Date endDate: endDates) {
-            if (endDate.after(lastEndDate)) {
+        DateRestriction lastEndDate = endDates.get(0);
+        for (DateRestriction endDate: endDates) {
+            if (endDate.date().after(lastEndDate.date())) {
                 lastEndDate = endDate;
             }
         }
-        List<Date> restrictedDates = new ArrayList<>();
-        restrictedDates.add(firstStartDate);
-        restrictedDates.add(lastEndDate);
-        return restrictedDates;
+        return new DateRestrictions(firstStartDate.date(), lastEndDate.date(), firstStartDate.text(), lastEndDate.text());
     }
 
 }

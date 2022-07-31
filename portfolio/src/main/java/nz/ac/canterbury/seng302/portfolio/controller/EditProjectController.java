@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.DateRestrictions;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectDateService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -14,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.List;
 
 
 /**
@@ -116,15 +116,8 @@ public class EditProjectController {
         java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, DATE_FORMAT_STRING));
 
-        List<java.util.Date> restrictionDates = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
-
-        if (!restrictionDates.isEmpty()){
-            model.addAttribute("projectHasDateRestrictions", true);
-            model.addAttribute("restrictedStartDate", restrictionDates.get(0));
-            model.addAttribute("restrictedEndDate", restrictionDates.get(1));
-        } else {
-            model.addAttribute("projectHasDateRestrictions", false);
-        }
+        DateRestrictions dateRestrictions = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+        model.addAttribute("dateRestrictions", dateRestrictions);
 
         return "editProject";
     }
@@ -162,18 +155,11 @@ public class EditProjectController {
         }
 
         // Check the project name isn't null, empty, too long or consists of whitespace
-        if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
+        // Also check that the project description and date fields are valid.
+        if (projectName == null || projectName.length() > 255 || projectName.isBlank() ||
+                projectDescription.length() > 255 || projectEndDate == null || projectStartDate == null) {
             return EDIT_PROJECT_REDIRECT + projectId;
             // Check project name is
-        }
-
-        if (projectDescription.length() > 255) {
-            return EDIT_PROJECT_REDIRECT + projectId;
-        }
-
-        // Check dates are not null
-        if (projectEndDate == null || projectStartDate == null) {
-            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -194,12 +180,12 @@ public class EditProjectController {
             return EDIT_PROJECT_REDIRECT + projectId;
         }
 
-        List<java.util.Date> restrictionDates = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
-        if (!restrictionDates.isEmpty()) {
-            if (projectStartCal.before(restrictionDates.get(0))) {
+        DateRestrictions dateRestrictions = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+        if (dateRestrictions.hasRestrictions()) {
+            if (projectStartCal.before(dateRestrictions.getStartDate())) {
                 return EDIT_PROJECT_REDIRECT + projectId;
             }
-            if (!projectEndCal.after(restrictionDates.get(1))) {
+            if (!projectEndCal.after(dateRestrictions.getEndDate())) {
                 return EDIT_PROJECT_REDIRECT + projectId;
             }
         }
