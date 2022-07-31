@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -137,6 +138,41 @@ class EvidenceServiceTests {
         assertEquals("One", evidenceList.get(0).getTitle());
         assertEquals("Two", evidenceList.get(1).getTitle());
         assertEquals("Three", evidenceList.get(2).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceAdded_testSaveOneWebLink() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
+        assertEquals("http://localhost:9000/portfolio", receivedEvidence.getWebLinks().get(0));
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceAdded_testSaveMultipleWebLinks() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
+        for (String s: receivedEvidence.getWebLinks()) {
+            assertEquals("http://localhost:9000/portfolio", s);
+        }
+    }
+
+    @Test
+    @Transactional
+    void whenNoEvidenceAdded_testWebLinkNotSaved() {
+        Exception exception = assertThrows(Exception.class,
+                () -> evidenceService.saveWebLink(0, "http://localhost:9000/portfolio"));
+        String expectedMessage = "Evidence not found: web link not saved";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
     }
 
 }
