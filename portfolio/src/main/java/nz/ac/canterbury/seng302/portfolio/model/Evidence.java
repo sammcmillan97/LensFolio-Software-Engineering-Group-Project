@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called evidence
@@ -48,6 +49,10 @@ public class Evidence {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getDateString() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
 }
