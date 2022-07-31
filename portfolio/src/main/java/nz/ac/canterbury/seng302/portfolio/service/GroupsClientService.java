@@ -21,7 +21,7 @@ public class GroupsClientService {
     private GroupsServiceGrpc.GroupsServiceStub groupsNonBlockingStub;
 
     @Autowired
-    PortfolioGroupService portfolioGroupService;
+    GroupRepositoryService groupRepositoryService;
 
     public CreateGroupResponse createGroup(final String shortName, final String longName) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
@@ -65,10 +65,7 @@ public class GroupsClientService {
 
         // If the group was deleted in the identity provider then delete it in the portfolio
         if (response.getIsSuccess()) {
-            try {
-                portfolioGroupService.deletePortfolioGroupById(groupId);
-            } catch (Exception ignored) {} // Ignored because an exception means it didn't exist in the database
-
+            groupRepositoryService.deleteGroupRepositoryByGroupId(groupId);
         }
         return response;
     }

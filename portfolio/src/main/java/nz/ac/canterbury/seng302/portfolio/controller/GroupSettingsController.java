@@ -1,10 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Group;
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioGroup;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepository;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
-import nz.ac.canterbury.seng302.portfolio.service.PortfolioGroupService;
+import nz.ac.canterbury.seng302.portfolio.service.GroupRepositoryService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
@@ -29,7 +29,7 @@ public class GroupSettingsController {
     private GroupsClientService groupsClientService;
 
     @Autowired
-    private PortfolioGroupService portfolioGroupService;
+    private GroupRepositoryService groupRepositoryService;
 
     @Autowired
     private GroupsController groupsController;
@@ -64,8 +64,8 @@ public class GroupSettingsController {
      */
     @GetMapping("/groupSettings-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id) {
-        PortfolioGroup portfolioGroup = portfolioGroupService.getGroupById(Integer.parseInt(id));
-        model.addAttribute("portfolioGroup", portfolioGroup);
+        GroupRepository groupRepository = groupRepositoryService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        model.addAttribute("groupRepository", groupRepository);
         return GROUP_REPOSITORY;
     }
 
@@ -90,11 +90,11 @@ public class GroupSettingsController {
                                         @PathVariable String id) {
         // Update the group repository information
         int groupId = Integer.parseInt(id);
-        portfolioGroupService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
+        groupRepositoryService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
 
         // Return the updated repository information
-        PortfolioGroup portfolioGroup = portfolioGroupService.getGroupById(Integer.parseInt(id));
-        model.addAttribute("portfolioGroup", portfolioGroup);
+        GroupRepository groupRepository = groupRepositoryService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        model.addAttribute("groupRepository", groupRepository);
         return GROUP_REPOSITORY;
     }
 

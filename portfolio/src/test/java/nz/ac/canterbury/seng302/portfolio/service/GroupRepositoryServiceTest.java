@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioGroupRepository;
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioGroup;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepository;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-class PortfolioGroupServiceTest {
+class GroupRepositoryServiceTest {
 
     @Autowired
-    PortfolioGroupService groupService;
+    GroupRepositoryService groupService;
 
     @Autowired
-    PortfolioGroupRepository groupRepository;
+    GroupRepositoryRepository groupRepository;
 
     @BeforeEach
     void cleanDatabase() {
@@ -31,22 +31,22 @@ class PortfolioGroupServiceTest {
     //Test that querying a group which does not exist creates that group.
     @Test
     void whenGroupDoesntExist_TestGroupCreatedOnQuery() {
-        groupService.getGroupById(3);
-        List<PortfolioGroup> groups = (List<PortfolioGroup>) groupRepository.findAll();
+        groupService.getGroupRepositoryByGroupId(3);
+        List<GroupRepository> groups = (List<GroupRepository>) groupRepository.findAll();
         assertEquals(1, groups.size());
-        groupService.getGroupById(5);
-        groups = (List<PortfolioGroup>) groupRepository.findAll();
+        groupService.getGroupRepositoryByGroupId(5);
+        groups = (List<GroupRepository>) groupRepository.findAll();
         assertEquals(2, groups.size());
     }
 
     //Test that querying a group which does exist does not create that group.
     @Test
     void whenGroupExists_TestGroupNotCreatedOnQuery() {
-        groupService.getGroupById(3);
-        List<PortfolioGroup> groups = (List<PortfolioGroup>) groupRepository.findAll();
+        groupService.getGroupRepositoryByGroupId(3);
+        List<GroupRepository> groups = (List<GroupRepository>) groupRepository.findAll();
         assertEquals(1, groups.size());
-        groupService.getGroupById(3);
-        groups = (List<PortfolioGroup>) groupRepository.findAll();
+        groupService.getGroupRepositoryByGroupId(3);
+        groups = (List<GroupRepository>) groupRepository.findAll();
         assertEquals(1, groups.size());
     }
 
@@ -58,9 +58,9 @@ class PortfolioGroupServiceTest {
         String testApiKey = "API KEY";
         String testRepoId = "1234";
         String testServerUrl = "https://server.com";
-        groupService.getGroupById(3);
+        groupService.getGroupRepositoryByGroupId(3);
         groupService.updateRepositoryInformation(3, testName, testApiKey, testRepoId, testServerUrl);
-        PortfolioGroup group = groupService.getGroupById(3);
+        GroupRepository group = groupService.getGroupRepositoryByGroupId(3);
         assertEquals(testName, group.getRepositoryName());
         assertEquals(testApiKey, group.getGitlabAccessToken());
         assertEquals(testRepoId, group.getGitlabProjectId());
@@ -134,28 +134,28 @@ class PortfolioGroupServiceTest {
     // Test that deleting the repository when it doesn't exist works as expected
     @Test
     void whenRepositoryDoesntExist_testDeleteRepository() {
-        assertFalse(groupRepository.existsById(1234));
+        assertFalse(groupRepository.existsByGroupId(1234));
         try {
-            groupService.deletePortfolioGroupById(1234);
+            groupService.deleteGroupRepositoryByGroupId(1234);
         } catch (EmptyResultDataAccessException e) {
-            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.PortfolioGroup entity with id 1234 exists!";
+            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.GroupRepository entity with id 1234 exists!";
             assertEquals(expectedMessage, e.getMessage());
         }
 
-        assertFalse(groupRepository.existsById(1234));
+        assertFalse(groupRepository.existsByGroupId(1234));
     }
 
     // Test that deleting the repository when it exists works as expected
     @Test
     void whenRepositoryExists_testDeleteRepository() {
         // Make sure the group exists
-        groupService.getGroupById(1);
-        List<PortfolioGroup> groups = (List<PortfolioGroup>) groupRepository.findAll();
-        int id = groups.get(0).getId();
-        assertTrue(groupRepository.existsById(id));
+        int groupId = 1;
+        groupService.getGroupRepositoryByGroupId(groupId);
+
+        assertTrue(groupRepository.existsByGroupId(groupId));
         
-        groupService.deletePortfolioGroupById(id);
-        assertFalse(groupRepository.existsById(id));
+        groupService.deleteGroupRepositoryByGroupId(groupId);
+        assertFalse(groupRepository.existsByGroupId(groupId));
     }
 
 }

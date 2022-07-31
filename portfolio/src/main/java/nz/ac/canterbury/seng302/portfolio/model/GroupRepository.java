@@ -7,15 +7,14 @@ import javax.persistence.*;
  * Only contains information specific to the portfolio, for general group information see the Group class.
  */
 @Entity
-@Table(name="PORTFOLIO_GROUP")
-public class PortfolioGroup {
+@Table(name="GROUP_REPOSITORY")
+public class GroupRepository {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private int groupId;
 
-    private int currentProject = 1;
     private String gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
     private String gitlabProjectId = null;
     private String gitlabAccessToken = null;
@@ -28,7 +27,7 @@ public class PortfolioGroup {
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public PortfolioGroup(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
+    public GroupRepository(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
@@ -41,7 +40,7 @@ public class PortfolioGroup {
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public PortfolioGroup(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
+    public GroupRepository(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
@@ -49,11 +48,11 @@ public class PortfolioGroup {
         this.repositoryName = repositoryName;
     }
 
-    public PortfolioGroup(int groupId) {
+    public GroupRepository(int groupId) {
         this.groupId = groupId;
     }
 
-    protected PortfolioGroup() {
+    protected GroupRepository() {
 
     }
 
@@ -99,13 +98,5 @@ public class PortfolioGroup {
 
     public void setRepositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
-    }
-
-    public int getCurrentProject() {
-        return currentProject;
-    }
-
-    public void setCurrentProject(int currentProject) {
-        this.currentProject = currentProject;
     }
 }
