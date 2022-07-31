@@ -93,6 +93,9 @@ public class SprintService {
         repository.deleteById(sprintId);
     }
 
+    /**
+     * Deletes a sprint from the repository and updates the sprint numbers
+     */
     public void deleteSprint(int projectId, int sprintId) {
         deleteById(sprintId);
         updateSprintNumbers(projectId);
@@ -118,7 +121,12 @@ public class SprintService {
     }
 
     /**
-     * Proxy method for saving a new sprint
+     * Creates a new sprint and saves it. Updates the sprint numbers
+     * @param projectId The parent project ID
+     * @param sprintName The sprint name
+     * @param sprintDescription The sprint description
+     * @param sprintStartDate The sprint start date
+     * @param sprintEndDate The sprint end date
      */
     public void createNewSprint(int projectId, String sprintName, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
         saveSprint(new Sprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate));
@@ -126,7 +134,7 @@ public class SprintService {
     }
 
     /**
-     * Create a new sprint and populate it with default values to be used in the sprint form placeholder values
+     * Create a new sprint and populate it with default values to be used in the placeholder values for add/edit sprint form.
      */
     public Sprint createDefaultSprint(int parentProjectId) {
         Date defaultStartDate = getDefaultSprintStartDate(parentProjectId);
