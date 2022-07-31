@@ -65,7 +65,10 @@ public class GroupsClientService {
 
         // If the group was deleted in the identity provider then delete it in the portfolio
         if (response.getIsSuccess()) {
-            portfolioGroupService.deletePortfolioGroupById(groupId);
+            try {
+                portfolioGroupService.deletePortfolioGroupById(groupId);
+            } catch (Exception ignored) {} // Ignored because an exception means it didn't exist in the database
+
         }
         return response;
     }
