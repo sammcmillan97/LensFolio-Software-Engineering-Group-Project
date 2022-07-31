@@ -7,8 +7,8 @@ import javax.persistence.*;
  * Only contains information specific to the portfolio, for general group information see the Group class.
  */
 @Entity
-@Table(name="GROUP_REPOSITORY")
-public class GroupRepository {
+@Table(name="GROUP_REPOSITORY_SETTINGS")
+public class GroupRepositorySettings {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -21,26 +21,26 @@ public class GroupRepository {
     private String repositoryName = "";
 
     /**
-     * Create a portfolio group
+     * Create a group repository settings object
      * @param groupId Should be the same as the group's id from the identity provider
      * @param gitlabServerUrl The group's gitlab server url
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public GroupRepository(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
+    public GroupRepositorySettings(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
     }
 
     /**
-     * Create a portfolio group
+     * Create a group repository settings object
      * @param groupId Should be the same as the group's id from the identity provider
      * @param gitlabServerUrl The group's gitlab server url
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public GroupRepository(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
+    public GroupRepositorySettings(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
@@ -48,11 +48,11 @@ public class GroupRepository {
         this.repositoryName = repositoryName;
     }
 
-    public GroupRepository(int groupId) {
+    public GroupRepositorySettings(int groupId) {
         this.groupId = groupId;
     }
 
-    protected GroupRepository() {
+    protected GroupRepositorySettings() {
 
     }
 

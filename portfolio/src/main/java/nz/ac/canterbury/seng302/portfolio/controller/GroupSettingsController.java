@@ -1,10 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Group;
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepository;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
-import nz.ac.canterbury.seng302.portfolio.service.GroupRepositoryService;
+import nz.ac.canterbury.seng302.portfolio.service.GroupRepositorySettingsService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
@@ -29,7 +29,7 @@ public class GroupSettingsController {
     private GroupsClientService groupsClientService;
 
     @Autowired
-    private GroupRepositoryService groupRepositoryService;
+    private GroupRepositorySettingsService groupRepositorySettingsService;
 
     @Autowired
     private GroupsController groupsController;
@@ -64,8 +64,8 @@ public class GroupSettingsController {
      */
     @GetMapping("/groupSettings-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id) {
-        GroupRepository groupRepository = groupRepositoryService.getGroupRepositoryByGroupId(Integer.parseInt(id));
-        model.addAttribute("groupRepository", groupRepository);
+        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }
 
@@ -90,11 +90,11 @@ public class GroupSettingsController {
                                         @PathVariable String id) {
         // Update the group repository information
         int groupId = Integer.parseInt(id);
-        groupRepositoryService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
+        groupRepositorySettingsService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
 
         // Return the updated repository information
-        GroupRepository groupRepository = groupRepositoryService.getGroupRepositoryByGroupId(Integer.parseInt(id));
-        model.addAttribute("groupRepository", groupRepository);
+        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }
 

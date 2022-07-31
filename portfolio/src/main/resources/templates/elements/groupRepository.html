@@ -15,16 +15,16 @@
                 <div class="modal-body group-repository-form__wrapper">
                     <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings()">
                         <label for="group_repository_name">Repository Name *</label>
-                        <input type="text" id="group_repository_name" class="edit-input" name="repositoryName" th:value="${groupRepository.getRepositoryName()}" pattern="(.|\s)*\S(.|\s)*" title="Repository name must not be blank" required>
+                        <input type="text" id="group_repository_name" class="edit-input" name="repositoryName" th:value="${groupRepositorySettings.getRepositoryName()}" pattern="(.|\s)*\S(.|\s)*" title="Repository name must not be blank" required>
 
                         <label for="group_repository_api_key">Repository API Key *</label>
-                        <input type="text" id="group_repository_api_key" class="edit-input" name="repositoryApiKey" th:value="${groupRepository.getGitlabAccessToken()}" pattern="(.|\s)*\S(.|\s)*" title="Repository API key must not be blank" required>
+                        <input type="text" id="group_repository_api_key" class="edit-input" name="repositoryApiKey" th:value="${groupRepositorySettings.getGitlabAccessToken()}" pattern="(.|\s)*\S(.|\s)*" title="Repository API key must not be blank" required>
 
                         <label for="group_repository_id">Repository ID *</label>
-                        <input type="text" id="group_repository_id" class="edit-input" name="repositoryId" th:value="${groupRepository.getGitlabProjectId()}" pattern="[0-9]+" title="Repository id must be an integer" required>
+                        <input type="text" id="group_repository_id" class="edit-input" name="repositoryId" th:value="${groupRepositorySettings.getGitlabProjectId()}" pattern="[0-9]+" title="Repository id must be an integer" required>
 
                         <label for="group_repository_server_url">Repository Server URL *</label>
-                        <input type="text" id="group_repository_server_url" class="edit-input" name="repositoryServerUrl" th:value="${groupRepository.getGitlabServerUrl()}" pattern="(.|\s)*\S(.|\s)*" title="Repository server URL must not be blank" required>
+                        <input type="text" id="group_repository_server_url" class="edit-input" name="repositoryServerUrl" th:value="${groupRepositorySettings.getGitlabServerUrl()}" pattern="(.|\s)*\S(.|\s)*" title="Repository server URL must not be blank" required>
 
                         <button type="submit" id="group-form__save">Save Changes</button>
                         <a id="group-form__discard" data-bs-dismiss="modal" th:href="@{groups}">Discard</a>

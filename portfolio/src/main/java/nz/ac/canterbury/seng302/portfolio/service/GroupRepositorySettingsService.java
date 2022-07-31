@@ -1,28 +1,28 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepository;
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositoryRepository;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GroupRepositoryService {
+public class GroupRepositorySettingsService {
 
     @Autowired
-    private GroupRepositoryRepository groupRepository;
+    private GroupRepositorySettingsRepository groupRepository;
 
     /**
      * Gets a group by its id. Creates a default group with that id if it doesn't exist
      * @param groupId The group's id from the identity provider
      * @return The group's portfolio information
      */
-    public GroupRepository getGroupRepositoryByGroupId(int groupId) {
-        GroupRepository group;
+    public GroupRepositorySettings getGroupRepositoryByGroupId(int groupId) {
+        GroupRepositorySettings group;
         group = groupRepository.findByGroupId(groupId);
 
         // If portfolio group doesn't exist, create a new one
         if (group == null) {
-            group = new GroupRepository(groupId);
+            group = new GroupRepositorySettings(groupId);
             groupRepository.save(group);
         }
         return group;
@@ -34,7 +34,7 @@ public class GroupRepositoryService {
      * @return The group's current gitlab server url
      */
     public String getGitlabServerUrl(int groupId) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         return group.getGitlabServerUrl();
     }
 
@@ -44,7 +44,7 @@ public class GroupRepositoryService {
      * @param gitlabServerUrl The group's new gitlab server url
      */
     public void setGitlabServerUrl(int groupId, String gitlabServerUrl) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
     }
@@ -55,7 +55,7 @@ public class GroupRepositoryService {
      * @return The group's current gitlab project id
      */
     public String getGitlabProjectId(int groupId) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         return group.getGitlabProjectId();
     }
 
@@ -65,7 +65,7 @@ public class GroupRepositoryService {
      * @param gitlabProjectId The group's new gitlab project id
      */
     public void setGitlabProjectId(int groupId, String gitlabProjectId) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         group.setGitlabProjectId(gitlabProjectId);
         groupRepository.save(group);
     }
@@ -76,7 +76,7 @@ public class GroupRepositoryService {
      * @return The group's current gitlab access token
      */
     public String getGitlabAccessToken(int groupId) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         return group.getGitlabAccessToken();
     }
 
@@ -86,7 +86,7 @@ public class GroupRepositoryService {
      * @param gitlabAccessToken The group's new gitlab access token
      */
     public void setGitlabAccessToken(int groupId, String gitlabAccessToken) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         group.setGitlabAccessToken(gitlabAccessToken);
         groupRepository.save(group);
     }
@@ -97,7 +97,7 @@ public class GroupRepositoryService {
      * @return The group's current repository name
      */
     public String getRepositoryName(int groupId) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         return group.getRepositoryName();
     }
 
@@ -107,7 +107,7 @@ public class GroupRepositoryService {
      * @param repositoryName The group's new repository name
      */
     public void setRepositoryName(int groupId, String repositoryName) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         groupRepository.save(group);
     }
@@ -121,7 +121,7 @@ public class GroupRepositoryService {
      * @param gitlabServerUrl The group's current gitlab server url
      */
     public void updateRepositoryInformation(int groupId, String repositoryName, String gitlabAccessToken, String gitlabProjectId, String gitlabServerUrl) {
-        GroupRepository group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         group.setGitlabAccessToken(gitlabAccessToken);
         group.setGitlabProjectId(gitlabProjectId);
@@ -130,12 +130,12 @@ public class GroupRepositoryService {
     }
 
     /**
-     * Deletes the given groupRepository
+     * Deletes the given groupRepositorySettings
      * @param groupId The group's id from the identity provider
      */
     public void deleteGroupRepositoryByGroupId(int groupId) {
         if (groupRepository.existsByGroupId(groupId)) {
-            GroupRepository group = groupRepository.findByGroupId(groupId);
+            GroupRepositorySettings group = groupRepository.findByGroupId(groupId);
             groupRepository.delete(group);
         }
     }

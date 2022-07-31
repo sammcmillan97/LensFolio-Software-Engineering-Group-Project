@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepository;
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositoryRepository;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,38 +15,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-class GroupRepositoryServiceTest {
+class GroupRepositorySettingsServiceTest {
 
     @Autowired
-    GroupRepositoryService groupService;
+    GroupRepositorySettingsService groupRepositorySettingsService;
 
     @Autowired
-    GroupRepositoryRepository groupRepository;
+    GroupRepositorySettingsRepository groupSettingsRepository;
 
     @BeforeEach
     void cleanDatabase() {
-        groupRepository.deleteAll();
+        groupSettingsRepository.deleteAll();
     }
 
     //Test that querying a group which does not exist creates that group.
     @Test
     void whenGroupDoesntExist_TestGroupCreatedOnQuery() {
-        groupService.getGroupRepositoryByGroupId(3);
-        List<GroupRepository> groups = (List<GroupRepository>) groupRepository.findAll();
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        List<GroupRepositorySettings> groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
-        groupService.getGroupRepositoryByGroupId(5);
-        groups = (List<GroupRepository>) groupRepository.findAll();
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(5);
+        groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(2, groups.size());
     }
 
     //Test that querying a group which does exist does not create that group.
     @Test
     void whenGroupExists_TestGroupNotCreatedOnQuery() {
-        groupService.getGroupRepositoryByGroupId(3);
-        List<GroupRepository> groups = (List<GroupRepository>) groupRepository.findAll();
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        List<GroupRepositorySettings> groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
-        groupService.getGroupRepositoryByGroupId(3);
-        groups = (List<GroupRepository>) groupRepository.findAll();
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
     }
 
@@ -58,9 +58,9 @@ class GroupRepositoryServiceTest {
         String testApiKey = "API KEY";
         String testRepoId = "1234";
         String testServerUrl = "https://server.com";
-        groupService.getGroupRepositoryByGroupId(3);
-        groupService.updateRepositoryInformation(3, testName, testApiKey, testRepoId, testServerUrl);
-        GroupRepository group = groupService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.updateRepositoryInformation(3, testName, testApiKey, testRepoId, testServerUrl);
+        GroupRepositorySettings group = groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
         assertEquals(testName, group.getRepositoryName());
         assertEquals(testApiKey, group.getGitlabAccessToken());
         assertEquals(testRepoId, group.getGitlabProjectId());
@@ -70,7 +70,7 @@ class GroupRepositoryServiceTest {
     //Test that getting the default gitlab server url works (should be "https://eng-git.canterbury.ac.nz")
     @Test
     void getGitlabServerUrlTest() {
-        String resultServerUrl = groupService.getGitlabServerUrl(3);
+        String resultServerUrl = groupRepositorySettingsService.getGitlabServerUrl(3);
         assertEquals("https://eng-git.canterbury.ac.nz", resultServerUrl);
     }
 
@@ -78,15 +78,15 @@ class GroupRepositoryServiceTest {
     @Test
     void setGitlabServerUrlTest() {
         String testServerUrl = "https://eng-git.canterbury.ac.nz";
-        groupService.setGitlabServerUrl(3, testServerUrl);
-        String resultServerUrl = groupService.getGitlabServerUrl(3);
+        groupRepositorySettingsService.setGitlabServerUrl(3, testServerUrl);
+        String resultServerUrl = groupRepositorySettingsService.getGitlabServerUrl(3);
         assertEquals(testServerUrl, resultServerUrl);
     }
 
     //Test that getting the default gitlab project id works (should be null)
     @Test
     void getGitlabProjectIdTest() {
-        String resultProjectId = groupService.getGitlabProjectId(3);
+        String resultProjectId = groupRepositorySettingsService.getGitlabProjectId(3);
         assertNull(resultProjectId);
     }
 
@@ -94,15 +94,15 @@ class GroupRepositoryServiceTest {
     @Test
     void setGitlabProjectIdTest() {
         String testProjectId = "2";
-        groupService.setGitlabProjectId(3, testProjectId);
-        String resultProjectId = groupService.getGitlabProjectId(3);
+        groupRepositorySettingsService.setGitlabProjectId(3, testProjectId);
+        String resultProjectId = groupRepositorySettingsService.getGitlabProjectId(3);
         assertEquals(testProjectId, resultProjectId);
     }
 
     //Test that getting the default gitlab access token works (should be null)
     @Test
     void getGitlabAccessTokenTest() {
-        String resultAccessToken = groupService.getGitlabAccessToken(3);
+        String resultAccessToken = groupRepositorySettingsService.getGitlabAccessToken(3);
         assertNull(resultAccessToken);
     }
 
@@ -110,15 +110,15 @@ class GroupRepositoryServiceTest {
     @Test
     void setGitlabAccessTokenTest() {
         String testAccessToken = "randomAccessToken";
-        groupService.setGitlabAccessToken(3, testAccessToken);
-        String resultAccessToken = groupService.getGitlabAccessToken(3);
+        groupRepositorySettingsService.setGitlabAccessToken(3, testAccessToken);
+        String resultAccessToken = groupRepositorySettingsService.getGitlabAccessToken(3);
         assertEquals(testAccessToken, resultAccessToken);
     }
 
     //Test that getting the default repository name works (should be empty string)
     @Test
     void getRepositoryNameTest() {
-        String resultRepositoryName = groupService.getRepositoryName(3);
+        String resultRepositoryName = groupRepositorySettingsService.getRepositoryName(3);
         assertEquals("", resultRepositoryName);
     }
 
@@ -126,23 +126,23 @@ class GroupRepositoryServiceTest {
     @Test
     void setRepositoryNameTest() {
         String testRepositoryName = "randomAccessToken";
-        groupService.setRepositoryName(3, testRepositoryName);
-        String resultRepositoryName = groupService.getRepositoryName(3);
+        groupRepositorySettingsService.setRepositoryName(3, testRepositoryName);
+        String resultRepositoryName = groupRepositorySettingsService.getRepositoryName(3);
         assertEquals(testRepositoryName, resultRepositoryName);
     }
 
     // Test that deleting the repository when it doesn't exist works as expected
     @Test
     void whenRepositoryDoesntExist_testDeleteRepository() {
-        assertFalse(groupRepository.existsByGroupId(1234));
+        assertFalse(groupSettingsRepository.existsByGroupId(1234));
         try {
-            groupService.deleteGroupRepositoryByGroupId(1234);
+            groupRepositorySettingsService.deleteGroupRepositoryByGroupId(1234);
         } catch (EmptyResultDataAccessException e) {
-            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.GroupRepository entity with id 1234 exists!";
+            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings entity with id 1234 exists!";
             assertEquals(expectedMessage, e.getMessage());
         }
 
-        assertFalse(groupRepository.existsByGroupId(1234));
+        assertFalse(groupSettingsRepository.existsByGroupId(1234));
     }
 
     // Test that deleting the repository when it exists works as expected
@@ -150,12 +150,11 @@ class GroupRepositoryServiceTest {
     void whenRepositoryExists_testDeleteRepository() {
         // Make sure the group exists
         int groupId = 1;
-        groupService.getGroupRepositoryByGroupId(groupId);
-
-        assertTrue(groupRepository.existsByGroupId(groupId));
+        groupRepositorySettingsService.getGroupRepositoryByGroupId(groupId);
+        assertTrue(groupSettingsRepository.existsByGroupId(groupId));
         
-        groupService.deleteGroupRepositoryByGroupId(groupId);
-        assertFalse(groupRepository.existsByGroupId(groupId));
+        groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
+        assertFalse(groupSettingsRepository.existsByGroupId(groupId));
     }
 
 }
