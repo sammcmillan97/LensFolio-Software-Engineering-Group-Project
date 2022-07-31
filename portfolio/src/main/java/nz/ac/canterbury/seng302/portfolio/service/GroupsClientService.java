@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public class GroupsClientService {
 
     @GrpcClient("identity-provider-grpc-server")
     private GroupsServiceGrpc.GroupsServiceStub groupsNonBlockingStub;
+
+    @Autowired
+    PortfolioGroupService portfolioGroupService;
 
     public CreateGroupResponse createGroup(final String shortName, final String longName) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
@@ -57,7 +61,13 @@ public class GroupsClientService {
         DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();
-        return groupsStub.deleteGroup(deleteGroupRequest);
+        DeleteGroupResponse response = groupsStub.deleteGroup(deleteGroupRequest);
+
+        // If the group was deleted in the identity provider then delete it in the portfolio
+        if (response.getIsSuccess()) {
+            portfolioGroupService.deletePortfolioGroupById(groupId);
+        }
+        return response;
     }
 
     /**

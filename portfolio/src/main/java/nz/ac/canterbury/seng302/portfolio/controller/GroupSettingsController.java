@@ -56,6 +56,12 @@ public class GroupSettingsController {
         return SETTINGS_PAGE;
     }
 
+    /**
+     * Get mapping to fetch an updated copy of the group repository information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @param id The group id
+     * @return A html fragment that contains the updated repository information
+     */
     @GetMapping("/groupSettings-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id) {
         PortfolioGroup portfolioGroup = portfolioGroupService.getGroupById(Integer.parseInt(id));
@@ -63,17 +69,30 @@ public class GroupSettingsController {
         return GROUP_REPOSITORY;
     }
 
+    /**
+     * A post mapping to update the given groups repository
+     * @param principal Authentication principal storing current user information
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @param repositoryName The new repository name
+     * @param gitlabAccessToken The new repository api key
+     * @param gitlabProjectId The new repository id
+     * @param gitlabServerUrl The new repository server URL
+     * @param id The group id
+     * @return A html fragment that contains the updated repository information
+     */
     @PostMapping("/groupSettings-{id}-repository")
     public String updateGroupRepository(@AuthenticationPrincipal AuthState principal,
                                         Model model,
                                         @RequestParam("repositoryName") String repositoryName,
-                                        @RequestParam("repositoryApiKey") String repositoryApiKey,
-                                        @RequestParam("repositoryId") String repositoryId,
-                                        @RequestParam("repositoryServerUrl") String repositoryServerUrl,
+                                        @RequestParam("gitlabAccessToken") String gitlabAccessToken,
+                                        @RequestParam("gitlabProjectId") String gitlabProjectId,
+                                        @RequestParam("gitlabServerUrl") String gitlabServerUrl,
                                         @PathVariable String id) {
+        // Update the group repository information
         int groupId = Integer.parseInt(id);
-        portfolioGroupService.updateRepositoryInformation(groupId, repositoryName, repositoryApiKey, Integer.parseInt(repositoryId), repositoryServerUrl);
+        portfolioGroupService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
 
+        // Return the updated repository information
         PortfolioGroup portfolioGroup = portfolioGroupService.getGroupById(Integer.parseInt(id));
         model.addAttribute("portfolioGroup", portfolioGroup);
         return GROUP_REPOSITORY;

@@ -31,7 +31,7 @@ public class PortfolioGroupService {
     /**
      * Gets the group's current gitlab server url. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @return the group's current gitlab server url
+     * @return The group's current gitlab server url
      */
     public String getGitlabServerUrl(int groupId) {
         PortfolioGroup group = getGroupById(groupId);
@@ -41,7 +41,7 @@ public class PortfolioGroupService {
     /**
      * Sets the group's gitlab server url. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @param gitlabServerUrl the group's new gitlab server url
+     * @param gitlabServerUrl The group's new gitlab server url
      */
     public void setGitlabServerUrl(int groupId, String gitlabServerUrl) {
         PortfolioGroup group = getGroupById(groupId);
@@ -52,9 +52,9 @@ public class PortfolioGroupService {
     /**
      * Gets the group's current gitlab project id. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @return the group's current gitlab project id
+     * @return The group's current gitlab project id
      */
-    public int getGitlabProjectId(int groupId) {
+    public String getGitlabProjectId(int groupId) {
         PortfolioGroup group = getGroupById(groupId);
         return group.getGitlabProjectId();
     }
@@ -62,9 +62,9 @@ public class PortfolioGroupService {
     /**
      * Sets the group's gitlab project id. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @param gitlabProjectId the group's new gitlab project id
+     * @param gitlabProjectId The group's new gitlab project id
      */
-    public void setGitlabProjectId(int groupId, int gitlabProjectId) {
+    public void setGitlabProjectId(int groupId, String gitlabProjectId) {
         PortfolioGroup group = getGroupById(groupId);
         group.setGitlabProjectId(gitlabProjectId);
         groupRepository.save(group);
@@ -73,7 +73,7 @@ public class PortfolioGroupService {
     /**
      * Gets the group's current gitlab access token. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @return the group's current gitlab access token
+     * @return The group's current gitlab access token
      */
     public String getGitlabAccessToken(int groupId) {
         PortfolioGroup group = getGroupById(groupId);
@@ -83,7 +83,7 @@ public class PortfolioGroupService {
     /**
      * Sets the group's gitlab access token. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @param gitlabAccessToken the group's new gitlab access token
+     * @param gitlabAccessToken The group's new gitlab access token
      */
     public void setGitlabAccessToken(int groupId, String gitlabAccessToken) {
         PortfolioGroup group = getGroupById(groupId);
@@ -94,7 +94,7 @@ public class PortfolioGroupService {
     /**
      * Gets the group's current repository name. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @return the group's current repository name
+     * @return The group's current repository name
      */
     public String getRepositoryName(int groupId) {
         PortfolioGroup group = getGroupById(groupId);
@@ -104,7 +104,7 @@ public class PortfolioGroupService {
     /**
      * Sets the group's repository name. This is for the group settings page
      * @param groupId The group's id from the identity provider
-     * @param repositoryName the group's new repository name
+     * @param repositoryName The group's new repository name
      */
     public void setRepositoryName(int groupId, String repositoryName) {
         PortfolioGroup group = getGroupById(groupId);
@@ -112,12 +112,28 @@ public class PortfolioGroupService {
         groupRepository.save(group);
     }
 
-    public void updateRepositoryInformation(int groupId, String repositoryName, String repositoryApiKey, int repositoryId, String repositoryServerUrl) {
+    /**
+     * Updates all of the group's repository information with the provided parameters
+     * @param groupId The group's id from the identity provider
+     * @param repositoryName The group's new repository name
+     * @param gitlabAccessToken The group's new gitlab access token
+     * @param gitlabProjectId The group's new gitlab project id
+     * @param gitlabServerUrl The group's current gitlab server url
+     */
+    public void updateRepositoryInformation(int groupId, String repositoryName, String gitlabAccessToken, String gitlabProjectId, String gitlabServerUrl) {
         PortfolioGroup group = getGroupById(groupId);
         group.setRepositoryName(repositoryName);
-        group.setGitlabAccessToken(repositoryApiKey);
-        group.setGitlabProjectId(repositoryId);
-        group.setGitlabServerUrl(repositoryServerUrl);
+        group.setGitlabAccessToken(gitlabAccessToken);
+        group.setGitlabProjectId(gitlabProjectId);
+        group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
+    }
+
+    /**
+     * Deletes the given portfolioGroup
+     * @param groupId The group's id from the identity provider
+     */
+    public void deletePortfolioGroupById(int groupId) {
+        groupRepository.deleteById(groupId);
     }
 }

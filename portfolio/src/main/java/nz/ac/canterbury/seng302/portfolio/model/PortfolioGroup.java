@@ -17,7 +17,7 @@ public class PortfolioGroup {
 
     private int currentProject = 1;
     private String gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
-    private int gitlabProjectId = -1;
+    private String gitlabProjectId = null;
     private String gitlabAccessToken = null;
     private String repositoryName = "";
 
@@ -28,7 +28,7 @@ public class PortfolioGroup {
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public PortfolioGroup(int groupId, String gitlabServerUrl, int gitlabProjectId, String gitlabAccessToken) {
+    public PortfolioGroup(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
@@ -41,7 +41,7 @@ public class PortfolioGroup {
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public PortfolioGroup(int groupId, String gitlabServerUrl, int gitlabProjectId, String gitlabAccessToken, String repositoryName) {
+    public PortfolioGroup(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
@@ -77,11 +77,11 @@ public class PortfolioGroup {
         this.gitlabServerUrl = gitlabServerUrl;
     }
 
-    public int getGitlabProjectId() {
+    public String getGitlabProjectId() {
         return gitlabProjectId;
     }
 
-    public void setGitlabProjectId(int gitlabProjectId) {
+    public void setGitlabProjectId(String gitlabProjectId) {
         this.gitlabProjectId = gitlabProjectId;
     }
 
