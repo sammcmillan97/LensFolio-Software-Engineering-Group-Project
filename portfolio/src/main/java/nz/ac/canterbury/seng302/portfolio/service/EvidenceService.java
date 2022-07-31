@@ -70,9 +70,13 @@ public class EvidenceService {
         repository.deleteById(id);
     }
 
-    public void saveWebLink(int evidenceId, String weblink) {
-        Evidence evidence = getEvidenceById(evidenceId);
-        evidence.addWebLink(weblink);
-        saveEvidence(evidence);
+    public void saveWebLink(int evidenceId, String weblink) throws NoSuchElementException {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            evidence.addWebLink(weblink);
+            saveEvidence(evidence);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Evidence not found: web link not saved");
+        }
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 /**
  * The controller for handling backend of the add evidence page
@@ -128,7 +129,7 @@ public class AddEvidenceController {
         int id = Integer.parseInt(evidenceId);
         try {
             evidenceService.saveWebLink(id, webLink);
-        } catch (IllegalArgumentException e) {
+        } catch (NoSuchElementException e) {
             return "redirect:/portfolio";
         }
         return "redirect:/portfolio";
