@@ -118,5 +118,21 @@ public class AddEvidenceController {
         return "redirect:/portfolio";
     }
 
+    @PostMapping("/addWebLink")
+    public String addWebLink(
+            @AuthenticationPrincipal AuthState principal,
+            @RequestParam(name="projectId") String evidenceId,
+            @RequestParam(name="webLink") String webLink,
+            Model model
+    ) {
+        int id = Integer.parseInt(evidenceId);
+        try {
+            evidenceService.saveWebLink(id, webLink);
+        } catch (IllegalArgumentException e) {
+            return "redirect:/portfolio";
+        }
+        return "redirect:/portfolio";
+    }
+
 }
 

@@ -70,4 +70,9 @@ public class EvidenceService {
         repository.deleteById(id);
     }
 
+    public void saveWebLink(int evidenceId, String weblink) {
+        Evidence evidence = getEvidenceById(evidenceId);
+        evidence.addWebLink(weblink);
+        saveEvidence(evidence);
+    }
 }
