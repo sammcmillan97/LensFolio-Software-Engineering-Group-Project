@@ -37,3 +37,9 @@
     font-size: 1.5rem;
     text-decoration: none;
 }
+
+.web-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
