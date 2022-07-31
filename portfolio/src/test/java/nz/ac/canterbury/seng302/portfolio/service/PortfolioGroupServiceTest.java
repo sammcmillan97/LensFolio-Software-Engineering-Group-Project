@@ -150,9 +150,12 @@ class PortfolioGroupServiceTest {
     void whenRepositoryExists_testDeleteRepository() {
         // Make sure the group exists
         groupService.getGroupById(1);
-        assertTrue(groupRepository.existsById(1));
-        groupService.deletePortfolioGroupById(1);
-        assertFalse(groupRepository.existsById(1));
+        List<PortfolioGroup> groups = (List<PortfolioGroup>) groupRepository.findAll();
+        int id = groups.get(0).getId();
+        assertTrue(groupRepository.existsById(id));
+        
+        groupService.deletePortfolioGroupById(id);
+        assertFalse(groupRepository.existsById(id));
     }
 
 }
