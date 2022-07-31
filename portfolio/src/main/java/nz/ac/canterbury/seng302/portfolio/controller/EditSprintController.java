@@ -127,7 +127,6 @@ public class EditSprintController {
 
         int projectId;
         int sprintId;
-        Sprint sprint;
         Project project;
 
         Date sprintStartDate = new SimpleDateFormat(TIME_FORMAT).parse(sprintStartDateString);
@@ -205,7 +204,7 @@ public class EditSprintController {
             return PROJECTS_REDIRECT;
         }
 
-        sprintService.deleteById(Integer.parseInt(sprintId));
-        return PROJECTS_REDIRECT + parentProjectId;
+        sprintService.deleteSprint(Integer.parseInt(parentProjectId), Integer.parseInt(sprintId));
+        return "redirect:/projectDetails-" + parentProjectId;
     }
 }
