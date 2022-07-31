@@ -119,6 +119,15 @@ public class AddEvidenceController {
         return "redirect:/portfolio";
     }
 
+    /**
+     * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
+     * If correctly saved, redirects to projects page.
+     * @param principal Authentication state of client
+     * @param evidenceId Id of the evidence to add the link to
+     * @param webLink The link string to be added to evidence of id=evidenceId
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Redirect to portfolio page.
+     */
     @PostMapping("/addWebLink")
     public String addWebLink(
             @AuthenticationPrincipal AuthState principal,

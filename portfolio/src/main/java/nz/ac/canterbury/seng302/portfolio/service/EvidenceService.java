@@ -70,6 +70,13 @@ public class EvidenceService {
         repository.deleteById(id);
     }
 
+    /**
+     * Saves a web link string to the evidence specified by evidenceId.
+     * @param evidenceId The evidence to have the web link added to.
+     * @param weblink The web link sting to be added to evidence of id=evidenceId.
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
     public void saveWebLink(int evidenceId, String weblink) throws NoSuchElementException {
         try {
             Evidence evidence = getEvidenceById(evidenceId);
