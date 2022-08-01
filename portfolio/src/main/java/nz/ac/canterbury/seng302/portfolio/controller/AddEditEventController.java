@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -79,7 +78,6 @@ public class AddEditEventController {
         // Add event date boundaries for event to the model
         model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), timeFormat));
         model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), timeFormat));
-
         return "addEditEvent";
     }
 

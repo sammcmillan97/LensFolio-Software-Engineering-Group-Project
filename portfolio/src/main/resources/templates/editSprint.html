@@ -22,8 +22,12 @@
         <div id="sprint-form__wrapper">
             <!-- Name, Date -->
             <header class="sprint-form__header flex-column">
-                <h1 id="sprint__name" th:text="${sprintName}"></h1>
-                <h2 id="sprint__label" th:text="${sprintLabel}"></h2>
+                <div th:if="${sprintId == '-1'}">
+                    <h1> Create New Sprint</h1>
+                </div>
+                <div th:if="${sprintId != '-1'}">
+                    <h1 th:text="'Editing: ' + ${sprintName}"></h1>
+                </div>
             </header>
 
             <!-- Add/Edit Sprint Form -->
@@ -35,12 +39,15 @@
                 <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription" maxlength="255" th:placeholder="${sprintDescription}" th:text="${sprintDescription}"></textarea>
 
                 <label for="sprint-form__start-date-field">Sprint Start Date *</label>
+                <p th:text="${startDateError}" class="form-error-message"></p>
                 <input type="date" id="sprint-form__start-date-field" class="edit-input" name="sprintStartDate" th:placeholder="${sprintStartDate}" th:value="${sprintStartDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMinEndDate()" required>
 
                 <label for="sprint-form__end-date-field">Sprint End Date *</label>
+                <p th:text="${endDateError}" class="form-error-message"></p>
                 <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="sprint-form__save">Save Changes</button>
+                <p th:text="${dateError}" class="form-error-message"></p>
                 <a id="sprint-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
             </form>
         </div>
