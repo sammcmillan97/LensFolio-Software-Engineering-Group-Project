@@ -1,6 +1,10 @@
 <div>
     <!-- Button trigger modal -->
     <div>
+        <div th:if="${!firstLoad}">
+            <h6 th:if="${changesSaved}" style="color:#FF0000">Changes saved successfully</h6>
+            <h6 th:if="${!changesSaved}" style="color:#FF0000">Changes discarded</h6>
+        </div>
         <h5 th:if="${commits} != null" th:text="'Connected to ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
         <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
         <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
@@ -16,10 +20,11 @@
             <div class="modal-content">
                 <div class="modal-header group-repository-form__header">
                     <h5 class="modal-title" id="group-repository-modal-label">Repository Settings</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="updateGroupRepositoryElement(false)"></button>
                 </div>
                 <div class="modal-body group-repository-form__wrapper">
-                    <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings()">
+<!--                                                                                                   Return false is to prevent the page from reloading-->
+                    <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings(); return false">
                         <label for="group_repository_name">Repository Name *</label>
                         <input type="text" id="group_repository_name" class="edit-input" name="repositoryName" th:value="${groupRepositorySettings.getRepositoryName()}" pattern="(.|\s)*\S(.|\s)*" title="Repository name must not be blank" required>
 
@@ -33,7 +38,7 @@
                         <input type="text" id="group_repository_server_url" class="edit-input" name="repositoryServerUrl" th:value="${groupRepositorySettings.getGitlabServerUrl()}" pattern="(.|\s)*\S(.|\s)*" title="Repository server URL must not be blank" required>
 
                         <button type="submit" id="group-form__save">Save Changes</button>
-                        <a id="group-form__discard" data-bs-dismiss="modal" th:href="@{groups}">Discard</a>
+                        <a id="group-form__discard" data-bs-dismiss="modal" onclick="updateGroupRepositoryElement(false)" th:href="@{groups}">Discard</a>
                     </form>
                 </div>
             </div>

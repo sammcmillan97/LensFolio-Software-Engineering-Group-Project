@@ -71,7 +71,7 @@ public class GroupSettingsController {
      * @return A html fragment that contains the updated repository information
      */
     @GetMapping("/groupSettings-{id}-repository")
-    public String groupRepository(Model model, @PathVariable String id) {
+    public String groupRepository(Model model, @PathVariable String id, @RequestParam("firstLoad") boolean firstLoad) {
         GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
 
         List<Commit> commits = null;
@@ -80,6 +80,8 @@ public class GroupSettingsController {
         } catch (Exception ignored) {
             // Ignored because the commits variable is already null.
         }
+        model.addAttribute("firstLoad", firstLoad);
+        model.addAttribute("changesSaved", false);
         model.addAttribute("commits", commits);
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
@@ -119,6 +121,8 @@ public class GroupSettingsController {
             // Ignored because this only occurs if the group doesn't have any repository settings, but
             // we've just added them, so it must have settings.
         }
+        model.addAttribute("firstLoad", false);
+        model.addAttribute("changesSaved", true);
         model.addAttribute("commits", commits);
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
