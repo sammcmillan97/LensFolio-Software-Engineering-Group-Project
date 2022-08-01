@@ -30,8 +30,10 @@
       <h1 class="group_short_name" th:text="${group.getShortName()}"></h1>
       <h2 class="group_long_name" th:text="${group.getLongName()}"></h2>
     </header>
-    <div class="repository_container" id="repository_container" th:if="${userInGroup || authUserIsTeacher}">
+    <div class="group-repository__wrapper">
+      <div class="repository_container" id="repository_container" th:if="${userInGroup || authUserIsTeacher}">
 
+      </div>
     </div>
     <div class="member_container">
       <div class="member-block" th:each="member: ${group.getMembers()}">
