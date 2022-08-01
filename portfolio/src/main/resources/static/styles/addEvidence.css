@@ -56,6 +56,11 @@
     cursor: pointer;
 }
 
+#evidence-form__form button:disabled {
+    background-color: gray;
+    cursor: default;
+}
+
 .form-error-message {
     margin-left: 10px;
     color: red;
