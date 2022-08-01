@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
@@ -146,5 +147,24 @@ public class GroupsClientService {
             }
         }
         return false;
+    }
+
+    /**
+     * Only for mocking purposes
+     * Updates the current stub with a new one
+     * @param newStub the new (mocked) GroupsServiceBlockingStub
+     */
+    @VisibleForTesting
+    protected void setGroupsStub(GroupsServiceGrpc.GroupsServiceBlockingStub newStub) {
+        groupsStub = newStub;
+    }
+
+    /**
+     * Only for mocking purposes
+     * @return the current groups stub
+     */
+    @VisibleForTesting
+    protected GroupsServiceGrpc.GroupsServiceBlockingStub getGroupsStub() {
+        return groupsStub;
     }
 }

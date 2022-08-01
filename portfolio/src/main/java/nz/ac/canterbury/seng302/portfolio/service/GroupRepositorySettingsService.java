@@ -139,4 +139,13 @@ public class GroupRepositorySettingsService {
             groupRepository.delete(group);
         }
     }
+
+    /**
+     * Checks if group repository settings exist for the given group id
+     * @param groupId the group id to check
+     * @return Boolean saying whether the group repository settings for that group exist
+     */
+    public boolean existsByGroupId(int groupId) {
+        return groupRepository.existsByGroupId(groupId);
+    }
 }
