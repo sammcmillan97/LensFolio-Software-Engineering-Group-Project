@@ -115,18 +115,7 @@ public class ProjectDetailsUtil {
         for (int i = 0; i < sprintList.size(); i++) {
             importantDates.add(Pair.of(i, "Sprint"));
         }
-        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> {
-            if (a.getSecond().equals("Sprint")) {
-                return (sprintList.get(a.getFirst()).getStartDate());
-            } else {
-                return switch (a.getSecond()) {
-                    case "Event" -> eventList.get(a.getFirst()).getEventStartDate();
-                    case "Deadline" -> deadlineList.get(a.getFirst()).getDeadlineDate();
-                    default -> milestoneList.get(a.getFirst()).getMilestoneDate();
-                };
-
-            }
-        }));
+        importantDates.sort(Comparator.comparing((Pair<Integer, String> a) -> (a.getSecond().equals("Sprint") ? sprintList.get(a.getFirst()).getStartDate() : a.getSecond().equals("Event") ? eventList.get(a.getFirst()).getEventStartDate() : a.getSecond().equals("Deadline") ? deadlineList.get(a.getFirst()).getDeadlineDate() : milestoneList.get(a.getFirst()).getMilestoneDate())));
         return importantDates;
     }
 

@@ -1,8 +1,13 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class PortfolioUserService {
@@ -100,12 +105,10 @@ public class PortfolioUserService {
      */
     public void setProject(int userId, int projectId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
-        if (portfolioUser == null) {
+        if (portfolioUser==null) {
             PortfolioUser portfolioUser1 = new PortfolioUser(userId);
             repository.save(portfolioUser1);
         }
-
-        assert portfolioUser != null;
         portfolioUser.setCurrentProject(projectId);
         repository.save(portfolioUser);
     }

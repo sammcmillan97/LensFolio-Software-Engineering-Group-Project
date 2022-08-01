@@ -152,7 +152,7 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
         int milestoneId = milestones.get(0).getId();
-        assertNotEquals(0, milestoneId);
+        assertThat(milestoneId).isNotNull();
         Milestone milestone = milestoneService.getMilestoneById(milestoneId);
         assertThat(milestone.getMilestoneName()).isEqualTo("Test Milestone");
         assertThat(milestone.getMilestoneDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));

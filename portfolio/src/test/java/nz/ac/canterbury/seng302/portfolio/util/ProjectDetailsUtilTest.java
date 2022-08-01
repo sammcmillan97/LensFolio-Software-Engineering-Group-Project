@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ProjectDetailsUtilTest {
+public class ProjectDetailsUtilTest {
     public static List<Event> eventList;
     public static List<Sprint> sprintList;
     public static List<Deadline> deadlineList;
@@ -28,13 +29,13 @@ class ProjectDetailsUtilTest {
         eventList = new ArrayList<>();
         deadlineList = new ArrayList<>();
         milestoneList = new ArrayList<>();
-        sprintList.add(new Sprint(1, "Test Sprint",  "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 1, "Description",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16")));
-        sprintList.add(new Sprint(1, "Test Sprint",  "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 2, "Description",
                 Date.valueOf("2022-05-17"), Date.valueOf("2022-06-16")));
-        sprintList.add(new Sprint(1, "Test Sprint", "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 3, "Description",
                 Date.valueOf("2022-06-17"), Date.valueOf("2022-07-16")));
-        sprintList.add(new Sprint(1, "Test Sprint",  "Description",
+        sprintList.add(new Sprint(1, "Test Sprint", 4, "Description",
                 Date.valueOf("2022-07-17"), Date.valueOf("2022-08-16")));
     }
 

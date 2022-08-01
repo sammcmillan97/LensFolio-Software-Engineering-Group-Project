@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.util;
 import java.util.Random;
 
 public class ColourPicker {
-    private static final String[] colours = {
+    public static String[] colours = {
             "#39add1", // light blue
             "#3079ab", // dark blue
             "#c25975", // mauve
@@ -18,9 +18,7 @@ public class ColourPicker {
             "#f092b0", // pink
             "#b7c0c7"  // light gray
     };
-    private static int index = 0;
-
-    private static final Random randomGenerator = new Random();
+    public static int index = 0;
 
     /**
      * Gets the next colour in the colour list relative to the methods last call
@@ -40,6 +38,7 @@ public class ColourPicker {
     }
 
     public static String getColour() {
+        Random randomGenerator = new Random(); // Construct a new Random number generator
         int randomNumber = randomGenerator.nextInt(colours.length);
         return colours[randomNumber];
     }

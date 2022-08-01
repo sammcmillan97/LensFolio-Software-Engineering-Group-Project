@@ -754,7 +754,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(1, testGroup.getMembers().size());
         assertFalse(removeGroupMembersResponse.getIsSuccess());
-        assertEquals("Remove group members failed: User -1 does not exist", removeGroupMembersResponse.getMessage());
+        assertEquals("Remove group members failed: User -1 does not exist", removeGroupMembersResponse.getMessage() );
     }
 
     @Test

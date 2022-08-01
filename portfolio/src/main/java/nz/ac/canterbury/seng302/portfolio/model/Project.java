@@ -19,10 +19,6 @@ public class Project {
     public Project() {
         Calendar cal = Calendar.getInstance();
         projectName = String.format("Project %d", cal.get(Calendar.YEAR));
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
         projectStartDate = new Date(cal.getTimeInMillis());
         cal.add(Calendar.MONTH, 8);
         projectEndDate = new Date(cal.getTimeInMillis());

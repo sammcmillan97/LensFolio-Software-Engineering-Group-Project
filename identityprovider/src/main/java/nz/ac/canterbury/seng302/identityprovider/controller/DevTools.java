@@ -5,7 +5,7 @@ import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class DevTools {
     private static final String ADMIN_PASSWORD = "password400";
 
 
-    @GetMapping("/addExampleUsers")
+    @RequestMapping("/addExampleUsers")
     protected void addExampleUsers(){
         userRepository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "he/him", "jack@gmail.com", DEFAULT_PASSWORD));
         userRepository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", DEFAULT_PRONOUNS, "coco@gmail.com", DEFAULT_PASSWORD));
@@ -41,14 +41,15 @@ public class DevTools {
         userRepository.save(onlyAdmin);
     }
 
-    @GetMapping("/deleteExampleUsers")
+    @RequestMapping("/deleteExampleUsers")
     protected void deleteExampleUsers(){
-        User testUser;
+        User testUser = null;
 
         ArrayList<String> usernames = new ArrayList<>(
                 Arrays.asList("bauerjac", "obrianchl", "bauerkim", "dr big", "dr small", "abc123", "teacher", "admin", "og"));
-        for (String username : usernames) {
-            testUser = userRepository.findByUsername(username);
+        Iterator<String> usernameIterator = usernames.iterator();
+        while(usernameIterator.hasNext()) {
+            testUser = userRepository.findByUsername(usernameIterator.next());
             userRepository.deleteById(testUser.getUserId());
         }
     }
