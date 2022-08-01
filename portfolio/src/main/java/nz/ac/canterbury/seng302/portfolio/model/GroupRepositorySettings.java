@@ -7,43 +7,52 @@ import javax.persistence.*;
  * Only contains information specific to the portfolio, for general group information see the Group class.
  */
 @Entity
-@Table(name="PORTFOLIO_GROUP")
-public class PortfolioGroup {
+@Table(name="GROUP_REPOSITORY_SETTINGS")
+public class GroupRepositorySettings {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private int groupId;
 
-    private int currentProject;
-    private String gitlabServerUrl;
-    private int gitlabProjectId;
-    private String gitlabAccessToken;
+    private String gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
+    private String gitlabProjectId = null;
+    private String gitlabAccessToken = null;
+    private String repositoryName = "";
 
     /**
-     * Create a portfolio group
+     * Create a group repository settings object
      * @param groupId Should be the same as the group's id from the identity provider
      * @param gitlabServerUrl The group's gitlab server url
      * @param gitlabProjectId The group's gitlab project id
      * @param gitlabAccessToken The group's gitlab access token
      */
-    public PortfolioGroup(int groupId, String gitlabServerUrl, int gitlabProjectId, String gitlabAccessToken) {
+    public GroupRepositorySettings(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken) {
+        this.groupId = groupId;
+        this.gitlabServerUrl = gitlabServerUrl;
+        this.gitlabProjectId = gitlabProjectId;
+    }
+
+    /**
+     * Create a group repository settings object
+     * @param groupId Should be the same as the group's id from the identity provider
+     * @param gitlabServerUrl The group's gitlab server url
+     * @param gitlabProjectId The group's gitlab project id
+     * @param gitlabAccessToken The group's gitlab access token
+     */
+    public GroupRepositorySettings(int groupId, String gitlabServerUrl, String gitlabProjectId, String gitlabAccessToken, String repositoryName) {
         this.groupId = groupId;
         this.gitlabServerUrl = gitlabServerUrl;
         this.gitlabProjectId = gitlabProjectId;
         this.gitlabAccessToken = gitlabAccessToken;
-        this.currentProject = 1;
+        this.repositoryName = repositoryName;
     }
 
-    public PortfolioGroup(int groupId) {
+    public GroupRepositorySettings(int groupId) {
         this.groupId = groupId;
-        this.gitlabServerUrl = "https://eng-git.canterbury.ac.nz";
-        this.gitlabProjectId = -1;
-        this.gitlabAccessToken = null;
-        this.currentProject = 1;
     }
 
-    protected PortfolioGroup() {
+    protected GroupRepositorySettings() {
 
     }
 
@@ -67,11 +76,11 @@ public class PortfolioGroup {
         this.gitlabServerUrl = gitlabServerUrl;
     }
 
-    public int getGitlabProjectId() {
+    public String getGitlabProjectId() {
         return gitlabProjectId;
     }
 
-    public void setGitlabProjectId(int gitlabProjectId) {
+    public void setGitlabProjectId(String gitlabProjectId) {
         this.gitlabProjectId = gitlabProjectId;
     }
 
@@ -83,11 +92,11 @@ public class PortfolioGroup {
         this.gitlabAccessToken = gitlabAccessToken;
     }
 
-    public int getCurrentProject() {
-        return currentProject;
+    public String getRepositoryName() {
+        return repositoryName;
     }
 
-    public void setCurrentProject(int currentProject) {
-        this.currentProject = currentProject;
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 }

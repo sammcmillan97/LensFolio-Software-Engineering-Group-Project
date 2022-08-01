@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.Util;
+package nz.ac.canterbury.seng302.portfolio.util;
 
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;

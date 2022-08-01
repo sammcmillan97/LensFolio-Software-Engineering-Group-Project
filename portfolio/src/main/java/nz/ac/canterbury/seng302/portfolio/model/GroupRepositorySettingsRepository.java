@@ -7,8 +7,9 @@ import org.springframework.stereotype.Repository;
  * Simple repository which stores PortfolioGroups
  */
 @Repository
-public interface PortfolioGroupRepository extends CrudRepository<PortfolioGroup, Integer> {
+public interface GroupRepositorySettingsRepository extends CrudRepository<GroupRepositorySettings, Integer> {
 
-    PortfolioGroup findByGroupId(int groupId);
+    GroupRepositorySettings findByGroupId(int groupId);
+    boolean existsByGroupId(int groupId);
 
 }

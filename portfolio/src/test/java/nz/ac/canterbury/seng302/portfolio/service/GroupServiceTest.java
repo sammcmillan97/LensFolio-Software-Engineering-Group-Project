@@ -3,8 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.service;
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.Spy;
@@ -16,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 public class GroupServiceTest {
@@ -23,6 +23,10 @@ public class GroupServiceTest {
     @Spy
     @Autowired
     GroupsClientService groupsClientService;
+
+    @Spy
+    @Autowired
+    GroupRepositorySettingsService groupRepositorySettingsService;
 
     // Test that a user is in a group when they are in it
     @Test
@@ -69,5 +73,36 @@ public class GroupServiceTest {
         GroupsClientService spyGroupService = Mockito.spy(groupsClientService);
         Mockito.doReturn(groupResponse).when(spyGroupService).getGroupDetailsById(testGroupId);
         assertFalse(spyGroupService.userInGroup(testGroupId, testUserId));
+    }
+
+    @Test
+    void whenGroupDeleted_testGroupRepositorySettingsDeleted() {
+        List<UserResponse> users = new ArrayList<>();
+        GroupDetailsResponse groupResponse = GroupDetailsResponse.newBuilder()
+                .setGroupId(1)
+                .setLongName("Group")
+                .setShortName("group")
+                .addAllMembers(users).build();
+        Group testGroup = new Group(groupResponse);
+
+        // Ensure the group repository settings have been created
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(testGroup.getGroupId());
+        assertTrue(groupRepositorySettingsService.existsByGroupId(testGroup.getGroupId()));
+
+        // Mock the groups stub and the DeleteGroupResponse
+        DeleteGroupResponse deleteGroupResponse = DeleteGroupResponse.newBuilder()
+                .setIsSuccess(true)
+                .build();
+
+        GroupsServiceGrpc.GroupsServiceBlockingStub groupsServiceBlockingStub = Mockito.spy(groupsClientService.getGroupsStub());
+        Mockito.doReturn(deleteGroupResponse).when(groupsServiceBlockingStub).deleteGroup(any(DeleteGroupRequest.class));
+        groupsClientService.setGroupsStub(groupsServiceBlockingStub);
+
+        // Delete the portfolio group
+        groupsClientService.deleteGroupById(testGroup.getGroupId());
+
+        // Check that the group repository settings have been deleted
+        assertFalse(groupRepositorySettingsService.existsByGroupId(testGroup.getGroupId()));
+
     }
 }

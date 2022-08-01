@@ -27,12 +27,12 @@ html {
 
 /******************** Project Cards ********************/
 
-.group, #new-group-button, #clear-all-tables-button {
+.group, #new-group-button, #clear-all-tables-button, #open-modal-button{
     position: relative;
     margin-bottom: 1rem;
 }
 
-.group, #new-group-button, .group__button-wrapper button, #clear-all-tables-button {
+.group, #new-group-button, .group__button-wrapper button, #clear-all-tables-button, #open-modal-button {
     padding-top: 0;
     padding-bottom: 0;
     border: 1px solid var(--color-accent);
@@ -73,7 +73,7 @@ html {
     word-wrap: break-word;
 }
 
-.group__button-wrapper button {
+.group__button-wrapper button{
     /* Position & Size */
     margin-right: 1rem;
     padding: 0 1rem 0 1rem;
@@ -84,6 +84,11 @@ html {
     /* Text */
     font-size: 1rem;
     font-weight: 400;
+}
+
+#open-modal-button {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    font-size: medium;
 }
 
 #new-group-button, #clear-all-tables-button {
@@ -104,7 +109,7 @@ html {
     width: fit-content;
 }
 
-#new-group-button:hover, #clear-all-tables-button:hover, .group__button-wrapper button:hover{
+#new-group-button:hover, #clear-all-tables-button:hover, #open-modal-button:hover, .group__button-wrapper button:hover{
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
