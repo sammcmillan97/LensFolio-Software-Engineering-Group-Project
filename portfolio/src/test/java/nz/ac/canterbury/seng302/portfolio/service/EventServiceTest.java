@@ -16,8 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
@@ -205,7 +204,7 @@ class EventServiceTest {
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        assertThat(eventId).isNotNull();
+        assertNotEquals(0, eventId);
         Event event = eventService.getEventById(eventId);
         assertThat(event.getEventName()).isEqualTo("Test Event");
         assertThat(event.getEventStartDate()).isEqualTo(Timestamp.valueOf("2022-05-05 00:00:00"));

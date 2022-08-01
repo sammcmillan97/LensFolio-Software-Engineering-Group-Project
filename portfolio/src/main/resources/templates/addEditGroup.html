@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <title>Edit event</title>
@@ -23,7 +23,12 @@
     <div id="group-form__wrapper">
         <!-- Name, Date -->
         <header class="group-form__header flex-column">
-            <h1 id="event__name" th:text="${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            <div th:if="${groupId == '-1'}">
+                <h1> Create New Group</h1>
+            </div>
+            <div th:if="${groupId != '-1'}">
+                <h1 th:text="'Editing: ' + ${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            </div>
         </header>
 
         <!-- Add/Edit Event Form -->
@@ -34,7 +39,7 @@
             <span id="char_count_short_name">20/20 characters remain</span>
 
 
-            <label for="group-form__long_name-field">Group Short Name *</label>
+            <label for="group-form__long_name-field">Group Long Name *</label>
             <p th:text="${longNameErrorMessage}" class="form-error-message"></p>
             <input type="text" id="group-form__long_name-field" class="edit-input" name="groupLongName" maxlength="30" placeholder="Group Long Name" th:value="${groupLongName}" required onkeyup="countLongNameCharacters()">
             <span id="char_count_long_name">30/30 characters remain</span>

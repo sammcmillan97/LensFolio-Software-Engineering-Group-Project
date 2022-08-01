@@ -66,6 +66,7 @@ class ProjectServiceTest {
         List<Project> projects = projectService.getAllProjects();
         assertEquals(0, projects.size());
     }
+
     //Test getting all projects from the database when one project are saved.
     @Test
     void whenOneProjectSaved_testGetAllProjects() {

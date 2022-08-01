@@ -3,7 +3,7 @@
 <!-- Project Deadlines -->
 <div id="project__sprints-wrapper flex-column">
   <div class="event__outside" th:each="deadline: ${deadlineList}">
-    <div class="event_title_child"> <i class="bi bi-alarm"></i> </div>
+    <div class="event_title_child"> <em class="bi bi-alarm"></em> </div>
     <div class="event_title_child"> <h2 class="event__name" th:text="${deadline.getDeadlineName}"></h2> </div>
     <!-- Independent Deadline Details -->
     <div class="event__details">

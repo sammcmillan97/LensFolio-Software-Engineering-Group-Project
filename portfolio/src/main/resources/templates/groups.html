@@ -29,14 +29,14 @@
     <h1>Groups Page</h1>
     <div class="flex-column">
 
-        <div class="group" th:each="group : *{groups}" th:with="tableDropable=${userIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''">
+        <div class="group" th:each="group : *{groups}" th:with="tableDropable=${authUserIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''">
             <div class="group__details-wrapper">
                 <h2 class="group__name" th:text="${group.getShortName} + ' - ' + ${group.getLongName}" type="button" data-bs-toggle="collapse" th:data-bs-target="'#group_' + ${group.getGroupId}" aria-expanded="false" th:aria-controls="group_ + ${group.getGroupId}"></h2>
                 <div class="group__details collapse" th:id="group_ + ${group.getGroupId}">
                     <h4>Members</h4>
                     <div class="group__members-wrapper">
                         <div class="group__member" th:id="'group_' + ${group.getGroupId} + '_members'" >
-                            <table class="table table-active table-sm table__color" th:classappend="${userIsTeacher} ? 'table-hover' : ''" th:id="${group.getGroupId}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" >
+                            <table class="table table-active table-sm table__color" th:classappend="${authUserIsTeacher} ? 'table-hover' : ''" th:id="${group.getGroupId}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" >
                                 <thead>
                                 <tr class="unselected">
                                     <th scope="col">User Id</th>
@@ -45,7 +45,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="member : ${group.getMembers}" th:with="rowDraggable=${userIsTeacher}" th:draggable="${rowDraggable}" th:onmousedown="${rowDraggable} ? 'copyMembers(this)' : ''" th:onmouseup="${rowDraggable} ? 'rowClick(this)' : ''" class="unselected">
+                                <tr th:each="member : ${group.getMembers}" th:with="rowDraggable=${authUserIsTeacher}" th:draggable="${rowDraggable}" th:onmousedown="${rowDraggable} ? 'copyMembers(this)' : ''" th:onmouseup="${rowDraggable} ? 'rowClick(this)' : ''" class="unselected">
                                     <th scope="row" class="user_id" th:text="${member.getId}"></th>
                                     <td th:text="${member.getFirstName}"></td>
                                     <td th:text="${member.getLastName}"></td>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <!-- Edit and Delete Group Buttons - Only show if user is a teacher-->
-                <div class="group__button-wrapper flex-row" th:if="${userIsTeacher}">
+                <div class="group__button-wrapper flex-row" th:if="${authUserIsTeacher}">
 
                     <button onclick="removeSelectedUsers(this)" hidden="hidden" th:class="'group_' + ${group.getGroupId} + '_remove_users_button'">Remove Selection</button>
                     <form th:action="@{editGroup-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- New Group Button -->
-        <a id="new-group-button" th:if="${userIsTeacher}" th:href="@{editGroup-{id}(id=-1)}">New Group</a>
+        <a id="new-group-button" th:if="${authUserIsTeacher}" th:href="@{editGroup-{id}(id=-1)}">New Group</a>
     </div>
 </div>
 
