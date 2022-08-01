@@ -64,7 +64,7 @@ public class GroupSettingsController {
      */
     @GetMapping("/groupSettings-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id) {
-        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }
@@ -93,7 +93,7 @@ public class GroupSettingsController {
         groupRepositorySettingsService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
 
         // Return the updated repository information
-        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositoryByGroupId(Integer.parseInt(id));
+        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }

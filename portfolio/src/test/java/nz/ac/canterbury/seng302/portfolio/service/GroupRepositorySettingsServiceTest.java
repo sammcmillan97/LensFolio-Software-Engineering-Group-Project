@@ -31,10 +31,10 @@ class GroupRepositorySettingsServiceTest {
     //Test that querying a group which does not exist creates that group.
     @Test
     void whenGroupDoesntExist_TestGroupCreatedOnQuery() {
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(3);
         List<GroupRepositorySettings> groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(5);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(5);
         groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(2, groups.size());
     }
@@ -42,10 +42,10 @@ class GroupRepositorySettingsServiceTest {
     //Test that querying a group which does exist does not create that group.
     @Test
     void whenGroupExists_TestGroupNotCreatedOnQuery() {
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(3);
         List<GroupRepositorySettings> groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(3);
         groups = (List<GroupRepositorySettings>) groupSettingsRepository.findAll();
         assertEquals(1, groups.size());
     }
@@ -58,9 +58,9 @@ class GroupRepositorySettingsServiceTest {
         String testApiKey = "API KEY";
         String testRepoId = "1234";
         String testServerUrl = "https://server.com";
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(3);
         groupRepositorySettingsService.updateRepositoryInformation(3, testName, testApiKey, testRepoId, testServerUrl);
-        GroupRepositorySettings group = groupRepositorySettingsService.getGroupRepositoryByGroupId(3);
+        GroupRepositorySettings group = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(3);
         assertEquals(testName, group.getRepositoryName());
         assertEquals(testApiKey, group.getGitlabAccessToken());
         assertEquals(testRepoId, group.getGitlabProjectId());
@@ -150,7 +150,7 @@ class GroupRepositorySettingsServiceTest {
     void whenRepositoryExists_testDeleteRepository() {
         // Make sure the group exists
         int groupId = 1;
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(groupId);
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(groupId);
         assertTrue(groupSettingsRepository.existsByGroupId(groupId));
         
         groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);

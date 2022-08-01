@@ -86,7 +86,7 @@ public class GroupServiceTest {
         Group testGroup = new Group(groupResponse);
 
         // Ensure the group repository settings have been created
-        groupRepositorySettingsService.getGroupRepositoryByGroupId(testGroup.getGroupId());
+        groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(testGroup.getGroupId());
         assertTrue(groupRepositorySettingsService.existsByGroupId(testGroup.getGroupId()));
 
         // Mock the groups stub and the DeleteGroupResponse

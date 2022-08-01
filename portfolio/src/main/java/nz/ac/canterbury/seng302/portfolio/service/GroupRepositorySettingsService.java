@@ -16,7 +16,7 @@ public class GroupRepositorySettingsService {
      * @param groupId The group's id from the identity provider
      * @return The group's portfolio information
      */
-    public GroupRepositorySettings getGroupRepositoryByGroupId(int groupId) {
+    public GroupRepositorySettings getGroupRepositorySettingsByGroupId(int groupId) {
         GroupRepositorySettings group;
         group = groupRepository.findByGroupId(groupId);
 
@@ -34,7 +34,7 @@ public class GroupRepositorySettingsService {
      * @return The group's current gitlab server url
      */
     public String getGitlabServerUrl(int groupId) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         return group.getGitlabServerUrl();
     }
 
@@ -44,7 +44,7 @@ public class GroupRepositorySettingsService {
      * @param gitlabServerUrl The group's new gitlab server url
      */
     public void setGitlabServerUrl(int groupId, String gitlabServerUrl) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
     }
@@ -55,7 +55,7 @@ public class GroupRepositorySettingsService {
      * @return The group's current gitlab project id
      */
     public String getGitlabProjectId(int groupId) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         return group.getGitlabProjectId();
     }
 
@@ -65,7 +65,7 @@ public class GroupRepositorySettingsService {
      * @param gitlabProjectId The group's new gitlab project id
      */
     public void setGitlabProjectId(int groupId, String gitlabProjectId) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabProjectId(gitlabProjectId);
         groupRepository.save(group);
     }
@@ -76,7 +76,7 @@ public class GroupRepositorySettingsService {
      * @return The group's current gitlab access token
      */
     public String getGitlabAccessToken(int groupId) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         return group.getGitlabAccessToken();
     }
 
@@ -86,7 +86,7 @@ public class GroupRepositorySettingsService {
      * @param gitlabAccessToken The group's new gitlab access token
      */
     public void setGitlabAccessToken(int groupId, String gitlabAccessToken) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabAccessToken(gitlabAccessToken);
         groupRepository.save(group);
     }
@@ -97,7 +97,7 @@ public class GroupRepositorySettingsService {
      * @return The group's current repository name
      */
     public String getRepositoryName(int groupId) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         return group.getRepositoryName();
     }
 
@@ -107,7 +107,7 @@ public class GroupRepositorySettingsService {
      * @param repositoryName The group's new repository name
      */
     public void setRepositoryName(int groupId, String repositoryName) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         groupRepository.save(group);
     }
@@ -121,7 +121,7 @@ public class GroupRepositorySettingsService {
      * @param gitlabServerUrl The group's current gitlab server url
      */
     public void updateRepositoryInformation(int groupId, String repositoryName, String gitlabAccessToken, String gitlabProjectId, String gitlabServerUrl) {
-        GroupRepositorySettings group = getGroupRepositoryByGroupId(groupId);
+        GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         group.setGitlabAccessToken(gitlabAccessToken);
         group.setGitlabProjectId(gitlabProjectId);

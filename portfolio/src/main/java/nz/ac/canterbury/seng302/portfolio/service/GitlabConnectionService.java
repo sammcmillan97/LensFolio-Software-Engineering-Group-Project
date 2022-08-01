@@ -25,7 +25,7 @@ public class GitlabConnectionService {
         if (!groupRepositorySettingsService.existsByGroupId(groupId)) {
             throw new NoSuchFieldException("Given group id doesn't have any repository settings");
         }
-        return groupRepositorySettingsService.getGroupRepositoryByGroupId(groupId);
+        return groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(groupId);
     }
 
     /**
