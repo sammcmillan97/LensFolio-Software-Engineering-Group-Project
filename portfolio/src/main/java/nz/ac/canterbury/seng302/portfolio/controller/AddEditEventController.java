@@ -29,8 +29,8 @@ public class AddEditEventController {
     @Autowired
     EventService eventService;
 
-    private final String timeFormat = "yyyy-MM-dd'T'HH:mm";
-    private final String redirectToProjects = "redirect:/projects";
+    private static final String timeFormat = "yyyy-MM-dd'T'HH:mm";
+    private static final String redirectToProjects = "redirect:/projects";
 
 
     /**
