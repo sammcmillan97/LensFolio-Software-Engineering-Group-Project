@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,8 +34,8 @@ public class EditMilestoneController {
     @Autowired
     MilestoneService milestoneService;
 
-    private final String timeFormat = "yyyy-MM-dd";
-    private final String redirectToProjects = "redirect:/projects";
+    private static final String timeFormat = "yyyy-MM-dd";
+    private static final String redirectToProjects = "redirect:/projects";
 
     /**
      * The get mapping to return the page with the form to add/edit milestones
@@ -114,7 +115,7 @@ public class EditMilestoneController {
             @PathVariable("milestoneId") String milestoneIdString,
             @RequestParam(value = "milestoneName") String milestoneName,
             @RequestParam(value = "milestoneDate") String milestoneDateString,
-            Model model) throws Exception {
+            Model model) throws ParseException {
 
         if (!userAccountClientService.isTeacher(principle)) {
             return redirectToProjects;

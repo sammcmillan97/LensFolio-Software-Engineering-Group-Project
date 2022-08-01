@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @DataJpaTest
-public class EventRepositoryTests {
+class EventRepositoryTests {
 
     @Autowired private DataSource dataSource;
     @Autowired private JdbcTemplate jdbcTemplate;
