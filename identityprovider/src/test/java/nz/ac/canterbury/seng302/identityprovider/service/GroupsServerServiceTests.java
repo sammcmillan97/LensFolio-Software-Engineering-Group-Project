@@ -712,7 +712,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(0, testGroup.getMembers().size());
         assertTrue(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "User(s) removed successfully");
+        assertEquals("User(s) removed successfully", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -733,7 +733,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(0, testGroup.getMembers().size());
         assertTrue(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "User(s) removed successfully");
+        assertEquals("User(s) removed successfully", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -754,7 +754,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(1, testGroup.getMembers().size());
         assertFalse(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "Remove group members failed: User -1 does not exist");
+        assertEquals("Remove group members failed: User -1 does not exist", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -770,7 +770,7 @@ class GroupsServerServiceTests {
         RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
 
         assertFalse(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "Remove group members failed: Group -1 does not exist");
+        assertEquals("Remove group members failed: Group -1 does not exist", removeGroupMembersResponse.getMessage());
     }
 
     @Test
