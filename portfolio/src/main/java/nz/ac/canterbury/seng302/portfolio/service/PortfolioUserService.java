@@ -105,10 +105,12 @@ public class PortfolioUserService {
      */
     public void setProject(int userId, int projectId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
-        if (portfolioUser==null) {
+        if (portfolioUser == null) {
             PortfolioUser portfolioUser1 = new PortfolioUser(userId);
             repository.save(portfolioUser1);
         }
+
+        assert portfolioUser != null;
         portfolioUser.setCurrentProject(projectId);
         repository.save(portfolioUser);
     }
