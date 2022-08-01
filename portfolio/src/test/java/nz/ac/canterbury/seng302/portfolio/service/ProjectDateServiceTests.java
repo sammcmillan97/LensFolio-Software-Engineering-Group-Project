@@ -37,6 +37,15 @@ class ProjectDateServiceTests {
         for (Sprint sprint : sprintService.getAllSprints()) {
             sprintService.deleteById(sprint.getId());
         }
+        for (Event event : eventService.getAllEvents()) {
+            eventService.deleteEventById(event.getEventId());
+        }
+        for (Deadline deadline : deadlineService.getAllDeadlines()) {
+            deadlineService.deleteDeadlineById(deadline.getDeadlineId());
+        }
+        for (Milestone milestone : milestoneService.getAllMilestones()) {
+            milestoneService.deleteMilestoneById(milestone.getId());
+        }
     }
 
     //Test that when no restrictions are present,
