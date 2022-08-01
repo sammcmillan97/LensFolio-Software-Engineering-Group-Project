@@ -44,9 +44,8 @@
 
             <label>Date *
                 <span data-toggle="tooltip"
-                      data-placement="right" data-html=true class="bi bi-question-circle-fill"
+                      data-placement="top" data-html=true class="bi bi-question-circle-fill"
                       title="The date the evidence occurred (Cannot be outside project dates)">
-
                 </span>
             </label>
             <input type="date" id="evidence-form__date-field" class="edit-input" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
