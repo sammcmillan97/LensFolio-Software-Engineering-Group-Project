@@ -1,8 +1,14 @@
 <div>
     <!-- Button trigger modal -->
-    <button type="button" id="open-modal-button" data-bs-toggle="modal" data-bs-target="#group-repository-settings-modal">
-        <h5>Repository Settings</h5>
-    </button>
+    <div>
+        <h5 th:if="${commits} != null" th:text="'Connected to ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
+        <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
+        <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
+        <button type="button" id="open-modal-button" data-bs-toggle="modal" data-bs-target="#group-repository-settings-modal">
+            <h5>Repository Settings</h5>
+        </button>
+    </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="group-repository-settings-modal" tabindex="-1" aria-labelledby="group-repository-modal-label" aria-hidden="true">

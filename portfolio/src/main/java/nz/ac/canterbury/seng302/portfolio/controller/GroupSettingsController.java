@@ -3,11 +3,14 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.GitlabConnectionService;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.GroupRepositorySettingsService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
+import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.models.Commit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class GroupSettingsController {
@@ -33,6 +38,9 @@ public class GroupSettingsController {
 
     @Autowired
     private GroupsController groupsController;
+
+    @Autowired
+    private GitlabConnectionService gitlabConnectionService;
 
     /**
      * Get mapping to fetch group settings page
@@ -65,6 +73,14 @@ public class GroupSettingsController {
     @GetMapping("/groupSettings-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id) {
         GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
+
+        List<Commit> commits = null;
+        try {
+            commits = gitlabConnectionService.getAllCommits(Integer.parseInt(id));
+        } catch (Exception ignored) {
+            // Ignored because the commits variable is already null.
+        }
+        model.addAttribute("commits", commits);
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }
@@ -93,7 +109,17 @@ public class GroupSettingsController {
         groupRepositorySettingsService.updateRepositoryInformation(groupId, repositoryName, gitlabAccessToken, gitlabProjectId, gitlabServerUrl);
 
         // Return the updated repository information
-        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
+        GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(groupId);
+        List<Commit> commits = null;
+        try {
+            commits = gitlabConnectionService.getAllCommits(groupId);
+        } catch (GitLabApiException ignored) {
+            // Ignored because the commits variable is already null.
+        } catch (NoSuchFieldException ignored) {
+            // Ignored because this only occurs if the group doesn't have any repository settings, but
+            // we've just added them, so it must have settings.
+        }
+        model.addAttribute("commits", commits);
         model.addAttribute("groupRepositorySettings", groupRepositorySettings);
         return GROUP_REPOSITORY;
     }
