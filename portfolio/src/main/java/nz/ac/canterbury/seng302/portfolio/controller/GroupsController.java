@@ -27,7 +27,6 @@ public class GroupsController {
     private GroupsClientService groupsClientService;
 
     private static final String GROUPS_PAGE = "groups";
-    private static final String GROUPS_REDIRECT = "redirect:/groups";
     private static final String GROUPS_TABLE = "groupTable";
 
     private static final int GROUPLESS_GROUP_ID = -1;

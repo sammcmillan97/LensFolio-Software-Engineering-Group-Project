@@ -1,10 +1,9 @@
-package nz.ac.canterbury.seng302.portfolio.Util;
+package nz.ac.canterbury.seng302.portfolio.util;
 
 import nz.ac.canterbury.seng302.portfolio.model.Deadline;
 import nz.ac.canterbury.seng302.portfolio.model.Event;
 import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
-import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ProjectDetailsUtilTest {
+class ProjectDetailsUtilTest {
     public static List<Event> eventList;
     public static List<Sprint> sprintList;
     public static List<Deadline> deadlineList;
