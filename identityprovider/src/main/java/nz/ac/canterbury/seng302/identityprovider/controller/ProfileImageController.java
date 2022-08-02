@@ -23,7 +23,7 @@ public class ProfileImageController {
     private UserAccountsServerService userAccountsServerService;
 
     @GetMapping("/ProfilePicture-{filename}")
-    public ResponseEntity<byte[]> ProfilePicture(
+    public ResponseEntity<byte[]> getProfilePicture(
             @PathVariable("filename") String filename
     ) {
         try {

@@ -18,7 +18,7 @@ public class PortfolioUserController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
-    @RequestMapping("setCurrentProject-{id}")
+    @GetMapping("setCurrentProject-{id}")
     public String getCurrentProject(
         @AuthenticationPrincipal AuthState principal,
         @PathVariable("id") String projectIdString

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
-public class GroupServiceTest {
+class GroupServiceTest {
 
     @Spy
     @Autowired

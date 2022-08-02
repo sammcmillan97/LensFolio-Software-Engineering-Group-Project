@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class GitlabConnectionServiceTests {
+class GitlabConnectionServiceTests {
     @Autowired
     GroupRepositorySettingsService repositorySettingsService;
 
