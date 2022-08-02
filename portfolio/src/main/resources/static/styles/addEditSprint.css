@@ -31,14 +31,6 @@
     border-bottom: 2px solid lightgray;
 }
 
-.form-error-message {
-    margin-left: 10px;
-    color: red;
-    margin-top: -5px;
-    margin-bottom: 10px;
-}
-
-
 /* Set a style for the  button */
 #sprint-form__form button, #sprint-form__form a {
     padding: 0;

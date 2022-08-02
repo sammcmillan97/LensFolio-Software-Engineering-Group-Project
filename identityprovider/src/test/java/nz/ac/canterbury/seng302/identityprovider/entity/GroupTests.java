@@ -10,7 +10,7 @@ import java.time.Instant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class GroupTests {
+public class GroupTests {
 
     User user1;
     Group group1;

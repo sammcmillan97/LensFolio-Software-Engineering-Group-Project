@@ -394,7 +394,9 @@ function removeButtonVisible(table, visible) {
 
     // Don't do anything if it's the groupless group or if
     // it's the teacher group and the user is a teacher
-    if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID || (parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin))) {
+    if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID) {
+        return;
+    } else if (parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin)) {
         return;
     }
 

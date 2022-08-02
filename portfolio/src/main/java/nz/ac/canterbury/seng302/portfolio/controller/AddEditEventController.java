@@ -5,6 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,8 +30,8 @@ public class AddEditEventController {
     @Autowired
     EventService eventService;
 
-    private static final String timeFormat = "yyyy-MM-dd'T'HH:mm";
-    private static final String redirectToProjects = "redirect:/projects";
+    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
+    private String redirectToProjects = "redirect:/projects";
 
 
     /**
@@ -40,7 +41,7 @@ public class AddEditEventController {
     public String eventForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
                             @PathVariable("eventId") String eventId,
-                            Model model) {
+                            Model model) throws Exception {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
@@ -78,6 +79,7 @@ public class AddEditEventController {
         // Add event date boundaries for event to the model
         model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), timeFormat));
         model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), timeFormat));
+
         return "addEditEvent";
     }
 
@@ -119,8 +121,8 @@ public class AddEditEventController {
             try {
                 Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
                 eventService.saveEvent(newEvent);
-            } catch (Exception ignored) {
-                // Don't need to do anything
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         } else {
             //Edit existing event
@@ -130,8 +132,8 @@ public class AddEditEventController {
                 eventService.updateStartDate(eventId, eventStartDate);
                 eventService.updateEndDate(eventId, eventEndDate);
                 eventService.saveEvent(existingEvent);
-            } catch (Exception ignored) {
-                // Don't need to do anything
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
         return "redirect:/projectDetails-" + projectIdString;
