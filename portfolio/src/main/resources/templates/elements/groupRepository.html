@@ -1,12 +1,13 @@
 <div>
     <!-- Button trigger modal -->
-    <div class="flex-row" id="group-repository-info">
-        <div class="flex-column">
+    <div class="flex-row" id="group-repository-info__wrapper">
+        <div class="flex-column" id="group-repository-information">
+            <!-- If not the first load of the page then show if the changes were saved or discarded           -->
             <div th:if="${!firstLoad}">
                 <h6 th:if="${changesSaved}" style="color:#FF0000">Changes saved successfully</h6>
                 <h6 th:if="${!changesSaved}" style="color:#FF0000">Changes discarded</h6>
             </div>
-            <h5 th:if="${commits} != null" th:text="'Connected to ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
+            <h5 th:if="${commits} != null" th:text="'Connected to: ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
             <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
             <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
         </div>
@@ -23,8 +24,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="updateGroupRepositoryElement(false)"></button>
                 </div>
                 <div class="modal-body group-repository-form__wrapper">
-<!--                                                                                                   Return false is to prevent the page from reloading-->
-                    <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings(); return false">
+                    <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings(); return false"> <!--Return false to prevent the page from reloading-->
                         <label for="group_repository_name">Repository Name *</label>
                         <input type="text" id="group_repository_name" class="edit-input" name="repositoryName" th:value="${groupRepositorySettings.getRepositoryName()}" pattern="(.|\s)*\S(.|\s)*" title="Repository name must not be blank" required>
 
