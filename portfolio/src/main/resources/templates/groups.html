@@ -29,7 +29,8 @@
 <div id="page-content" class="constrict">
     <h1>Groups Page</h1>
     <div class="flex-column">
-
+        <!-- New Group Button -->
+        <a id="new-group-button" th:if="${authUserIsTeacher}" th:href="@{editGroup-{id}(id=-1)}">New Group</a>
         <div class="group" th:each="group : *{groups}" th:with="tableDropable=${authUserIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''">
             <div class="group__details-wrapper">
                 <h2 class="group__name" th:text="${group.getShortName} + ' - ' + ${group.getLongName}" type="button" data-bs-toggle="collapse" th:data-bs-target="'#group_' + ${group.getGroupId}" aria-expanded="false" th:aria-controls="group_ + ${group.getGroupId}"></h2>
@@ -76,8 +77,7 @@
             </div>
         </div>
 
-        <!-- New Group Button -->
-        <a id="new-group-button" th:if="${authUserIsTeacher}" th:href="@{editGroup-{id}(id=-1)}">New Group</a>
+
     </div>
 </div>
 

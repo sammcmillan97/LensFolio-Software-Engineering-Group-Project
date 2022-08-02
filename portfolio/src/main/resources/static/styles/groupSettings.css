@@ -185,3 +185,29 @@ html {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
+
+.group-repository__wrapper {
+    position: relative;
+    padding: 0 1rem 0 1rem;
+}
+
+.repository_container {
+    margin: 1rem 0 1rem 0;
+    visibility: visible;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+}
+
+#open-modal-button {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    font-size: x-large;
+    height: 3rem;
+    margin-left:auto;
+    margin-right:1rem;
+    vertical-align: center;
+}
+
+#group-repository-info {
+    align-items: center;
+}

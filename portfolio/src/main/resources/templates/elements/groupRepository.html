@@ -1,16 +1,16 @@
 <div>
     <!-- Button trigger modal -->
-    <div>
-        <div th:if="${!firstLoad}">
-            <h6 th:if="${changesSaved}" style="color:#FF0000">Changes saved successfully</h6>
-            <h6 th:if="${!changesSaved}" style="color:#FF0000">Changes discarded</h6>
+    <div class="flex-row" id="group-repository-info">
+        <div class="flex-column">
+            <div th:if="${!firstLoad}">
+                <h6 th:if="${changesSaved}" style="color:#FF0000">Changes saved successfully</h6>
+                <h6 th:if="${!changesSaved}" style="color:#FF0000">Changes discarded</h6>
+            </div>
+            <h5 th:if="${commits} != null" th:text="'Connected to ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
+            <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
+            <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
         </div>
-        <h5 th:if="${commits} != null" th:text="'Connected to ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
-        <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
-        <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
-        <button type="button" id="open-modal-button" data-bs-toggle="modal" data-bs-target="#group-repository-settings-modal">
-            <h5>Repository Settings</h5>
-        </button>
+        <button type="button" id="open-modal-button" data-bs-toggle="modal" data-bs-target="#group-repository-settings-modal">Repository Settings</button>
     </div>
 
 
