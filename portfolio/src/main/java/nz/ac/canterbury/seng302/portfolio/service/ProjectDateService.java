@@ -25,6 +25,15 @@ public class ProjectDateService {
     @Autowired
     private EvidenceService evidenceService;
 
+    /**
+     * Gets date restrictions for a project. Date restrictions tell the rest of the application the first and last day
+     * that anything happens on in the project, to prevent users from changing project dates to something which does
+     * not make sense. Also, a text field is provided so the frontend can display why the user is restricted from
+     * changing the project dates.
+     * This method is (as of writing this) only needed for when the user wants to change project dates.
+     * @param projectId The id of the project we are querying restrictions from
+     * @return A DateRestrictions class representing the date restrictions for the given project
+     */
     public DateRestrictions getDateRestrictions(int projectId) {
         List<Sprint> sprints = sprintService.getByParentProjectId(projectId);
         List<Event> events = eventService.getByEventParentProjectId(projectId);
