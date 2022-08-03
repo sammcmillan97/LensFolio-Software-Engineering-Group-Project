@@ -1,9 +1,12 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import nz.ac.canterbury.seng302.portfolio.model.Group;
 import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
+import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +20,9 @@ public class GroupsClientService {
 
     @GrpcClient("identity-provider-grpc-server")
     private GroupsServiceGrpc.GroupsServiceStub groupsNonBlockingStub;
+
+    @Autowired
+    GroupRepositorySettingsService groupRepositorySettingsService;
 
     public CreateGroupResponse createGroup(final String shortName, final String longName) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
@@ -56,7 +62,13 @@ public class GroupsClientService {
         DeleteGroupRequest deleteGroupRequest = DeleteGroupRequest.newBuilder()
                 .setGroupId(groupId)
                 .build();
-        return groupsStub.deleteGroup(deleteGroupRequest);
+        DeleteGroupResponse response = groupsStub.deleteGroup(deleteGroupRequest);
+
+        // If the group was deleted in the identity provider then delete it in the portfolio
+        if (response.getIsSuccess()) {
+            groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
+        }
+        return response;
     }
 
     /**
@@ -125,5 +137,34 @@ public class GroupsClientService {
                 .setShortName(group.getShortName())
                 .build();
         return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
+    }
+
+    public boolean userInGroup(int groupId, int userId) {
+        Group group = new Group(getGroupDetailsById(groupId));
+        for (User u : group.getMembers()) {
+            if (u.getId() == userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Only for mocking purposes
+     * Updates the current stub with a new one
+     * @param newStub the new (mocked) GroupsServiceBlockingStub
+     */
+    @VisibleForTesting
+    protected void setGroupsStub(GroupsServiceGrpc.GroupsServiceBlockingStub newStub) {
+        groupsStub = newStub;
+    }
+
+    /**
+     * Only for mocking purposes
+     * @return the current groups stub
+     */
+    @VisibleForTesting
+    protected GroupsServiceGrpc.GroupsServiceBlockingStub getGroupsStub() {
+        return groupsStub;
     }
 }
