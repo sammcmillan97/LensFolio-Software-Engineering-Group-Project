@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -9,6 +10,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class WebLink {
     String name;
+    @Column(columnDefinition = "LONGTEXT")
     String link;
 
     public WebLink(String webLink, String name) {
