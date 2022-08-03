@@ -25,6 +25,9 @@ public class EditGroupController {
     @Autowired
     private GroupsClientService groupsClientService;
 
+    @Autowired
+    private GroupsController groupsController;
+
     private static final String GROUPS_REDIRECT = "redirect:/groups";
 
     /**
@@ -39,13 +42,13 @@ public class EditGroupController {
                             @PathVariable("groupId") String groupId,
                             Model model) {
 
+        int userId = userAccountClientService.getUserId(principal);
         //Check User is a teacher otherwise return to project page
-        if (!userAccountClientService.isTeacher(principal)) {
+        if (!userAccountClientService.isTeacher(principal) && !groupsController.userInGroup(userId, Integer.parseInt(groupId))) {
             return GROUPS_REDIRECT;
         }
 
         // Add user details to model for displaying in top banner
-        int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
         model.addAttribute("user", user);
 
@@ -63,6 +66,7 @@ public class EditGroupController {
         //Add event details to model
         model.addAttribute("groupShortName", group.getShortName());
         model.addAttribute("groupLongName", group.getLongName());
+        model.addAttribute("userIsTeacher", groupsController.isTeacher(user));
 
         return "addEditGroup";
     }
@@ -82,12 +86,13 @@ public class EditGroupController {
                               @RequestParam("groupShortName") String groupShortName,
                               @RequestParam("groupLongName") String groupLongName,
                               Model model) {
+
+        int userId = userAccountClientService.getUserId(principal);
         //Check if it is a teacher making the request
-        if (!userAccountClientService.isTeacher(principal)) {
+        if (!userAccountClientService.isTeacher(principal)&& !groupsController.userInGroup(userId, Integer.parseInt(groupIdString))) {
             return GROUPS_REDIRECT;
         }
 
-        int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
 
         int groupId;
@@ -131,6 +136,7 @@ public class EditGroupController {
             model.addAttribute("groupId", groupId);
             model.addAttribute("groupShortName", groupShortName);
             model.addAttribute("groupLongName", groupLongName);
+            model.addAttribute("userIsTeacher", groupsController.isTeacher(user));
 
             return "addEditGroup";
         } else {

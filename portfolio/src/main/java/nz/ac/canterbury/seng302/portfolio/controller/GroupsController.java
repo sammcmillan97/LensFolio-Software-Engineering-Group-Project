@@ -27,7 +27,10 @@ public class GroupsController {
     private GroupsClientService groupsClientService;
 
     private static final String GROUPS_PAGE = "groups";
-    private static final String GROUPS_TABLE = "groupTable";
+    private static final String GROUPS_REDIRECT = "redirect:/groups";
+    private static final String GROUPS_TABLE = "elements/groupTable";
+
+    private static final String USER_IS_MEMBER = "userIsMember";
 
     private static final int GROUPLESS_GROUP_ID = -1;
     private static final int TEACHER_GROUP_ID = -2;
@@ -150,7 +153,7 @@ public class GroupsController {
      * @param groupId Group id of the group to check
      * @return A boolean, true if the user is in the group, false otherwise
      */
-    private boolean userInGroup(int userId, int groupId) {
+    protected boolean userInGroup(int userId, int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
         for (User member : group.getMembers()) {
             if (member.getId() == userId) {
@@ -280,6 +283,7 @@ public class GroupsController {
         model.addAttribute("user", user);
         model.addAttribute("userIsTeacher", userIsTeacher);
         model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute(USER_IS_MEMBER, userInGroup(userId, groupId));
         model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
         model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
         return GROUPS_TABLE;
