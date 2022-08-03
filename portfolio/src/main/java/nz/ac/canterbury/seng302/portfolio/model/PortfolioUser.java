@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a user of the portfolio.
@@ -17,6 +19,8 @@ public class PortfolioUser {
     private String userListSortType;
     private boolean isUserListSortAscending;
     private int currentProject;
+    @ElementCollection
+    private List<String> skills;
 
     /**
      * Create a portfolio user.
@@ -28,6 +32,7 @@ public class PortfolioUser {
         this.userListSortType = userListSortType;
         this.isUserListSortAscending = isUserListSortAscending;
         this.currentProject = 1;
+        skills = new ArrayList<>();
     }
 
     // Empty constructor is needed for JPA
@@ -69,4 +74,8 @@ public class PortfolioUser {
     public void setCurrentProject(int projectId) {this.currentProject = projectId;}
 
     public int getCurrentProject() { return this.currentProject;}
+
+    public List<String> getSkills() {return skills;}
+
+    public void addSkill (String skill) {this.skills.add(skill);}
 }

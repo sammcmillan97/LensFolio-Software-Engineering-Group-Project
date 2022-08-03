@@ -205,8 +205,4 @@ public class User {
     public int hashCode() {
         return Objects.hash(username, firstName, middleName, lastName, nickname, bio, personalPronouns, email, roles, created, profileImagePath, id, userObject);
     }
-
-    public List<String> getSkills() {return skills;}
-
-    public void addSkill (String skill) {this.skills.add(skill);}
 }
