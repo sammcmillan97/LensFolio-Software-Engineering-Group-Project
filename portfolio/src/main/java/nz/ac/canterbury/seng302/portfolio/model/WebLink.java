@@ -2,6 +2,10 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.Embeddable;
 
+/**
+ * Embeddable class to allow weblinks to be stored in evidence without creating a weblinks entity.
+ * Easiest way to store name and weblink together.
+ */
 @Embeddable
 public class WebLink {
     String name;

@@ -145,9 +145,9 @@ class EvidenceServiceTests {
     void whenEvidenceAdded_testSaveOneWebLink() {
         Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
-        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
-        assertEquals("http://localhost:9000/portfolio", receivedEvidence.getWebLinks().get(0));
+        assertEquals("http://localhost:9000/portfolio", receivedEvidence.getWebLinks().get(0).getLink());
     }
 
     @Test
@@ -155,13 +155,13 @@ class EvidenceServiceTests {
     void whenEvidenceAdded_testSaveMultipleWebLinks() {
         Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
-        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
-        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
-        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
-        evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
-        for (String s: receivedEvidence.getWebLinks()) {
-            assertEquals("http://localhost:9000/portfolio", s);
+        for (WebLink webLink: receivedEvidence.getWebLinks()) {
+            assertEquals("http://localhost:9000/portfolio", webLink.getLink());
         }
     }
 
@@ -169,10 +169,29 @@ class EvidenceServiceTests {
     @Transactional
     void whenNoEvidenceAdded_testWebLinkNotSaved() {
         Exception exception = assertThrows(Exception.class,
-                () -> evidenceService.saveWebLink(0, "http://localhost:9000/portfolio"));
+                () -> evidenceService.saveWebLink(0, new WebLink("http://localhost:9000/portfolio")));
         String expectedMessage = "Evidence not found: web link not saved";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
 
+    @Test
+    @Transactional
+    void whenEvidenceAdded_testWebLinkSavedWithName() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
+        Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
+        assertEquals("My web link", receivedEvidence.getWebLinks().get(0).getName());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceAdded_testWebLinkSavedWithoutName() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
+        Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
+        assertNull(receivedEvidence.getWebLinks().get(0).getName());
+    }
 }
