@@ -74,5 +74,6 @@ html {
 }
 
 .evidence__description {
+    overflow-wrap: anywhere;
     margin: 0 0 1rem;
 }
