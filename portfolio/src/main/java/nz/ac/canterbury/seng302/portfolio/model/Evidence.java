@@ -30,13 +30,17 @@ public class Evidence {
     }
 
     public Evidence(int ownerId, int projectId, String title, String description, Date date) {
+        this(ownerId, projectId, title, description, date, "");
+    }
+
+    public Evidence(int ownerId, int projectId, String title, String description, Date date, String skills) {
         this.ownerId = ownerId;
         this.projectId = projectId;
         this.title = title;
         this.description = description;
         this.date = date;
         webLinks = new ArrayList<>();
-        skills = new ArrayList<>();
+        this.skills = List.of(skills.split("\\s+"));
     }
 
     public int getId() {

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -193,6 +194,24 @@ class EvidenceServiceTests {
         String expectedMessage = "Evidence not found: web link not saved";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
+    }
+
+    //When the date of the evidence is out of range of the project near the start, test it is rejected.
+    @Test
+    @Transactional
+    void whenSkillsAdded_testSkillsSplitProperly() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        List<String> skills = evidenceList.get(0).getSkills();
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("skill1");
+        expectedSkills.add("skill_2");
+        expectedSkills.add("{skill}");
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        assertEquals(expectedSkills, skills);
     }
 
 }
