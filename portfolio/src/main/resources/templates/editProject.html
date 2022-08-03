@@ -7,14 +7,14 @@
     <link th:href="@{styles/addEditProject.css}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
     <script th:inline="javascript">
-        let projectFirstSprintStartDate
-        let projectLastSprintEndDate
-        if ([[${projectHasSprints}]]) {
-            projectFirstSprintStartDate = new Date([[${projectFirstSprintStartDate}]])
-            projectLastSprintEndDate = new Date([[${projectLastSprintEndDate}]])
+        let restrictedStartDate
+        let restrictedEndDate
+        if ([[${dateRestrictions.hasRestrictions}]]) {
+            restrictedStartDate = new Date([[${dateRestrictions.startDate}]])
+            restrictedEndDate = new Date([[${dateRestrictions.endDate}]])
         } else {
-            projectFirstSprintStartDate = null
-            projectLastSprintEndDate = null
+            restrictedStartDate = null
+            restrictedEndDate = null
         }
     </script>
 </head>
@@ -42,10 +42,21 @@
                 <label for="project-form__description-field">Project Description</label>
                 <textarea id="project-form__description-field" class="edit-input" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
-                <label for="project-form__start-date-field">Project Start Date *</label>
+                <label for="project-form__start-date-field">Project Start Date *
+                    <span th:if="${dateRestrictions.hasRestrictions}" data-toggle="tooltip"
+                          data-placement="right" data-html=true class="bi bi-question-circle-fill"
+                          th:attr="title='Project start date is restricted by ' + ${dateRestrictions.startDateText}
+                          + ' and cannot be moved beyond it'">
+                </span></label>
+
                 <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>
 
-                <label for="project-form__end-date-field">Project End Date *</label>
+                <label for="project-form__end-date-field">Project End Date *
+                    <span th:if="${dateRestrictions.hasRestrictions}" data-toggle="tooltip"
+                          data-placement="right" data-html=true class="bi bi-question-circle-fill"
+                          th:attr="title='Project end date is restricted by ' + ${dateRestrictions.endDateText}
+                          + ' and cannot be moved beyond it'">
+                </span></label>
                 <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" th:max="${maxProjectEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="project-form__save">Save Changes</button>
