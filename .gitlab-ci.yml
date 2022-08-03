@@ -71,7 +71,6 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
-    - U6-Group-Settings-And-Single-Repository-Settings
 
 deploy-staging-portfolio:
   stage: deploy
@@ -94,7 +93,6 @@ deploy-staging-portfolio:
     url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
-    - U6-Group-Settings-And-Single-Repository-Settings
 
 deploy-production-identityprovider:
   stage: deploy
