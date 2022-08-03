@@ -4,6 +4,7 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 
+import javax.persistence.ElementCollection;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
