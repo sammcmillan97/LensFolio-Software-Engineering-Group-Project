@@ -21,7 +21,7 @@ public class Evidence {
     @ElementCollection
     private List<String> webLinks;
     @ElementCollection
-    private List<String> skills;
+    private List<String> skills; //skills related to this piece of evidence
 
 
     public Evidence() {

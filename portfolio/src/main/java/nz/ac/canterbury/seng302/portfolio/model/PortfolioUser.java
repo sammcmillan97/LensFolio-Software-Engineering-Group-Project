@@ -20,7 +20,7 @@ public class PortfolioUser {
     private boolean isUserListSortAscending;
     private int currentProject;
     @ElementCollection
-    private List<String> skills;
+    private List<String> skills; //complete list of all skills a user has used
 
     /**
      * Create a portfolio user.
