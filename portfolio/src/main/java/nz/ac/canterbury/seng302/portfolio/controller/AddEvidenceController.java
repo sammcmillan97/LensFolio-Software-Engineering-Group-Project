@@ -99,6 +99,7 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
+            @RequestParam(name="evidenceSkills") String skillsString,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -117,7 +118,7 @@ public class AddEvidenceController {
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         int userId = userService.getUserId(principal);
-        Evidence evidence = new Evidence(userId, projectId, title, description, date);
+        Evidence evidence = new Evidence(userId, projectId, title, description, date); // TODO add evidence
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
