@@ -32,8 +32,6 @@ public class User {
     private String profileImagePath;
     private int id;
     private Object userObject;
-    @ElementCollection
-    private List<String> skills;
 
     /**
      * Create a user based on a UserResponse from the identity provider.
