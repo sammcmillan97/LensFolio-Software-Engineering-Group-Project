@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -111,6 +113,37 @@ public class PortfolioUserService {
         }
         portfolioUser.setCurrentProject(projectId);
         repository.save(portfolioUser);
+    }
+
+    /**
+     * Get a list of skills from a Portfolio User
+     * @param userId unique id of User from idp, and PortfolioUser
+     * @return list of their skills
+     */
+    public List<String> getPortfolioUserSkills(int userId){
+        PortfolioUser portfolioUser = getUserById(userId);
+        if (portfolioUser==null){
+            return null;
+        } else {
+            return portfolioUser.getSkills();
+        }
+    }
+
+    /**
+     * Iterate through the list of skills, and add to the given user
+     * @param userId unique id of User from idp, and PortfolioUser
+     * @param skills list of skills being added
+     */
+    public void addPortfolioUserSkills(int userId, List<String> skills){
+        PortfolioUser portfolioUser = getUserById(userId);
+        if (portfolioUser==null){
+            throw new IllegalArgumentException("User not found");
+        } else {
+            Iterator<String> skillsIterator = skills.iterator();
+            while(skillsIterator.hasNext()){
+                portfolioUser.addSkill(skillsIterator.next());
+            }
+        }
     }
 
 }
