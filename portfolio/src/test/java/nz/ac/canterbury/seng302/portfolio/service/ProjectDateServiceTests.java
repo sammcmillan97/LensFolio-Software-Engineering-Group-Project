@@ -58,7 +58,7 @@ class ProjectDateServiceTests {
     //Test that when no restrictions are present,
     @Test
     void whenOneSprintInProject_testRestrictionsExist() {
-        sprintService.saveSprint(new Sprint(1, "Test Sprint", 1, "Test Sprint Description", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
+        sprintService.saveSprint(new Sprint(1, "Test Sprint", "Test Sprint Description", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
         DateRestrictions restrictions = projectDateService.getDateRestrictions(1);
         assertTrue(restrictions.hasRestrictions());
         assertEquals(Date.valueOf("2022-04-9"), restrictions.getStartDate());
@@ -70,7 +70,7 @@ class ProjectDateServiceTests {
     //Test that when no restrictions are present,
     @Test
     void whenManyItemsInProject_testRestrictionsExist() {
-        sprintService.saveSprint(new Sprint(1, "Test Sprint", 1, "Test Sprint Description", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
+        sprintService.saveSprint(new Sprint(1, "Test Sprint", "Test Sprint Description", Date.valueOf("2022-04-9"), Date.valueOf("2022-06-16")));
         eventService.saveEvent(new Event(1, "Test Event", Date.valueOf("2022-04-8"), Date.valueOf("2022-06-15")));
         deadlineService.saveDeadline(new Deadline(1, "Test Milestone", Date.valueOf("2022-04-7")));
         milestoneService.saveMilestone(new Milestone(1, "Test Deadline", Date.valueOf("2022-06-17")));
