@@ -77,7 +77,7 @@ public class EvidenceService {
      * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
      * is thrown.
      */
-    public void saveWebLink(int evidenceId, String weblink) throws NoSuchElementException {
+    public void saveWebLink(int evidenceId, WebLink weblink) throws NoSuchElementException {
         try {
             Evidence evidence = getEvidenceById(evidenceId);
             evidence.addWebLink(weblink);

@@ -12,8 +12,11 @@
         <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
             <div class="evidence__details_expanded flex-column" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
-              <div class="web-links">
-                <a target="_blank" th:each="web: ${evidence.getWebLinks()}" th:text="${web}" th:href="${web}"></a>
+              <div class="web-link-container">
+                <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
+                  <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()}"></p>
+                  <a target="_blank" th:text="${web.getLink()}" th:href="${web.getLink()}"></a>
+                </div>
               </div>
             </div>
         </div>

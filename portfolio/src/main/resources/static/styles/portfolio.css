@@ -38,8 +38,21 @@
     text-decoration: none;
 }
 
-.web-links {
+.web-link-container {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
+}
+
+.web-links {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    flex-wrap: wrap;
+
+}
+
+.web-link-name {
+    padding: 0;
+    margin: 0;
 }
