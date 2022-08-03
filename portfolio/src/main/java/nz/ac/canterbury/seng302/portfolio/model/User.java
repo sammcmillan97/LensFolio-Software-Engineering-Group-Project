@@ -4,6 +4,7 @@ import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 
+import javax.persistence.ElementCollection;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,6 +32,8 @@ public class User {
     private String profileImagePath;
     private int id;
     private Object userObject;
+    @ElementCollection
+    private List<String> skills;
 
     /**
      * Create a user based on a UserResponse from the identity provider.
@@ -202,4 +205,8 @@ public class User {
     public int hashCode() {
         return Objects.hash(username, firstName, middleName, lastName, nickname, bio, personalPronouns, email, roles, created, profileImagePath, id, userObject);
     }
+
+    public List<String> getSkills() {return skills;}
+
+    public void addSkill (String skill) {this.skills.add(skill);}
 }
