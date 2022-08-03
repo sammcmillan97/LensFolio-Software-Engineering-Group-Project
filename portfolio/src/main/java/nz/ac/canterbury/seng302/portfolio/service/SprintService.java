@@ -14,6 +14,7 @@ import java.util.*;
 public class SprintService {
     @Autowired
     private SprintRepository repository;
+
     @Autowired
     private ProjectService projectService;
 

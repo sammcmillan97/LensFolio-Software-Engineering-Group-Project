@@ -14,6 +14,7 @@ public class Evidence {
     private int ownerId; // ID of the user who owns this evidence piece
     private int projectId; // ID of the project this evidence relates to
     private String title;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     private Date date;
 

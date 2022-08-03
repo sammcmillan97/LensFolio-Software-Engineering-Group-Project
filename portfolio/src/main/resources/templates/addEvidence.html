@@ -14,7 +14,10 @@
     <script>
         function checkEmpty() {
             document.getElementById('evidence-form__save').disabled =
-                document.getElementById("evidence-form__title-field").value === "" || document.getElementById("evidence-form__description-field").value === "";
+                document.getElementById("evidence-form__title-field").value.length < 2
+                || document.getElementById("evidence-form__title-field").value.length > 64
+                || document.getElementById("evidence-form__description-field").value.length < 50
+                || document.getElementById("evidence-form__description-field").value.length > 1024;
         }
     </script>
 </head>
@@ -36,11 +39,12 @@
         <!-- Add Evidence Form -->
         <form id="evidence-form__form" class="flex-column" th:action="@{addEvidence}" th:method="post">
             <label>Title *</label>
-            <input type="text" id="evidence-form__title-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" required>
-
+            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" required>
+            <p class="form-error-message" th:text="${titleError}" />
 
             <label>Description *</label>
-            <input type="text" id="evidence-form__description-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceDescription" placeholder="Evidence Description" th:value="${evidenceDescription}" required>
+            <textarea minlength="50" maxlength="1024" type="text" id="evidence-form__description-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceDescription" placeholder="Evidence Description" th:value="${evidenceDescription}" required></textarea>
+            <p class="form-error-message" th:text="${descriptionError}" />
 
             <label>Date *
                 <span data-toggle="tooltip"
@@ -49,9 +53,11 @@
                 </span>
             </label>
             <input type="date" id="evidence-form__date-field" class="edit-input" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
+            <p class="form-error-message" th:text="${dateError}" />
 
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
             <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
+            <p class="form-error-message" th:text="${generalError}" />
         </form>
     </div>
 </div>

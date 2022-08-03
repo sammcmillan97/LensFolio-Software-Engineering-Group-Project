@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * The controller for handling backend of the add evidence page
@@ -100,19 +101,37 @@ public class AddEvidenceController {
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
+        int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
+        Project project = projectService.getProjectById(projectId);
+
         model.addAttribute("user", user);
+        model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
+        model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
+
         Date date;
         try {
             date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
+
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         int userId = userService.getUserId(principal);
-        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         Evidence evidence = new Evidence(userId, projectId, title, description, date);
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
+            if (Objects.equals(exception.getMessage(), "Title not valid")) {
+                model.addAttribute("titleError", "Title cannot be all special characters");
+            } else if (Objects.equals(exception.getMessage(), "Description not valid")) {
+                model.addAttribute("descriptionError", "Description cannot be all special characters");
+            } else if (Objects.equals(exception.getMessage(), "Date not valid")) {
+                model.addAttribute("dateError", "Date must be within the project dates");
+            } else {
+                model.addAttribute("generalError", exception.getMessage());
+            }
+            model.addAttribute("evidenceTitle", evidence.getTitle());
+            model.addAttribute("evidenceDescription", evidence.getDescription());
+            model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         return "redirect:/portfolio";
