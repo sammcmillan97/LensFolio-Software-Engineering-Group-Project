@@ -1,15 +1,14 @@
-/******************** Add/Edit Group Form ********************/
+/******************** Add Evidence Form ********************/
 
-.group-form__header {
+.evidence-form__header {
     padding: 3rem 2rem 3rem 2rem;
     border-bottom: 1px solid var(--color-accent);
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
-#group-form__wrapper {
+#evidence-form__wrapper {
     display: block;
     background-color: var(--color-complement);
     border: 1px solid var(--color-accent);
@@ -17,35 +16,35 @@
     overflow: hidden;
 }
 
-#group-form__form {
+#evidence-form__form {
     padding: 1rem 2rem 1rem 2rem;
 }
 
 
 
-#group-form__form label {
+#evidence-form__form label {
     margin-bottom: 0.5rem;
 }
 
-#group-form__form input, #sprint-form__form textarea {
+#evidence-form__form input, #evidence-form__form textarea {
     margin: 0 0 1rem 1rem;
     border: none;
     border-bottom: 2px solid lightgray;
 }
 
-#char_count_long_name, #char_count_short_name {
+#evidence-form__helper {
     font-size: x-small;
     padding-bottom: 10px;
 }
 
-/* Set a style for the  button */
-#group-form__form button, #group-form__form a {
+/* Set a style for the button */
+#evidence-form__form button, #evidence-form__form a {
     padding: 0;
     margin-bottom: 1rem;
+    overflow: hidden;
     background-color: var(--color-complement);
     border: 1px solid var(--color-accent);
     border-radius: 1.5rem;
-    overflow: hidden;
 
     height: 3rem;
     line-height: 3rem;
@@ -56,14 +55,20 @@
 }
 
 /*Add some hover effects to buttons */
-#group-form__form button:hover, #group-form__form a:hover {
+#evidence-form__form button:hover, #evidence-form__form a:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
+}
+
+#evidence-form__form button:disabled {
+    background-color: gray;
+    cursor: default;
 }
 
 .form-error-message {
     margin-left: 10px;
     color: red;
+    font-size: small;
     margin-top: -5px;
     margin-bottom: 10px;
 }

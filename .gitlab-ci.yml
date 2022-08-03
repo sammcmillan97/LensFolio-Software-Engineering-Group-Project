@@ -141,6 +141,7 @@ deploy-production-portfolio:
     - tags
     - master
 
+
 sonarqube-report:
   stage: sonarqube
   variables:
