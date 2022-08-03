@@ -1,15 +1,11 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PortfolioUserService {
@@ -97,22 +93,23 @@ public class PortfolioUserService {
         } else {
             return project;
         }
-
     }
 
     /**
-     *
-     * @param userId
-     * @param projectId
+     * Set Portfolio Users currently selected project
+     * @param userId of user selecting a project
+     * @param projectId of project being selected
      */
     public void setProject(int userId, int projectId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
         if (portfolioUser==null) {
             PortfolioUser portfolioUser1 = new PortfolioUser(userId);
             repository.save(portfolioUser1);
+        } else{
+            portfolioUser.setCurrentProject(projectId);
+            repository.save(portfolioUser);
         }
-        portfolioUser.setCurrentProject(projectId);
-        repository.save(portfolioUser);
+
     }
 
     /**
@@ -123,7 +120,7 @@ public class PortfolioUserService {
     public List<String> getPortfolioUserSkills(int userId){
         PortfolioUser portfolioUser = getUserById(userId);
         if (portfolioUser==null){
-            return null;
+            return new ArrayList<>();
         } else {
             return portfolioUser.getSkills();
         }
@@ -139,9 +136,8 @@ public class PortfolioUserService {
         if (portfolioUser==null){
             throw new IllegalArgumentException("User not found");
         } else {
-            Iterator<String> skillsIterator = skills.iterator();
-            while(skillsIterator.hasNext()){
-                portfolioUser.addSkill(skillsIterator.next());
+            for (String skill : skills) {
+                portfolioUser.addSkill(skill);
             }
         }
     }
