@@ -23,6 +23,9 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+    @Autowired
+    private UserAccountClientService userAccountClientService;
+
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
@@ -46,6 +49,24 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
             } else {
                 return projectService.getAllProjects().get(0);
             }
+        }
+    }
+
+    @ModelAttribute("authUserIsTeacher")
+    public boolean userIsTeacher(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isTeacher(principal);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @ModelAttribute("authUserIsAdmin")
+    public boolean userIsAdmin(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isAdmin(principal);
+        } catch (Exception e) {
+            return false;
         }
     }
 }

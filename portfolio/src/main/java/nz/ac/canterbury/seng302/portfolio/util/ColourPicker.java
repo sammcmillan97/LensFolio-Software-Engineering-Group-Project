@@ -22,11 +22,6 @@ public class ColourPicker {
 
     private static final Random randomGenerator = new Random();
 
-    // To hide the public constructor as it is a utility class
-    private ColourPicker() {
-
-    }
-
     /**
      * Gets the next colour in the colour list relative to the methods last call
      * @return a colour from the colours list

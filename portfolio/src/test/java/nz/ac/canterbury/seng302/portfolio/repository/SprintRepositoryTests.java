@@ -48,8 +48,8 @@ class SprintRepositoryTests {
     @Test
     void findAllSprints() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", 1, "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
-        Sprint sprint2 = new Sprint(project1.getId(), "Sprint 2", 2, "This is a sprint", Date.valueOf("2022-04-30"), Date.valueOf("2022-05-15"));
+        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
+        Sprint sprint2 = new Sprint(project1.getId(), "Sprint 2", "This is a sprint", Date.valueOf("2022-04-30"), Date.valueOf("2022-05-15"));
         List<Sprint> sprints = new ArrayList<>();
         sprints.add(sprint1);
         sprints.add(sprint2);
@@ -68,8 +68,8 @@ class SprintRepositoryTests {
     @Test
     void findSprintById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", 1, "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
-        Sprint sprint2 = new Sprint(project1.getId(), "Sprint 2", 2, "This is a sprint", Date.valueOf("2022-04-30"), Date.valueOf("2022-05-15"));
+        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
+        Sprint sprint2 = new Sprint(project1.getId(), "Sprint 2", "This is a sprint", Date.valueOf("2022-04-30"), Date.valueOf("2022-05-15"));
         List<Sprint> sprints = new ArrayList<>();
         sprints.add(sprint1);
         sprints.add(sprint2);
@@ -86,7 +86,7 @@ class SprintRepositoryTests {
     @Test
     void addSprintViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
-        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", 1, "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
+        Sprint sprint1 = new Sprint(project1.getId(), "Sprint 1", "This is a sprint", Date.valueOf("2022-04-15"), Date.valueOf("2022-04-29"));
         projectRepository.save(project1);
         sprintRepository.save(sprint1);
 
