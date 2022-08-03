@@ -13,7 +13,7 @@
             <div class="evidence__details_expanded flex-column" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
               <div class="web-link-container">
-                <h4>Web Links</h4>
+                <h4 class="web-link-title">Web Links</h4>
                 <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
                   <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
                   <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}" th:href="${web.getLink()}"></a>
