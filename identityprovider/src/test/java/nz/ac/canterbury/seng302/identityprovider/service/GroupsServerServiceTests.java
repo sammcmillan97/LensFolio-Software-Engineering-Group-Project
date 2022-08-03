@@ -393,7 +393,7 @@ class GroupsServerServiceTests {
         GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
         List<UserResponse> userResponses = new ArrayList<>();
         for (User member : group.getMembers()) {
-            userResponses.add(member.toUserResponse());
+            userResponses.add(userService.getUserAccountByIdHandler(member.getUserIdRequest()));
         }
         assertEquals("ShortName", response.getShortName());
         assertEquals("LongName", response.getLongName());
@@ -808,5 +808,23 @@ class GroupsServerServiceTests {
         RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
         assertFalse(removeGroupMembersResponse.getIsSuccess());
         assertEquals(0, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenUserInGroup_testUserInGroup(){
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        groupRepository.save(testGroup);
+        assertTrue(groupServerService.userInGroup(testGroup.getGroupId(), testUser.getUserId()));
+    }
+
+    @Test
+    void whenUserNotInGroup_testUserInGroup(){
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        User testUser2 = new User("testUser2", "Frank2", "Frankie2", "McFrank2", "Frankie2", "I am Frank2", "he/him", "frank2@frank.com", "frank123");
+        groupRepository.save(testGroup);
+        userRepository.save(testUser2);
+        assertFalse(groupServerService.userInGroup(testGroup.getGroupId(), testUser2.getUserId()));
     }
 }
