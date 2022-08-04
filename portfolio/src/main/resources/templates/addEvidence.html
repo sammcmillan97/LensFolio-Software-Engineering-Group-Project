@@ -62,7 +62,7 @@
             </label>
             <div class="flex-row" id="evidence-form__categoriesCheck">
                 <div class="form-check edit-input">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckQuantitative" name="isQuantitative">
+                    <input type="checkbox" value="" id="flexCheckQuantitative" name="isQuantitative">
                     <label class="form-check-label" for="flexCheckQuantitative">
                         Quantitative
                     </label>
@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckService" name="isService">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckService" name="isService" th:checked="${isService}">
                     <label class="form-check-label" for="flexCheckService">
                         Service
                     </label>

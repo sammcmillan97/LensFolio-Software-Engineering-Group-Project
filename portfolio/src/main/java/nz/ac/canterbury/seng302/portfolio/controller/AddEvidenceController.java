@@ -81,6 +81,14 @@ public class AddEvidenceController {
 
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
+        boolean isQuantitative = false;
+        boolean isQualitative = false;
+        boolean isService = true;
+
+        model.addAttribute("isQuantitative", isQuantitative);
+        model.addAttribute("isQualitative", isQualitative);
+        model.addAttribute("isService", isService);
+
         model.addAttribute("evidenceTitle", evidence.getTitle());
         model.addAttribute("categories", categories);
         model.addAttribute("evidenceDescription", evidence.getDescription());
@@ -106,14 +114,16 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
-            @RequestParam(name="isQuantitative") boolean isQuantitative,
-            @RequestParam(name="isQualitative") boolean isQualitative,
-            @RequestParam(name="isService") boolean isService,
+            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQualitative", required = false) String isQualitative,
+            @RequestParam(name="isService", required = false) String isService,
             Model model
     ) {
-//        System.out.println(isQuantitative);
-//        System.out.println(isQualitative);
-//        System.out.println(isService);
+        System.out.println(isQuantitative);
+        if(isQuantitative != null) {
+            System.out.println("selected");
+        }
+
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
