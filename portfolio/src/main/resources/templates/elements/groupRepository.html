@@ -1,0 +1,47 @@
+<div>
+    <!-- Button trigger modal -->
+    <div class="flex-row" id="group-repository-info__wrapper">
+        <div class="flex-column" id="group-repository-information">
+            <!-- If not the first load of the page then show if the changes were saved or discarded           -->
+            <div th:if="${!firstLoad}">
+                <h6 th:if="${changesSaved}" style="color:#FF0000">Changes saved successfully</h6>
+                <h6 th:if="${!changesSaved}" style="color:#FF0000">Changes discarded</h6>
+            </div>
+            <h5 th:if="${commits} != null" th:text="'Connected to: ' + ${groupRepositorySettings.getRepositoryName()} + '.'"></h5>
+            <h5 th:if="${commits} != null" th:text="${commits.size()} + ' commits to repository.'"></h5>
+            <h5 th:if="${commits} == null" style="color:#FF0000">Error: Cannot connect to repository</h5>
+        </div>
+        <button type="button" id="open-modal-button" data-bs-toggle="modal" data-bs-target="#group-repository-settings-modal">Repository Settings</button>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="group-repository-settings-modal" tabindex="-1" aria-labelledby="group-repository-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header group-repository-form__header">
+                    <h5 class="modal-title" id="group-repository-modal-label">Repository Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="updateGroupRepositoryElement(false)"></button>
+                </div>
+                <div class="modal-body group-repository-form__wrapper">
+                    <form id="group-repository-form__form" class="flex-column" onsubmit="saveGroupRepositorySettings(); return false"> <!--Return false to prevent the page from reloading-->
+                        <label for="group_repository_name">Repository Name *</label>
+                        <input type="text" id="group_repository_name" class="edit-input" name="repositoryName" th:value="${groupRepositorySettings.getRepositoryName()}" pattern="(.|\s)*\S(.|\s)*" title="Repository name must not be blank" required>
+
+                        <label for="group_repository_api_key">Repository API Key *</label>
+                        <input type="text" id="group_repository_api_key" class="edit-input" name="repositoryApiKey" th:value="${groupRepositorySettings.getGitlabAccessToken()}" pattern="(.|\s)*\S(.|\s)*" title="Repository API key must not be blank" required>
+
+                        <label for="group_repository_id">Repository ID *</label>
+                        <input type="text" id="group_repository_id" class="edit-input" name="repositoryId" th:value="${groupRepositorySettings.getGitlabProjectId()}" pattern="[0-9]+" title="Repository id must be an integer" required>
+
+                        <label for="group_repository_server_url">Repository Server URL *</label>
+                        <input type="text" id="group_repository_server_url" class="edit-input" name="repositoryServerUrl" th:value="${groupRepositorySettings.getGitlabServerUrl()}" pattern="(.|\s)*\S(.|\s)*" title="Repository server URL must not be blank" required>
+
+                        <button type="submit" id="group-form__save">Save Changes</button>
+                        <a id="group-form__discard" data-bs-dismiss="modal" onclick="updateGroupRepositoryElement(false)" th:href="@{groups}">Discard</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

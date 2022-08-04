@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     Evidence findById(int id);
+    List<Evidence> findByProjectId(int projectId);
     List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
 }

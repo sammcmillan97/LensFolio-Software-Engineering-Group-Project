@@ -325,9 +325,8 @@ function selectAllInTable() {
  * @param button the button that was clicked on
  */
 async function removeSelectedUsers(button) {
-
-    const groupId = button.parentNode.parentNode.getElementsByTagName("table")[0].id
-    const selectedRows = button.parentNode.parentNode.getElementsByClassName("selected")
+    const groupId = button.parentNode.parentNode.parentNode.getElementsByTagName("table")[0].id
+    const selectedRows = button.parentNode.parentNode.parentNode.getElementsByClassName("selected")
 
     // Fetch the user ids of the members to be removed from the group
     let userIds = [];
@@ -395,9 +394,7 @@ function removeButtonVisible(table, visible) {
 
     // Don't do anything if it's the groupless group or if
     // it's the teacher group and the user is a teacher
-    if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID) {
-        return;
-    } else if (parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin)) {
+    if (parseInt(groupId, 10) === GROUPLESS_GROUP_ID || (parseInt(groupId, 10) === TEACHER_GROUP_ID && (userIsTeacher && !userIsAdmin))) {
         return;
     }
 

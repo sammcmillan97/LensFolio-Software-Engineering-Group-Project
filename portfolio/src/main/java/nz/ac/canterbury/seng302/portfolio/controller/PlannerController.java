@@ -42,6 +42,7 @@ public class PlannerController {
 
     @Autowired
     private UserAccountClientService userService;
+
     @Autowired
     private PortfolioUserService portfolioUserService;
 
@@ -142,6 +143,9 @@ public class PlannerController {
                           @RequestParam Date endDate,
                           @RequestParam Date paginationDate) {
         try {
+            if (!userService.isTeacher(principal)) {
+                return "redirect:/planner-" + projectId;
+            }
             sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
             Calendar tempEndDate = Calendar.getInstance();
             tempEndDate.setTime(endDate);

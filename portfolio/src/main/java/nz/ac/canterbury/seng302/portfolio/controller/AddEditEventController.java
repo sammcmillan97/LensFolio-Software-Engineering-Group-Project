@@ -29,8 +29,8 @@ public class AddEditEventController {
     @Autowired
     EventService eventService;
 
-    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
-    private String redirectToProjects = "redirect:/projects";
+    private static final String timeFormat = "yyyy-MM-dd'T'HH:mm";
+    private static final String redirectToProjects = "redirect:/projects";
 
 
     /**
@@ -40,7 +40,7 @@ public class AddEditEventController {
     public String eventForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
                             @PathVariable("eventId") String eventId,
-                            Model model) throws Exception {
+                            Model model) {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
@@ -78,7 +78,6 @@ public class AddEditEventController {
         // Add event date boundaries for event to the model
         model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), timeFormat));
         model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), timeFormat));
-
         return "addEditEvent";
     }
 
@@ -120,8 +119,8 @@ public class AddEditEventController {
             try {
                 Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
                 eventService.saveEvent(newEvent);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (Exception ignored) {
+                // Don't need to do anything
             }
         } else {
             //Edit existing event
@@ -131,8 +130,8 @@ public class AddEditEventController {
                 eventService.updateStartDate(eventId, eventStartDate);
                 eventService.updateEndDate(eventId, eventEndDate);
                 eventService.saveEvent(existingEvent);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (Exception ignored) {
+                // Don't need to do anything
             }
         }
         return "redirect:/projectDetails-" + projectIdString;

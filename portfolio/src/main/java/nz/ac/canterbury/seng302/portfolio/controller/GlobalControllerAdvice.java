@@ -4,6 +4,7 @@ import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Autowired
     private PortfolioUserService portfolioUserService;
+
+    @Autowired
+    private UserAccountClientService userAccountClientService;
 
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
@@ -46,6 +50,24 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
             } else {
                 return projectService.getAllProjects().get(0);
             }
+        }
+    }
+
+    @ModelAttribute("authUserIsTeacher")
+    public boolean userIsTeacher(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isTeacher(principal);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @ModelAttribute("authUserIsAdmin")
+    public boolean userIsAdmin(@AuthenticationPrincipal AuthState principal){
+        try {
+            return userAccountClientService.isAdmin(principal);
+        } catch (Exception e) {
+            return false;
         }
     }
 }
