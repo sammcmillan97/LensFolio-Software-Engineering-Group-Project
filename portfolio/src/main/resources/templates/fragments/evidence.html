@@ -6,16 +6,19 @@
         <div class="evidence_title_child" type="button" data-bs-toggle="collapse" th:aria-controls="evidence_ + ${evidence.getId}" aria-expanded="false" th:data-bs-target="'#evidence_' + ${evidence.getId}">
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
             <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
-            <div class="project__button-wrapper flex-row">
-                <form action="#" th:action="@{addWeblinks}" th:method="post">
-                    <button type="submit">Add Evidence</button>
-                </form>
         </div>
 
         <!-- Evidence Details -->
         <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
             <div class="evidence__details_expanded flex-row" >
+                <div>
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
+                </div>
+                <div class="evidence__button-wrapper flex-row">
+                    <form action="#" th:action="@{addWeblinks}" th:method="post">
+                        <button type="submit">Add Weblink</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

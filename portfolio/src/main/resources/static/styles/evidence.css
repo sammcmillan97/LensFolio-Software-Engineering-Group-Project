@@ -30,6 +30,19 @@ html {
     visibility: hidden !important;
 }
 
+.evidence__button-wrapper {
+    padding-bottom: 10px;
+    margin-left: auto;
+}
+
+.evidence__button-wrapper button {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+}
+
 .evidence__collapsed {
     display: block;
     position: relative;
