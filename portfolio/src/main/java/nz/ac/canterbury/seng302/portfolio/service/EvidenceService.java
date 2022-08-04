@@ -102,4 +102,27 @@ public class EvidenceService {
         }
     }
 
+    /**
+     * Wrote method for retrieve evidence by skill
+     * @param skill being searched for
+     * @return list of evidences containing skill
+     */
+    public List<Evidence> retrieveEvidenceBySkill(String skill) {
+        List<Evidence> allEvidence = getAllEvidence();
+        List<Evidence> matchedEvidence = new ArrayList<>();
+        for (Evidence evidence : allEvidence){
+            if (evidence.getSkills().contains(skill)){
+                matchedEvidence.add(evidence);
+            }
+        }
+        return matchedEvidence;
+    }
+
+    /**
+     * Get all evidences from evidence repo
+     * @return list of all evidences
+     */
+    public List<Evidence> getAllEvidence(){
+        return repository.findAll();
+    }
 }
