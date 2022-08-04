@@ -63,6 +63,7 @@ html {
 .evidence__details {
     border-top: 1px solid var(--color-accent);
     padding-top: 1rem;
+    padding-bottom: 1rem;
     visibility: visible;
 }
 
@@ -76,4 +77,22 @@ html {
 .evidence__description {
     overflow-wrap: anywhere;
     margin: 0 0 1rem;
+}
+
+.skill-link {
+    font-size: 1.5rm;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    border: 1.5rm;
+    display: inline;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
+}
+
+.skill-link:hover {
+    background-color: #F67B50;
 }
