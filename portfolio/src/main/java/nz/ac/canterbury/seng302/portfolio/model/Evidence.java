@@ -21,6 +21,9 @@ public class Evidence {
     private Date date;
     @ElementCollection
     private List<String> webLinks;
+    @ElementCollection
+    private List<String> skills; //skills related to this piece of evidence
+
 
     public Evidence() {
         webLinks = new ArrayList<>();
@@ -33,6 +36,7 @@ public class Evidence {
         this.description = description;
         this.date = date;
         webLinks = new ArrayList<>();
+        skills = new ArrayList<>();
     }
 
     public int getId() {
@@ -70,4 +74,8 @@ public class Evidence {
     public void addWebLink(String webLink) {
         this.webLinks.add(webLink);
     }
+
+    public List<String> getSkills() {return skills;}
+
+    public void addSkill (String skill) {this.skills.add(skill);}
 }
