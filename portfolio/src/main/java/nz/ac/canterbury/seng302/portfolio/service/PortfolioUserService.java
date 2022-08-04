@@ -136,6 +136,10 @@ public class PortfolioUserService {
         }
     }
 
+    /**
+     * Save user to Portfolio User Repository
+     * @param portfolioUser
+     */
     public void savePortfolioUser(PortfolioUser portfolioUser){
         repository.save(portfolioUser);
     }
