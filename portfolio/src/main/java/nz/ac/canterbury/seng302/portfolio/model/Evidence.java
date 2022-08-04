@@ -73,7 +73,7 @@ public class Evidence {
         return categories;
     }
 
-    public void addCategories(Set<Categories> categories) {
-        this.categories.addAll(categories);
+    public void setCategories(Set<Categories> categories) {
+        this.categories = categories;
     }
 }
