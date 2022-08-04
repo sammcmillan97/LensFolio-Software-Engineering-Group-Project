@@ -163,7 +163,8 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testSaveOneWebLink() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
+                "Test EvidenceTest EvidenceTest EvidenceTest EvidenceTest EvidenceTest Evidence", Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -173,7 +174,8 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testSaveMultipleWebLinks() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", "Test Evidence", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
+                "Test EvidenceTest EvidenceTest EvidenceTest EvidenceTest EvidenceTest Evidence", Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
         evidenceService.saveWebLink(evidence1.getId(), "http://localhost:9000/portfolio");
