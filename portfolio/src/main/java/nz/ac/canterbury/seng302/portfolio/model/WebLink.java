@@ -10,16 +10,30 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class WebLink {
     String name;
+    boolean safe;
     @Column(columnDefinition = "LONGTEXT")
     String link;
 
     public WebLink(String webLink, String name) {
         this.name = name;
-        this.link = webLink;
+        if (webLink.matches("http://.*")) {
+            this.link = webLink.replaceFirst("http://", "");
+            this.safe = false;
+        } else if (webLink.matches("https://.*")) {
+            this.link = webLink.replaceFirst("https://", "");
+            this.safe = true;
+        }
+
     }
 
     public WebLink(String webLink) {
-        this.link = webLink;
+        if (webLink.matches("http://.*")) {
+            this.link = webLink.replaceFirst("http://", "");
+            this.safe = false;
+        } else if (webLink.matches("https://.*")) {
+            this.link = webLink.replaceFirst("https://", "");
+            this.safe = true;
+        }
     }
 
     public WebLink() {
@@ -31,5 +45,9 @@ public class WebLink {
 
     public String getLink() {
         return link;
+    }
+
+    public boolean isSafe() {
+        return this.safe;
     }
 }
