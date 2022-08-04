@@ -50,6 +50,15 @@ public class EvidenceService {
     }
 
     /**
+     * Retrieves all pieces of evidence with the given skill
+     * @param skill The skill to search for
+     * @return A list of pieces of evidence that have that skill
+     */
+    public List<Evidence> getEvidenceBySkill(String skill) {
+        return repository.findBySkill(skill);
+    }
+
+    /**
      * Saves a piece of evidence. Makes sure the project the evidence is for exists.
      * ALso makes sure the description and title are not one character, and contain at least one letter.
      * Also makes sure the project start and end dates are within the project bounds.
