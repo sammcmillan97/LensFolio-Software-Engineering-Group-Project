@@ -57,6 +57,32 @@
             <input type="date" id="evidence-form__date-field" class="edit-input" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
             <p class="form-error-message" th:text="${dateError}" />
 
+            <label for="evidence-form__categoriesCheck">
+                Select Categories
+            </label>
+            <div class="flex-row" id="evidence-form__categoriesCheck">
+                <div class="form-check edit-input">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckQuantitative" name="isQuantitative">
+                    <label class="form-check-label" for="flexCheckQuantitative">
+                        Quantitative
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckQualitative" name="isQualitative">
+                    <label class="form-check-label" for="flexCheckQualitative">
+                        Qualitative
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckService" name="isService">
+                    <label class="form-check-label" for="flexCheckService">
+                        Service
+                    </label>
+                </div>
+            </div>
+
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
             <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
             <p class="form-error-message" th:text="${generalError}" />

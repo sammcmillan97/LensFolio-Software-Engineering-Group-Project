@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import com.google.common.base.Strings;
+import nz.ac.canterbury.seng302.portfolio.model.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
@@ -15,11 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import uk.org.webcompere.systemstubs.stream.SystemOut;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The controller for handling backend of the add evidence page
@@ -66,6 +68,11 @@ public class AddEvidenceController {
         Date evidenceDate;
         Date currentDate = new Date();
 
+        List<String> categories = new ArrayList<>();
+        categories.add("Qualitative");
+        categories.add("Quantitative");
+        categories.add("Service");
+
         if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
             evidenceDate = currentDate;
         } else {
@@ -75,6 +82,7 @@ public class AddEvidenceController {
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
         model.addAttribute("evidenceTitle", evidence.getTitle());
+        model.addAttribute("categories", categories);
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
@@ -98,8 +106,14 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
+            @RequestParam(name="isQuantitative") boolean isQuantitative,
+            @RequestParam(name="isQualitative") boolean isQualitative,
+            @RequestParam(name="isService") boolean isService,
             Model model
     ) {
+//        System.out.println(isQuantitative);
+//        System.out.println(isQualitative);
+//        System.out.println(isService);
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
