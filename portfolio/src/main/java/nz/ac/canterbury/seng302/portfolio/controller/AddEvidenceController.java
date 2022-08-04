@@ -115,7 +115,6 @@ public class AddEvidenceController {
         try {
             date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
-
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         int userId = userService.getUserId(principal);

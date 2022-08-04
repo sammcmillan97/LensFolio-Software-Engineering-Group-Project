@@ -109,7 +109,8 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "2002-02-16"))
+                        .param("evidenceDate", "2002-02-16")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/portfolio"));
     }
@@ -129,7 +130,8 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "2002-02-16"))
+                        .param("evidenceDate", "2002-02-16")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -147,7 +149,8 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "bad date"))
+                        .param("evidenceDate", "bad date")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
