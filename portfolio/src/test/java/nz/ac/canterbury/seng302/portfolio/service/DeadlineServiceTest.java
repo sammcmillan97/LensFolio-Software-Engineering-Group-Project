@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class DeadlineServiceTest {
+class DeadlineServiceTest {
     @Autowired
     DeadlineService deadlineService;
 
@@ -179,7 +179,7 @@ public class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         int deadlineId = deadlines.get(0).getDeadlineId();
-        assertThat(deadlineId).isNotNull();
+        assertNotEquals(0, deadlineId);
         Deadline deadline = deadlineService.getDeadlineById(deadlineId);
         assertThat(deadline.getDeadlineName()).isEqualTo("Test Deadline");
         assertThat(deadline.getDeadlineDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));

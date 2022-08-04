@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -177,26 +178,12 @@ public class UserAccountClientService {
         return userStub.register(userRegisterRequest);
     }
 
-    private String getRoles(AuthState principal) {
-        return principal.getClaimsList().stream()
-                .filter(claim -> claim.getType().equals("role"))
-                .findFirst()
-                .map(ClaimDTO::getValue)
-                .orElse("NOT FOUND");
+    protected Collection<UserRole> getRoles(AuthState principal) {
+        return getUserAccountByPrincipal(principal).getRoles();
     }
 
     public boolean isLoggedIn(AuthState principal) {
         return principal != null;
-    }
-
-    public boolean isTeacher(AuthState principal) {
-        String roles = getRoles(principal);
-        return roles.contains("teacher") || roles.contains("courseadministrator");
-    }
-
-    public boolean isAdmin(AuthState principal) {
-        String roles = getRoles(principal);
-        return roles.contains("courseadministrator");
     }
 
     /**
@@ -227,9 +214,20 @@ public class UserAccountClientService {
         return userStub.removeRoleFromUser(modifyRoleOfUserRequest);
     }
 
-    //TO-DO
-    public int getCurrentProject(){
-        return 1;
+    public boolean isTeacher(AuthState principal) {
+        return isTeacherHandler(getRoles(principal));
+    }
+
+    public boolean isTeacherHandler(Collection<UserRole> roles){
+        return roles.contains(UserRole.TEACHER) || roles.contains(UserRole.COURSE_ADMINISTRATOR);
+    }
+
+    public boolean isAdmin(AuthState principal) {
+        return isAdminHandler(getRoles(principal));
+    }
+
+    protected boolean isAdminHandler(Collection<UserRole> roles){
+        return roles.contains(UserRole.COURSE_ADMINISTRATOR);
     }
 
 }

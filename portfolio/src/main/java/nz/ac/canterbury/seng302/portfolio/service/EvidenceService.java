@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EvidenceService {
@@ -43,8 +45,13 @@ public class EvidenceService {
         }
     }
 
+    public List<Evidence> getEvidenceByProjectId(int projectId) {
+        return repository.findByProjectId(projectId);
+    }
+
     /**
      * Saves a piece of evidence. Makes sure the project the evidence is for exists.
+     * ALso makes sure the description and title are not one character, and contain at least one letter.
      * Also makes sure the project start and end dates are within the project bounds.
      * @param evidence The evidence to save
      */
@@ -55,11 +62,19 @@ public class EvidenceService {
         } catch (NoSuchElementException exception) {
             throw new IllegalArgumentException("Project does not exist");
         }
-        if (!project.getStartDate().after(evidence.getDate()) && !project.getEndDate().before(evidence.getDate())) {
-            repository.save(evidence);
-        } else {
+        Pattern fieldPattern = Pattern.compile("[a-zA-Z]+");
+        Matcher titleMatcher = fieldPattern.matcher(evidence.getTitle());
+        if (!titleMatcher.find() || evidence.getTitle().length() < 2 || evidence.getTitle().length() > 64) {
+            throw new IllegalArgumentException("Title not valid");
+        }
+        Matcher descriptionMatcher = fieldPattern.matcher(evidence.getDescription());
+        if (!descriptionMatcher.find() || evidence.getDescription().length() < 50 || evidence.getDescription().length() > 1024) {
+            throw new IllegalArgumentException("Description not valid");
+        }
+        if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
+        repository.save(evidence);
     }
 
     /**

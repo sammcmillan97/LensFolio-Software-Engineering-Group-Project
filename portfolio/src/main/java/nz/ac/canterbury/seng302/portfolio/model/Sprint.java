@@ -26,10 +26,9 @@ public class Sprint implements ImportantDate {
 
     public Sprint() {}
 
-    public Sprint(int parentProjectId, String sprintName, int sprintNumber, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
+    public Sprint(int parentProjectId, String sprintName, String sprintDescription, Date sprintStartDate, Date sprintEndDate) {
         this.parentProjectId = parentProjectId;
         this.sprintName = sprintName;
-        this.sprintNumber = sprintNumber;
         this.sprintDescription = sprintDescription;
         this.sprintStartDate = sprintStartDate;
         this.sprintEndDate = sprintEndDate;
