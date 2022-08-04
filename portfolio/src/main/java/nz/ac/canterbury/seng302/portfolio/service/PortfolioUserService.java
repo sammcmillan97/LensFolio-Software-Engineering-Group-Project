@@ -4,7 +4,7 @@ import nz.ac.canterbury.seng302.portfolio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -119,11 +119,8 @@ public class PortfolioUserService {
      */
     public List<String> getPortfolioUserSkills(int userId){
         PortfolioUser portfolioUser = getUserById(userId);
-        if (portfolioUser==null){
-            return new ArrayList<>();
-        } else {
-            return portfolioUser.getSkills();
-        }
+        System.out.println("In Service: " + portfolioUser.getSkills());
+        return portfolioUser.getSkills();
     }
 
     /**
@@ -132,14 +129,18 @@ public class PortfolioUserService {
      * @param skills list of skills being added
      */
     public void addPortfolioUserSkills(int userId, List<String> skills){
-        PortfolioUser portfolioUser = getUserById(userId);
-        if (portfolioUser==null){
-            throw new IllegalArgumentException("User not found");
-        } else {
-            for (String skill : skills) {
-                portfolioUser.addSkill(skill);
-            }
+        try {
+            PortfolioUser portfolioUser = getUserById(userId);
+            portfolioUser.addSkills(skills);
+            savePortfolioUser(portfolioUser);
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
+
+    public void savePortfolioUser(PortfolioUser portfolioUser){
+        repository.save(portfolioUser);
+    }
+
 
 }
