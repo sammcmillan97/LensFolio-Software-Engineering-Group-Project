@@ -11,8 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -157,6 +159,38 @@ class EvidenceServiceTests {
         assertEquals("One", evidenceList.get(0).getTitle());
         assertEquals("Two", evidenceList.get(1).getTitle());
         assertEquals("Three", evidenceList.get(2).getTitle());
+    }
+
+    @Test
+    void testSetCategoriesOfEvidenceAllThree() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence);
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.QUALITATIVE);
+        categoriesSet.add(Categories.QUANTITATIVE);
+        categoriesSet.add(Categories.SERVICE);
+        evidenceService.setCategories(categoriesSet, evidenceService.getEvidenceById(evidence.getId()));
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesSet, evidence.getCategories());
+    }
+
+    @Test
+    void testSetCategoriesOfEvidenceChangeCategories() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+
+        Set<Categories> categoriesSet1 = new HashSet<>();
+        categoriesSet1.add(Categories.QUALITATIVE);
+        evidenceService.setCategories(categoriesSet1, evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesSet1, evidence.getCategories());
+
+        Set<Categories> categoriesSet2 = new HashSet<>();
+        categoriesSet2.add(Categories.SERVICE);
+        evidenceService.setCategories(categoriesSet2, evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesSet2, evidence.getCategories());
     }
 
 }

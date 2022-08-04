@@ -3,6 +3,9 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
@@ -16,6 +19,15 @@ public class Evidence {
     private String title;
     @Column(columnDefinition = "LONGTEXT")
     private String description;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "evidence_categories",
+            joinColumns =  @JoinColumn(name="id")
+    )
+    @Column(name="categories")
+    private Set<Categories> categories = new HashSet<>();
+
     private Date date;
 
     public Evidence() {}
@@ -27,6 +39,7 @@ public class Evidence {
         this.description = description;
         this.date = date;
     }
+
 
     public int getId() {
         return id;
@@ -56,4 +69,11 @@ public class Evidence {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
+    public Set<Categories> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Categories> categories) {
+        this.categories = categories;
+    }
 }

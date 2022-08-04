@@ -85,4 +85,12 @@ public class EvidenceService {
         repository.deleteById(id);
     }
 
+    /**
+     * Service method for setting the categories of a piece of evidence.
+     * @param categories A set of Categories enum (QUANTITATIVE, QUALITATIVE, SERVICE)
+     */
+    public void setCategories(Set<Categories> categories, Evidence evidence) {
+        evidence.setCategories(categories);
+        saveEvidence(evidence);
+    }
 }
