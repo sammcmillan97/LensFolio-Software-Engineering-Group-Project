@@ -20,7 +20,7 @@ public class Evidence {
     private String description;
     private Date date;
     @ElementCollection
-    private List<String> webLinks;
+    private List<WebLink> webLinks;
 
     public Evidence() {
         webLinks = new ArrayList<>();
@@ -63,11 +63,11 @@ public class Evidence {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
-    public List<String> getWebLinks() {
+    public List<WebLink> getWebLinks() {
         return webLinks;
     }
 
-    public void addWebLink(String webLink) {
+    public void addWebLink(WebLink webLink) {
         this.webLinks.add(webLink);
     }
 }
