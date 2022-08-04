@@ -108,21 +108,7 @@ public class EvidenceService {
      * @return list of evidences containing skill
      */
     public List<Evidence> retrieveEvidenceBySkill(String skill) {
-        List<Evidence> allEvidence = getAllEvidence();
-        List<Evidence> matchedEvidence = new ArrayList<>();
-        for (Evidence evidence : allEvidence){
-            if (evidence.getSkills().contains(skill)){
-                matchedEvidence.add(evidence);
-            }
-        }
-        return matchedEvidence;
+        return repository.findBySkills(skill);
     }
 
-    /**
-     * Get all evidences from evidence repo
-     * @return list of all evidences
-     */
-    public List<Evidence> getAllEvidence(){
-        return repository.findAll();
-    }
 }
