@@ -18,8 +18,8 @@
                 <h4 class="web-link-title">Web Links</h4>
                 <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
                   <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
-                  <i th:if="${web.isSafe()}" class="bi bi-lock lock-icon"></i>
-                  <i th:if="${!web.isSafe()}" class="bi bi-unlock lock-icon"></i>
+                  <i th:if="${web.isSafe()}" class="bi bi-lock"></i>
+                  <i th:if="${!web.isSafe()}" class="bi bi-unlock"></i>
                   <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
                      th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
                 </div>
