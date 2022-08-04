@@ -4,7 +4,6 @@ import nz.ac.canterbury.seng302.portfolio.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -119,7 +118,6 @@ public class PortfolioUserService {
      */
     public List<String> getPortfolioUserSkills(int userId){
         PortfolioUser portfolioUser = getUserById(userId);
-        System.out.println("In Service: " + portfolioUser.getSkills());
         return portfolioUser.getSkills();
     }
 
@@ -134,7 +132,7 @@ public class PortfolioUserService {
             portfolioUser.addSkills(skills);
             savePortfolioUser(portfolioUser);
         } catch (Exception e) {
-            System.out.println(e);
+            //should never reach as getUserById creates user if one doesn't exist
         }
     }
 

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureTestDatabase
 @SpringBootTest
-public class PortfolioUserTests {
+class PortfolioUserTests {
 
     @Autowired
     PortfolioUserRepository repository;
