@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <title>Edit Deadline</title>
@@ -23,7 +23,7 @@
 
         <header class="form__header flex-column">
             <div th:if="${deadlineId == '-1'}">
-                <h1> Create new deadline</h1>
+                <h1> Create New Deadline</h1>
             </div>
             <div th:if="${deadlineId != '-1'}">
             <h1 th:text="'Editing: ' + ${deadline.deadlineName}"></h1>

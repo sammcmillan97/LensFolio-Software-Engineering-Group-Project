@@ -6,7 +6,6 @@
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #evidence-form__wrapper {
@@ -31,6 +30,11 @@
     margin: 0 0 1rem 1rem;
     border: none;
     border-bottom: 2px solid lightgray;
+}
+
+#evidence-form__helper {
+    font-size: x-small;
+    padding-bottom: 10px;
 }
 
 /* Set a style for the button */
@@ -64,6 +68,7 @@
 .form-error-message {
     margin-left: 10px;
     color: red;
+    font-size: small;
     margin-top: -5px;
     margin-bottom: 10px;
 }

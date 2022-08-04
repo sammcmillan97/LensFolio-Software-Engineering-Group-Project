@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-    <title>Edit event</title>
+    <title>Edit Group</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
     <link th:href="@{styles/addEditGroup.css}" rel="stylesheet" />
@@ -23,18 +23,31 @@
     <div id="group-form__wrapper">
         <!-- Name, Date -->
         <header class="group-form__header flex-column">
-            <h1 id="group__name" th:text="${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            <div th:if="${groupId == '-1'}">
+                <h1> Create New Group</h1>
+            </div>
+            <div th:if="${groupId != '-1'}">
+                <h1 th:text="'Editing: ' + ${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            </div>
         </header>
 
         <!-- Add/Edit Event Form -->
         <form id="group-form__form" class="flex-column" th:action="@{editGroup-{group}(group=${groupId})}" th:method="post">
-            <label for="group-form__short_name-field">Group Short Name *</label>
-            <p th:text="${shortNameErrorMessage}" class="form-error-message"></p>
-            <input type="text" id="group-form__short_name-field" class="edit-input" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" required onkeyup="countShortNameCharacters()">
-            <span id="char_count_short_name">20/20 characters remain</span>
+            <div th:if="${userIsTeacher}">
+                <label for="group-form__short_name-field">Group Short Name *</label>
+                <p th:text="${shortNameErrorMessage}" class="form-error-message"></p>
+                <input type="text" id="group-form__short_name-field" class="edit-input" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" required onkeyup="countShortNameCharacters()">
+                <span id="char_count_short_name">20/20 characters remain</span>
+            </div>
+            <div th:if="${!userIsTeacher}">
+                <label for="group-form__short_name-field">Group Short Name *</label>
+                <p th:text="${shortNameErrorMessage}" class="form-error-message"></p>
+                <input type="text" id="group-form__short_name-field" class="edit-input" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" required onkeyup="countShortNameCharacters()" disabled>
+                <input type="text" id="group-form__short_name-field" class="edit-input" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" required onkeyup="countShortNameCharacters()" hidden>
+                <span id="char_count_short_name">20/20 characters remain</span>
+            </div>
 
-
-            <label for="group-form__long_name-field">Group Short Name *</label>
+            <label for="group-form__long_name-field">Group Long Name *</label>
             <p th:text="${longNameErrorMessage}" class="form-error-message"></p>
             <input type="text" id="group-form__long_name-field" class="edit-input" name="groupLongName" maxlength="30" placeholder="Group Long Name" th:value="${groupLongName}" required onkeyup="countLongNameCharacters()">
             <span id="char_count_long_name">30/30 characters remain</span>
