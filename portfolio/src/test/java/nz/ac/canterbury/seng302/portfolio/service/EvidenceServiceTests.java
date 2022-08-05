@@ -145,6 +145,7 @@ class EvidenceServiceTests {
 
     //When evidence is added, check that it is chronologically ordered.
     @Test
+    @Transactional
     void whenEvidenceAdded_testIsInOrder() {
         Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
@@ -194,7 +195,7 @@ class EvidenceServiceTests {
         assertEquals(expectedMessage, actualMessage);
     }
 
-    //When the date of the evidence is out of range of the project near the start, test it is rejected.
+    //When skills are added, test that they split up as expected.
     @Test
     @Transactional
     void whenSkillsAdded_testSkillsSplitProperly() {
@@ -211,6 +212,45 @@ class EvidenceServiceTests {
         expectedSkills.add("b");
         assertEquals(expectedSkills, skills);
     }
+
+    //When skills are added, test duplicates are removed.
+    @Test
+    @Transactional
+    void whenSkillsAdded_testDuplicatesRemoved() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a b c b a");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        List<String> skills = evidenceList.get(0).getSkills();
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        expectedSkills.add("c");
+        assertEquals(expectedSkills, skills);
+    }
+
+    //Test that capitalization of strings carries through in a user's evidence
+    @Test
+    @Transactional
+    void whenSkillsAdded_testCorrectCapitalization() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "blah tESt");
+        evidenceService.saveEvidence(evidence1);
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-13"), "TesT testing");
+        evidenceService.saveEvidence(evidence2);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(2, evidenceList.size());
+        List<String> skills1 = evidenceList.get(0).getSkills();
+        List<String> expectedSkills1 = new ArrayList<>();
+        expectedSkills1.add("blah");
+        expectedSkills1.add("tESt");
+        assertEquals(expectedSkills1, skills1);
+        List<String> skills2 = evidenceList.get(1).getSkills();
+        List<String> expectedSkills2 = new ArrayList<>();
+        expectedSkills2.add("tESt");
+        expectedSkills2.add("testing");
+        assertEquals(expectedSkills2, skills2);
+    }
+
 
     /////////////////////////////////
     ///GET EVIDENCE BY SKILL TESTS///

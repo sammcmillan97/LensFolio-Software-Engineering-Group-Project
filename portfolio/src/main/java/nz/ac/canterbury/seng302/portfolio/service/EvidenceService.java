@@ -17,9 +17,6 @@ public class EvidenceService {
     @Autowired
     private ProjectService projectService;
 
-    @Autowired
-    private PortfolioUserService portfolioUserService;
-
     /**
      * Get list of all pieces of evidence for a specific portfolio.
      * Portfolios can be identified by a user and project.
