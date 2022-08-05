@@ -94,15 +94,20 @@ public class Evidence {
      * the capitalization in the master skills is preferred.
      * @param masterSkills A list of master skills to compare against.
      */
-    public void conformSkills(List<String> masterSkills) {
-        System.out.println(masterSkills);
-        for (String masterSkill : masterSkills) {
-            for (String skill : skills) {
-                if (masterSkill.equalsIgnoreCase(skill)) {
-                    skills.remove(skill);
-                    skills.add(masterSkill);
+    public void conformSkills(Collection<String> masterSkills) {
+        List<String> newSkills = new ArrayList<>();
+        for (String skill : skills) {
+            boolean inMaster = false;
+            for (String masterSkill : masterSkills) {
+                if (!inMaster && masterSkill.equalsIgnoreCase(skill)) {
+                    newSkills.add(masterSkill);
+                    inMaster = true;
                 }
             }
+            if (!inMaster) {
+                newSkills.add(skill);
+            }
         }
+        skills = newSkills;
     }
 }

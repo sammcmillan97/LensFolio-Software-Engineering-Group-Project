@@ -77,7 +77,12 @@ public class EvidenceService {
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
-        evidence.conformSkills(portfolioUserService.getUserById(evidence.getId()).getSkills());
+        List<Evidence> evidenceList = repository.findByOwnerId(evidence.getOwnerId());
+        Collection<String> masterSkills = new HashSet<>();
+        for (Evidence userEvidence : evidenceList) {
+            masterSkills.addAll(userEvidence.getSkills());
+        }
+        evidence.conformSkills(masterSkills);
         repository.save(evidence);
     }
 
