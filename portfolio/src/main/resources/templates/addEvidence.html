@@ -57,6 +57,15 @@
             <input type="date" id="evidence-form__date-field" class="edit-input" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
             <p class="form-error-message" th:text="${dateError}" />
 
+            <label>Skills
+                <span data-toggle="tooltip"
+                      data-placement="top" data-html=true class="bi bi-question-circle-fill"
+                      title="Skills are separated by spaces. Use underscores instead of spaces inside a skill. For example, Intra-team_Communication.">
+                </span>
+            </label>
+            <input type="text" id="evidence-form__skills-field" class="edit-input" name="evidenceSkills" placeholder="Add Skills" th:value="${evidenceSkills}"></input>
+            <p class="form-error-message" th:text="${skillsError}" />
+
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
             <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
             <p class="form-error-message" th:text="${generalError}" />

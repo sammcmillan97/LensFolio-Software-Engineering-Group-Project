@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import io.cucumber.java.an.E;
 import nz.ac.canterbury.seng302.portfolio.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -194,5 +193,81 @@ class EvidenceServiceTests {
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
+
+    //When the date of the evidence is out of range of the project near the start, test it is rejected.
+    @Test
+    @Transactional
+    void whenSkillsAdded_testSkillsSplitProperly() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "   skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        List<String> skills = evidenceList.get(0).getSkills();
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("skill1");
+        expectedSkills.add("skill_2");
+        expectedSkills.add("{skill}");
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        assertEquals(expectedSkills, skills);
+    }
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExists_findBySkill(){
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkills_findByMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("skill1").get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkills_findByNonMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByMatchingSkill_MatchOne(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("b").get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByMatchingSkill_MatchAll(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals(2, evidenceService.retrieveEvidenceBySkill("skill_2").size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByNonMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+    }
+
 
 }

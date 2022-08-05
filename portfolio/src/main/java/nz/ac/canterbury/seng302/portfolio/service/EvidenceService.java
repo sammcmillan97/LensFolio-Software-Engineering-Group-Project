@@ -101,4 +101,14 @@ public class EvidenceService {
             throw new NoSuchElementException("Evidence not found: web link not saved");
         }
     }
+
+    /**
+     * Wrote method for retrieve evidence by skill
+     * @param skill being searched for
+     * @return list of evidences containing skill
+     */
+    public List<Evidence> retrieveEvidenceBySkill(String skill) {
+        return repository.findBySkills(skill);
+    }
+
 }
