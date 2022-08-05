@@ -108,7 +108,7 @@ public class EvidenceService {
      * @return list of evidences containing skill
      */
     public List<Evidence> retrieveEvidenceBySkill(String skill) {
-        return repository.findBySkills(skill);
+        return repository.findBySkillsOrderByDateDesc(skill);
     }
 
     /**
