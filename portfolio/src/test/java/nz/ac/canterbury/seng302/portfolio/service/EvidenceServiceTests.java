@@ -229,6 +229,26 @@ class EvidenceServiceTests {
         assertEquals(expectedSkills, skills);
     }
 
+    //Test long skills cause an error to be thrown
+    @Test
+    @Transactional
+    void when51CharSkillAdded_testErrorThrown() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(51));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Skills not valid");
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(1, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
+    //Test skills under the limit do not cause errors to be thrown
+    @Test
+    @Transactional
+    void when50CharSkillAdded_testErrorThrown() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(51));
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+    }
+
     //Test that capitalization of strings carries through in a user's evidence
     @Test
     @Transactional
