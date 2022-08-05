@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import com.google.common.base.Strings;
 import nz.ac.canterbury.seng302.portfolio.model.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
@@ -17,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.org.webcompere.systemstubs.stream.SystemOut;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,14 +79,6 @@ public class AddEvidenceController {
 
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
-        boolean isQuantitative = false;
-        boolean isQualitative = false;
-        boolean isService = true;
-
-        model.addAttribute("isQuantitative", isQuantitative);
-        model.addAttribute("isQualitative", isQualitative);
-        model.addAttribute("isService", isService);
-
         model.addAttribute("evidenceTitle", evidence.getTitle());
         model.addAttribute("categories", categories);
         model.addAttribute("evidenceDescription", evidence.getDescription());
@@ -119,10 +109,6 @@ public class AddEvidenceController {
             @RequestParam(name="isService", required = false) String isService,
             Model model
     ) {
-        System.out.println(isQuantitative);
-        if(isQuantitative != null) {
-            System.out.println("selected");
-        }
 
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
@@ -136,11 +122,22 @@ public class AddEvidenceController {
         try {
             date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
-
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
+        }
+
+        Set<Categories> categories = new HashSet<>();
+        if(isQuantitative != null) {
+            categories.add(Categories.QUANTITATIVE);
+        }
+        if(isQualitative != null) {
+            categories.add(Categories.QUALITATIVE);
+        }
+        if(isService != null) {
+            categories.add(Categories.SERVICE);
         }
         int userId = userService.getUserId(principal);
         Evidence evidence = new Evidence(userId, projectId, title, description, date);
+        evidence.setCategories(categories);
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
