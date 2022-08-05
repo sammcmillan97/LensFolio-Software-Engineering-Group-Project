@@ -17,6 +17,9 @@ public class EvidenceService {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private PortfolioUserService portfolioUserService;
+
     /**
      * Get list of all pieces of evidence for a specific portfolio.
      * Portfolios can be identified by a user and project.
@@ -74,6 +77,7 @@ public class EvidenceService {
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
+        evidence.conformSkills(portfolioUserService.getUserById(evidence.getId()).getSkills());
         repository.save(evidence);
     }
 
