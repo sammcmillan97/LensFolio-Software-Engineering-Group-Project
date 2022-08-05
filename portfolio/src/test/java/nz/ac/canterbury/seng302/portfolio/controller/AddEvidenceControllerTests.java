@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -154,5 +155,7 @@ class AddEvidenceControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
+
+
 
 }
