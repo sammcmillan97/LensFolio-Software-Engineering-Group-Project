@@ -36,7 +36,8 @@ public class PortfolioUser {
     }
 
     // Empty constructor is needed for JPA
-    protected PortfolioUser() {
+    public PortfolioUser() {
+        skills = new ArrayList<>();
     }
 
     public PortfolioUser(int id){
@@ -71,11 +72,15 @@ public class PortfolioUser {
         this.isUserListSortAscending = userListSortAscending;
     }
 
-    public void setCurrentProject(int projectId) {this.currentProject = projectId;}
+    public void setCurrentProject(int projectId) { this.currentProject = projectId; }
 
-    public int getCurrentProject() { return this.currentProject;}
+    public int getCurrentProject() { return this.currentProject; }
 
-    public List<String> getSkills() {return skills;}
+    public List<String> getSkills() { return skills; }
 
-    public void addSkill (String skill) {this.skills.add(skill);}
+    public void addSkill (String skill) { this.skills.add(skill); }
+
+    public void addSkills(List<String> skills){
+        this.skills.addAll(skills);
+    }
 }
