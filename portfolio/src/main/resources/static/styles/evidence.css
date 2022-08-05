@@ -76,3 +76,19 @@ html {
 .evidence__description {
     margin: 0 0 1rem;
 }
+
+.category-link {
+    border: 1px solid #d94d2e;
+    border-radius: 5px;
+    background-color: #d94d2e;
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
+}
+
+.category-link:hover {
+    background-color: #F67B50;
+}

@@ -13,6 +13,7 @@
             <div class="evidence__details_expanded flex-row" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
             </div>
+            <a th:each="category: ${evidence.getCategories}" class="category-link" th:text="${category}" th:href="to-be-done-later"></a>
         </div>
     </div>
 </div>
