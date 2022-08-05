@@ -242,8 +242,8 @@ class EvidenceServiceTests {
     //Test skills under the limit do not cause errors to be thrown
     @Test
     @Transactional
-    void when50CharSkillAdded_testErrorThrown() {
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(51));
+    void when50CharSkillAdded_testErrorNotThrown() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(50));
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
         assertEquals(1, evidenceList.size());
