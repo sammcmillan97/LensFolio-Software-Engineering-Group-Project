@@ -103,7 +103,7 @@ public class EvidenceService {
     }
 
     /**
-     * Wrote method for retrieve evidence by skill
+     * Wrote a method for retrieve evidence by skill
      * @param skill being searched for
      * @return list of evidences containing skill
      */
