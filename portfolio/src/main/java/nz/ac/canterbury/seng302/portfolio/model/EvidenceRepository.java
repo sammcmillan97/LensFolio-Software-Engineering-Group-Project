@@ -10,8 +10,6 @@ import java.util.List;
 public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     Evidence findById(int id);
     List<Evidence> findByProjectId(int projectId);
-    @Query("select e from Evidence e where e.skills = ?1")
-    List<Evidence> findBySkill(String skill);
     List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
 
     //Get evidence by skill, might need to be updated to include projectId too

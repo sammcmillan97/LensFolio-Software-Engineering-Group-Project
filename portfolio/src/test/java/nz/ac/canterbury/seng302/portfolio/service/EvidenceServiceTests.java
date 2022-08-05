@@ -273,5 +273,106 @@ class EvidenceServiceTests {
         assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
     }
 
+    //////////////////////////////////////////
+    ///GET EVIDENCE BY SKILL AND USER TESTS///
+    //////////////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExistsWithSkillAndUser_findBySkillAndUser() {
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser("skill", 1).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkillAndUser_findBySkillAndNonMatchingUser() {
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId2, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsForSkillAndUser_findByUserAndNonMatchingSkill() {
+        int testUserId = 1;
+        String testSkill = "skill1234";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkillAndUser_findBySkillAndUser() {
+        int testUserId = 1;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndNonMatchingUser() {
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId2, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId2, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsForSkillAndUser_findByUserAndNonMatchingSkill_NoMatches() {
+        int testUserId = 1;
+        String testSkill = "skill1234";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndUser_MatchOne() {
+        int testUserId = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId2, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndUser_MatchAll() {
+        int testUserId = 1;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals(2, evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).size());
+    }
+
+
+
 
 }

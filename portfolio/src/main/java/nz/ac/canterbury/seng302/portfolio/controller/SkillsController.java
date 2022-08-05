@@ -26,7 +26,9 @@ public class SkillsController {
                                         @AuthenticationPrincipal AuthState principal,
                                         @RequestParam("skill") String skill,
                                         Model model) {
-        List<Evidence> evidence = evidenceService.getEvidenceBySkill(skill);
+        List<Evidence> evidence = evidenceService.retrieveEvidenceBySkill(skill);
+
+
         return "skills";
     }
 }

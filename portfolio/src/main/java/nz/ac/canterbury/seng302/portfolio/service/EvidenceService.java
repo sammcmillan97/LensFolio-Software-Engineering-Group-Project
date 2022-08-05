@@ -50,15 +50,6 @@ public class EvidenceService {
     }
 
     /**
-     * Retrieves all pieces of evidence with the given skill
-     * @param skill The skill to search for
-     * @return A list of pieces of evidence that have that skill
-     */
-    public List<Evidence> getEvidenceBySkill(String skill) {
-        return repository.findBySkill(skill);
-    }
-
-    /**
      * Saves a piece of evidence. Makes sure the project the evidence is for exists.
      * ALso makes sure the description and title are not one character, and contain at least one letter.
      * Also makes sure the project start and end dates are within the project bounds.
@@ -118,6 +109,22 @@ public class EvidenceService {
      */
     public List<Evidence> retrieveEvidenceBySkill(String skill) {
         return repository.findBySkills(skill);
+    }
+
+    /**
+     * Retrieves all evidence owned by the given user user and with the given skill
+     * @param skill The skill being searched for
+     * @param userId The owner of the Evidence
+     * @return A list of evidence owned by the user and containing the skill
+     */
+    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId) {
+        List<Evidence> usersEvidenceWithSkill = new ArrayList<>();
+        for (Evidence e : retrieveEvidenceBySkill(skill)) {
+            if (e.getOwnerId() == userId) {
+                usersEvidenceWithSkill.add(e);
+            }
+        }
+        return usersEvidenceWithSkill;
     }
 
 }
