@@ -198,7 +198,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenSkillsAdded_testSkillsSplitProperly() {
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "   skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
         assertEquals(1, evidenceList.size());
