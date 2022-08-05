@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
@@ -18,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The controller for handling backend of the add evidence page
@@ -66,6 +66,11 @@ public class AddEvidenceController {
         Date evidenceDate;
         Date currentDate = new Date();
 
+        List<String> categories = new ArrayList<>();
+        categories.add("Qualitative");
+        categories.add("Quantitative");
+        categories.add("Service");
+
         if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
             evidenceDate = currentDate;
         } else {
@@ -75,6 +80,7 @@ public class AddEvidenceController {
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
         model.addAttribute("evidenceTitle", evidence.getTitle());
+        model.addAttribute("categories", categories);
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
@@ -98,8 +104,12 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
+            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQualitative", required = false) String isQualitative,
+            @RequestParam(name="isService", required = false) String isService,
             Model model
     ) {
+
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
@@ -112,11 +122,22 @@ public class AddEvidenceController {
         try {
             date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
-
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
+        }
+
+        Set<Categories> categories = new HashSet<>();
+        if(isQuantitative != null) {
+            categories.add(Categories.QUANTITATIVE);
+        }
+        if(isQualitative != null) {
+            categories.add(Categories.QUALITATIVE);
+        }
+        if(isService != null) {
+            categories.add(Categories.SERVICE);
         }
         int userId = userService.getUserId(principal);
         Evidence evidence = new Evidence(userId, projectId, title, description, date);
+        evidence.setCategories(categories);
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
