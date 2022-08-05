@@ -32,7 +32,9 @@ html {
 
 .evidence__button-wrapper {
     padding-bottom: 10px;
+    padding-top: 7px;
     margin-left: auto;
+    float: right;
 }
 
 .evidence__button-wrapper button {
@@ -41,6 +43,10 @@ html {
     border: 1px solid var(--color-accent);
     border-radius: 1.5rem;
     background-color: var(--color-complement);
+}
+
+.web-link-title {
+    float: left;
 }
 
 .evidence__collapsed {
