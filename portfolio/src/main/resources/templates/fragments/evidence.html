@@ -14,16 +14,15 @@
         <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
             <div class="evidence__details_expanded flex-column" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
-              <div class="web-link-container">
-                <h4 class="web-link-title">Web Links</h4>
-                <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
-                  <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
-                  <i th:if="${web.isSafe()}" class="bi bi-lock"></i>
-                  <i th:if="${!web.isSafe()}" class="bi bi-unlock"></i>
-                  <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
-                     th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
-                </div>
-              </div>
+                <div class="web-link-container">
+                    <h4 class="web-link-title">Web Links</h4>
+                    <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
+                      <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
+                      <i th:if="${web.isSafe()}" class="bi bi-lock"></i>
+                      <i th:if="${!web.isSafe()}" class="bi bi-unlock"></i>
+                      <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
+                         th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
+                    </div>
                 </div>
                 <div class="evidence__button-wrapper flex-row">
                     <button type="button" class="btn-fill-primary" data-bs-toggle="modal" th:data-bs-target="'#addingWeblink_' + ${evidence.getId}">
@@ -34,7 +33,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" th:id="addingWeblink_ + ${evidence.Id}" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal fade" th:id="addingWeblink_ + ${evidence.getId}" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="weblink-modal__header">
@@ -46,10 +45,10 @@
                     <div class="weblink-modal__wrapper">
                         <form id="weblink__modal" class="flex-column" th:action="@{addWebLink-{evidence}(evidence=${evidence.getId})}" th:method="post">
                             <label> Name </label>
-                            <input type="text" id="weblink-modal__name-field" class="edit-input" name="weblinkName" placeholder="Weblink Name" th:value="${weblinkName}">
+                            <input type="text" id="weblink-modal__name-field" class="edit-input" name="webLinkName" placeholder="WebLink Name" th:value="${webLinkName}">
 
                             <label> Link *</label>
-                            <input type="url" id="weblink-modal__link-field" class="edit-input" name="webLink" placeholder="Weblink" th:value="${webLink}" required>
+                            <input type="url" id="weblink-modal__link-field" class="edit-input" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>

@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.WebLink;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -107,17 +108,22 @@ public class PortfolioController {
             @AuthenticationPrincipal AuthState principal,
             @PathVariable(name="evidenceId") String evidenceId,
             @RequestParam(name="webLink") String webLink,
+            @RequestParam(name="webLinkName") String webLinkName,
             Model model
     ) {
         int id = Integer.parseInt(evidenceId);
-
         try {
-            evidenceService.saveWebLink(id, webLink);
+            WebLink webLink1;
+            if (webLinkName.isEmpty()) {
+                webLink1 = new WebLink(webLink);
+            } else {
+                webLink1 = new WebLink(webLink, webLinkName);
+            }
+            evidenceService.saveWebLink(id, webLink1);
         } catch (NoSuchElementException e) {
             return "redirect:/portfolio";
         }
         return "redirect:/portfolio";
     }
-
 }
 
