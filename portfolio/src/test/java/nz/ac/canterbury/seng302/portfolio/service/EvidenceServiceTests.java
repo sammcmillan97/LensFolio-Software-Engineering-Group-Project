@@ -212,6 +212,10 @@ class EvidenceServiceTests {
         assertEquals(expectedSkills, skills);
     }
 
+    /////////////////////////////////
+    ///GET EVIDENCE BY SKILL TESTS///
+    /////////////////////////////////
+
     @Test
     @Transactional
     void givenNoEvidenceExists_findBySkill(){
