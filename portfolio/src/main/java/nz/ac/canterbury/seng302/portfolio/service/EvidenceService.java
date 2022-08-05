@@ -94,19 +94,15 @@ public class EvidenceService {
         saveEvidence(evidence);
     }
 
-    public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, String category) {
-        Categories categorySelection;
-        if (Objects.equals(category, "quantitative")) {
-            categorySelection = Categories.QUANTITATIVE;
-        } else if (Objects.equals(category, "qualitative")) {
-            categorySelection = Categories.QUALITATIVE;
-        } else {
-            categorySelection = Categories.SERVICE;
-        }
-        List<Evidence> evidenceList = repository.findByCategories(categorySelection, userId, projectId);
+    public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, Categories categorySelection) {
+
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(userId, projectId);
+        List<Evidence> evidenceListWithCategory = new ArrayList<>();
         for(Evidence e: evidenceList) {
-            System.out.println(e.getTitle());
+            if(e.getCategories().contains(categorySelection)) {
+                evidenceListWithCategory.add(e);
+            }
         }
-        return evidenceList;
+        return evidenceListWithCategory;
     }
 }
