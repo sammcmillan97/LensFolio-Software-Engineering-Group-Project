@@ -200,8 +200,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testWebLinkSavedWithName() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "This is a Test Evidence which is used in testing the Evidence Service Class", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -211,8 +210,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testWebLinkSavedWithoutName() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "This is a Test Evidence which is used in testing the Evidence Service Class", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -222,8 +220,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testWebLinkSavedWithLongLink() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "This is a Test Evidence which is used in testing the Evidence Service Class", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://www.reallylong.link/rll/eUGA_yTayv_cC_wxQ4no95oM7sInpIWAmUDDX/aWB6WdAu9Ks55ewCBl0LCVtDza1OPMkjaRBzb_TDOwyFZPQUYfrWMYNbSxO3iAKougBKA3n5B2_6H3h_8x9kLvOWcEoP3oJrnxQcNtoBP2HFv69NQoJ_LFDtI/b5MRiG2txjP24pTixTTK9p0ysxJF/dO6pm/9LgyQpYRD_f2TRG9tlt4iQj_vs4Bj_m7BBhgYyad6ddZBufUDWR2Faif_7sGmnqwUPTlBTYBDs2gk8vj6/CRJk1U4SN73S4hEpBDe3Cm9t35d7AvSrRtAsZyrrIJT3rF1a_EBcObrmxlyJKvhMQhrV1LZ7xXlfJTUg0_BnMAbu7KWTUkmAEa5utaEHBiZ0woiT8dXK1XCCjDis71YNUTegNd9tE_AgNEDIWRvd121hKRLzYaeoC4N4iPewVCu1VuTJQj1xJFo_ps4XaZlUWkooSdSgkqmy7RphWfpurA6G52Rf37hVKxb0uiNX2r3nuIs8SLlL2mseFWVDhLIn26sNxnyoPlDh9xLwfj9XrM2kFDsDUEVzv9K/x94TewZ/S_N1_cGn4uLPatxYdIFQ855/WRJ7R__85AOHUYNpCk98yBAui36Fp_chWYInwCEyNGAvDZg/x14fKCgImDqw19LuFoD/Z3ClRJJToX04EgUxdrFdvx5pgw66sjjrmMWeIfkf8LXioKES2YZ8GQ2vPpHVZvCR/ndwmSHRpYkZ4Z2v3KVNG4qowBLYqjLdkqa73yIiVXX94APd/HYqQJRQ4O0OGJO8ZbUWhpWGBlnw3zgruf/vCY_bYWT/O12/K0t/9zkWCyXOKTYHXhdMHhtwG_QJOshk0OsqsQaBPaTJsrYkDI1VOlYaGs30/Owu9vWDFdR9X28Bj79_4zTUFy9QuJe4gahNPjK7xu1kErp92NJfBN_FGCQ/2ieNVM2XCFaTLcC5305akM48kscBHDScUL7GvhjxRW/EGD8K7p3LE1CD4G3fbw5/PrwQkGfGjmy0FyNCYHeD0ClxUJ/j3EdR3mjinw/mGO5_cEnJTafryMGIYKSQER4uFmMo8bjwR/D6eC8HJz8ApQdeT8Hql_FGRc2bfTqMhvdRm9ScdpFEsiLUVvx37iZKB6J1nU36QrulAsFyWRrOzLsR9dnhwJiqk5bvZVmZyT504Hym7Z1zS9dqTxS0jM3nfEHu0RLq3qw8YRr7MuN_h0vvG2QzpgSYyXzUcxOfacKMztDgrjllPaYlpoE54d7ANyCbxaExMnJ1CU1YZmLYFWyA/6BMZYKTRX0TIlyVv96qxSRoAcdZ1v0s/WwmR2/xOBfA2yoZ98FRWFBM8E1IPQCYKkOMNxMl3lLrntdCVnKNCXGYtulQlPzfRjcsThfqQEXRLPziaAwuwdeOwCCJDouQ9GCPSN3e0fX25PUFTyFyHQlWbb6TRDu4sVSWMxs8d85sjo_4hwstQLK691_RScuI8KZOJNQ1MtpQJpNB2UKNkFm6PGAykpu/WgBQ3WMj5vXP0HOko5TAGLdlVvLbod2ypsGhAhZNUB87eHOaj3axAFjwSc2FE7vgWhSHOvVsVvlNShR/k7AvKz68rFVrgqz2RrBhF9roa2A6WC8XNae8DaMm7nE7nVz1CZOaK6TMvATA_IZzUC/AEgcDAszyJ8h4AMNiIipm0xJTtNTU4N3GkND/nSK_qG_6F0_5se622EmDyZ7jgn7C90UPlGVCLJMriVBvK53aeji4YAgUn5s0ceGaKV/E8FHQadt1w8TJtDRXAkHANQxeXcPdRV9Tq0aawxnJ0LaWXjTH6Na5/uK1e4Yllr03KAKD8cpLGL4kDyF1ktxlEH_L_ykQHQEb4qoFCFIC7yaC7BYJy8F0rmjCk0uo8iS_4s08nX96WFs3ywsmCHjoLroZZvJ1AuOrxgP0DacJ2bqX9MHprUpDfvNEr4wfLAQ1shEpIw"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -234,8 +231,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testSafeWebLinkSaved() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "This is a Test Evidence which is used in testing the Evidence Service Class", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("https://localhost:9000/portfolio", "My web link"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -245,8 +241,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testNotSafeWebLinkSaved() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "This is a Test Evidence which is used in testing the Evidence Service Class", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
