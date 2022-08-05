@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -109,7 +110,8 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "2002-02-16"))
+                        .param("evidenceDate", "2002-02-16")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/portfolio"));
     }
@@ -129,7 +131,8 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "2002-02-16"))
+                        .param("evidenceDate", "2002-02-16")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -147,9 +150,12 @@ class AddEvidenceControllerTests {
         mockMvc.perform(post("/addEvidence")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
-                        .param("evidenceDate", "bad date"))
+                        .param("evidenceDate", "bad date")
+                        .param("evidenceSkills", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
+
+
 
 }

@@ -2,9 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
@@ -30,13 +28,22 @@ public class Evidence {
     }
 
     public Evidence(int ownerId, int projectId, String title, String description, Date date) {
+        this(ownerId, projectId, title, description, date, "");
+    }
+
+    public Evidence(int ownerId, int projectId, String title, String description, Date date, String skills) {
         this.ownerId = ownerId;
         this.projectId = projectId;
         this.title = title;
         this.description = description;
         this.date = date;
         webLinks = new ArrayList<>();
-        skills = new ArrayList<>();
+        this.skills = new ArrayList<>(Arrays.asList(skills.split("\\s+")));
+        // If the entered string is "" or has leading spaces, the regex adds an empty element at the start of the skill list
+        // which should not happen.
+        if (Objects.equals(this.skills.get(0), "")) {
+            this.skills.remove(0);
+        }
     }
 
     public int getId() {

@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 public class AddEvidenceController {
 
     private static final String ADD_EVIDENCE = "addEvidence";
+    private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
 
     @Autowired
     private ProjectService projectService;
@@ -99,6 +100,7 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
+            @RequestParam(name="evidenceSkills") String skills,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -113,11 +115,10 @@ public class AddEvidenceController {
         try {
             date = new SimpleDateFormat(TIMEFORMAT).parse(dateString);
         } catch (ParseException exception) {
-
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         int userId = userService.getUserId(principal);
-        Evidence evidence = new Evidence(userId, projectId, title, description, date);
+        Evidence evidence = new Evidence(userId, projectId, title, description, date, skills);
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
@@ -135,7 +136,7 @@ public class AddEvidenceController {
             model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
-        return "redirect:/portfolio";
+        return PORTFOLIO_REDIRECT;
     }
 
     /**
@@ -158,9 +159,9 @@ public class AddEvidenceController {
         try {
             evidenceService.saveWebLink(id, webLink);
         } catch (NoSuchElementException e) {
-            return "redirect:/portfolio";
+            return PORTFOLIO_REDIRECT;
         }
-        return "redirect:/portfolio";
+        return PORTFOLIO_REDIRECT;
     }
 
 }

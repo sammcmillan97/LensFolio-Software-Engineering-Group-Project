@@ -13,4 +13,7 @@ public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     @Query("select e from Evidence e where e.skills = ?1")
     List<Evidence> findBySkill(String skill);
     List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
+
+    //Get evidence by skill, might need to be updated to include projectId too
+    List<Evidence> findBySkills(String skill);
 }
