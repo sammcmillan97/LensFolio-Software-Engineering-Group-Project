@@ -85,7 +85,7 @@ public class SkillsController {
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
-            return "redirect:/portfolio/skill?skill=" + skill; // Take user to their own portfolio if they try to view it
+            return "redirect:/portfolio-skill?skill=" + skill; // Take user to their own skills if they try to view it
         } else {
             model.addAttribute("owner", false);
             return "skills";
