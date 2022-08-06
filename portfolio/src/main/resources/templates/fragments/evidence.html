@@ -47,8 +47,7 @@
                     <div class="weblink-modal__wrapper">
                         <form id="weblink__modal" class="flex-column" th:action="@{addWebLink-{evidence}(evidence=${evidence.getId})}" th:method="post">
                             <label> Name </label>
-                            <input type="text" id="weblink-modal__name-field" class="edit-input" name="webLinkName" placeholder="WebLink Name" th:value="${webLinkName}">
-
+                            <input type="text" id="weblink-modal__name-field" class="edit-input" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
                             <label> Link *</label>
                             <input type="url" id="weblink-modal__link-field" class="edit-input" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
 

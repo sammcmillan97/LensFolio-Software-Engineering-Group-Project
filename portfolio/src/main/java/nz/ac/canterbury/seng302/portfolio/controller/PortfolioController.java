@@ -35,6 +35,8 @@ public class PortfolioController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+    private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
+
     /**
      * Display the user's portfolio page.
      * @param principal Authentication state of client
@@ -87,7 +89,7 @@ public class PortfolioController {
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
-            return "redirect:/portfolio"; // Take user to their own portfolio if they try to view it
+            return PORTFOLIO_REDIRECT; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
             return "portfolio";
@@ -96,9 +98,9 @@ public class PortfolioController {
 
     /**
      * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
-     * If correctly saved, redirects to projects page.
+     * If correctly saved, redirects to project page.
      * @param principal Authentication state of client
-     * @param evidenceId Id of the evidence to add the link to
+     * @param evidenceId id of the evidence to add the link to
      * @param webLink The link string to be added to evidence of id=evidenceId
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return Redirect to portfolio page.
@@ -121,9 +123,9 @@ public class PortfolioController {
             }
             evidenceService.saveWebLink(id, webLink1);
         } catch (NoSuchElementException e) {
-            return "redirect:/portfolio";
+            return PORTFOLIO_REDIRECT;
         }
-        return "redirect:/portfolio";
+        return PORTFOLIO_REDIRECT;
     }
 }
 
