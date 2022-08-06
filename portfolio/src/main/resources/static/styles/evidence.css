@@ -30,6 +30,25 @@ html {
     visibility: hidden !important;
 }
 
+.evidence__button-wrapper {
+    padding-bottom: 10px;
+    padding-top: 7px;
+    margin-left: auto;
+    float: right;
+}
+
+.evidence__button-wrapper button {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+}
+
+.web-link-title {
+    float: left;
+}
+
 .evidence__collapsed {
     display: block;
     position: relative;
@@ -76,3 +95,67 @@ html {
 .evidence__description {
     margin: 0 0 1rem;
 }
+
+.weblink-modal__header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-accent);
+
+    background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
+    color: var(--color-complement);
+}
+
+.modal-title {
+    float: left;
+}
+
+.close {
+    float: right;
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+}
+
+#weblink-modal__wrapper {
+    display: block;
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+#weblink__modal label {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+#weblink__modal input {
+    margin: 1rem;
+    border: none;
+    border-bottom: 2px solid lightgray;
+}
+
+/* Set a style for the button */
+#weblink__modal button {
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+
+    text-align: center;
+    color: black;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+/*Add some hover effects to buttons */
+#weblink__modal button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}
+
+.form-error-message {
+    margin-left: 10px;
+    color: red;
+    font-size: small;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
