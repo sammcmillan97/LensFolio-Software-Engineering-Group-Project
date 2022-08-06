@@ -37,7 +37,7 @@
                     <!-- Skill list -->
                     <h2 th:text="Skills"></h2>
                     <div class="skill__details">
-                        <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="to-be-done-later"></a>
+                        <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                     </div>
                 </div>
             </div>

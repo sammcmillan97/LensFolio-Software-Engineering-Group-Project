@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class SkillsController {
     private UserAccountClientService userService;
     @Autowired
     EvidenceService evidenceService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * Finds the logged in user's id and then loads the evidence page using the more generic endpoint
@@ -46,8 +49,13 @@ public class SkillsController {
 
         int userId = user.getId();
 
-        List<Evidence> evidenceList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
-        model.addAttribute("evidenceList", evidenceList);
+        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
+        model.addAttribute("evidenceList", evidenceWithSkillList);
+
+        // Add all of the skills that the user has to the page
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 
         String skillName = skill.replace("_", " ");
         model.addAttribute("skillName", skillName);
@@ -74,13 +82,18 @@ public class SkillsController {
         model.addAttribute("user", user);
         User pageUser = userService.getUserAccountById(userId);
 
-        List<Evidence> evidenceList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
+        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
+
+        // Add all of the skills that the user has to the page
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 
         String skillName = skill.replace("_", " ");
         model.addAttribute("skillName", skillName);
         model.addAttribute("user", user);
         model.addAttribute("pageUser", pageUser);
-        model.addAttribute("evidenceList", evidenceList);
+        model.addAttribute("evidenceList", evidenceWithSkillList);
 
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
