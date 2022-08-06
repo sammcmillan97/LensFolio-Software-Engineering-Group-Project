@@ -128,7 +128,23 @@ public class EvidenceService {
      * @return list of evidences containing skill
      */
     public List<Evidence> retrieveEvidenceBySkill(String skill) {
-        return repository.findBySkills(skill);
+        return repository.findBySkillsOrderByDateDescIdDesc(skill);
+    }
+
+    /**
+     * Retrieves all evidence owned by the given user user and with the given skill
+     * @param skill The skill being searched for
+     * @param userId The owner of the Evidence
+     * @return A list of evidence owned by the user and containing the skill
+     */
+    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId) {
+        List<Evidence> usersEvidenceWithSkill = new ArrayList<>();
+        for (Evidence e : retrieveEvidenceBySkill(skill)) {
+            if (e.getOwnerId() == userId) {
+                usersEvidenceWithSkill.add(e);
+            }
+        }
+        return usersEvidenceWithSkill;
     }
 
 }

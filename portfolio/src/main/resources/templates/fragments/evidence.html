@@ -14,7 +14,7 @@
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
             </div>
             <div class="evidence__skills">
-                <a th:each="skill: ${evidence.getSkills}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="to-be-done-later"></a>
+                <a th:each="skill: ${evidence.getSkills}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
             </div>
         </div>
     </div>

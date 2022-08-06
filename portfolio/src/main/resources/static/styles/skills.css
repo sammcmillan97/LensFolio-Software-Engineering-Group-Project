@@ -79,19 +79,14 @@ html {
     margin: 0 0 1rem;
 }
 
-.evidence__skills {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .skill-link {
-    overflow-wrap: anywhere;
     font-size: 1.5rm;
     border: 1px solid var(--color-secondary);
     border-radius: 5px;
     background-color: var(--color-primary);
     padding: 2px 4px 2px 4px;
     margin: 4px;
+    border: 1.5rm;
     display: inline;
     text-decoration: none;
     color: initial;
