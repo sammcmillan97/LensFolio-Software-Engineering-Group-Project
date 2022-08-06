@@ -128,6 +128,8 @@ public class AddEvidenceController {
                 model.addAttribute("descriptionError", "Description cannot be all special characters");
             } else if (Objects.equals(exception.getMessage(), "Date not valid")) {
                 model.addAttribute("dateError", "Date must be within the project dates");
+            } else if (Objects.equals(exception.getMessage(), "Skills not valid")) {
+                model.addAttribute("skillsError", "Skills cannot be more than 50 characters long");
             } else {
                 model.addAttribute("generalError", exception.getMessage());
             }

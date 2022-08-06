@@ -79,7 +79,13 @@ html {
     margin: 0 0 1rem;
 }
 
+.evidence__skills {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .skill-link {
+    overflow-wrap: anywhere;
     font-size: 1.5rm;
     border: 1px solid var(--color-secondary);
     border-radius: 5px;

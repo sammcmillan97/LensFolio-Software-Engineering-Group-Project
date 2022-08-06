@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
@@ -44,6 +45,7 @@ public class Evidence {
         if (Objects.equals(this.skills.get(0), "")) {
             this.skills.remove(0);
         }
+        this.skills = this.skills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     public int getId() {
@@ -85,4 +87,27 @@ public class Evidence {
     public List<String> getSkills() {return skills;}
 
     public void addSkill (String skill) {this.skills.add(skill);}
+
+    /**
+     * Forces skills to conform to a list of master skills.
+     * If capitalization differs between a skill in this evidence and the master skills,
+     * the capitalization in the master skills is preferred.
+     * @param masterSkills A list of master skills to compare against.
+     */
+    public void conformSkills(Collection<String> masterSkills) {
+        List<String> newSkills = new ArrayList<>();
+        for (String skill : skills) {
+            boolean inMaster = false;
+            for (String masterSkill : masterSkills) {
+                if (!inMaster && masterSkill.equalsIgnoreCase(skill)) {
+                    newSkills.add(masterSkill);
+                    inMaster = true;
+                }
+            }
+            if (!inMaster) {
+                newSkills.add(skill);
+            }
+        }
+        skills = newSkills;
+    }
 }
