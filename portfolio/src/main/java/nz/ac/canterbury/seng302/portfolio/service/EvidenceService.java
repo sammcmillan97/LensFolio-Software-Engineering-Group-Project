@@ -79,20 +79,17 @@ public class EvidenceService {
                 throw new IllegalArgumentException("Skills not valid");
             }
         }
-
-        evidence.conformSkills(getSkillsByUserAndProject(evidence.getOwnerId(), evidence.getProjectId()));
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
     }
 
     /**
-     * Gets all skills for a user. Is specific to a project as well.
-     * This means any skill present on a piece of evidence.
-     * @param userId ID of user to get the skills for.
-     * @param projectId ID of the project the user has selected.
-     * @return All the skills for that user.
+     * Gets all skills from a list of evidence. Each skill returned is unique.
+     * @param evidenceList A list of evidence to retrieve skills from.
+     * @return All the skills for that list of evidence.
      */
-    public Collection<String> getSkillsByUserAndProject(int userId, int projectId) {
-        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(userId, projectId);
+    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
         Collection<String> skills = new HashSet<>();
         for (Evidence userEvidence : evidenceList) {
             skills.addAll(userEvidence.getSkills());
