@@ -39,7 +39,7 @@
         <!-- Add Evidence Form -->
         <form id="evidence-form__form" class="flex-column" th:action="@{addEvidence}" th:method="post">
             <label>Title *</label>
-            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" required>
+            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" pattern="(.|\s)*\S(.|\s)*" title="Evidence Name must not be blank" required>
             <p class="form-error-message" th:text="${titleError}" />
 
             <label>Description *</label>
