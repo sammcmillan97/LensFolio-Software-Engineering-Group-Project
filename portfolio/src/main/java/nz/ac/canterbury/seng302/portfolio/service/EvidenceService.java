@@ -103,7 +103,7 @@ public class EvidenceService {
      */
     public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, Categories categorySelection) {
 
-        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(userId, projectId);
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDesc(userId, projectId);
         List<Evidence> evidenceListWithCategory = new ArrayList<>();
         for(Evidence e: evidenceList) {
             if(e.getCategories().contains(categorySelection)) {
