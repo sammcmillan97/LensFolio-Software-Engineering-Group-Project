@@ -31,7 +31,7 @@
             </div>
         </header>
 
-        <!-- Add/Edit Event Form -->
+        <!-- Add/Edit Group Form -->
         <form id="group-form__form" class="flex-column" th:action="@{editGroup-{group}(group=${groupId})}" th:method="post">
             <div th:if="${userIsTeacher}">
                 <label for="group-form__short_name-field">Group Short Name *</label>
