@@ -94,6 +94,13 @@ public class EvidenceService {
         saveEvidence(evidence);
     }
 
+    /**
+     * Evidence service method for getting a list of evidence with a given user, project and category
+     * @param userId The user ID
+     * @param projectId The project ID
+     * @param categorySelection The Category selection
+     * @return List of evidence with the given parameters
+     */
     public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, Categories categorySelection) {
 
         List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(userId, projectId);

@@ -34,6 +34,10 @@ public class CategoriesController {
 
     /**
      * Get request for getting all evidence pieces for the current user with the defined category
+     * @param principal Authentication state of client
+     * @param category The selected category that each evidence will contain
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The evidence page with selected category
      */
     @GetMapping("/portfolio-categories")
     public String getEvidenceWithCategory(
@@ -66,6 +70,10 @@ public class CategoriesController {
 
     /**
      * Get request for getting all evidence pieces for a selected user with the defined category
+     * @param principal Authentication state of client
+     * @param category The selected category that each evidence will contain
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return The evidence page of the selected user with the selected category
      */
     @GetMapping("/portfolio-{userId}-categories")
     public String getEvidenceWithCategorySelectedUser(
