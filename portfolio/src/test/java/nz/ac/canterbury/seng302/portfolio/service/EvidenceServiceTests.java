@@ -279,7 +279,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void givenNoEvidenceExists_findBySkill(){
-        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -288,7 +288,7 @@ class EvidenceServiceTests {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
 
-        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("skill1").get(0).getTitle());
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId()).get(0).getTitle());
     }
 
     @Test
@@ -297,7 +297,7 @@ class EvidenceServiceTests {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
 
-        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -308,7 +308,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("b").get(0).getTitle());
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("b", projects.get(1).getId()).get(0).getTitle());
     }
 
     @Test
@@ -319,7 +319,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertEquals(2, evidenceService.retrieveEvidenceBySkill("skill_2").size());
+        assertEquals(2, evidenceService.retrieveEvidenceBySkill("skill_2", projects.get(1).getId()).size());
     }
 
     @Test
@@ -330,7 +330,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertTrue(evidenceService.retrieveEvidenceBySkill("skill").isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
     }
 
 

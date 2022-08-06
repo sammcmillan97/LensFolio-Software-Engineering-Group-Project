@@ -114,12 +114,21 @@ public class EvidenceService {
     }
 
     /**
-     * Wrote a method for retrieve evidence by skill
+     * Method for retrieving evidence by skill
      * @param skill being searched for
      * @return list of evidences containing skill
      */
-    public List<Evidence> retrieveEvidenceBySkill(String skill) {
-        return repository.findBySkills(skill);
+    public List<Evidence> retrieveEvidenceBySkill(String skill, int projectId) {
+        return repository.findBySkillsAndProjectId(skill, projectId);
+    }
+
+    /**
+     * Retrieve all evidence for a project where skills is null
+     * @param projectId of evidence
+     * @return list of evidences with no skill
+     */
+    public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
+        return repository.findByProjectIdAndSkillsIsNull(projectId);
     }
 
 }
