@@ -37,3 +37,12 @@
     font-size: 1.5rem;
     text-decoration: none;
 }
+
+.skills {
+    background-color: var(--color-primary);
+}
+
+.skill-details {
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -52,6 +52,7 @@ public class PortfolioController {
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
 
         model.addAttribute("evidenceList", evidenceList);
+        model.addAttribute("skillsList", null);
         return "portfolio";
     }
 

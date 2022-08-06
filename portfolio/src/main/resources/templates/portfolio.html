@@ -27,7 +27,20 @@
         <a th:if="${owner}" class="add-evidence-button" th:href="@{addEvidence}">Add Evidence</a>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
-    <div th:replace="fragments/evidence"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <div th:replace="fragments/evidence"></div>
+            </div>
+            <div class="col-sm skills">
+                <!-- Skill list -->
+                <h2 class="evidence__title" th:text="Skills"></h2>
+                <div class="skill__details">
+                    <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill}" th:href="to-be-done-later"></a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
