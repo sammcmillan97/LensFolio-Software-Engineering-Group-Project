@@ -39,10 +39,15 @@
 }
 
 .skills {
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.skill-details {
+.skill__details {
+    padding-top: 10px;
     display: flex;
     flex-wrap: wrap;
+    border-top: 1px solid var(--color-accent);
 }
