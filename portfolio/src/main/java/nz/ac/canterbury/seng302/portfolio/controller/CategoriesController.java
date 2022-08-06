@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,10 +35,10 @@ public class CategoriesController {
     /**
      * Get request for getting all evidence pieces for the current user with the defined category
      */
-    @GetMapping("/portfolio-categories-{category}")
+    @GetMapping("/portfolio-categories")
     public String getEvidenceWithCategory(
             @AuthenticationPrincipal AuthState principal,
-           @PathVariable("category") String category,
+            @RequestParam("category") String category,
             Model model) {
 
         User user = userService.getUserAccountByPrincipal(principal);
@@ -57,20 +58,20 @@ public class CategoriesController {
         } else {
             return PORTFOLIO_REDIRECT;
         }
-
         List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
+        model.addAttribute("categoryName", category);
         model.addAttribute("evidenceList", evidenceList);
-        return "portfolio";
+        return "categories";
     }
 
     /**
      * Get request for getting all evidence pieces for a selected user with the defined category
      */
-    @GetMapping("/portfolio-categories-{userId}-{category}")
+    @GetMapping("/portfolio-{userId}-categories")
     public String getEvidenceWithCategorySelectedUser(
             @AuthenticationPrincipal AuthState principal,
             @PathVariable("userId") int userId,
-           @PathVariable("category") String category,
+            @RequestParam("category") String category,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -93,15 +94,14 @@ public class CategoriesController {
 
         List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         model.addAttribute("evidenceList", evidenceList);
-
+        model.addAttribute("categoryName", category);
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
-            return PORTFOLIO_REDIRECT; // Take user to their own portfolio if they try to view it
+            return PORTFOLIO_REDIRECT + "-categories?category=" + category; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
-            return "portfolio";
+            return "categories";
         }
     }
-
 }
