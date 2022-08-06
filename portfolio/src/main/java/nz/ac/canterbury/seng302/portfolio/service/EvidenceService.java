@@ -80,12 +80,21 @@ public class EvidenceService {
             }
         }
         List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
-        Collection<String> masterSkills = new HashSet<>();
-        for (Evidence userEvidence : evidenceList) {
-            masterSkills.addAll(userEvidence.getSkills());
-        }
-        evidence.conformSkills(masterSkills);
+        evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
+    }
+
+    /**
+     * Gets all skills from a list of evidence. Each skill returned is unique.
+     * @param evidenceList A list of evidence to retrieve skills from.
+     * @return All the skills for that list of evidence.
+     */
+    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Collection<String> skills = new HashSet<>();
+        for (Evidence userEvidence : evidenceList) {
+            skills.addAll(userEvidence.getSkills());
+        }
+        return skills;
     }
 
     /**
