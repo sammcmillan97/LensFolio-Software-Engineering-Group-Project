@@ -74,7 +74,27 @@ public class EvidenceService {
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
+        for (String skill : evidence.getSkills()) {
+            if (skill.length() > 50) {
+                throw new IllegalArgumentException("Skills not valid");
+            }
+        }
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
+    }
+
+    /**
+     * Gets all skills from a list of evidence. Each skill returned is unique.
+     * @param evidenceList A list of evidence to retrieve skills from.
+     * @return All the skills for that list of evidence.
+     */
+    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Collection<String> skills = new HashSet<>();
+        for (Evidence userEvidence : evidenceList) {
+            skills.addAll(userEvidence.getSkills());
+        }
+        return skills;
     }
 
     /**
