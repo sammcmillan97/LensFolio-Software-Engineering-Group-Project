@@ -151,8 +151,8 @@ sonarqube-report:
     - cd identityprovider
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
-    - ./gradlew sonarqube
+    - ./gradlew jacocoTestReport sonarqube
     - cd ../portfolio
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
-    - ./gradlew sonarqube
+    - ./gradlew jacocoTestReport sonarqube
