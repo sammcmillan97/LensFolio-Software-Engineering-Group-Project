@@ -58,10 +58,10 @@
             </label>
             <div id="skill-input-container">
                 <div id="skill-container"></div>
-                <input type="text" id="skills-input" class="edit-input" name="evidenceSkills" contenteditable="true"
-                   placeholder="Add Skills" th:value="${evidenceSkills}"/>
+                <input type="text" id="skills-input" class="edit-input" th:value="${evidenceSkills}" contenteditable="true"
+                   placeholder="Add Skills"/>
             </div>
-            <!-- input type="hidden" id="evidence-form__hidden-skills-field" th:value="${evidenceSkills}"/ -->
+            <input type="hidden" id="evidence-form__hidden-skills-field" name="evidenceSkills"/>
             <p class="form-error-message" th:text="${skillsError}" />
 
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>

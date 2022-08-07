@@ -59,6 +59,13 @@ document.getElementById("skills-input").addEventListener("keydown", (event) => {
 })
 
 function updateTagsInDOM(tags) {
+    let skills = "";
+    for (const skill of tags) {
+        skills += skill.replaceAll(" ", "_");
+        skills += " ";
+    }
+    document.getElementById("evidence-form__hidden-skills-field").value = skills;
+
     let parent = document.getElementById("skill-container");
     parent.textContent = '';
     // let childList = parent.childNodes;
