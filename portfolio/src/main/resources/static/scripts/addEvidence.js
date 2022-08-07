@@ -9,9 +9,18 @@ function checkEmpty() {
 let skillList = []
 
 function addToSkills(skill) {
-    if (!skillList.includes(skill)) {
-        skillList.push(skill);
+    for (const testSkill of skillList) {
+        if (testSkill.toLowerCase() === skill.toLowerCase()) {
+            return;
+        }
     }
+    for (const testSkill of ALL_SKILLS) {
+        if (testSkill.toLowerCase() === skill.toLowerCase()) {
+            skillList.push(testSkill);
+            return;
+        }
+    }
+    skillList.push(skill.replaceAll("_", " "));
 }
 
 function removeLastSkill() {
