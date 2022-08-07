@@ -399,7 +399,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveEvidence(evidence2);
 
-        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill("skill1");
+        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId());
         assertEquals(3, searchResults.size());
         assertEquals("Evidence Two", searchResults.get(0).getTitle());
         assertEquals("Evidence One", searchResults.get(1).getTitle());
@@ -413,7 +413,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void givenNoEvidenceExistsWithSkillAndUser_findBySkillAndUser() {
-        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser("skill", 1).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser("skill", 1, projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -425,7 +425,7 @@ class EvidenceServiceTests {
         Evidence evidence = new Evidence(testUserId2, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
 
-        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1, projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -436,7 +436,7 @@ class EvidenceServiceTests {
         Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
 
-        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId, projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -447,7 +447,7 @@ class EvidenceServiceTests {
         Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
 
-        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).get(0).getTitle());
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).get(0).getTitle());
     }
 
     @Test
@@ -461,7 +461,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1, projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -475,7 +475,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence1);
 
 
-        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId, projects.get(1).getId()).isEmpty());
     }
 
     @Test
@@ -489,7 +489,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).get(0).getTitle());
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).get(0).getTitle());
     }
 
     @Test
@@ -502,7 +502,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
 
-        assertEquals(2, evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1).size());
+        assertEquals(2, evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).size());
     }
 
     @Test
@@ -517,7 +517,7 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveEvidence(evidence2);
 
-        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill(testSkill);
+        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill(testSkill, projects.get(1).getId());
         assertEquals(3, searchResults.size());
         assertEquals("Evidence Two", searchResults.get(0).getTitle());
         assertEquals("Evidence One", searchResults.get(1).getTitle());

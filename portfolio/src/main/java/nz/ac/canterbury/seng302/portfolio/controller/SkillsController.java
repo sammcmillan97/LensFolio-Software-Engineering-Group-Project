@@ -49,11 +49,11 @@ public class SkillsController {
 
         int userId = user.getId();
 
-        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
         model.addAttribute("evidenceList", evidenceWithSkillList);
 
         // Add all of the skills that the user has to the page
-        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 
@@ -82,10 +82,10 @@ public class SkillsController {
         model.addAttribute("user", user);
         User pageUser = userService.getUserAccountById(userId);
 
-        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId);
+        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
 
         // Add all of the skills that the user has to the page
-        int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 

@@ -127,8 +127,8 @@ public class EvidenceService {
      * @param skill being searched for
      * @return list of evidences containing skill
      */
-    public List<Evidence> retrieveEvidenceBySkill(String skill) {
-        return repository.findBySkillsOrderByDateDescIdDesc(skill);
+    public List<Evidence> retrieveEvidenceBySkill(String skill, int projectId) {
+        return repository.findBySkillsAndProjectIdOrderByDateDescIdDesc(skill, projectId);
     }
 
     /**
@@ -146,9 +146,9 @@ public class EvidenceService {
      * @param userId The owner of the Evidence
      * @return A list of evidence owned by the user and containing the skill
      */
-    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId) {
+    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId, int projectId) {
         List<Evidence> usersEvidenceWithSkill = new ArrayList<>();
-        for (Evidence e : retrieveEvidenceBySkill(skill)) {
+        for (Evidence e : retrieveEvidenceBySkill(skill, projectId)) {
             if (e.getOwnerId() == userId) {
                 usersEvidenceWithSkill.add(e);
             }
