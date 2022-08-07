@@ -187,8 +187,8 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @VisibleForTesting
     CreateGroupResponse createGroupHandler(CreateGroupRequest request){
         CreateGroupResponse.Builder reply = CreateGroupResponse.newBuilder();
-        String shortName = request.getShortName();
-        String longName = request.getLongName();
+        String shortName = request.getShortName().trim();
+        String longName = request.getLongName().trim();
 
         if (groupRepository.findByShortName(shortName) != null) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
@@ -206,7 +206,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             groupRepository.save(new Group(shortName, longName));
             reply
                     .setIsSuccess(true)
-                    .setNewGroupId(groupRepository.findByShortName(request.getShortName()).getGroupId())
+                    .setNewGroupId(groupRepository.findByShortName(request.getShortName().trim()).getGroupId())
                     .setMessage("Successfully created group");
         } else {
             reply
@@ -278,8 +278,8 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     ModifyGroupDetailsResponse modifyGroupDetailsHandler (ModifyGroupDetailsRequest request){
         ModifyGroupDetailsResponse.Builder reply = ModifyGroupDetailsResponse.newBuilder();
         int groupId = request.getGroupId();
-        String shortName = request.getShortName();
-        String longName = request.getLongName();
+        String shortName = request.getShortName().trim();
+        String longName = request.getLongName().trim();
 
         if (groupRepository.findByGroupId(groupId) == null) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Group does not exist").setFieldName(GROUP_ID_FIELD).build();

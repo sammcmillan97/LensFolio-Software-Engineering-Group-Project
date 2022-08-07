@@ -119,7 +119,6 @@ h5 {
 
     /* Text */
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #site-navigation.expanded {

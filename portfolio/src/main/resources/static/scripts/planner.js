@@ -2,6 +2,9 @@
 let calendarEl;
 let calendar;
 
+let calendarSprints = []
+let calendarEvents = []
+
 /**
  * Helper function to convert string of roles to a list
  * @param rolesListText
@@ -288,8 +291,7 @@ function calculateFullMonthEndDate(endDate) {
  */
 function addSprintsToCalendar() {
     for (let sprint of sprints) {
-        console.log(sprint)
-        calendar.addEvent(sprint);
+        calendarSprints.push(calendar.addEvent(sprint));
     }
 }
 
@@ -298,7 +300,7 @@ function addSprintsToCalendar() {
  */
 function addEventsToCalendar() {
     for (let event of events) {
-        calendar.addEvent(event)
+        calendarEvents.push(calendar.addEvent(event));
     }
 }
 
@@ -366,26 +368,140 @@ function changeText(text) {
 }
 
 /**
- *Used for live updating the planner, refreshes the page when a event/deadline/milestone has been added/edited
+ * Fetches updated sprints, events, deadlines and milestones, then updates the calendar with these new events
+ */
+async function updatePage() {
+
+    // Clear the lists of sprints and events
+    sprints = []
+    events = []
+
+    // Fetch updated sprints, events, deadlines and milestones
+    await updateSprints()
+    await updateEvents()
+    await updateDeadlines()
+    await updateMilestones()
+
+    // Remove all old sprints and events from the calendar
+    for (let sprint of calendarSprints) {
+        sprint.remove()
+    }
+    for (let event of calendarEvents) {
+        event.remove()
+    }
+
+    // Add the new sprints and events to the calendar then render them
+    addSprintsToCalendar()
+    addEventsToCalendar()
+    calendar.render()
+}
+
+/**
+ * Fetches an updated list of sprints, then parses them into a format readable by FullCalendar, then
+ * adds them to the list of sprints
+ */
+async function updateSprints() {
+    const sprintsList = await fetch("/getSprintsList?projectId=" + projectId).then((response) => {
+        return response.json()
+    })
+
+    let sprint;
+    let tempSprint;
+    for (let i = 0; i < sprintsList.length; i++) {
+        sprint = sprintsList[i]
+        tempSprint = {
+            id: sprint.id,
+            title: sprint.label,
+            eventType: 'Sprint',
+            start: sprint.startDateCalendarString,
+            end: sprint.dayAfterEndDateCalendarString,
+            // Set colour of the sprint.
+            color: sprintEventColours[i % sprintEventColours.length]
+        }
+        sprints.push(tempSprint);
+    }
+}
+
+/**
+ * Fetches an updated list of events, then parses them into a format readable by FullCalendar, then
+ * adds them to the list of all events
+ */
+async function updateEvents() {
+    const eventsList = await fetch("/getEventsList?projectId=" + projectId).then((response) => {
+        return response.json()
+    })
+
+    let event;
+    let tempEvent;
+    for (let key in eventsList) {
+        event = eventsList[key]
+        tempEvent = {
+            id: event.id,
+            title: event.numberOfEvents,
+            eventType: event.type,
+            start: event.date,
+            description: event.description,
+        }
+        events.push(tempEvent);
+    }
+}
+
+/**
+ * Fetches an updated list of deadlines, then parses them into a format readable by FullCalendar, then
+ * adds them to the list of all events
+ */
+async function updateDeadlines() {
+    const deadlinesList = await fetch("/getDeadlinesList?projectId=" + projectId).then((response) => {
+        return response.json()
+    })
+
+    let deadline;
+    let tempDeadline;
+    for (let key in deadlinesList) {
+        deadline = deadlinesList[key]
+        tempDeadline = {
+            id: deadline.id,
+            title: deadline.numberOfEvents,
+            eventType: deadline.type,
+            start: deadline.date,
+            description: deadline.description,
+        }
+        events.push(tempDeadline);
+    }
+}
+
+/**
+ * Fetches an updated list of milestones, then parses them into a format readable by FullCalendar, then
+ * adds them to the list of all events
+ */
+async function updateMilestones() {
+    const milestonesList = await fetch("/getMilestonesList?projectId=" + projectId).then((response) => {
+        return response.json()
+    })
+
+    let milestone;
+    let tempMilestone;
+    for (let key in milestonesList) {
+        milestone = milestonesList[key]
+        tempMilestone = {
+            id: milestone.id,
+            title: milestone.numberOfEvents,
+            eventType: milestone.type,
+            start: milestone.date,
+            description: milestone.description,
+        }
+        events.push(tempMilestone);
+    }
+}
+
+/**
+ * Used for live updating the planner, refreshes the page when a sprint, event, deadline or milestone has been added/edited
  */
 function checkResponse(data){
-    var jsondata = JSON.parse(data);
+    let jsondata = JSON.parse(data);
     if (jsondata.refresh) {
-        //Refresh the calendar, uses a form in order to refresh while preserving the user's position on the calendar
-        let form = document.createElement('form');
-
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', `reload-planner-${projectId}`);
-
-        let pagDate = document.createElement('input');
-        pagDate.setAttribute('type', 'hidden');
-        pagDate.setAttribute('name', 'paginationDate');
-        pagDate.setAttribute('value', calendar.getDate());
-        form.appendChild(pagDate);
-
-        //Submit form to post data to /planner/editSprint/{sprintId} endpoint.
-        document.body.appendChild(form);
-        form.submit();
+        // update the
+        updatePage()
     }
 }
 
@@ -394,10 +510,10 @@ function checkResponse(data){
  */
 function editPolling(){
 //This promise will resolve when the network call succeeds
-    var networkPromise = fetch('projects-editStatus?id=' + projectId);
+    let networkPromise = fetch('projects-editStatus?id=' + projectId);
 
 //This promise will resolve when 2 seconds have passed
-    var timeOutPromise = new Promise(function(resolve, reject) {
+    let timeOutPromise = new Promise(function(resolve, reject) {
         setTimeout(resolve, 2000, 'Timeout Done');
     });
 

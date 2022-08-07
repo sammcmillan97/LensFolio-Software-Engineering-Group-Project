@@ -44,7 +44,6 @@ html {
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 .group-short-name {
@@ -126,7 +125,6 @@ html {
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #char_count_long_name, #char_count_short_name {
