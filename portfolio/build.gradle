@@ -125,7 +125,7 @@ jacocoTestReport {
         html.destination file("${buildDir}/jacoco/html")
     }
 }
-tasks.named('test').configure {
+tasks.named('test') {
     useJUnitPlatform()
 }
 //plugins.withType(JacocoPlugin) {

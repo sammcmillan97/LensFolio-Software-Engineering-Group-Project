@@ -52,6 +52,7 @@ branch-build:
     - tags
     - master
     - dev
+    - Fix-sonarqube-test-coverage
 
 deploy-staging-identityprovider:
   stage: deploy
@@ -160,3 +161,5 @@ sonarqube-report:
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
+  except:
+    - Fix-sonarqube-test-coverage
