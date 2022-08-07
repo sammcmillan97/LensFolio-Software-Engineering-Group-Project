@@ -17,13 +17,13 @@ junit-identityprovider:
   stage: test
   script:
     - cd identityprovider
-    - ./gradlew test
+    - ./gradlew test jacocoTestReport
 
 junit-portfolio:
   stage: test
   script:
     - cd portfolio
-    - ./gradlew test
+    - ./gradlew test jacocoTestReport
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -151,8 +151,8 @@ sonarqube-report:
     - cd identityprovider
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
-    - ./gradlew jacocoTestReport sonarqube
+    - ./gradlew sonarqube
     - cd ../portfolio
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
-    - ./gradlew jacocoTestReport sonarqube
+    - ./gradlew sonarqube
