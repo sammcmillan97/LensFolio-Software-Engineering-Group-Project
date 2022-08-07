@@ -148,6 +148,6 @@ sonarqube {
         property "sonar.tests", "src/test"
         property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
         property "sonar.login", "$System.env.SONARQUBE_API_KEY"
-        property "sonar.coverage.jacoco.reportPaths", "${buildDir}/jacoco/test-report.xml"
+//        property "sonar.coverage.jacoco.reportPaths", "${buildDir}/jacoco/test-report.xml"
     }
 }
