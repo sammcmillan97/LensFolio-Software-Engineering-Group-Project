@@ -11,9 +11,7 @@ function checkResponse(data){
     }
     var editHTML = "<p>";
     for (const edit in jsondata.edits) {
-        if (edit !== 0) {
-            editHTML += "<br><br>"
-        }
+        editHTML += "<br><br>"
         editHTML += jsondata.edits[edit]
     }
     editHTML += "</p>";
