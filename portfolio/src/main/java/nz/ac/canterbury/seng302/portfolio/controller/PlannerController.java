@@ -48,6 +48,7 @@ public class PlannerController {
     private String plannerDate;
 
     private String redirectToProjects = "redirect:/projects";
+    private String redirectToProject = "redirect:/planner-";
 
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
@@ -142,7 +143,7 @@ public class PlannerController {
                           @RequestParam Date paginationDate) {
         try {
             if (!userService.isTeacher(principal)) {
-                return "redirect:/planner-" + projectId;
+                return redirectToProject + projectId;
             }
             sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
             Calendar tempEndDate = Calendar.getInstance();
@@ -154,7 +155,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             plannerUpdated = false;
         }
-        return "redirect:/planner-" + projectId;
+        return redirectToProject + projectId;
     }
 
     /**
@@ -169,7 +170,7 @@ public class PlannerController {
                           @RequestParam Date paginationDate) {
         plannerDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
         plannerUpdated = true;
-        return "redirect:/planner-" + projectId;
+        return redirectToProject + projectId;
     }
 
     /**
