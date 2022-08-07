@@ -27,7 +27,14 @@
         <a th:if="${owner}" class="add-evidence-button" th:href="@{addEvidence}">Add Evidence</a>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
-    <div th:replace="fragments/evidence"></div>
+    <div class="row">
+        <div class="col-6">
+            <div th:replace="fragments/evidence"></div>
+        </div>
+        <div class="col">
+            <h2>Categories</h2>
+        </div>
+    </div>
 </div>
 </body>
 </html>
