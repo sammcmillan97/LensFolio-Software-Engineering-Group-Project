@@ -163,5 +163,3 @@ sonarqube-report:
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
-  except:
-    - Fix-sonarqube-test-coverage
