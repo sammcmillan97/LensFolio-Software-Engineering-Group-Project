@@ -17,6 +17,7 @@ junit-identityprovider:
   stage: test
   script:
     - cd identityprovider
+    - ./gradlew test
   artifacts:
     paths:
       - identityprovider/build/jacoco/test-report.xml
@@ -25,6 +26,7 @@ junit-portfolio:
   stage: test
   script:
     - cd portfolio
+    - ./gradlew test
   artifacts:
     paths:
       - portfolio/build/jacoco/test-report.xml
