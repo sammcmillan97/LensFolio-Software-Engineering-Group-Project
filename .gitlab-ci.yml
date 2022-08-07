@@ -147,6 +147,7 @@ sonarqube-report:
   variables:
     GIT_DEPTH: 0
   script:
+    - set JAVA_OPTS="-Xms2048m -Xmx4096m"
     - cd identityprovider
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
