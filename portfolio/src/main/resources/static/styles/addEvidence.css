@@ -72,3 +72,46 @@
     margin-top: -5px;
     margin-bottom: 10px;
 }
+
+.skill-tag {
+    width: fit-content;
+    height: fit-content;
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-secondary);
+    padding: 2px 4px 2px 4px;
+    display: flex;
+    border-radius: 5px;
+}
+
+p {
+    margin: 0 !important;
+    padding: 0;
+}
+
+#skill-container {
+    display: flex;
+    flex-direction: row;
+    width: inherit;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#skills-input {
+    display: flex;
+    margin: 0 !important;
+    border: none;
+    width: auto;
+}
+
+#skills-input:focus {
+    outline: none;
+}
+
+#skill-input-container {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-bottom: 1rem;
+}

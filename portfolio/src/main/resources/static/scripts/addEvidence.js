@@ -31,7 +31,7 @@ function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
 }
 
-document.getElementById("evidence-form__skills-field").addEventListener("input", (event) => {
+document.getElementById("skills-input").addEventListener("input", (event) => {
     let value = event.target.value;
     let skills = value.split(" ");
     let lastSkill = skills.pop();
@@ -44,13 +44,13 @@ document.getElementById("evidence-form__skills-field").addEventListener("input",
         }
     }
     lastSkill = lastSkill.slice(0, 50);
-    document.getElementById("evidence-form__skills-field").value = lastSkill;
+    document.getElementById("skills-input").value = lastSkill;
     if (shouldUpdateSkills) {
         updateTagsInDOM(skillList);
     }
 })
 
-document.getElementById("evidence-form__skills-field").addEventListener("keydown", (event) => {
+document.getElementById("skills-input").addEventListener("keydown", (event) => {
     let skillText = event.target.value
     if (event.key === "Backspace" && skillText === "") {
         removeLastSkill();
@@ -59,8 +59,24 @@ document.getElementById("evidence-form__skills-field").addEventListener("keydown
 })
 
 function updateTagsInDOM(tags) {
-    let parent = document.getElementById("skill-input-container");
-    parent.insertBefore()
+    let parent = document.getElementById("skill-container");
+    parent.textContent = '';
+    // let childList = parent.childNodes;
+    // while ()
+    // parent.childNodes = childList.slice(-2);
+    // console.log(childList)
+    // console.log(childList.length)
+    // let listLength =
+    // for (let i = 0; i < childList.length; i++) {
+    //     if (i < childList.length -2) {
+    //         console.log(childList[i]);
+    //         parent.removeChild(childList[i]);
+    //     }
+    // }
+    for (let i = 0; i < tags.length; i++) {
+        let element = createElementFromHTML(`<div class="skill-tag"><p>${tags[i]}</p></div>`)
+        parent.appendChild(element);
+    }
 }
 
 /**
