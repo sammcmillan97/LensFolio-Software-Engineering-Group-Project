@@ -128,9 +128,6 @@ jacocoTestReport {
 tasks.named('test') {
     useJUnitPlatform()
 }
-//plugins.withType(JacocoPlugin) {
-//    tasks["test"].finalizedBy 'jacocoTestReport'
-//}
 
 // Sonarqube specific configuration (task)
 sonarqube {
@@ -142,6 +139,5 @@ sonarqube {
         property "sonar.tests", "src/test"
         property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
         property "sonar.login", "$System.env.SONARQUBE_API_KEY"
-//        property "sonar.coverage.jacoco.reportPaths", "${buildDir}/jacoco/test-report.xml"
     }
 }

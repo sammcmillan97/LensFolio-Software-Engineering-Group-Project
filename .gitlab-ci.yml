@@ -54,7 +54,6 @@ branch-build:
     - tags
     - master
     - dev
-    - Fix-sonarqube-test-coverage
 
 deploy-staging-identityprovider:
   stage: deploy
