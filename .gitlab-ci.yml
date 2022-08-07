@@ -19,7 +19,7 @@ junit-identityprovider:
     - cd identityprovider
   artifacts:
     paths:
-      - identityprovider/build/jacoco/test-report.xl
+      - identityprovider/build/jacoco/test-report.xml
 
 junit-portfolio:
   stage: test
@@ -27,7 +27,7 @@ junit-portfolio:
     - cd portfolio
   artifacts:
     paths:
-      - portfolio/build/jacoco/test-report.xl
+      - portfolio/build/jacoco/test-report.xml
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo

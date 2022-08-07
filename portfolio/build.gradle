@@ -106,7 +106,7 @@ cucumber {
 }
 
 test {
-    useJUnitPlatform()
+
     systemProperties(project.gradle.startParameter.systemPropertiesArgs)
     finalizedBy jacocoTestReport
 }
@@ -125,9 +125,9 @@ jacocoTestReport {
         html.destination file("${buildDir}/jacoco/html")
     }
 }
-//tasks.named('sonarqube').configure {
-//    dependsOn jacocoTestReport
-//}
+tasks.named('test').configure {
+    useJUnitPlatform()
+}
 //plugins.withType(JacocoPlugin) {
 //    tasks["test"].finalizedBy 'jacocoTestReport'
 //}

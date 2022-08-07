@@ -132,12 +132,16 @@ jacocoTestReport {
         html.destination file("${buildDir}/jacoco/html")
     }
 }
-tasks.named('sonarqube').configure {
-    dependsOn jacocoTestReport
+
+tasks.named('test').configure {
+    useJUnitPlatform()
 }
-plugins.withType(JacocoPlugin) {
-    tasks["test"].finalizedBy 'jacocoTestReport'
-}
+//tasks.named('sonarqube').configure {
+//    dependsOn jacocoTestReport
+//}
+//plugins.withType(JacocoPlugin) {
+//    tasks["test"].finalizedBy 'jacocoTestReport'
+//}
 
 // Sonarqube specific configuration (task)
 sonarqube {
