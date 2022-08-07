@@ -11,3 +11,4 @@
 */.env
 identityprovider/target/
 portfolio/target/cucumber-report.html
+portfolio/target/

@@ -11,7 +11,8 @@ public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     List<Evidence> findByProjectId(int projectId);
     List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
 
+    //Get evidence by skill, might need to be updated to include projectId too
+    List<Evidence> findBySkillsOrderByDateDescIdDesc(String skill);
     List<Evidence> findBySkillsAndProjectId(String skill, int projectId);
-
     List<Evidence> findByProjectIdAndSkillsIsNull(int projectId);
 }
