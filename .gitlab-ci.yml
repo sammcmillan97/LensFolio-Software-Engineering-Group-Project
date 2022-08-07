@@ -18,12 +18,16 @@ junit-identityprovider:
   script:
     - cd identityprovider
     - ./gradlew test
+  except:
+    - UUic-AC12-redriect-to-login-after-pressing-back
 
 junit-portfolio:
   stage: test
   script:
     - cd portfolio
     - ./gradlew test
+  except:
+    - UUic-AC12-redriect-to-login-after-pressing-back
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -48,6 +52,7 @@ branch-build:
     - tags
     - master
     - dev
+    - UUic-AC12-redriect-to-login-after-pressing-back
 
 deploy-staging-identityprovider:
   stage: deploy
@@ -71,6 +76,7 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
+    - UUic-AC12-redriect-to-login-after-pressing-back
 
 deploy-staging-portfolio:
   stage: deploy
@@ -93,6 +99,7 @@ deploy-staging-portfolio:
     url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
+    - UUic-AC12-redriect-to-login-after-pressing-back
 
 deploy-production-identityprovider:
   stage: deploy
@@ -155,3 +162,5 @@ sonarqube-report:
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
+  except:
+    - UUic-AC12-redriect-to-login-after-pressing-back

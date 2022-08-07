@@ -12,6 +12,7 @@ public class WebConfig implements WebServerFactoryCustomizer<ConfigurableServlet
     @Override
     public void customize(ConfigurableServletWebServerFactory factory) {
         factory.addErrorPages(
+                new ErrorPage(HttpStatus.UNAUTHORIZED, "/errors"),
                 new ErrorPage(HttpStatus.FORBIDDEN, "/errors"),
                 new ErrorPage(HttpStatus.NOT_FOUND, "/errors"),
                 new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/errors"));
