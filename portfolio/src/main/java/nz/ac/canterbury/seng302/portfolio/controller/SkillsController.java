@@ -50,7 +50,9 @@ public class SkillsController {
         int userId = user.getId();
 
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
-        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
+
+        List<Evidence> evidenceWithSkillList = getEvidenceBySkill(skill, userId, projectId);
+
         model.addAttribute("evidenceList", evidenceWithSkillList);
 
         // Add all of the skills that the user has to the page
@@ -83,7 +85,8 @@ public class SkillsController {
         User pageUser = userService.getUserAccountById(userId);
 
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
-        List<Evidence> evidenceWithSkillList = evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
+
+        List<Evidence> evidenceWithSkillList = getEvidenceBySkill(skill, userId, projectId);
 
         // Add all of the skills that the user has to the page
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
@@ -102,6 +105,14 @@ public class SkillsController {
         } else {
             model.addAttribute("owner", false);
             return "skills";
+        }
+    }
+
+    public List<Evidence> getEvidenceBySkill(String skill, int userId, int projectId){
+        if (skill.length()==0){
+            return evidenceService.retrieveEvidenceWithNoSkill(projectId);
+        } else {
+           return evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
         }
     }
 }

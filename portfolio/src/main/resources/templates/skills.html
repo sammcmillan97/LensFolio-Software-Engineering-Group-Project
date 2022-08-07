@@ -22,8 +22,12 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
 <div id="page-content" class="constrict">
-    <div class="container">
+    <div th:if="${skillName!=''}" class="container">
         <h1 th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence with skill: ' + ${skillName}"></h1>
+        <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
+    </div>
+    <div th:if="${skillName==''}" class="container">
+        <h1 th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence without skills'"></h1>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
     <div class="container">
@@ -36,6 +40,7 @@
                     <!-- Skill list -->
                     <h2 th:text="Skills"></h2>
                     <div class="skill__details">
+                        <a class="no-skill-link " th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill='">No Skill</a>
                         <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                     </div>
                 </div>
