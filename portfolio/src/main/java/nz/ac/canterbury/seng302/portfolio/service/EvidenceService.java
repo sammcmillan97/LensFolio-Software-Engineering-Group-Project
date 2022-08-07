@@ -137,7 +137,7 @@ public class EvidenceService {
      * @return list of evidences with no skill
      */
     public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
-        return repository.findByProjectIdAndSkillsIsNull(projectId);
+        return repository.findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(projectId);
     }
 
     /**
