@@ -120,9 +120,9 @@ jacoco {
 jacocoTestReport {
     reports {
         xml.enabled true
-//        xml.destination file("${buildDir}/jacoco/test-report.xml")
-//        csv.enabled false
-//        html.destination file("${buildDir}/jacoco/html")
+        xml.destination file("${buildDir}/jacoco/test-report.xml")
+        csv.enabled false
+        html.destination file("${buildDir}/jacoco/html")
     }
 }
 tasks.named('sonarqube').configure {
@@ -142,6 +142,6 @@ sonarqube {
         property "sonar.tests", "src/test"
         property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
         property "sonar.login", "$System.env.SONARQUBE_API_KEY"
-//        property "sonar.coverage.jacoco.reportPaths", "${buildDir}/jacoco/test-report.xml"
+        property "sonar.coverage.jacoco.reportPaths", "${buildDir}/jacoco/test-report.xml"
     }
 }
