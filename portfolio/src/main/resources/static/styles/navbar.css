@@ -177,6 +177,7 @@ h5 {
 
 .site-navigation__link:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    color: white;
 }
 
 
@@ -261,4 +262,5 @@ h5 {
 
 .site-navigation__sublink:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    color: white;
 }

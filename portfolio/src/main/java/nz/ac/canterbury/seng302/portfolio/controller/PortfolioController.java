@@ -81,6 +81,10 @@ public class PortfolioController {
 
         model.addAttribute("evidenceList", evidenceList);
 
+        // Add all of the skills that the user has to the page
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
+
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
