@@ -24,3 +24,19 @@ document.getElementById("evidence-form__skills-field").addEventListener("keydown
         console.log("destroy tag if one exists")
     }
 })
+
+function updateTagsInDOM(tags) {
+    let parent = document.getElementById("skill-input-container");
+    parent.insertBefore()
+}
+
+/**
+ * Creates node element from html string.
+ * @param htmlString
+ * @returns {ChildNode}
+ */
+function createElementFromHTML(htmlString) {
+    let template = document.createElement('template');
+    template.innerHTML = htmlString.trim();
+    return template.content.firstChild;
+}

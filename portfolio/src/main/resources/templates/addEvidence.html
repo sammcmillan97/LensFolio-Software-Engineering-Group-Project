@@ -53,8 +53,10 @@
                       title="Skills are separated by spaces. Use underscores instead of spaces inside a skill. For example, Intra-team_Communication.">
                 </span>
             </label>
-            <input type="text" id="evidence-form__skills-field" class="edit-input" name="evidenceSkills" contenteditable="true"
+            <div id="skill-input-container">
+                <input type="text" id="evidence-form__skills-field" class="edit-input" name="evidenceSkills" contenteditable="true"
                    placeholder="Add Skills" th:value="${evidenceSkills}"/>
+            </div>
             <p class="form-error-message" th:text="${skillsError}" />
 
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
