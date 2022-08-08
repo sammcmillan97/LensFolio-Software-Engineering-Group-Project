@@ -45,9 +45,9 @@
                 <label for="sprint-form__end-date-field">Sprint End Date *</label>
                 <p th:text="${endDateError}" class="form-error-message"></p>
                 <input type="date" id="sprint-form__end-date-field" class="edit-input" name="sprintEndDate" th:placeholder="${sprintEndDate}" th:value="${sprintEndDate}" th:min="${minSprintStartDate}" th:max="${maxSprintEndDate}" onchange="updateMaxStartDate()" required>
-
-                <button type="submit" id="sprint-form__save">Save Changes</button>
                 <p th:text="${dateError}" class="form-error-message"></p>
+                <button type="submit" id="sprint-form__save">Save Changes</button>
+
                 <a id="sprint-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
             </form>
         </div>
