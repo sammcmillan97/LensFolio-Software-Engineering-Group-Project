@@ -33,7 +33,7 @@
         <!-- Add/Edit Event Form -->
         <form id="event-form__form" class="flex-column" th:action="@{editEvent-{event}-{project}(project=${parentProjectId}, event=${eventId})}" th:method="post">
             <label for="form__name-field">Event Name *</label>
-            <input type="text" id="form__name-field" class="edit-input" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" required onkeyup="countCharacters()">
+            <input type="text" id="form__name-field" class="edit-input" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" pattern=".*[^\s].*" required title="Event Name must not be blank" onkeyup="countCharacters()">
             <span id="char_count">30/30 characters remain</span>
 
             <label for="event-form__start-date-field">Event Start Date *</label>
