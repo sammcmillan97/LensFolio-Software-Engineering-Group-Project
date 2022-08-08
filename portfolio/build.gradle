@@ -106,7 +106,7 @@ cucumber {
 }
 
 test {
-
+    useJUnitPlatform()
     systemProperties(project.gradle.startParameter.systemPropertiesArgs)
     finalizedBy jacocoTestReport
 }
@@ -125,9 +125,6 @@ jacocoTestReport {
         html.destination file("${buildDir}/jacoco/html")
     }
 }
-tasks.named('test') {
-    useJUnitPlatform()
-}
 
 // Sonarqube specific configuration (task)
 sonarqube {
@@ -139,5 +136,6 @@ sonarqube {
         property "sonar.tests", "src/test"
         property "sonar.host.url", "https://sonarqube.csse.canterbury.ac.nz"
         property "sonar.login", "$System.env.SONARQUBE_API_KEY"
+        property "sonar.coverage.exclusions", "**/*.js"
     }
 }
