@@ -106,6 +106,13 @@
     border-radius: 5px;
 }
 
+.skill-tag-inside {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
 p {
     margin: 0 !important;
     padding: 0;

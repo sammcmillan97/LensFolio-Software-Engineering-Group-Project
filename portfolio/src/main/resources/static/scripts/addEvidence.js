@@ -31,6 +31,15 @@ function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
 }
 
+function clickXButton(tag) {
+    removeSkill(tag);
+    updateTagsInDOM(skillList);
+
+    if (skillList.length === 0) {
+        document.getElementById("skills-input").placeholder = 'Add Skills';
+    }
+}
+
 document.getElementById("skills-input").addEventListener("input", (event) => {
     event.target.style.width = event.target.value.length > 8 ? event.target.value.length + "ch" : "80px";
     let value = event.target.value;
@@ -53,7 +62,6 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     if (skillList.length > 0) {
         event.target.placeholder = '';
     } else {
-        console.log("HERE")
         event.target.placeholder = 'Add Skills';
     }
     autocomplete(event); // Call the autocomplete function whenever the input changes
@@ -87,7 +95,14 @@ function updateTagsInDOM(tags) {
     }
     let input = parent.firstChild
     for (let i = 0; i < tags.length; i++) {
-        let element = createElementFromHTML(`<div class="skill-tag-con"><div class="skill-tag"><p>${tags[i]}</p></div></div>`)
+        let element = createElementFromHTML(`<div class="skill-tag-con">
+                                                          <div class="skill-tag">
+                                                            <div class="skill-tag-inside">
+                                                              <p>${tags[i]}</p>
+                                                              <i class="bi bi-x" onclick="clickXButton('${tags[i]}')"></i>
+                                                            </div>
+                                                          </div>
+                                                        </div>`)
         parent.insertBefore(element, input);
     }
 }
@@ -211,7 +226,6 @@ div.addEventListener('click', (event) => {
     input.focus();
 });
 input.addEventListener('focus', (event) => {
-    console.log("Here");
     div.style.outline = 'black solid 2px';
 });
 input.addEventListener('blur', (event) => {
