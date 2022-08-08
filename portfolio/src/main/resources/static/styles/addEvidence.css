@@ -73,13 +73,36 @@
     margin-bottom: 10px;
 }
 
+#skill-input-container {
+    display: block;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    background: #fff;
+}
+
+#skill-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.skill-tag-con {
+    display: inline-flex;
+    margin: 4px;
+}
+
 .skill-tag {
     width: fit-content;
     height: fit-content;
     background-color: var(--color-primary);
     border: 1px solid var(--color-secondary);
     padding: 2px 4px 2px 4px;
-    display: flex;
+    display: inline-block;
     border-radius: 5px;
 }
 
@@ -88,30 +111,23 @@ p {
     padding: 0;
 }
 
-#skill-container {
+#input-container {
+    /*overflow: hidden;*/
     display: flex;
-    flex-direction: row;
-    width: inherit;
-    flex-wrap: wrap;
-    gap: 5px;
-    padding: 0 !important;
-    margin: 0 !important;
+    flex-direction: column;
+    flex: 1 1;
+    margin: 7px 0 7px 4px !important;
 }
 
 #skills-input {
     display: flex;
+    padding: 0 !important;
+    border: none !important;
     margin: 0 !important;
-    border: none;
-    width: auto;
+    width: 80px;
+    background: #fff;
 }
 
 #skills-input:focus {
     outline: none;
-}
-
-#skill-input-container {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    margin-bottom: 1rem;
 }
