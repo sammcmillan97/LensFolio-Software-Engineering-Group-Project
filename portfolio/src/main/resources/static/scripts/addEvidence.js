@@ -57,7 +57,7 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     let lastSkill = skills.pop();
     let shouldUpdateSkills = false;
     for (let skill of skills) {
-        trimmedSkill = skill.replaceAll("_", " ").trim().replaceAll(" ", "_");
+        let trimmedSkill = skill.replaceAll("_", " ").trim().replaceAll(" ", "_");
         if (trimmedSkill !== "") {
             shouldUpdateSkills = true;
             addToSkills(trimmedSkill);
@@ -141,12 +141,12 @@ function autocomplete(event) {
     autocompleteList.setAttribute("id", event.target.id + "autocomplete-list");
     autocompleteList.setAttribute("class", "autocomplete-items");
     event.target.parentNode.appendChild(autocompleteList);
-    for (let i = 0; i < ALL_SKILLS.length; i++) {
-        if (!isInSkills(ALL_SKILLS[i]) &&
-        ALL_SKILLS[i].substr(0, val.length).toLowerCase() === val.toLowerCase()) {
+    for (let skill of ALL_SKILLS) {
+        if (!isInSkills(skill) &&
+        skill.substr(0, val.length).toLowerCase() === val.toLowerCase()) {
             let autocompleteItem = document.createElement("DIV");
-            autocompleteItem.innerHTML = sanitizeHTML(ALL_SKILLS[i].replaceAll("_", " "));
-            autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(ALL_SKILLS[i]) + "'>";
+            autocompleteItem.innerHTML = sanitizeHTML(skill.replaceAll("_", " "));
+            autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(skill) + "'>";
             // When the user clicks a link, destroy the autocomplete field.
             autocompleteItem.addEventListener("click", function(clickEvent) {
                 event.target.value = "";
