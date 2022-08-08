@@ -32,6 +32,7 @@ public class AddEditEventController {
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
     private static final String REDIRECT_PROJECTS = "redirect:/projects";
     private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
+    private static final String REDIRECT_EVENT_FORM = "redirect:/addEditEvent";
 
 
     /**
@@ -45,7 +46,6 @@ public class AddEditEventController {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
-            System.out.println(REDIRECT_PROJECT_DETAILS + parentProjectId);
             return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
@@ -96,6 +96,12 @@ public class AddEditEventController {
         if (!userAccountClientService.isTeacher(principle)) {
             return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
+
+        // Add user details to model for displaying in top banner
+        int userId = userAccountClientService.getUserId(principle);
+        User user = userAccountClientService.getUserAccountById(userId);
+        model.addAttribute("user", user);
+
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
         int eventId;
@@ -122,21 +128,20 @@ public class AddEditEventController {
                 Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
                 eventService.saveEvent(newEvent);
             } catch (Exception ignored) {
-                // Don't need to do anything
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         } else {
             //Edit existing event
             try {
                 Event existingEvent = eventService.getEventById(eventId);
                 existingEvent.setEventName(eventName);
-                eventService.updateStartDate(eventId, eventStartDate);
-                eventService.updateEndDate(eventId, eventEndDate);
+                eventService.updateEventDates(eventId, eventStartDate, eventEndDate);
                 eventService.saveEvent(existingEvent);
             } catch (Exception ignored) {
-                // Don't need to do anything
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
     /**
@@ -155,6 +160,6 @@ public class AddEditEventController {
         }
 
         eventService.deleteEventById(Integer.parseInt(eventId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 }
