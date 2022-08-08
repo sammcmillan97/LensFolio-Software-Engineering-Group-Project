@@ -131,7 +131,7 @@ function createElementFromHTML(htmlString) {
 
 // Perform autocompleting. This is a complex endeavour!
 // Credit to w3schools for lighting the path on how to do this.
-var focus; // Where the user is at any point in time in the autocomplete list.
+let focus; // Where the user is at any point in time in the autocomplete list.
 function autocomplete(event) {
     let val = event.target.value;
     /*close any already open lists of autocompleted values*/
@@ -144,7 +144,7 @@ function autocomplete(event) {
     event.target.parentNode.appendChild(autocompleteList);
     for (i = 0; i < ALL_SKILLS.length; i++) {
         if (!isInSkills(ALL_SKILLS[i]) &&
-        ALL_SKILLS[i].substr(0, val.length).toLowerCase() == val.toLowerCase()) {
+        ALL_SKILLS[i].substr(0, val.length).toLowerCase() === val.toLowerCase()) {
             let autocompleteItem = document.createElement("DIV");
             autocompleteItem.innerHTML = sanitizeHTML(ALL_SKILLS[i].replaceAll("_", " "));
             autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(ALL_SKILLS[i]) + "'>";
@@ -162,17 +162,17 @@ function autocomplete(event) {
 
 // Updates the focus. This is called on every key press in the entry box and looks for up arrow, down arrow and enter.
 function updateFocus(event) {
-    var autocompleteList = document.getElementById(event.target.id + "autocomplete-list");
+    let autocompleteList = document.getElementById(event.target.id + "autocomplete-list");
     if (autocompleteList) {
         autocompleteList = autocompleteList.getElementsByTagName("div");
     }
-    if (event.keyCode == 40) { // DOWN moves the focus down
+    if (event.keyCode === 40) { // DOWN moves the focus down
         focus++;
         addActive(autocompleteList);
-    } else if (event.keyCode == 38) { // UP moves the focus up
+    } else if (event.keyCode === 38) { // UP moves the focus up
         focus--;
         addActive(autocompleteList);
-    } else if (event.keyCode == 13) { // ENTER adds a tag
+    } else if (event.keyCode === 13) { // ENTER adds a tag
         event.preventDefault(); // do not submit the form (the default action inside forms), instead just add a tag
         if (focus > -1) {
             if (autocompleteList) {
@@ -199,33 +199,33 @@ function addActive(autocompleteList) {
 
 // Makes every autocomplete item no longer active
 function removeActive(autocompleteList) {
-    for (var i = 0; i < autocompleteList.length; i++) {
+    for (let i = 0; i < autocompleteList.length; i++) {
         autocompleteList[i].classList.remove("autocomplete-active");
     }
 }
 
 // Destroys the autocomplete list
 function destroyAutocomplete() {
-    var autocompleteList = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < autocompleteList.length; i++) {
+    let autocompleteList = document.getElementsByClassName("autocomplete-items");
+    for (let i = 0; i < autocompleteList.length; i++) {
         autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
     }
 }
 
 // When a user clicks somewhere, destroy the autocomplete list unless they clicked on the autocomplete list or skill input
 document.addEventListener("click", function (event) {
-    var autocompleteList = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < autocompleteList.length; i++) {
-        if (event.target != autocompleteList[i] && event.target != document.getElementById("skills-input")) {
+    let autocompleteList = document.getElementsByClassName("autocomplete-items");
+    for (let i = 0; i < autocompleteList.length; i++) {
+        if (event.target !== autocompleteList[i] && event.target !== document.getElementById("skills-input")) {
             autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
         }
     }
 });
 
 // HTML sanitization courtesy of  https://portswigger.net/web-security/cross-site-scripting/preventing
-var sanitizeHTML = function (str) {
-	return str.replace(/[^\w. ]/gi, function (c) {
-		return '&#' + c.charCodeAt(0) + ';';
+function sanitizeHTML(string) {
+	return string.replace(/[^\w. ]/gi, function (char) {
+		return '&#' + char.charCodeAt(0) + ';';
 	});
 };
 
