@@ -645,7 +645,8 @@ class SprintServiceTest {
     void givenTheSprintDatesEncaseASprint_testCheckSprintDates() {
         sprintService.createNewSprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
         String dateErrors = sprintService.checkSprintDates(-1, projects.get(0).getId(), Date.valueOf("2022-05-08"), Date.valueOf("2022-05-11"));
-        assertEquals("Sprints can't encase other sprints", dateErrors);
+        System.out.println(dateErrors);
+        assertEquals("Sprint currently encases 'Sprint Name': 09/May/2022-10/May/2022. Please change the start or end date of this sprint so it doesn't overlap.", dateErrors);
     }
 
     @Test
