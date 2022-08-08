@@ -58,7 +58,7 @@
             </label>
             <div id="skill-input-container">
                 <div id="skill-container"></div>
-                <input type="text" id="skills-input" class="edit-input" th:value="${evidenceSkills}" contenteditable="true"
+                <input type="text" id="skills-input" class="edit-input" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
                    placeholder="Add Skills"/>
             </div>
             <input type="hidden" id="evidence-form__hidden-skills-field" name="evidenceSkills"/>
