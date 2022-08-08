@@ -68,10 +68,19 @@ a:hover {
 
 /***************** Navigation Bar *******************/
 
-.nav_head {
+.nav-head {
     text-align: center;
 }
 
+#nav-head__title {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
 
 .site-navigation__link{
     /*float: left;*/
@@ -79,9 +88,15 @@ a:hover {
     text-align: left;
 }
 
+.site-navigation__link:hover{
+    color:inherit
+}
 
+.site-navigation__sublink:hover {
+    color: inherit
+}
 
-#nav_line {
+#nav-head__line {
     border: 1px solid white;
     margin-inline-start: 20px;
     margin-inline-end: 20px;
