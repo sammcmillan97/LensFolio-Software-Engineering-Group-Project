@@ -71,42 +71,25 @@ public class EventService {
 
 
     /**
-     * Update the start date of the event
-     * @param eventId the id of the event to be updated
-     * @param newStartDate the new date the start date should be updated to
-     * @throws UnsupportedOperationException when the date is changed to a date outside the scope
+     * Updates the event start and end dates
+     * @param eventId The event being edited
+     * @param newStartDate The new event start date
+     * @param newEndDate The new event end date
+     * @throws UnsupportedOperationException The exception thrown if the start date proceeds the end date or the start or end dates
+     * do not fall within the project dates.
      */
-    public void updateStartDate(int eventId, Date newStartDate) throws UnsupportedOperationException {
+    public void updateEventDates(int eventId, Date newStartDate, Date newEndDate) throws UnsupportedOperationException {
         Event eventToChange = getEventById(eventId);
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
-
-        if (newStartDate.compareTo(eventToChange.getEventEndDate()) > 0) {
-            throw new UnsupportedOperationException("Event start date must not be after end date");
+        if (newStartDate.compareTo(newEndDate) > 0) {
+            throw new UnsupportedOperationException("Event start date must not proceed the end date");
         } else if (newStartDate.compareTo(projectStartDate) < 0 || newStartDate.compareTo(projectEndDate) > 0) {
-            throw new UnsupportedOperationException("Event start date must be within project dates");
+            throw new UnsupportedOperationException("Event start date must be within the project dates");
+        } else if (newEndDate.compareTo(projectStartDate) < 0 || newEndDate.compareTo(projectEndDate) > 0) {
+            throw new UnsupportedOperationException("Event end date must be within the project dates");
         } else {
             eventToChange.setEventStartDate(newStartDate);
-            saveEvent(eventToChange);
-        }
-    }
-
-    /**
-     * Updates the end date of the event
-     * @param eventId the id of the event to be updated
-     * @param newEndDate the new end date it should be updated to
-     * @throws UnsupportedOperationException when the date it should update to is outside the scope
-     */
-    public void updateEndDate(int eventId, Date newEndDate) throws UnsupportedOperationException {
-        Event eventToChange = getEventById(eventId);
-        Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
-        Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
-
-        if (newEndDate.compareTo(eventToChange.getEventStartDate()) < 0) {
-            throw new UnsupportedOperationException("Event end date must not be before start date");
-        } else if (newEndDate.compareTo(projectStartDate) < 0 || newEndDate.compareTo(projectEndDate) > 0) {
-            throw new UnsupportedOperationException("Event end date must be within project dates");
-        } else {
             eventToChange.setEventEndDate(newEndDate);
             saveEvent(eventToChange);
         }
