@@ -104,6 +104,8 @@
     padding: 2px 4px 2px 4px;
     display: inline-block;
     border-radius: 5px;
+    overflow-wrap: anywhere;
+    text-align: center;
 }
 
 p {
@@ -149,6 +151,7 @@ p {
     cursor: pointer;
     background-color: #fff;
     border-bottom: 1px solid #d4d4d4;
+    overflow-wrap: anywhere;
 }
 .autocomplete-items div:hover {
     /*when hovering an item:*/
