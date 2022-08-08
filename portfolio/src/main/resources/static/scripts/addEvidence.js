@@ -57,6 +57,7 @@ document.getElementById("skills-input").addEventListener("keydown", (event) => {
         removeLastSkill();
         updateTagsInDOM(skillList);
     }
+    console.log(event)
     updateFocus(event);
 })
 
@@ -127,7 +128,7 @@ function autocomplete(event) {
 
 /*execute a function presses a key on the keyboard:*/
 function updateFocus(event) {
-      var x = document.getElementById(this.id + "autocomplete-list");
+      var x = document.getElementById(event.target.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
       if (event.keyCode == 40) { // DOWN moves the focus down
         focus++;
@@ -157,10 +158,10 @@ function addActive(x) {
     if (focus >= x.length) {
         focus = 0;
     }
-    if (currentFocus < 0) {
+    if (focus < 0) {
         focus = (x.length - 1);
     }
-    x[currentFocus].classList.add("autocomplete-active");
+    x[focus].classList.add("autocomplete-active");
 }
 
 function removeActive(x) {
