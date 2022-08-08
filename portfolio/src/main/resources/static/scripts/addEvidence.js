@@ -56,10 +56,11 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     let skills = value.split(" ");
     let lastSkill = skills.pop();
     let shouldUpdateSkills = false;
-    for (const skill of skills) {
+    for (let skill of skills) {
+        skill = skill.replaceAll("_", " ").trim().replaceAll(" ", "_");
         if (skill !== "") {
             shouldUpdateSkills = true;
-            addToSkills(skill.replaceAll("_", " ").trim().replaceAll(" ", "_"));
+            addToSkills(skill);
             console.log("add " + skill + " to DOM, nice job!");
         }
     }
