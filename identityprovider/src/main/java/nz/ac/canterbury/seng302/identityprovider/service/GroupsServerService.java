@@ -365,6 +365,9 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         } else if (longName.isEmpty()){
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Long name cannot be empty").setFieldName(LONG_NAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (longName.equalsIgnoreCase("Teaching Staff") || longName.equalsIgnoreCase("Members without a group")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
         return validationErrors;
     }
@@ -376,6 +379,9 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             validationErrors.add(validationError);
         } else if (shortName.isEmpty()) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Short name cannot be empty").setFieldName(SHORT_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (shortName.equalsIgnoreCase("teachers") || shortName.equalsIgnoreCase("Groupless")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
