@@ -10,13 +10,13 @@ let skillList = []
 
 function addToSkills(skill) {
     for (const testSkill of skillList) {
-        if (testSkill.toLowerCase() === skill.toLowerCase()) {
+        if (testSkill.toLowerCase() === skill.toLowerCase().replaceAll("_", " ")) {
             return;
         }
     }
     for (const testSkill of ALL_SKILLS) {
         if (testSkill.toLowerCase() === skill.toLowerCase()) {
-            skillList.push(testSkill);
+            skillList.push(testSkill.replaceAll("_", " "));
             return;
         }
     }
@@ -29,6 +29,15 @@ function removeLastSkill() {
 
 function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
+}
+
+function isInSkills(skill) {
+    for (const testSkill of skillList) {
+        if (testSkill.toLowerCase() === skill.toLowerCase()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function clickXButton(tag) {
@@ -126,95 +135,97 @@ function autocomplete(event) {
     /*close any already open lists of autocompleted values*/
     destroyAutocomplete();
     if (!val) { return; } // No need to autocomplete if there is nothing in the box
-    focus = -1;
-    /*create a DIV element that will contain the items (values):*/
-    let a = document.createElement("DIV");
-    a.setAttribute("id", event.target.id + "autocomplete-list");
-    a.setAttribute("class", "autocomplete-items");
-    /*append the DIV element as a child of the autocomplete container:*/
-    event.target.parentNode.appendChild(a);
+    focus = -1; // when a new character is pressed remove the autocomplete focus
+    let autocompleteList = document.createElement("DIV");
+    autocompleteList.setAttribute("id", event.target.id + "autocomplete-list");
+    autocompleteList.setAttribute("class", "autocomplete-items");
+    event.target.parentNode.appendChild(autocompleteList);
     for (i = 0; i < ALL_SKILLS.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-        if (ALL_SKILLS[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-            /*create a DIV element for each matching element:*/
-            let b = document.createElement("DIV");
-            /*make the matching letters bold:*/
-            b.innerHTML = "<strong>" + ALL_SKILLS[i].substr(0, val.length) + "</strong>";
-            b.innerHTML += ALL_SKILLS[i].substr(val.length);
-            /*insert a input field that will hold the current array item's value:*/
-            b.innerHTML += "<input type='hidden' value='" + ALL_SKILLS[i] + "'>";
+        if (!isInSkills(ALL_SKILLS[i]) &&
+        ALL_SKILLS[i].substr(0, val.length).toLowerCase() == val.toLowerCase()) {
+            let autocompleteItem = document.createElement("DIV");
+            autocompleteItem.innerHTML = sanitizeHTML(ALL_SKILLS[i].replaceAll("_", " "));
+            autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(ALL_SKILLS[i]) + "'>";
             // When the user clicks a link, destroy the autocomplete field.
-            b.addEventListener("click", function(clickEvent) { // TODO max 10?
-                event.target.value = clickEvent.target.getElementsByTagName("input")[0].value;
+            autocompleteItem.addEventListener("click", function(clickEvent) { // TODO max 10?
+                event.target.value = "";
+                addToSkills(clickEvent.target.getElementsByTagName("input")[0].value);
+                updateTagsInDOM(skillList);
                 destroyAutocomplete();
             });
-            a.appendChild(b);
+            autocompleteList.appendChild(autocompleteItem);
         }
     }
 }
 
-/*execute a function presses a key on the keyboard:*/
+// Updates the focus. This is called on every key press in the entry box and looks for up arrow, down arrow and enter.
 function updateFocus(event) {
-    var x = document.getElementById(this.id + "autocomplete-list");
-    if (x) x = x.getElementsByTagName("div");
+    var autocompleteList = document.getElementById(event.target.id + "autocomplete-list");
+    if (autocompleteList) {
+        autocompleteList = autocompleteList.getElementsByTagName("div");
+    }
     if (event.keyCode == 40) { // DOWN moves the focus down
         focus++;
-        addActive(x);
+        addActive(autocompleteList);
     } else if (event.keyCode == 38) { // UP moves the focus up
         focus--;
-        addActive(x);
-    } else if (event.keyCode == 13) { // ENTER submits
-        event.preventDefault(); // do not submit the form, instead just add a tag
+        addActive(autocompleteList);
+    } else if (event.keyCode == 13) { // ENTER adds a tag
+        event.preventDefault(); // do not submit the form (the default action inside forms), instead just add a tag
         if (focus > -1) {
-            if (x) {
-                x[focus].click();
+            if (autocompleteList) {
+                autocompleteList[focus].click();
             }
         }
     }
 }
 
-function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) {
+// Makes the item the focus is on active
+function addActive(autocompleteList) {
+    if (!autocompleteList) {
         return;
     }
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-
-    // this code wraps the user's focus if they go off either end of the list
-    if (focus >= x.length) {
+    removeActive(autocompleteList);
+    if (focus >= autocompleteList.length) {
         focus = 0;
     }
-    if (currentFocus < 0) {
-        focus = (x.length - 1);
+    if (focus < 0) {
+        focus = (autocompleteList.length - 1);
     }
-    x[currentFocus].classList.add("autocomplete-active");
+    autocompleteList[focus].classList.add("autocomplete-active");
 }
 
-function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-        x[i].classList.remove("autocomplete-active");
+// Makes every autocomplete item no longer active
+function removeActive(autocompleteList) {
+    for (var i = 0; i < autocompleteList.length; i++) {
+        autocompleteList[i].classList.remove("autocomplete-active");
     }
 }
+
+// Destroys the autocomplete list
 function destroyAutocomplete() {
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-        x[i].parentNode.removeChild(x[i]);
+    var autocompleteList = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < autocompleteList.length; i++) {
+        autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
     }
 }
 
-// when a user clicks somewhere, destroy the autocomplete unless they clicked on the autocomplete or skill input
+// When a user clicks somewhere, destroy the autocomplete list unless they clicked on the autocomplete list or skill input
 document.addEventListener("click", function (event) {
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-        if (event.target != x[i] && event.target != document.getElementById("skills-input")) {
-            x[i].parentNode.removeChild(x[i]);
+    var autocompleteList = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < autocompleteList.length; i++) {
+        if (event.target != autocompleteList[i] && event.target != document.getElementById("skills-input")) {
+            autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
         }
     }
 });
 
-
+// HTML sanitization courtesy of  https://portswigger.net/web-security/cross-site-scripting/preventing
+var sanitizeHTML = function (str) {
+	return str.replace(/[^\w. ]/gi, function (c) {
+		return '&#' + c.charCodeAt(0) + ';';
+	});
+};
 
 let input = document.getElementById("skills-input");
 let div = document.getElementById("skill-input-container")
