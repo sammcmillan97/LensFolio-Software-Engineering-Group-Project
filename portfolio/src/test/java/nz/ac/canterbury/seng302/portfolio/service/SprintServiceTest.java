@@ -643,10 +643,26 @@ class SprintServiceTest {
 
     @Test
     void givenTheSprintDatesEncaseASprint_testCheckSprintDates() {
-        sprintService.createNewSprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint One", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
         String dateErrors = sprintService.checkSprintDates(-1, projects.get(0).getId(), Date.valueOf("2022-05-08"), Date.valueOf("2022-05-11"));
-        System.out.println(dateErrors);
-        assertEquals("Sprint currently encases 'Sprint Name': 09/May/2022-10/May/2022. Please change the start or end date of this sprint so it doesn't overlap.", dateErrors);
+        assertEquals("Sprint currently encases 'Sprint One': 09/May/2022-10/May/2022. Please change the start or end date of this sprint so it doesn't overlap.", dateErrors);
+    }
+
+    @Test
+    void givenTheSprintDatesEncaseTwoSprints_testCheckSprintDates() {
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint One", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint Two", "Description", Date.valueOf("2022-05-11"), Date.valueOf("2022-05-12"));
+        String dateErrors = sprintService.checkSprintDates(-1, projects.get(0).getId(), Date.valueOf("2022-05-08"), Date.valueOf("2022-05-11"));
+        assertEquals("Sprint currently encases sprints: Sprint One and Sprint Two. Please make the sprint end date before 09/May/2022 or the sprint start date after 12/May/2022.", dateErrors);
+    }
+
+    @Test
+    void givenTheSprintDatesEncaseThreeSprints_testCheckSprintDates() {
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint One", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint Two", "Description", Date.valueOf("2022-05-11"), Date.valueOf("2022-05-12"));
+        sprintService.createNewSprint(projects.get(0).getId(), "Sprint Three", "Description", Date.valueOf("2022-05-13"), Date.valueOf("2022-05-14"));
+        String dateErrors = sprintService.checkSprintDates(-1, projects.get(0).getId(), Date.valueOf("2022-05-08"), Date.valueOf("2022-05-15"));
+        assertEquals("Sprint currently encases sprints: Sprint One, Sprint Two and Sprint Three. Please make the sprint end date before 09/May/2022 or the sprint start date after 14/May/2022.", dateErrors);
     }
 
     @Test
@@ -695,5 +711,37 @@ class SprintServiceTest {
         sprintService.deleteSprint(projects.get(0).getId(), sprints.get(1).getId());
         sprints = (List<Sprint>) sprintRepository.findAll();
         assertEquals(1, sprints.get(0).getNumber());
+    }
+
+    @Test
+    void givenTwoSprintsThatEndOnDifferentDays_testGetLatestSprintEndDate() {
+        Sprint sprint1 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        Sprint sprint2 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-11"), Date.valueOf("2022-05-12"));
+        List<Sprint> sprints = List.of(sprint1, sprint2);
+        assertEquals(sprint2.getEndDateString(), sprintService.getLatestSprintEndDateString(sprints));
+    }
+
+    @Test
+    void givenTwoSprintsThatEndOnSameDay_testGetLatestSprintEndDate() {
+        Sprint sprint1 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        Sprint sprint2 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-11"), Date.valueOf("2022-05-10"));
+        List<Sprint> sprints = List.of(sprint1, sprint2);
+        assertEquals(sprint1.getEndDateString(), sprintService.getLatestSprintEndDateString(sprints));
+    }
+
+    @Test
+    void givenTwoSprintsThatEndOnDifferentDays_testGetEarliestSprintStartDate() {
+        Sprint sprint1 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        Sprint sprint2 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-11"), Date.valueOf("2022-05-12"));
+        List<Sprint> sprints = List.of(sprint1, sprint2);
+        assertEquals(sprint1.getStartDateString(), sprintService.getEarliestSprintStartDateString(sprints));
+    }
+
+    @Test
+    void givenTwoSprintsThatEndOnSameDay_testGetEarliestSprintStartDate() {
+        Sprint sprint1 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        Sprint sprint2 = new Sprint(projects.get(0).getId(), "Sprint Name", "Description", Date.valueOf("2022-05-9"), Date.valueOf("2022-05-10"));
+        List<Sprint> sprints = List.of(sprint1, sprint2);
+        assertEquals(sprint1.getStartDateString(), sprintService.getEarliestSprintStartDateString(sprints));
     }
 }
