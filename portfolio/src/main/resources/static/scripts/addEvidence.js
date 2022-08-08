@@ -43,13 +43,14 @@ function isInSkills(skill) {
 document.getElementById("skills-input").addEventListener("input", (event) => {
     event.target.style.width = event.target.value.length > 8 ? event.target.value.length + "ch" : "80px";
     let value = event.target.value;
+    value = value.replace(/_+/g, '_');
     let skills = value.split(" ");
     let lastSkill = skills.pop();
     let shouldUpdateSkills = false;
     for (const skill of skills) {
         if (skill !== "") {
             shouldUpdateSkills = true;
-            addToSkills(skill);
+            addToSkills(skill.replaceAll("_", " ").trim().replaceAll(" ", "_"));
             console.log("add " + skill + " to DOM, nice job!");
         }
     }
