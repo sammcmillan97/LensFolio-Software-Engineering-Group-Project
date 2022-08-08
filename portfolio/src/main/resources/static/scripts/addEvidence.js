@@ -57,11 +57,10 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     let lastSkill = skills.pop();
     let shouldUpdateSkills = false;
     for (let skill of skills) {
-        skill = skill.replaceAll("_", " ").trim().replaceAll(" ", "_");
-        if (skill !== "") {
+        trimmedSkill = skill.replaceAll("_", " ").trim().replaceAll(" ", "_");
+        if (trimmedSkill !== "") {
             shouldUpdateSkills = true;
-            addToSkills(skill);
-            console.log("add " + skill + " to DOM, nice job!");
+            addToSkills(trimmedSkill);
         }
     }
     lastSkill = lastSkill.slice(0, 50);
@@ -104,17 +103,17 @@ function updateTagsInDOM(tags) {
     while (parent.childNodes.length > 2) {
         parent.removeChild(parent.firstChild);
     }
-    let input = parent.firstChild
-    for (let i = 0; i < tags.length; i++) {
+    let skillInput = parent.firstChild
+    for (let tag of tags) {
         let element = createElementFromHTML(`<div class="skill-tag-con">
                                                           <div class="skill-tag">
                                                             <div class="skill-tag-inside">
-                                                              <p>${tags[i]}</p>
-                                                              <i class="bi bi-x" onclick="clickXButton('${tags[i]}')"></i>
+                                                              <p>${tag}</p>
+                                                              <i class="bi bi-x" onclick="clickXButton('${tag}')"></i>
                                                             </div>
                                                           </div>
                                                         </div>`)
-        parent.insertBefore(element, input);
+        parent.insertBefore(element, skillInput);
     }
 }
 
@@ -142,14 +141,14 @@ function autocomplete(event) {
     autocompleteList.setAttribute("id", event.target.id + "autocomplete-list");
     autocompleteList.setAttribute("class", "autocomplete-items");
     event.target.parentNode.appendChild(autocompleteList);
-    for (i = 0; i < ALL_SKILLS.length; i++) {
+    for (let i = 0; i < ALL_SKILLS.length; i++) {
         if (!isInSkills(ALL_SKILLS[i]) &&
         ALL_SKILLS[i].substr(0, val.length).toLowerCase() === val.toLowerCase()) {
             let autocompleteItem = document.createElement("DIV");
             autocompleteItem.innerHTML = sanitizeHTML(ALL_SKILLS[i].replaceAll("_", " "));
             autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(ALL_SKILLS[i]) + "'>";
             // When the user clicks a link, destroy the autocomplete field.
-            autocompleteItem.addEventListener("click", function(clickEvent) { // TODO max 10?
+            autocompleteItem.addEventListener("click", function(clickEvent) {
                 event.target.value = "";
                 addToSkills(clickEvent.target.getElementsByTagName("input")[0].value);
                 updateTagsInDOM(skillList);
@@ -199,25 +198,25 @@ function addActive(autocompleteList) {
 
 // Makes every autocomplete item no longer active
 function removeActive(autocompleteList) {
-    for (let i = 0; i < autocompleteList.length; i++) {
-        autocompleteList[i].classList.remove("autocomplete-active");
+    for (let autocompleteItem of autocompleteList) {
+        autocompleteItem.classList.remove("autocomplete-active");
     }
 }
 
 // Destroys the autocomplete list
 function destroyAutocomplete() {
     let autocompleteList = document.getElementsByClassName("autocomplete-items");
-    for (let i = 0; i < autocompleteList.length; i++) {
-        autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
+    for (let autocompleteItem of autocompleteList) {
+        autocompleteItem.parentNode.removeChild(autocompleteItem);
     }
 }
 
 // When a user clicks somewhere, destroy the autocomplete list unless they clicked on the autocomplete list or skill input
 document.addEventListener("click", function (event) {
     let autocompleteList = document.getElementsByClassName("autocomplete-items");
-    for (let i = 0; i < autocompleteList.length; i++) {
-        if (event.target !== autocompleteList[i] && event.target !== document.getElementById("skills-input")) {
-            autocompleteList[i].parentNode.removeChild(autocompleteList[i]);
+    for (let autocompleteItem of autocompleteList) {
+        if (event.target !== autocompleteItem && event.target !== document.getElementById("skills-input")) {
+            autocompleteItem.parentNode.removeChild(autocompleteItem);
         }
     }
 });
@@ -227,7 +226,7 @@ function sanitizeHTML(string) {
 	return string.replace(/[^\w. ]/gi, function (char) {
 		return '&#' + char.charCodeAt(0) + ';';
 	});
-};
+}
 
 let input = document.getElementById("skills-input");
 let div = document.getElementById("skill-input-container")
