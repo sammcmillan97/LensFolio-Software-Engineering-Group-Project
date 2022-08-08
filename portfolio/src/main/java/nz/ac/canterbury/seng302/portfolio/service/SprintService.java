@@ -275,7 +275,8 @@ public class SprintService {
         List<Sprint> sprints = getByParentProjectId(projectId);
         for (Sprint sprint : sprints) {
             if (sprint.getId() != sprintId && !(startDate.after(sprint.getStartDate())) && !(endDate.before(sprint.getStartDate()))) {
-                return "Sprints can't encase other sprints";
+                return "Sprint currently encases '" + sprint.getName() + "': " + sprint.getStartDateString() + "-" + sprint.getEndDateString() + ". " +
+                        "Please change the start or end date of this sprint so it doesn't overlap.";
             }
         }
         return "";
