@@ -13,6 +13,7 @@
 
 .add-evidence-button:hover {
     background-color: var(--color-accent);
+    color: inherit
 }
 
 .btn-fill-tertiary:hover {
