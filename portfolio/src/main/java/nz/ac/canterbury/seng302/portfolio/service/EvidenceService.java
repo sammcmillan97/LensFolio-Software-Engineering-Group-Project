@@ -93,12 +93,26 @@ public class EvidenceService {
      * is thrown.
      */
     public void saveWebLink(int evidenceId, WebLink weblink) throws NoSuchElementException {
-        try {
-            Evidence evidence = getEvidenceById(evidenceId);
-            evidence.addWebLink(weblink);
-            saveEvidence(evidence);
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Evidence not found: web link not saved");
+            try {
+                Evidence evidence = getEvidenceById(evidenceId);
+                evidence.addWebLink(weblink);
+                saveEvidence(evidence);
+            } catch (NoSuchElementException e) {
+                throw new NoSuchElementException("Evidence not found: web link not saved");
+            }
+    }
+
+    /**
+     * Checks that a weblink is in the correct format
+     * @param weblink The string representation of the weblink being validated
+     * @throws IllegalArgumentException If the weblink is in the wrong format IllegalArgumentException is thrown
+     */
+    public void validateWebLink(String weblink) {
+        Pattern fieldPattern = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+        Matcher weblinkMatcher = fieldPattern.matcher(weblink);
+        if (!weblinkMatcher.find()) {
+            throw new IllegalArgumentException("Weblink not in valid format");
         }
     }
+
 }

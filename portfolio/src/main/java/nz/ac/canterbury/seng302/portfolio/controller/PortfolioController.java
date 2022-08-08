@@ -114,6 +114,12 @@ public class PortfolioController {
             Model model
     ) {
         int id = Integer.parseInt(evidenceId);
+
+        try {
+            evidenceService.validateWebLink(webLink);
+        } catch (IllegalArgumentException e) {
+            return PORTFOLIO_REDIRECT;
+        }
         try {
             WebLink webLink1;
             if (webLinkName.isEmpty()) {
