@@ -53,11 +53,11 @@ public class CategoriesController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         Categories categorySelection;
-        if (Objects.equals(category, "quantitative")) {
+        if (Objects.equals(category, "Quantitative")) {
             categorySelection = Categories.QUANTITATIVE;
-        } else if (Objects.equals(category, "qualitative")) {
+        } else if (Objects.equals(category, "Qualitative")) {
             categorySelection = Categories.QUALITATIVE;
-        } else  if (Objects.equals(category, "service")) {
+        } else  if (Objects.equals(category, "Service")) {
             categorySelection = Categories.SERVICE;
         } else {
             return PORTFOLIO_REDIRECT;
@@ -90,11 +90,11 @@ public class CategoriesController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         Categories categorySelection;
-        if (Objects.equals(category, "quantitative")) {
+        if (Objects.equals(category, "Quantitative")) {
             categorySelection = Categories.QUANTITATIVE;
-        } else if (Objects.equals(category, "qualitative")) {
+        } else if (Objects.equals(category, "Qualitative")) {
             categorySelection = Categories.QUALITATIVE;
-        } else  if (Objects.equals(category, "service")) {
+        } else  if (Objects.equals(category, "Service")) {
             categorySelection = Categories.SERVICE;
         } else {
             return PORTFOLIO_REDIRECT;

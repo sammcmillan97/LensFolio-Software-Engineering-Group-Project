@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,8 +51,13 @@ public class PortfolioController {
         int userId = user.getId();
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("Quantitative");
+        categoryList.add("Qualitative");
+        categoryList.add("Service");
 
         model.addAttribute("evidenceList", evidenceList);
+        model.addAttribute("categoryList", categoryList);
         return "portfolio";
     }
 
@@ -72,6 +78,7 @@ public class PortfolioController {
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
+
         User pageUser = userService.getUserAccountById(userId);
         model.addAttribute("pageUser", pageUser);
 
@@ -79,6 +86,13 @@ public class PortfolioController {
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
 
         model.addAttribute("evidenceList", evidenceList);
+
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add("Quantitative");
+        categoryList.add("Qualitative");
+        categoryList.add("Service");
+
+        model.addAttribute("categoryList", categoryList);
 
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
