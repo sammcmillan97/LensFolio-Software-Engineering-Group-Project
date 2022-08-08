@@ -57,11 +57,11 @@ class EventServiceTest {
     @Test
     void whenNoEvents_testSaveEventToSameProject() {
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isZero();
+        assertTrue(events.isEmpty());
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(1);
+        assertEquals(1, events.size());
     }
 
     /**
@@ -72,11 +72,11 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(1);
+        assertEquals(1, events.size());
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event Duo",
                 Date.valueOf("2022-06-07"), Date.valueOf("2022-07-07")));
         events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(2);
+        assertEquals(2, events.size());
     }
 
     /**
@@ -93,11 +93,11 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event Quad",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(4);
+        assertEquals(4, events.size());
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event Pent",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(5);
+        assertEquals(5, events.size());
     }
 
     /**
@@ -108,12 +108,12 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(1);
+        assertEquals(1, events.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         eventService.saveEvent(new Event(projects.get(1).getId(), "Test Event Duo",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(2);
+        assertEquals(2, events.size());
     }
 
     /**
@@ -130,7 +130,7 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 4",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(4);
+        assertEquals(4,events.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         eventService.saveEvent(new Event(projects.get(1).getId(), "Test Event 5",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
@@ -139,7 +139,7 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(1).getId(), "Test Event 7",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(7);
+        assertEquals(7, events.size());
     }
 
     /**
@@ -148,8 +148,8 @@ class EventServiceTest {
     @Test
     void whenNoEventsSaved_testGetAllEvents() {
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isZero();
-        assertThat(eventService.getAllEvents().size()).isZero();
+        assertTrue(events.isEmpty());
+        assertTrue(eventService.getAllEvents().isEmpty());
     }
 
     /**
@@ -160,8 +160,8 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(1);
-        assertThat(eventService.getAllEvents().size()).isEqualTo(1);
+        assertEquals(1, events.size());
+        assertEquals(1, eventService.getAllEvents().size());
     }
 
     /**
@@ -178,8 +178,8 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event Quad",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(4);
-        assertThat(eventService.getAllEvents().size()).isEqualTo(4);
+        assertEquals(4, events.size());
+        assertEquals(4, eventService.getAllEvents().size());
     }
 
     /**
@@ -188,7 +188,7 @@ class EventServiceTest {
     @Test
     void whenEventIdDoesNotExist_testGetEventById() {
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isZero();
+        assertTrue(events.isEmpty());
         Exception exception = assertThrows(Exception.class, () -> eventService.getEventById(999999));
         String expectedMessage = "Event not found";
         String actualMessage = exception.getMessage();
@@ -217,9 +217,9 @@ class EventServiceTest {
     @Test
     void whenNoEventsSaved_testGetByParentProjectId() {
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isZero();
+        assertTrue(events.isEmpty());
         List<Event> eventList = eventService.getByEventParentProjectId(projects.get(0).getId());
-        assertThat(eventList.size()).isZero();
+        assertTrue(eventList.isEmpty());
     }
 
     /**
@@ -230,9 +230,9 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(1);
+        assertEquals(1, events.size());
         List<Event> eventList = eventService.getByEventParentProjectId(projects.get(0).getId());
-        assertThat(eventList.size()).isEqualTo(1);
+        assertEquals(1, eventList.size());
     }
 
     /**
@@ -249,9 +249,9 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 4",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(4);
+        assertEquals(4, events.size());
         List<Event> eventList = eventService.getByEventParentProjectId(projects.get(0).getId());
-        assertThat(eventList.size()).isEqualTo(4);
+        assertEquals(4, eventList.size());
     }
 
     /**
@@ -268,14 +268,14 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(1).getId(), "Test Event Quad",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertThat(events.size()).isEqualTo(4);
+        assertEquals(4, events.size());
         List<Event> eventList = eventService.getByEventParentProjectId(projects.get(0).getId());
         int listSize = eventList.size();
         assertThat(listSize).isEqualTo(2);
         eventList = eventService.getByEventParentProjectId(projects.get(1).getId());
         int listSize2 = eventList.size();
         assertThat(listSize2).isEqualTo(2);
-        assertThat(listSize + listSize2).isEqualTo(4);
+        assertEquals(4, listSize + listSize2);
     }
 
     /**
