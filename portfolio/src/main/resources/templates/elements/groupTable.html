@@ -1,4 +1,4 @@
-<table class="table table-active table-sm table__color" th:classappend="${userIsTeacher} ? 'table-hover' : ''" th:with="tableDropable=${userIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}" th:id="${group.getGroupId}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" >
+<table class="table table-active table-sm table__color" aria-describedby="Table contains users belonging to this group" th:classappend="${userIsTeacher} ? 'table-hover' : ''" th:with="tableDropable=${userIsTeacher && !(group.getGroupId == TEACHER_GROUP_ID && !userIsAdmin)}" th:id="${group.getGroupId}" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" >
   <thead>
   <tr class="unselected" th:ondragover="${tableDropable} ? 'allowDrop(event)' : ''" th:ondrop="${tableDropable} ? 'pasteMembers(this)' : ''">
     <th scope="col">User Id</th>
