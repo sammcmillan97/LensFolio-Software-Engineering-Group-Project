@@ -182,6 +182,15 @@ class UserTests {
         assertTrue(user1.getRoles().contains(UserRole.STUDENT));
     }
 
+    @Test
+    void givenUserExists_setAndGetTimeCreated(){
+        Instant time = Instant.now();
+        Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond())
+                .setNanos(time.getNano()).build();
+        user1.setTimeCreated(timestamp);
+        assertEquals(timestamp, user1.getTimeCreated());
+    }
+
 
 
 

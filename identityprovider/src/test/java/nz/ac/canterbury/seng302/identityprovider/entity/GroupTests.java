@@ -39,4 +39,18 @@ class GroupTests {
         assertEquals(0, group1.getMembers().size());
         assertEquals(0, user1.getGroups().size());
     }
+
+    @Test
+    void givenGroupExists_getGroupToString() {
+        assertEquals("Group{shortName='Team400', longName='Bad Request', parentProject=1}", group1.toString());
+    }
+
+    @Test
+    void givenGroupExists_getAndSetParentProject(){
+        assertEquals(1, group1.getParentProject());
+        group1.setParentProject(10);
+        assertEquals(10, group1.getParentProject());
+    }
+
+
 }
