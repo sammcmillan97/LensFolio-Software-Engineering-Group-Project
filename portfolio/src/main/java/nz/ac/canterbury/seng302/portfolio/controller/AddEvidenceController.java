@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.NoSuchElementException;
 
@@ -76,9 +77,7 @@ public class AddEvidenceController {
 
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
 
-        model.addAttribute("evidenceTitle", evidence.getTitle());
-        model.addAttribute("evidenceDescription", evidence.getDescription());
-        model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
+        addEvidenceToModel(model, projectId, userId, evidence);
         model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
         model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
         return ADD_EVIDENCE;
@@ -133,12 +132,26 @@ public class AddEvidenceController {
             } else {
                 model.addAttribute("generalError", exception.getMessage());
             }
-            model.addAttribute("evidenceTitle", evidence.getTitle());
-            model.addAttribute("evidenceDescription", evidence.getDescription());
-            model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
+            addEvidenceToModel(model, projectId, userId, evidence);
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         return PORTFOLIO_REDIRECT;
+    }
+
+    /**
+     * Adds helpful evidence related variables to the model.
+     * They are a title, description, date, and a list of all skills for the user.
+     * @param model The model to add things to
+     * @param projectId The project currently being viewed
+     * @param userId The logged in user
+     * @param evidence The evidence that is being viewed.
+     */
+    private void addEvidenceToModel(Model model, int projectId, int userId, Evidence evidence) {
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(evidenceList));
+        model.addAttribute("evidenceTitle", evidence.getTitle());
+        model.addAttribute("evidenceDescription", evidence.getDescription());
+        model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
     }
 
     /**
