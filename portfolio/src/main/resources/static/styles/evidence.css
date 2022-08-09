@@ -161,9 +161,10 @@ html {
 
 #weblink-button {
     font-size: medium;
+    padding: 3px 5px 3px 5px;
 }
 
 #weblink-button:hover {
-    background-color: var(--color-tertiary);
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
 

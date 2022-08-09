@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -115,21 +114,21 @@ public class PortfolioController {
     ) {
         int id = Integer.parseInt(evidenceId);
 
-        try {
-            evidenceService.validateWebLink(webLink);
-        } catch (IllegalArgumentException e) {
-            return PORTFOLIO_REDIRECT;
-        }
-        try {
-            WebLink webLink1;
-            if (webLinkName.isEmpty()) {
-                webLink1 = new WebLink(webLink);
-            } else {
-                webLink1 = new WebLink(webLink, webLinkName);
+        if (evidenceService.getEvidenceById(id).getNumberWeblinks() >= MAX_WEBLINKS_PER_EVIDENCE) {
+            model.addAttribute("saveError", "Cannot add more than " + MAX_WEBLINKS_PER_EVIDENCE + " weblinks");
+        } else {
+            try {
+                evidenceService.validateWebLink(webLink);
+                WebLink webLink1;
+                if (webLinkName.isEmpty()) {
+                    webLink1 = new WebLink(webLink);
+                } else {
+                    webLink1 = new WebLink(webLink, webLinkName);
+                }
+                evidenceService.saveWebLink(id, webLink1);
+            } catch (Exception e) {
+                //left blank on purpose
             }
-            evidenceService.saveWebLink(id, webLink1);
-        } catch (NoSuchElementException e) {
-            //left blank on purpose n
         }
         return PORTFOLIO_REDIRECT;
     }
