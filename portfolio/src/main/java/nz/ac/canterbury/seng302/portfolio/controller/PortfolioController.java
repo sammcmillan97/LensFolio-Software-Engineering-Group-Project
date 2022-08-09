@@ -36,6 +36,7 @@ public class PortfolioController {
     private PortfolioUserService portfolioUserService;
 
     private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
+    private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
 
     /**
      * Display the user's portfolio page.
@@ -52,6 +53,7 @@ public class PortfolioController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
+        model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
 
         int userId = user.getId();
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
@@ -99,7 +101,6 @@ public class PortfolioController {
     /**
      * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
      * If correctly saved, redirects to project page.
-     * @param principal Authentication state of client
      * @param evidenceId id of the evidence to add the link to
      * @param webLink The link string to be added to evidence of id=evidenceId
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
@@ -107,7 +108,6 @@ public class PortfolioController {
      */
     @PostMapping("/addWebLink-{evidenceId}")
     public String addWebLink(
-            @AuthenticationPrincipal AuthState principal,
             @PathVariable(name="evidenceId") String evidenceId,
             @RequestParam(name="webLink") String webLink,
             @RequestParam(name="webLinkName") String webLinkName,
@@ -129,7 +129,7 @@ public class PortfolioController {
             }
             evidenceService.saveWebLink(id, webLink1);
         } catch (NoSuchElementException e) {
-            return PORTFOLIO_REDIRECT;
+            //left blank on purpose n
         }
         return PORTFOLIO_REDIRECT;
     }

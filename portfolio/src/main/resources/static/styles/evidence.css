@@ -159,3 +159,11 @@ html {
     margin-bottom: 10px;
 }
 
+#weblink-button {
+    font-size: medium;
+}
+
+#weblink-button:hover {
+    background-color: var(--color-tertiary);
+}
+

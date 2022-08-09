@@ -12,7 +12,7 @@
 }
 
 .add-evidence-button:hover {
-    background-color: var(--color-accent);
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
 
 .btn-fill-tertiary:hover {

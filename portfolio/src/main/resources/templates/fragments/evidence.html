@@ -16,11 +16,15 @@
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
                 <div class="web-link-container">
                     <div class="web-link__header-wrapper">
-                        <h4 class="web-link-title">Web Links</h4>
+                        <div th:if="${evidence.getNumberWeblinks() >  0}">
+                            <h4 class="web-link-title">Web Links</h4>
+                        </div>
                         <div class="evidence__button-wrapper flex-row">
-                            <button type="button" class="btn-fill-primary" data-bs-toggle="modal" th:data-bs-target="'#addingWeblink_' + ${evidence.getId}">
-                                Add Weblink
-                            </button>
+                            <div th:if="${evidence.getNumberWeblinks() <  maxWeblinks}">
+                                <button id="weblink-button" type="button" class="btn-fill-primary" data-bs-toggle="modal" th:data-bs-target="'#addingWeblink_' + ${evidence.getId}">
+                                    Add Weblink
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
@@ -30,6 +34,7 @@
                       <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
                          th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
                     </div>
+                    <br/>
                 </div>
             </div>
         </div>

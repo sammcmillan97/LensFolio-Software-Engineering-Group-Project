@@ -70,4 +70,6 @@ public class Evidence {
     public void addWebLink(WebLink webLink) {
         this.webLinks.add(webLink);
     }
+
+    public int getNumberWeblinks() { return webLinks.size(); }
 }
