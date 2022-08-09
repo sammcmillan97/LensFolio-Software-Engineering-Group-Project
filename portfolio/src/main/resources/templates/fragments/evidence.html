@@ -29,8 +29,8 @@
                     </div>
                     <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
                       <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
-                      <i th:if="${web.isSafe()}" class="bi bi-lock"></i>
-                      <i th:if="${!web.isSafe()}" class="bi bi-unlock"></i>
+                      <em th:if="${web.isSafe()}" class="bi bi-lock"></em>
+                      <em th:if="${!web.isSafe()}" class="bi bi-unlock"></em>
                       <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
                          th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
                     </div>
