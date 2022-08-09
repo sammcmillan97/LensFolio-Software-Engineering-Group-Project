@@ -1,3 +1,4 @@
+// If the evidence title/description are not valid, set the save button to disabled.
 function checkEmpty() {
     document.getElementById('evidence-form__save').disabled =
         document.getElementById("evidence-form__title-field").value.length < 2
@@ -8,6 +9,8 @@ function checkEmpty() {
 
 let skillList = []
 
+// Adds a skill to the list of skills. Makes sure it is not already present,
+// and if the user has already entered that skill on another piece of evidence, make sure the capitalization is correct.
 function addToSkills(skill) {
     for (const testSkill of skillList) {
         if (testSkill.toLowerCase() === skill.toLowerCase().replaceAll("_", " ")) {
@@ -31,15 +34,7 @@ function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
 }
 
-function isInSkills(skill) {
-    for (const testSkill of skillList) {
-        if (testSkill.toLowerCase() === skill.toLowerCase()) {
-            return true;
-        }
-    }
-    return false;
-}
-
+// Remove a tag when the 'x' button is clicked
 function clickXButton(tag) {
     removeSkill(tag);
     updateTagsInDOM(skillList);
@@ -49,6 +44,7 @@ function clickXButton(tag) {
     }
 }
 
+// Listen for input so the tags and autocomplete can be triggered
 document.getElementById("skills-input").addEventListener("input", (event) => {
     event.target.style.width = event.target.value.length > 8 ? event.target.value.length + "ch" : "80px";
     let value = event.target.value;
@@ -77,7 +73,7 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     autocomplete(event); // Call the autocomplete function whenever the input changes
 })
 
-
+// Listen for key press so keys which do not change the input (backspace, enter, up, down) can be detected
 document.getElementById("skills-input").addEventListener("keydown", (event) => {
     let skillText = event.target.value
     if (event.key === "Backspace" && skillText === "") {
@@ -91,6 +87,7 @@ document.getElementById("skills-input").addEventListener("keydown", (event) => {
     updateFocus(event);
 })
 
+// Updates the tags shown before the skills input list to reflect the list of tags given.
 function updateTagsInDOM(tags) {
     let skills = "";
     for (const skill of tags) {
@@ -142,8 +139,7 @@ function autocomplete(event) {
     autocompleteList.setAttribute("class", "autocomplete-items");
     event.target.parentNode.appendChild(autocompleteList);
     for (let skill of ALL_SKILLS) {
-        if (!isInSkills(skill) &&
-        skill.substr(0, val.length).toLowerCase() === val.toLowerCase()) {
+        if (skill.substr(0, val.length).toLowerCase() === val.toLowerCase()) {
             let autocompleteItem = document.createElement("DIV");
             autocompleteItem.innerHTML = sanitizeHTML(skill.replaceAll("_", " "));
             autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(skill) + "'>";
