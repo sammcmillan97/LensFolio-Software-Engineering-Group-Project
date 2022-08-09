@@ -61,6 +61,10 @@ public class AddEvidenceController {
 
         int userId = userService.getUserId(principal);
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        if (projectId == -1) {
+            model.addAttribute("errorMessage", "Please select a project first");
+            return "redirect:/portfolio";
+        }
         Project project = projectService.getProjectById(projectId);
 
         Evidence evidence;
