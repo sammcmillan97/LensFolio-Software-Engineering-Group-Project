@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -159,31 +160,5 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
     }
-
-    /**
-     * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
-     * If correctly saved, redirects to projects page.
-     * @param principal Authentication state of client
-     * @param evidenceId Id of the evidence to add the link to
-     * @param webLink The link string to be added to evidence of id=evidenceId
-     * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return Redirect to portfolio page.
-     */
-    @PostMapping("/addWebLink")
-    public String addWebLink(
-            @AuthenticationPrincipal AuthState principal,
-            @RequestParam(name="projectId") String evidenceId,
-            @RequestParam(name="webLink") String webLink,
-            Model model
-    ) {
-        int id = Integer.parseInt(evidenceId);
-        try {
-            evidenceService.saveWebLink(id, webLink);
-        } catch (NoSuchElementException e) {
-            return PORTFOLIO_REDIRECT;
-        }
-        return PORTFOLIO_REDIRECT;
-    }
-
 }
 
