@@ -27,7 +27,7 @@ public class PortfolioUser {
         this.userId = userId;
         this.userListSortType = userListSortType;
         this.isUserListSortAscending = isUserListSortAscending;
-        this.currentProject = 1;
+        this.currentProject = -1;
     }
 
     // Empty constructor is needed for JPA
@@ -68,5 +68,5 @@ public class PortfolioUser {
 
     public void setCurrentProject(int projectId) {this.currentProject = projectId;}
 
-    public int getCurrentProject() { return this.currentProject;}
+    public int getCurrentProject() { return currentProject; }
 }
