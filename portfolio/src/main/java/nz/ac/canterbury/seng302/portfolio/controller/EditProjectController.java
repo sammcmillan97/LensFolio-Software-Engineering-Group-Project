@@ -40,6 +40,8 @@ public class EditProjectController {
     private static final String EDIT_PROJECT_REDIRECT = "redirect:/editProject-";
     private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
 
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
+
     /**
      * Method to return a calendar object representing the very beginning of a day
      * @return Calendar object
@@ -64,7 +66,7 @@ public class EditProjectController {
     @GetMapping("/editProject-{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECT_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
 
         // Add user details to model
@@ -142,7 +144,7 @@ public class EditProjectController {
             @RequestParam(value="projectDescription") String projectDescription
     ) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECT_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
 
         // Ensure request parameters represent a valid project
@@ -229,6 +231,8 @@ public class EditProjectController {
             } catch (Exception ignored) {
                 // Don't do anything if delete fails
             }
+        } else {
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
         return PROJECT_REDIRECT;
     }

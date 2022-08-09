@@ -22,19 +22,11 @@
             <h1>Update Profile Picture</h1><br>
 
             <div class="container">
-                <table>
-                    <row>
-                        <p class="helper-inline">Current Picture</p>
-                        <p class="helper-inline" style="margin-left: 67px;"> Preview will appear here</p>
-                        <br>
-                    </row>
-                    <row>
-                        <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
-
-                        <div id="root"></div>
-                    </row>
-                </table>
-
+                <p class="helper-inline">Current Picture</p>
+                <p class="helper-inline" style="margin-left: 67px;"> Preview will appear here</p>
+                <br>
+                <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
+                <div id="root"></div>
             </div>
 
             <h4>Upload a new photo</h4>
