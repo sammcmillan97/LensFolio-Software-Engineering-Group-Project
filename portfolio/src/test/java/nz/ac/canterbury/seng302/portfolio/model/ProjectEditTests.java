@@ -21,21 +21,21 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ProjectEditTests {
 
     @Test
-    void testProjectEditNotTimedOutAfter4Seconds() throws InterruptedException {
+    void after4Seconds_testProjectEditNotTimedOut() throws InterruptedException {
         ProjectEdit edit = new ProjectEdit(0, 0, "");
         TimeUnit.SECONDS.sleep(4);
         assertThat(edit.hasTimedOut()).isFalse();
     }
 
     @Test
-    void testProjectEditTimedOutAfter6Seconds() throws InterruptedException {
+    void after6Seconds_testProjectEditTimedOut() throws InterruptedException {
         ProjectEdit edit = new ProjectEdit(0, 0, "");
         TimeUnit.SECONDS.sleep(6);
         assertThat(edit.hasTimedOut()).isTrue();
     }
 
     @Test
-    void testProjectEditIsRelevantWithSameProjectIdAndDifferentUserId() {
+    void withSameProjectIdAndDifferentUserId_testProjectEditIsRelevant() {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
@@ -44,7 +44,7 @@ class ProjectEditTests {
     }
 
     @Test
-    void testProjectEditIsNotRelevantWithSameProjectIdAndSameUserId() {
+    void withSameProjectIdAndSameUserId_testProjectEditIsNotRelevant() {
         int projectId = 1;
         int userId = 1;
         ProjectEdit edit = new ProjectEdit(projectId, userId, "");
@@ -52,7 +52,7 @@ class ProjectEditTests {
     }
 
     @Test
-    void testProjectEditIsNotRelevantWithDifferentProjectIdAndDifferentUserId() {
+    void withDifferentProjectIdAndDifferentUserId_testProjectEditIsNotRelevant() {
         int projectId = 1;
         int userId = 1;
         int otherProjectId = 2;
@@ -61,14 +61,14 @@ class ProjectEditTests {
     }
 
     @Test
-    void testProjectEditIsFromUserWhenSameUser() {
+    void whenSameUser_testProjectEditIsFromUser() {
         int userId = 1;
         ProjectEdit edit = new ProjectEdit(0, userId, "");
         assertThat(edit.isFromUser(userId)).isTrue();
     }
 
     @Test
-    void testProjectEditIsNotFromUserWhenDifferentUser() {
+    void whenDifferentUser_testProjectEditIsNotFromUser() {
         int userId = 1;
         int otherUserId = 2;
         ProjectEdit edit = new ProjectEdit(0, userId, "");

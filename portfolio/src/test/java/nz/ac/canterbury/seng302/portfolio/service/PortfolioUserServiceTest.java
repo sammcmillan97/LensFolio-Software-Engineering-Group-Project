@@ -45,7 +45,7 @@ class PortfolioUserServiceTest {
 
     //Test that querying a user which does exist does not create that user.
     @Test
-    void queryOldUserTest() {
+    void givenAUserHasBeenRemoved_queryUser() {
         service.getUserById(3);
         List<PortfolioUser> users = (List<PortfolioUser>) repository.findAll();
         assertEquals(1, users.size());
@@ -56,14 +56,14 @@ class PortfolioUserServiceTest {
 
     //Test that getting the default user list sort type works (should be by name)
     @Test
-    void getUserListSortTypeTest() {
+    void givenDefaultSortType_getUserList() {
         String resultSortType = service.getUserListSortType(3);
         assertEquals("name", resultSortType);
     }
 
     //Test that setting the user list sort type works
     @Test
-    void setUserListSortTypeTest() {
+    void givenValidSortType_getUserList() {
         String testSortType = "test sort type";
         service.setUserListSortType(3, testSortType);
         String resultSortType = service.getUserListSortType(3);
@@ -72,14 +72,14 @@ class PortfolioUserServiceTest {
 
     //Test that getting the default user list sort type works (should be ascending)
     @Test
-    void getUserListIsSortAscendingTest() {
+    void givenSortAscending_getUserList() {
         boolean resultSortType = service.isUserListSortAscending(3);
         assertTrue(resultSortType);
     }
 
     //Test that setting the user list sort type works
     @Test
-    void setUserListIsSortAscendingTest() {
+    void givenSortAscending_setUserListSort() {
         service.setUserListSortAscending(3, false);
         boolean resultSortType = service.isUserListSortAscending(3);
         assertFalse(resultSortType);

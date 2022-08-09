@@ -10,7 +10,7 @@ class UserListResponseTests {
 
     // Tests that creating a UserListResponse from a PaginatedUserResponse carries all the information over properly.
     @Test
-    void testCreateUserListResponse() {
+    void givenValidDetails_testCreateUserListResponse() {
         UserResponse userResponse = UserResponse.newBuilder().setFirstName("test").build();
         PaginatedUsersResponse source = PaginatedUsersResponse.newBuilder().addUsers(userResponse).build();
         UserListResponse response = new UserListResponse(source);
