@@ -45,16 +45,6 @@ public class Group {
     }
 
     /**
-     * Constructor with ID for testing purposes
-     */
-    public Group(int groupId, String shortName, String longName, int parentProject) {
-        this.groupId = groupId;
-        this.shortName = shortName;
-        this.longName = longName;
-        this.parentProject = parentProject;
-    }
-
-    /**
      * Empty constructor for JPA
      */
     protected Group() {
@@ -68,10 +58,6 @@ public class Group {
 
     public int getGroupId() {
         return groupId;
-    }
-
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
     }
 
     public String getShortName() {
