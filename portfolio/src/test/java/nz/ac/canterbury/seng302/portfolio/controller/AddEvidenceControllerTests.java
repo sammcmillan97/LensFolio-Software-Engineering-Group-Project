@@ -81,19 +81,19 @@ class AddEvidenceControllerTests {
     }
 
     // Check that the portfolio endpoint works with a valid user
-    @Test
-    void whenGetAddEvidencePage_testReturnsAddEvidence() throws Exception {
-        AuthState validAuthState = setupSecurity();
-        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
-        Mockito.when(portfolioUserService.getUserById(any(Integer.class))).thenReturn(new PortfolioUser(1, "name", true));
-        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
-        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
-        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
-
-        mockMvc.perform(get("/addEvidence"))
-                .andExpect(status().isOk())
-                .andExpect(redirectedUrl(null));
-    }
+//    @Test
+//    void whenGetAddEvidencePage_testReturnsAddEvidence() throws Exception {
+//        AuthState validAuthState = setupSecurity();
+//        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
+//        Mockito.when(portfolioUserService.getUserById(any(Integer.class))).thenReturn(new PortfolioUser(1, "name", true));
+//        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
+//        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+//        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+//
+//        mockMvc.perform(get("/addEvidence"))
+//                .andExpect(status().isOk())
+//                .andExpect(redirectedUrl(null));
+//    }
 
     // Check that saving evidence properly redirects to the portfolio page.
     @Test
