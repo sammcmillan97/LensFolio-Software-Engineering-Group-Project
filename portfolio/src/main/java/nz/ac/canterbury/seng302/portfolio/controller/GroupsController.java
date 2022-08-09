@@ -27,12 +27,24 @@ public class GroupsController {
     private GroupsClientService groupsClientService;
 
     private static final String GROUPS_PAGE = "groups";
+
+    private static final String GROUP_STRING = "group";
+    private static final String GROUPS_STRING = "groups";
+
     private static final String GROUPS_TABLE = "elements/groupTable";
 
     private static final String USER_IS_MEMBER = "userIsMember";
 
     private static final int GROUPLESS_GROUP_ID = -1;
+    private static final String GROUPLESS_GROUP_ID_STRING = "GROUPLESS_GROUP_ID";
+
     private static final int TEACHER_GROUP_ID = -2;
+    private static final String TEACHER_GROUP_ID_STRING = "TEACHER_GROUP_ID";
+
+    private static final String USER_IS_TEACHER = "userIsTeacher";
+    private static final String USER_IS_ADMIN = "userIsAdmin";
+
+
 
     /**
      * Get mapping to fetch groups page
@@ -57,22 +69,14 @@ public class GroupsController {
             allGroupIds.add(g.getGroupId());
         }
 
-        model.addAttribute("groups", groups);
+        model.addAttribute(GROUPS_STRING, groups);
         model.addAttribute("allGroupIds", allGroupIds);
         model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userIsTeacher);
-        model.addAttribute("userIsAdmin", userIsAdmin);
-        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+        model.addAttribute(USER_IS_TEACHER, userIsTeacher);
+        model.addAttribute(USER_IS_ADMIN, userIsAdmin);
+        model.addAttribute(GROUPLESS_GROUP_ID_STRING, GROUPLESS_GROUP_ID);
+        model.addAttribute(TEACHER_GROUP_ID_STRING, TEACHER_GROUP_ID);
         return GROUPS_PAGE;
-    }
-
-    protected List<Group> getAllGroups(){
-        GroupListResponse groupListResponse = groupsClientService.getAllGroups();
-        List<Group> groups = groupListResponse.getGroups();
-        groups.add(getTeacherGroup());
-        groups.add(getGrouplessGroup());
-        return groups;
     }
 
     /**
@@ -193,13 +197,7 @@ public class GroupsController {
             } else {
                 group = new Group(groupsClientService.getGroupDetailsById(groupId));
             }
-            model.addAttribute("group", group);
-            model.addAttribute("user", user);
-            model.addAttribute("userIsTeacher", userIsTeacher);
-            model.addAttribute("userIsAdmin", userIsAdmin);
-            model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-            model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
-            return GROUPS_TABLE;
+            model.addAttribute(GROUP_STRING, group);
         } else if (groupId == TEACHER_GROUP_ID) { // Add to teacher group
             // Give the users the teacher role
             for (int member : members) {
@@ -241,12 +239,12 @@ public class GroupsController {
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
         }
 
-        model.addAttribute("group", group);
+        model.addAttribute(GROUP_STRING, group);
         model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userIsTeacher);
-        model.addAttribute("userIsAdmin", userIsAdmin);
-        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+        model.addAttribute(USER_IS_TEACHER, userIsTeacher);
+        model.addAttribute(USER_IS_ADMIN, userIsAdmin);
+        model.addAttribute(GROUPLESS_GROUP_ID_STRING, GROUPLESS_GROUP_ID);
+        model.addAttribute(TEACHER_GROUP_ID_STRING, TEACHER_GROUP_ID);
 
         return GROUPS_TABLE;
     }
@@ -278,13 +276,13 @@ public class GroupsController {
         } else {
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
         }
-        model.addAttribute("group", group);
+        model.addAttribute(GROUP_STRING, group);
         model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userIsTeacher);
-        model.addAttribute("userIsAdmin", userIsAdmin);
+        model.addAttribute(USER_IS_TEACHER, userIsTeacher);
+        model.addAttribute(USER_IS_ADMIN, userIsAdmin);
         model.addAttribute(USER_IS_MEMBER, userInGroup(userId, groupId));
-        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+        model.addAttribute(GROUPLESS_GROUP_ID_STRING, GROUPLESS_GROUP_ID);
+        model.addAttribute(TEACHER_GROUP_ID_STRING, TEACHER_GROUP_ID);
         return GROUPS_TABLE;
     }
 
@@ -319,13 +317,7 @@ public class GroupsController {
             } else {
                 group = new Group(groupsClientService.getGroupDetailsById(groupId));
             }
-            model.addAttribute("group", group);
-            model.addAttribute("user", user);
-            model.addAttribute("userIsTeacher", userIsTeacher);
-            model.addAttribute("userIsAdmin", userIsAdmin);
-            model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-            model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
-            return GROUPS_TABLE;
+            model.addAttribute(GROUP_STRING, group);
         } else if (groupId == TEACHER_GROUP_ID) { // Remove from teacher group
             for (int member : members) {
                 // Only remove the role if user is a teacher
@@ -351,12 +343,12 @@ public class GroupsController {
             group = new Group(groupsClientService.getGroupDetailsById(groupId));
         }
 
-        model.addAttribute("group", group);
+        model.addAttribute(GROUP_STRING, group);
         model.addAttribute("user", user);
-        model.addAttribute("userIsTeacher", userIsTeacher);
-        model.addAttribute("userIsAdmin", userIsAdmin);
-        model.addAttribute("GROUPLESS_GROUP_ID", GROUPLESS_GROUP_ID);
-        model.addAttribute("TEACHER_GROUP_ID", TEACHER_GROUP_ID);
+        model.addAttribute(USER_IS_TEACHER, userIsTeacher);
+        model.addAttribute(USER_IS_ADMIN, userIsAdmin);
+        model.addAttribute(GROUPLESS_GROUP_ID_STRING, GROUPLESS_GROUP_ID);
+        model.addAttribute(TEACHER_GROUP_ID_STRING, TEACHER_GROUP_ID);
 
         return GROUPS_TABLE;
     }

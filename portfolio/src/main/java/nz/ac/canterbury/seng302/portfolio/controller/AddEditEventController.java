@@ -30,7 +30,9 @@ public class AddEditEventController {
     EventService eventService;
 
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
-    private static final String PROJECTS_REDIRECT = "redirect:/projects";
+    private static final String REDIRECT_PROJECTS = "redirect:/projects";
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
+    private static final String REDIRECT_EVENT_FORM = "redirect:/addEditEvent";
 
 
     /**
@@ -44,7 +46,7 @@ public class AddEditEventController {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         // Add user details to model for displaying in top banner
@@ -92,8 +94,14 @@ public class AddEditEventController {
             Model model) throws ParseException {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
+
+        // Add user details to model for displaying in top banner
+        int userId = userAccountClientService.getUserId(principle);
+        User user = userAccountClientService.getUserAccountById(userId);
+        model.addAttribute("user", user);
+
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
         int eventId;
@@ -112,7 +120,7 @@ public class AddEditEventController {
             eventId = Integer.parseInt(eventIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECTS;
         }
         //Check if it's an existing event
         if(eventId == -1) {
@@ -120,21 +128,20 @@ public class AddEditEventController {
                 Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
                 eventService.saveEvent(newEvent);
             } catch (Exception ignored) {
-                // Don't need to do anything
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         } else {
             //Edit existing event
             try {
                 Event existingEvent = eventService.getEventById(eventId);
                 existingEvent.setEventName(eventName);
-                eventService.updateStartDate(eventId, eventStartDate);
-                eventService.updateEndDate(eventId, eventEndDate);
+                eventService.updateEventDates(eventId, eventStartDate, eventEndDate);
                 eventService.saveEvent(existingEvent);
             } catch (Exception ignored) {
-                // Don't need to do anything
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
     /**
@@ -149,10 +156,10 @@ public class AddEditEventController {
                                          @PathVariable("parentProjectId") String parentProjectId,
                                          @PathVariable("eventId") String eventId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         eventService.deleteEventById(Integer.parseInt(eventId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 }

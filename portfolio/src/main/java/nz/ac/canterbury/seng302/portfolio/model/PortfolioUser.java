@@ -31,7 +31,7 @@ public class PortfolioUser {
         this.userId = userId;
         this.userListSortType = userListSortType;
         this.isUserListSortAscending = isUserListSortAscending;
-        this.currentProject = 1;
+        this.currentProject = -1;
         skills = new ArrayList<>();
     }
 

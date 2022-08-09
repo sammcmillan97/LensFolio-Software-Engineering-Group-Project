@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sound.sampled.Port;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -86,7 +87,9 @@ class AddEvidenceControllerTests {
     void whenGetAddEvidencePage_testReturnsAddEvidence() throws Exception {
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
-        Mockito.when(portfolioUserService.getUserById(any(Integer.class))).thenReturn(new PortfolioUser(1, "name", true));
+        PortfolioUser portfolioUser = new PortfolioUser(1, "name", true);
+        portfolioUser.setCurrentProject(1);
+        Mockito.when(portfolioUserService.getUserById(any(Integer.class))).thenReturn(portfolioUser);
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));

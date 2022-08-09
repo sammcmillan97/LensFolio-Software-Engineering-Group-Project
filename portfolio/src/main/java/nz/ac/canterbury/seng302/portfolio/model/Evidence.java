@@ -19,7 +19,7 @@ public class Evidence {
     private String description;
     private Date date;
     @ElementCollection
-    private List<String> webLinks;
+    private List<WebLink> webLinks;
     @ElementCollection
     private List<String> skills; //skills related to this piece of evidence
 
@@ -76,11 +76,11 @@ public class Evidence {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
-    public List<String> getWebLinks() {
+    public List<WebLink> getWebLinks() {
         return webLinks;
     }
 
-    public void addWebLink(String webLink) {
+    public void addWebLink(WebLink webLink) {
         this.webLinks.add(webLink);
     }
 
@@ -110,4 +110,6 @@ public class Evidence {
         }
         skills = newSkills;
     }
+
+    public int getNumberWeblinks() { return webLinks.size(); }
 }

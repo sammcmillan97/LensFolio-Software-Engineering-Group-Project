@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -172,4 +170,46 @@ public class PlannerController {
         return PLANNER_REDIRECT + projectId;
     }
 
+    /**
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a list of all sprints in the project
+     */
+    @GetMapping("/getSprintsList")
+    public @ResponseBody List<Sprint> getSprintsList(@RequestParam int projectId) {
+        return sprintService.getByParentProjectId(projectId);
+    }
+
+    /**
+     * Fetches a Map of all dates an event occurs on mapped to their names and number of events on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of events
+     */
+    @GetMapping("/getEventsList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getEventsList(@RequestParam int projectId) {
+        return PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId));
+    }
+
+    /**
+     * Fetches a Map of all dates a deadline occurs on mapped to their names and number of deadlines on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of deadlines
+     */
+    @GetMapping("/getDeadlinesList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getDeadlinesList(@RequestParam int projectId) {
+        return PlannerUtil.getDeadlinesForCalender(deadlineService.getByDeadlineParentProjectId(projectId));
+    }
+
+    /**
+     * Fetches a Map of all dates a milestone occurs on mapped to their names and number of milestones on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of milestones
+     */
+    @GetMapping("/getMilestonesList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getMilestonesList(@RequestParam int projectId) {
+        return PlannerUtil.getMilestonesForCalender(milestoneService.getByMilestoneParentProjectId(projectId));
+    }
 }

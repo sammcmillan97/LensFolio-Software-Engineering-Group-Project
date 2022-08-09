@@ -273,12 +273,86 @@ public class SprintService {
      */
     public String checkSprintDates(int sprintId, int projectId, Date startDate, Date endDate) {
         List<Sprint> sprints = getByParentProjectId(projectId);
+        List<Sprint> encasedSprints = new ArrayList<>();
+
+        // Figure out what sprints are encased by the new sprint
         for (Sprint sprint : sprints) {
             if (sprint.getId() != sprintId && !(startDate.after(sprint.getStartDate())) && !(endDate.before(sprint.getStartDate()))) {
-                return "Sprints can't encase other sprints";
+                encasedSprints.add(sprint);
             }
         }
-        return "";
+
+        StringBuilder resultString;
+        // If only one sprint is encased, give it's details
+        if (encasedSprints.size() == 1) {
+            Sprint sprint = encasedSprints.get(0);
+            resultString = new StringBuilder("Sprint currently encases '");
+            resultString.append(sprint.getName());
+            resultString.append("': ");
+            resultString.append(sprint.getStartDateString());
+            resultString.append("-");
+            resultString.append(sprint.getEndDateString());
+            resultString.append(". ");
+            resultString.append("Please change the start or end date of this sprint so it doesn't overlap.");
+
+        // If more than one sprint is encased
+        } else if (encasedSprints.size() > 1) {
+            // Build a string with their names in order and with proper grammar
+            resultString = new StringBuilder("Sprint currently encases sprints:");
+            for (int i = 0; i < encasedSprints.size(); i++) {
+                if (i == 0) {
+                    resultString.append(" ");
+                } else if (i == encasedSprints.size() - 1) {
+                    resultString.append(" and ");
+                } else {
+                    resultString.append(", ");
+                }
+
+                resultString.append(encasedSprints.get(i).getName());
+            }
+            // Calculate and add the earliest start date and last end date to the string
+            resultString.append(". Please make the sprint end date before ");
+            resultString.append(getEarliestSprintStartDateString(encasedSprints));
+            resultString.append(" or the sprint start date after ");
+            resultString.append(getLatestSprintEndDateString(encasedSprints));
+            resultString.append(".");
+
+        // No problem, return empty string
+        } else {
+            resultString = new StringBuilder();
+        }
+        return resultString.toString();
+    }
+
+    /**
+     * Calculates the sprint with the latest end date
+     * If multiple sprints end on same day, will return the first one in the list
+     * @param sprints A list of sprints
+     * @return the sprint with the latest end date
+     */
+    public String getLatestSprintEndDateString(List<Sprint> sprints) {
+        Sprint latestSprint = sprints.get(0);
+        for (Sprint sprint : sprints) {
+            if (sprint.getEndDate().compareTo(latestSprint.getEndDate()) > 0) {
+                latestSprint = sprint;
+            }
+        }
+        return latestSprint.getEndDateString();
+    }
+
+    /**
+     * Calculates the sprint with the earliest start date
+     * @param sprints A list of sprints
+     * @return the sprint with the earliest start date
+     */
+    public String getEarliestSprintStartDateString(List<Sprint> sprints) {
+        Sprint earliestSprint = sprints.get(0);
+        for (Sprint sprint : sprints) {
+            if (sprint.getStartDate().compareTo(earliestSprint.getStartDate()) < 0) {
+                earliestSprint = sprint;
+            }
+        }
+        return earliestSprint.getStartDateString();
     }
 
     /***
