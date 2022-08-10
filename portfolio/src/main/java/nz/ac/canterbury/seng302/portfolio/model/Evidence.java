@@ -2,9 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
@@ -21,18 +20,32 @@ public class Evidence {
     private Date date;
     @ElementCollection
     private List<WebLink> webLinks;
+    @ElementCollection
+    private List<String> skills; //skills related to this piece of evidence
+
 
     public Evidence() {
         webLinks = new ArrayList<>();
     }
 
     public Evidence(int ownerId, int projectId, String title, String description, Date date) {
+        this(ownerId, projectId, title, description, date, "");
+    }
+
+    public Evidence(int ownerId, int projectId, String title, String description, Date date, String skills) {
         this.ownerId = ownerId;
         this.projectId = projectId;
         this.title = title;
         this.description = description;
         this.date = date;
         webLinks = new ArrayList<>();
+        this.skills = new ArrayList<>(Arrays.asList(skills.split("\\s+")));
+        // If the entered string is "" or has leading spaces, the regex adds an empty element at the start of the skill list
+        // which should not happen.
+        if (Objects.equals(this.skills.get(0), "")) {
+            this.skills.remove(0);
+        }
+        this.skills = this.skills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     public int getId() {
@@ -69,6 +82,33 @@ public class Evidence {
 
     public void addWebLink(WebLink webLink) {
         this.webLinks.add(webLink);
+    }
+
+    public List<String> getSkills() {return skills;}
+
+    public void addSkill (String skill) {this.skills.add(skill);}
+
+    /**
+     * Forces skills to conform to a list of master skills.
+     * If capitalization differs between a skill in this evidence and the master skills,
+     * the capitalization in the master skills is preferred.
+     * @param masterSkills A list of master skills to compare against.
+     */
+    public void conformSkills(Collection<String> masterSkills) {
+        List<String> newSkills = new ArrayList<>();
+        for (String skill : skills) {
+            boolean inMaster = false;
+            for (String masterSkill : masterSkills) {
+                if (!inMaster && masterSkill.equalsIgnoreCase(skill)) {
+                    newSkills.add(masterSkill);
+                    inMaster = true;
+                }
+            }
+            if (!inMaster) {
+                newSkills.add(skill);
+            }
+        }
+        skills = newSkills;
     }
 
     public int getNumberWeblinks() { return webLinks.size(); }

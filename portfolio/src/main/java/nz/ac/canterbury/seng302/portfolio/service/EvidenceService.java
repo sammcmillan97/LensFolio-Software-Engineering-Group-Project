@@ -74,7 +74,29 @@ public class EvidenceService {
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
+        for (String skill : evidence.getSkills()) {
+            if (skill.length() > 50) {
+                throw new IllegalArgumentException("Skills not valid");
+            }
+        }
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
+    }
+
+    /**
+     * Gets all skills from a list of evidence. Each skill returned is unique.
+     * @param evidenceList A list of evidence to retrieve skills from.
+     * @return All the skills for that list of evidence.
+     */
+    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Collection<String> skills = new HashSet<>();
+        for (Evidence userEvidence : evidenceList) {
+            skills.addAll(userEvidence.getSkills());
+        }
+        List<String> skillList = new ArrayList<>(skills);
+        skillList.sort(String::compareToIgnoreCase);;
+        return skillList;
     }
 
     /**
@@ -115,4 +137,37 @@ public class EvidenceService {
         }
     }
 
+    /**
+     * Wrote a method for retrieve evidence by skill
+     * @param skill being searched for
+     * @return list of evidences containing skill
+     */
+    public List<Evidence> retrieveEvidenceBySkill(String skill, int projectId) {
+        return repository.findBySkillsAndProjectIdOrderByDateDescIdDesc(skill, projectId);
+    }
+
+    /**
+     * Retrieve all evidence for a project where skills is null
+     * @param projectId of evidence
+     * @return list of evidences with no skill
+     */
+    public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
+        return repository.findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(projectId);
+    }
+
+    /**
+     * Retrieves all evidence owned by the given user user and with the given skill
+     * @param skill The skill being searched for
+     * @param userId The owner of the Evidence
+     * @return A list of evidence owned by the user and containing the skill
+     */
+    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId, int projectId) {
+        List<Evidence> usersEvidenceWithSkill = new ArrayList<>();
+        for (Evidence e : retrieveEvidenceBySkill(skill, projectId)) {
+            if (e.getOwnerId() == userId) {
+                usersEvidenceWithSkill.add(e);
+            }
+        }
+        return usersEvidenceWithSkill;
+    }
 }

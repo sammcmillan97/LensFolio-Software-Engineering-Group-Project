@@ -134,7 +134,6 @@ public class EditGroupController {
 
             //Add event details to model so the user doesn't have to enter them again
             model.addAttribute("groupId", groupId);
-            System.out.println(groupId);
             model.addAttribute("groupShortName", groupShortName);
             model.addAttribute("groupLongName", groupLongName);
             model.addAttribute("userIsTeacher", groupsController.isTeacher(user));
