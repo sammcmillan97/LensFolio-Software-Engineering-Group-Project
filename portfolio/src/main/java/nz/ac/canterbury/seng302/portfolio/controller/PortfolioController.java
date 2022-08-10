@@ -32,6 +32,8 @@ public class PortfolioController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+
+
     /**
      * Display the user's portfolio page.
      * @param principal Authentication state of client
@@ -51,13 +53,8 @@ public class PortfolioController {
         int userId = user.getId();
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
-        List<String> categoryList = new ArrayList<>();
-        categoryList.add("QUANTITATIVE");
-        categoryList.add("QUALITATIVE");
-        categoryList.add("SERVICE");
 
         model.addAttribute("evidenceList", evidenceList);
-        model.addAttribute("categoryList", categoryList);
         return "portfolio";
     }
 
@@ -86,13 +83,6 @@ public class PortfolioController {
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
 
         model.addAttribute("evidenceList", evidenceList);
-
-        List<String> categoryList = new ArrayList<>();
-        categoryList.add("QUANTITATIVE");
-        categoryList.add("QUALITATIVE");
-        categoryList.add("SERVICE");
-
-        model.addAttribute("categoryList", categoryList);
 
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";

@@ -97,19 +97,18 @@ html {
 }
 
 .no-category__link {
-    border: 1px solid var(--color-secondary);
+    border: 1px solid #A82810;
     border-radius: 5px;
-    color: white;
-    display: inline;
-    text-align: center;
-    text-decoration: none;
-    margin: 4px;
+    background-color: var(--color-complement);
     padding: 2px 4px 2px 4px;
-    background-color: var(--color-primary);
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    color: #A82810;
+    text-align: center;
 }
 
 .no-category__link:hover {
-    background-color: #F67B50;
-    font-weight: bold;
-    color: white;
+    color: #A82810;
+    filter: brightness(85%);
 }
