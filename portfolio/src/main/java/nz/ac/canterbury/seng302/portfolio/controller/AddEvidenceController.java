@@ -63,7 +63,7 @@ public class AddEvidenceController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         if (projectId == -1) {
             model.addAttribute("errorMessage", "Please select a project first");
-            return "redirect:/portfolio";
+            return PORTFOLIO_REDIRECT;
         }
         Project project = projectService.getProjectById(projectId);
 
@@ -146,7 +146,7 @@ public class AddEvidenceController {
      * They are a title, description, date, and a list of all skills for the user.
      * @param model The model to add things to
      * @param projectId The project currently being viewed
-     * @param userId The logged in user
+     * @param userId The logged-in user
      * @param evidence The evidence that is being viewed.
      */
     private void addEvidenceToModel(Model model, int projectId, int userId, Evidence evidence) {

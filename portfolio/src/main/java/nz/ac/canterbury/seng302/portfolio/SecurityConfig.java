@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String LOGIN = "/login";
     @Override
     protected void configure(HttpSecurity security) throws Exception
     {
@@ -23,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         security
             .addFilterBefore(new JwtAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/login", "/logout", "/styles/**", "/register", "/error", "/")
+                    .antMatchers(HttpMethod.GET, LOGIN, "/logout", "/styles/**", "/register", "/error", "/")
                     .permitAll()
                     .and()
                 .authorizeRequests()
@@ -32,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         security.cors();
         security.csrf().disable();
-        security.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")).and();
+        security.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN)).and();
         security.logout()
                 .permitAll()
                 .invalidateHttpSession(true)
@@ -51,6 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web)
     {
-        web.ignoring().antMatchers("/login", "/logout", "/styles/**", "/register", "/");
+        web.ignoring().antMatchers(LOGIN, "/logout", "/styles/**", "/register", "/");
     }
 }

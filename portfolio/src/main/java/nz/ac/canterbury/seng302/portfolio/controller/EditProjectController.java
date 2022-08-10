@@ -213,7 +213,7 @@ public class EditProjectController {
             savedProject = projectService.saveProject(newProject);
         }
 
-        return "redirect:/projectDetails-" + savedProject.getId();
+        return REDIRECT_PROJECT_DETAILS + savedProject.getId();
     }
 
     /**
