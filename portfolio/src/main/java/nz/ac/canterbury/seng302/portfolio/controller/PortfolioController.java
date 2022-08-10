@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.WebLink;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +34,9 @@ public class PortfolioController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+    private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
+    private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
+
     /**
      * Display the user's portfolio page.
      * @param principal Authentication state of client
@@ -46,6 +52,7 @@ public class PortfolioController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
+        model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
 
         int userId = user.getId();
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
@@ -83,11 +90,47 @@ public class PortfolioController {
         if (Objects.equals(pageUser.getUsername(), "")) {
             return "redirect:/profile";
         } else if (user.getId() == pageUser.getId()) {
-            return "redirect:/portfolio"; // Take user to their own portfolio if they try to view it
+            return PORTFOLIO_REDIRECT; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
             return "portfolio";
         }
+    }
+
+    /**
+     * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
+     * If correctly saved, redirects to project page.
+     * @param evidenceId id of the evidence to add the link to
+     * @param webLink The link string to be added to evidence of id=evidenceId
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return Redirect to portfolio page.
+     */
+    @PostMapping("/addWebLink-{evidenceId}")
+    public String addWebLink(
+            @PathVariable(name="evidenceId") String evidenceId,
+            @RequestParam(name="webLink") String webLink,
+            @RequestParam(name="webLinkName") String webLinkName,
+            Model model
+    ) {
+        int id = Integer.parseInt(evidenceId);
+
+        if (evidenceService.getEvidenceById(id).getNumberWeblinks() >= MAX_WEBLINKS_PER_EVIDENCE) {
+            model.addAttribute("saveError", "Cannot add more than " + MAX_WEBLINKS_PER_EVIDENCE + " weblinks");
+        } else {
+            try {
+                evidenceService.validateWebLink(webLink);
+                WebLink webLink1;
+                if (webLinkName.isEmpty()) {
+                    webLink1 = new WebLink(webLink);
+                } else {
+                    webLink1 = new WebLink(webLink, webLinkName);
+                }
+                evidenceService.saveWebLink(id, webLink1);
+            } catch (Exception e) {
+                //left blank on purpose
+            }
+        }
+        return PORTFOLIO_REDIRECT;
     }
 }
 

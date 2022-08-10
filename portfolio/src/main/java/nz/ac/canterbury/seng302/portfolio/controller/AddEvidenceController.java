@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.model.WebLink;
 import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -59,6 +61,10 @@ public class AddEvidenceController {
 
         int userId = userService.getUserId(principal);
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+        if (projectId == -1) {
+            model.addAttribute("errorMessage", "Please select a project first");
+            return "redirect:/portfolio";
+        }
         Project project = projectService.getProjectById(projectId);
 
         Evidence evidence;

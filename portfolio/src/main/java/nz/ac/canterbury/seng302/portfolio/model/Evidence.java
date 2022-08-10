@@ -2,7 +2,9 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
@@ -17,8 +19,12 @@ public class Evidence {
     @Column(columnDefinition = "LONGTEXT")
     private String description;
     private Date date;
+    @ElementCollection
+    private List<WebLink> webLinks;
 
-    public Evidence() {}
+    public Evidence() {
+        webLinks = new ArrayList<>();
+    }
 
     public Evidence(int ownerId, int projectId, String title, String description, Date date) {
         this.ownerId = ownerId;
@@ -26,6 +32,7 @@ public class Evidence {
         this.title = title;
         this.description = description;
         this.date = date;
+        webLinks = new ArrayList<>();
     }
 
     public int getId() {
@@ -56,4 +63,13 @@ public class Evidence {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
+    public List<WebLink> getWebLinks() {
+        return webLinks;
+    }
+
+    public void addWebLink(WebLink webLink) {
+        this.webLinks.add(webLink);
+    }
+
+    public int getNumberWeblinks() { return webLinks.size(); }
 }

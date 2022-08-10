@@ -130,7 +130,7 @@ class EventServiceTest {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 4",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
-        assertEquals(4,events.size());
+        assertEquals(4, events.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         eventService.saveEvent(new Event(projects.get(1).getId(), "Test Event 5",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
@@ -199,7 +199,7 @@ class EventServiceTest {
      * When the event id does exist, test retrieving the event by its id.
      */
     @Test
-    void whenEventIdExists_testGetEventById() throws Exception {
+    void whenEventIdExists_testGetEventById() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
@@ -283,12 +283,12 @@ class EventServiceTest {
      * boundaries, test event date start date is changed.
      */
     @Test
-    void whenEventStartDateIsChangedToDateBeforeCurrentDateAndWithinProjectDates_testEventStartDateChanged() throws Exception {
+    void whenEventStartDateIsChangedToDateBeforeCurrentDateAndWithinProjectDates_testEventStartDateChanged() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        eventService.updateStartDate(eventId, Date.valueOf("2022-05-01"));
+        eventService.updateEventDates(eventId, Date.valueOf("2022-05-01"), Date.valueOf("2022-06-06"));
         Event event = eventRepository.findById(eventId);
         assertThat(event.getEventStartDate()).isEqualTo(Timestamp.valueOf("2022-05-01 00:00:00"));
     }
@@ -298,14 +298,14 @@ class EventServiceTest {
      * test start date changed
      */
     @Test
-    void whenEventStartDateIsChangedToDateBeforeCurrentAndAfterPreviousEventDate_testStartDateChanged() throws Exception {
+    void whenEventStartDateIsChangedToDateBeforeCurrentAndAfterPreviousEventDate_testStartDateChanged() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 1",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event 2",
                 Date.valueOf("2022-06-09"), Date.valueOf("2022-06-20")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(1).getEventId();
-        eventService.updateStartDate(eventId, Date.valueOf("2022-06-07"));
+        eventService.updateEventDates(eventId, Date.valueOf("2022-06-07"), Date.valueOf("2022-06-20"));
         Event event = eventRepository.findById(eventId);
         assertThat(event.getEventStartDate()).isEqualTo(Timestamp.valueOf("2022-06-07 00:00:00"));
     }
@@ -320,8 +320,8 @@ class EventServiceTest {
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        Exception exception = assertThrows(Exception.class, () -> eventService.updateStartDate(eventId, Date.valueOf("2022-04-20")));
-        String expectedMessage = "Event start date must be within project dates";
+        Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-04-20"), Date.valueOf("2022-06-06")));
+        String expectedMessage = "Event start date must be within the project dates";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -331,12 +331,12 @@ class EventServiceTest {
      * boundaries, test event date start date is changed.
      */
     @Test
-    void whenEventStartDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventStartDateChanged() throws Exception {
+    void whenEventStartDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventStartDateChanged() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        eventService.updateStartDate(eventId, Date.valueOf("2022-05-30"));
+        eventService.updateEventDates(eventId, Date.valueOf("2022-05-30"), Date.valueOf("2022-06-06"));
         Event event = eventRepository.findById(eventId);
         assertThat(event.getEventStartDate()).isEqualTo(Timestamp.valueOf("2022-05-30 00:00:00"));
     }
@@ -352,8 +352,8 @@ class EventServiceTest {
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
 
-        Exception exception = assertThrows(Exception.class, () -> eventService.updateStartDate(eventId, Date.valueOf("2022-06-20")));
-        String expectedMessage = "Event start date must not be after end date";
+        Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-06-20"), Date.valueOf("2022-06-06")));
+        String expectedMessage = "Event start date must not proceed the end date";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -363,12 +363,12 @@ class EventServiceTest {
      * boundaries, test event date end date is changed.
      */
     @Test
-    void whenEventEndDateIsChangedToDateBeforeCurrentDateAndWithinProjectDates_testEventEndDateChanged() throws Exception {
+    void whenEventEndDateIsChangedToDateBeforeCurrentDateAndWithinProjectDates_testEventEndDateChanged() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        eventService.updateEndDate(eventId, Date.valueOf("2022-05-30"));
+        eventService.updateEventDates(eventId, Date.valueOf("2022-05-05"), Date.valueOf("2022-05-30"));
         Event event = eventRepository.findById(eventId);
         assertThat(event.getEventEndDate()).isEqualTo(Timestamp.valueOf("2022-05-30 00:00:00"));
     }
@@ -383,8 +383,8 @@ class EventServiceTest {
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        Exception exception = assertThrows(Exception.class, () -> eventService.updateEndDate(eventId, Date.valueOf("2022-04-20")));
-        String expectedMessage = "Event end date must not be before start date";
+        Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-05-05"), Date.valueOf("2022-04-20")));
+        String expectedMessage = "Event start date must not proceed the end date";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -394,16 +394,14 @@ class EventServiceTest {
      * boundaries, test event date start date is changed.
      */
     @Test
-    void whenEventEndDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventEndDateChanged() throws Exception {
+    void whenEventEndDateIsChangedToDateAfterCurrentDateAndWithinProjectDates_testEventEndDateChanged() {
         eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
                 Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06")));
-        eventService.saveEvent(new Event(projects.get(0).getId(), "Test Event",
-                Date.valueOf("2022-06-10"), Date.valueOf("2022-06-30")));
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
-        eventService.updateEndDate(eventId, Date.valueOf("2022-06-09"));
+        eventService.updateEventDates(eventId, Date.valueOf("2022-06-05"), Date.valueOf("2022-06-06"));
         Event event = eventRepository.findById(eventId);
-        assertThat(event.getEventEndDate()).isEqualTo(Timestamp.valueOf("2022-06-09 00:00:00"));
+        assertThat(event.getEventEndDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));
     }
 
     /**
@@ -417,8 +415,8 @@ class EventServiceTest {
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
 
-        Exception exception = assertThrows(Exception.class, () -> eventService.updateEndDate(eventId, Date.valueOf("2023-06-20")));
-        String expectedMessage = "Event end date must be within project dates";
+        Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-05-05"), Date.valueOf("2022-08-06")));
+        String expectedMessage = "Event end date must be within the project dates";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
