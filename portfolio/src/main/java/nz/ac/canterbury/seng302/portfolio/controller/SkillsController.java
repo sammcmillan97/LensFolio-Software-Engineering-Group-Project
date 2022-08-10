@@ -30,6 +30,9 @@ public class SkillsController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
+    private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
+
+
     /**
      * Finds the logged in user's id and then loads the evidence page using the more generic endpoint
      * @param principal Authentication state of client
@@ -58,7 +61,7 @@ public class SkillsController {
         // Add all of the skills that the user has to the page
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
-
+        model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
         String skillName = skill.replace("_", " ");
         model.addAttribute("skillName", skillName);
 

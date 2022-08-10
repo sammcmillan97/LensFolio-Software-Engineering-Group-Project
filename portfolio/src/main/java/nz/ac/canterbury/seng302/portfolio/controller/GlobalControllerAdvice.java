@@ -27,15 +27,10 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
-    private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
-
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
     }
-
-    @ModelAttribute("maxWeblinks")
-    public int getMaxWeblinks(){return MAX_WEBLINKS_PER_EVIDENCE; }
 
     @ModelAttribute("currentProject")
     public Project getCurrentProject(@AuthenticationPrincipal AuthState principal){
