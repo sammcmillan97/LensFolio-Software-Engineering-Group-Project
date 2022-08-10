@@ -620,6 +620,9 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
         } else if (username.isBlank()) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must not contain only whitespace").setFieldName(USERNAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (isBadName(username)) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Username must not contain special characters").setFieldName(USERNAME_FIELD).build();
+            validationErrors.add(validationError);
         }
 
         if (username.length() > 64) {
@@ -634,7 +637,7 @@ public class UserAccountsServerService extends UserAccountServiceImplBase {
      * @param name The name to check
      * @return True if the name is valid
      */
-    private boolean isBadName(String name) {
+    public boolean isBadName(String name) {
         Pattern namePattern = Pattern.compile("[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
         Matcher nameMatcher = namePattern.matcher(name);
         return !nameMatcher.matches();
