@@ -576,6 +576,7 @@ class EvidenceServiceTests {
         assertFalse(receivedEvidence.getWebLinks().get(0).isSafe());
     }
     @Test
+    @Transactional
     void testSetCategoriesOfEvidenceAllThree() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence);
@@ -589,6 +590,7 @@ class EvidenceServiceTests {
     }
 
     @Test
+    @Transactional
     void testSetCategoriesOfEvidenceChangeCategories() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence);
