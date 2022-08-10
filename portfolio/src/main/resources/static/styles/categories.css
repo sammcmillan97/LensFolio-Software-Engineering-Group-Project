@@ -79,10 +79,10 @@ html {
     margin: 0 0 1rem;
 }
 
-.skill-link {
-    border: 1px solid #F67B50;
+.category__link {
+    border: 1px solid #A82810;
     border-radius: 5px;
-    background-color: #F67B50;
+    background-color: #A82810;
     padding: 2px 4px 2px 4px;
     margin: 4px;
     display: inline;
@@ -91,24 +91,24 @@ html {
     text-align: center;
 }
 
-.skill-link:hover {
+.category__link:hover {
     color:white;
     filter: brightness(85%);
 }
 
-.no-skill-link {
-    border: 1px solid #F67B50;
+.no-category__link {
+    border: 1px solid #A82810;
     border-radius: 5px;
     background-color: var(--color-complement);
     padding: 2px 4px 2px 4px;
     margin: 4px;
     display: inline;
     text-decoration: none;
+    color: #A82810;
     text-align: center;
-    color: #F67B50;
 }
 
-.no-skill-link:hover {
+.no-category__link:hover {
     color:inherit;
     filter: brightness(85%);
 }

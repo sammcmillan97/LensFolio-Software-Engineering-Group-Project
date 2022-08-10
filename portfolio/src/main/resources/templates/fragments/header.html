@@ -4,13 +4,13 @@
 <head>
     <title>Header Bar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
 </head>
 
 <body>
     <header th:fragment="header" id="page-header" class="constrict">
-        <link rel="stylesheet" th:href="@{/styles/navbar.css}"/>
-        <script rel="script" th:src="@{/scripts/navbar.js}"></script>
+        <link rel="stylesheet" th:href="@{styles/navbar.css}"/>
+        <script rel="script" th:src="@{scripts/navbar.js}"></script>
         <ul class="header__list">
             <a>
                 <span class="header__hamburger" style="font-size: 30px; cursor: pointer; position: absolute; margin-left: 1rem; margin-top: 8px;" onclick="toggleNavbarVisibility()">&#9776</span>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,6 +82,7 @@ public class PortfolioController {
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
+
         User pageUser = userService.getUserAccountById(userId);
         model.addAttribute("pageUser", pageUser);
 

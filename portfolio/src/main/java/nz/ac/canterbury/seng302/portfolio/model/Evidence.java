@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Entity // this is an entity, assumed to be in a table called evidence
 @Table(name="EVIDENCE")
 public class Evidence {
@@ -17,6 +18,15 @@ public class Evidence {
     private String title;
     @Column(columnDefinition = "LONGTEXT")
     private String description;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "evidence_categories",
+            joinColumns =  @JoinColumn(name="id")
+    )
+    @Column(name="categories")
+    private Set<Categories> categories = new HashSet<>();
+
     private Date date;
     @ElementCollection
     private List<WebLink> webLinks;
@@ -47,6 +57,7 @@ public class Evidence {
         }
         this.skills = this.skills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
+
 
     public int getId() {
         return id;
@@ -112,4 +123,14 @@ public class Evidence {
     }
 
     public int getNumberWeblinks() { return webLinks.size(); }
+
+    public List<Categories> getCategories() {
+        List<Categories> sortedCategories = new ArrayList<>(categories);
+        Collections.sort(sortedCategories);
+        return sortedCategories;
+    }
+
+    public void setCategories(Set<Categories> categories) {
+        this.categories = categories;
+    }
 }

@@ -64,6 +64,7 @@ public class EditGroupController {
         }
 
         //Add event details to model
+        model.addAttribute("groupId", Integer.parseInt(groupId));
         model.addAttribute("groupShortName", group.getShortName());
         model.addAttribute("groupLongName", group.getLongName());
         model.addAttribute("userIsTeacher", groupsController.isTeacher(user));

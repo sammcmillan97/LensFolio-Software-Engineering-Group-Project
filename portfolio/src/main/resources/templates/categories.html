@@ -25,8 +25,8 @@
 
 <div id="page-content" class="constrict">
     <div class="container">
-        <h1 th:if="${skillName!=''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence with skill: ' + ${skillName}"></h1>
-        <h1 th:if="${skillName==''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence without skills'"></h1>
+        <h1 th:if="${categoryName != ''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence in category: ' + ${categoryName}"></h1>
+        <h1 th:if="${categoryName == ''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence with no category'"></h1>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}}">Portfolio</a>
     </div>
     <div class="container">

@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
     <link rel="stylesheet" th:href="@{styles/portfolio.css}">
     <link rel="stylesheet" th:href="@{styles/evidence.css}">
+    <link rel="stylesheet" th:href="@{styles/categories.css}">
     <link rel="stylesheet" th:href="@{styles/skills.css}">
 
 
@@ -35,6 +36,14 @@
                 <div th:replace="fragments/evidence"></div>
             </div>
             <div class="col-lg">
+                <div class="categories">
+                    <!-- Categories Tab -->
+                    <h2>Categories</h2>
+                    <div class="categories__details">
+                        <a class="no-category__link" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category='">No Category</a>
+                        <a class="category__link" th:each="category: ${categoryList}" th:text="${category}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
+                    </div>
+                </div>
                 <div class="skills">
                     <!-- Skill list -->
                     <h2 th:text="Skills"></h2>

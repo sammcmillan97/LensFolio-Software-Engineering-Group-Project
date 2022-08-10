@@ -10,9 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -340,53 +338,59 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void givenNoEvidenceExists_findEvidenceWithNoSkill(){
-        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+        int testUserId = 0;
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).isEmpty());
     }
 
     @Test
     @Transactional
     void givenOneEvidenceExistsWithSkills_findEvidenceWithNoSkill(){
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
-        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).isEmpty());
     }
 
     @Test
     @Transactional
     void givenOneEvidenceExistsWithoutSkills_findEvidenceWithNoSkill(){
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
         evidenceService.saveEvidence(evidence);
-        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).size());
     }
 
     @Test
     @Transactional
     void givenMultipleEvidencesExistsWithSkills_findEvidenceWithNoSkill(){
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
-        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
-        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).isEmpty());
     }
 
     @Test
     @Transactional
     void givenMultipleEvidencesExistsOneWithSkills_findEvidenceWithNoSkill(){
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
-        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
-        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).size());
     }
 
     @Test
     @Transactional
     void givenMultipleEvidencesExistsWithoutSkills_findEvidenceWithNoSkill(){
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
-        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
         evidenceService.saveEvidence(evidence);
         evidenceService.saveEvidence(evidence1);
-        assertEquals(2, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+        assertEquals(2, evidenceService.retrieveEvidenceWithNoSkill(testUserId, projects.get(1).getId()).size());
     }
 
     @Test
@@ -577,4 +581,222 @@ class EvidenceServiceTests {
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
         assertFalse(receivedEvidence.getWebLinks().get(0).isSafe());
     }
+    @Test
+    @Transactional
+    void testSetCategoriesOfEvidenceAllThree() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence);
+        List<Categories> categoriesList = new ArrayList<>();
+        categoriesList.add(Categories.Quantitative);
+        categoriesList.add(Categories.Qualitative);
+        categoriesList.add(Categories.Service);
+        evidenceService.setCategories(new HashSet<>(categoriesList), evidenceService.getEvidenceById(evidence.getId()));
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesList, evidence.getCategories());
+    }
+
+    @Test
+    @Transactional
+    void testSetCategoriesOfEvidenceChangeCategories() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+
+        List<Categories> categoriesList1 = new ArrayList<>();
+        categoriesList1.add(Categories.Qualitative);
+        evidenceService.setCategories(new HashSet<>(categoriesList1), evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesList1, evidence.getCategories());
+
+        List<Categories> categoriesList2 = new ArrayList<>();
+        categoriesList2.add(Categories.Service);
+        evidenceService.setCategories(new HashSet<>(categoriesList2), evidence);
+        evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
+        assertEquals(categoriesList2, evidence.getCategories());
+    }
+
+    @Test
+    void givenNoEvidenceWithCategoryMatch_testGetEvidenceByCategoryForPortfolio() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Service);
+        assertEquals(0, evidenceList.size());
+    }
+
+    @Test
+    void givenOneEvidenceWithCategoryMatch_testGetEvidenceByCategoryForPortfolio() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Quantitative);
+        assertEquals(1, evidenceList.size());
+        assertTrue(evidenceList.get(0).getCategories().contains(Categories.Quantitative));
+    }
+
+    @Test
+    void givenTwoEvidenceWithCategoryMatch_testGetEvidenceByCategoryForPortfolio() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence2.setCategories(categoriesSet);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        evidenceRepository.save(evidence2);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Quantitative);
+        assertEquals(2, evidenceList.size());
+        assertTrue(evidenceList.get(0).getCategories().contains(Categories.Quantitative));
+    }
+
+    @Test
+    void givenOneEvidenceWithMultipleCategoryWithCategoryMatch_testGetEvidenceByCategoryForPortfolio() {
+        Evidence evidence = new Evidence(0, projects.get(0).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        categoriesSet.add(Categories.Qualitative);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(0).getId(), Categories.Quantitative);
+        assertEquals(1, evidenceList.size());
+    }
+
+    @Test
+    void givenOneEvidenceInWrongProject_testGetEvidenceByCategoryForPortfolio() {
+        Evidence evidence = new Evidence(0, projects.get(0).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Quantitative);
+        assertEquals(0, evidenceList.size());
+    }
+
+    @Test
+    void givenTwoEvidenceWithCategoryMatch_testGetEvidenceByCategoryForPortfolioCorrectOrdering() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence1", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test Evidence2", TEST_DESCRIPTION, Date.valueOf("2022-05-13"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence2.setCategories(categoriesSet);
+        evidence.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        evidenceRepository.save(evidence2);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Quantitative);
+        assertEquals("Test Evidence1", evidenceList.get(0).getTitle());
+    }
+
+    @Test
+    void givenThreeEvidenceWithCategoryMatch_testGetEvidenceByCategoryForPortfolioCorrectOrdering() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence1", TEST_DESCRIPTION, Date.valueOf("2022-05-13"));
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test Evidence2", TEST_DESCRIPTION, Date.valueOf("2022-05-11"));
+        Evidence evidence3 = new Evidence(0, projects.get(1).getId(), "Test Evidence3", TEST_DESCRIPTION, Date.valueOf("2022-05-18"));
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence2.setCategories(categoriesSet);
+        evidence.setCategories(categoriesSet);
+        evidence3.setCategories(categoriesSet);
+        evidenceRepository.save(evidence);
+        evidenceRepository.save(evidence2);
+        evidenceRepository.save(evidence3);
+        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(0, projects.get(1).getId(), Categories.Quantitative);
+        assertEquals("Test Evidence3", evidenceList.get(0).getTitle());
+        assertEquals("Test Evidence1", evidenceList.get(1).getTitle());
+        assertEquals("Test Evidence2", evidenceList.get(2).getTitle());
+    }
+
+    ///////////////////////////////////////
+    ///GET EVIDENCE WITH NO SKILL TESTS////
+    ///////////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExists_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        assertTrue(evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithCategories_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        assertTrue(evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithoutCategories_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithCategories_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidence1.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertTrue(evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsOneWithCategories_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithoutCategories_findEvidenceWithNoCategories(){
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertEquals(2, evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithNoCategories_testSortOrder() {
+        int testUserId = 0;
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Evidence evidence2 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Three", TEST_DESCRIPTION, Date.valueOf("2022-05-10"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+
+        List<Evidence> searchResults = evidenceService.retrieveEvidenceWithNoCategory(testUserId, projects.get(1).getId());
+        assertEquals(3, searchResults.size());
+        assertEquals("Evidence Two", searchResults.get(0).getTitle());
+        assertEquals("Evidence One", searchResults.get(1).getTitle());
+        assertEquals("Evidence Three", searchResults.get(2).getTitle());
+    }
+
 }

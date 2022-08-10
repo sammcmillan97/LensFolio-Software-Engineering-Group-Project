@@ -105,8 +105,8 @@ function updateTagsInDOM(tags) {
         let element = createElementFromHTML(`<div class="skill-tag-con">
                                                           <div class="skill-tag">
                                                             <div class="skill-tag-inside">
-                                                              <p>${tag}</p>
-                                                              <i class="bi bi-x" onclick="clickXButton('${tag}')"></i>
+                                                              <p>${sanitizeHTML(tag)}</p>
+                                                              <i class="bi bi-x" onclick="clickXButton('${sanitizeHTML(tag)}')"></i>
                                                             </div>
                                                           </div>
                                                         </div>`)

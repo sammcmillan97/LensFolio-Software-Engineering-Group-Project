@@ -29,10 +29,15 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     private static final String REGEX_WITH_SPACE = "[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð,. '\\-]";
     private static final String REGEX_WITHOUT_SPACE = "[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð,.'\\-]";
-
+    private static final List<String> CATEGORIES_LIST = List.of("Quantitative", "Qualitative", "Service");
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
+    }
+
+    @ModelAttribute("categoryList")
+    public List<String> getAllCategories(){
+        return CATEGORIES_LIST;
     }
 
     @ModelAttribute("currentProject")
