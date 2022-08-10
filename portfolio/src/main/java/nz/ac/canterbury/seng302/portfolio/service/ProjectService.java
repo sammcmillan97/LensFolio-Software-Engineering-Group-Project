@@ -6,6 +6,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // more info here https://codebun.com/spring-boot-crud-application-using-thymeleaf-and-spring-data-jpa/
 
@@ -50,5 +52,16 @@ public class ProjectService {
         } catch (EmptyResultDataAccessException e) {
             throw new NoSuchElementException("No project found to delete");
         }
+    }
+
+    /**
+     * Validate titles for any titles (projects, deadlines, milestones, sprint, etc
+     * @param title of object
+     * @return true if valid else return if false
+     */
+    public boolean validTitle(String title) {
+        Pattern namePattern = Pattern.compile("[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
+        Matcher nameMatcher = namePattern.matcher(title);
+        return nameMatcher.matches();
     }
 }

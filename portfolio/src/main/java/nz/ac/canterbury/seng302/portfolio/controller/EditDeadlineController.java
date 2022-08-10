@@ -86,6 +86,7 @@ public class EditDeadlineController {
         model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), TIME_FORMAT));
         model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
+        model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
         return "editDeadline";
     }
 
@@ -130,11 +131,17 @@ public class EditDeadlineController {
                 deadlineService.createNewDeadline(projectId, deadlineName, deadlineDate);
             } catch (UnsupportedOperationException e) {
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("titleError", "Title cannot contain special characters");
+                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         } else {
             try {
                 deadlineService.updateDeadline(projectId, deadlineId, deadlineName, deadlineDate);
             } catch(UnsupportedOperationException e) {
+                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("titleError", "Title cannot contain special characters");
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         }

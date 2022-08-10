@@ -17,7 +17,7 @@ public class DeadlineService {
     private DeadlineRepository deadlineRepository;
 
     @Autowired
-    private ProjectService deadlineProjectService;
+    private ProjectService projectService;
 
     @Autowired
     private ProjectEditsService projectEditsService;
@@ -88,8 +88,8 @@ public class DeadlineService {
      */
     public void updateDeadlineDate(int deadlineId, Date newDeadlineDate) throws Exception {
         Deadline newDeadline = getDeadlineById(deadlineId);
-        Date projectStartDate = deadlineProjectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getStartDate();
-        Date projectEndDate = deadlineProjectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getEndDate();
+        Date projectStartDate = projectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getStartDate();
+        Date projectEndDate = projectService.getProjectById(newDeadline.getDeadlineParentProjectId()).getEndDate();
 
         if (newDeadlineDate.compareTo(projectEndDate) > 0 || newDeadlineDate.compareTo(projectStartDate) < 0) {
             throw new UnsupportedOperationException("Deadline date must be within the project dates");
@@ -109,11 +109,14 @@ public class DeadlineService {
      */
     public void updateDeadline(int parentProjectId, int deadlineId, String deadlineName, Date deadlineDate) throws Exception {
         Deadline deadline = getDeadlineById(deadlineId);
-        Project parentProject = deadlineProjectService.getProjectById(parentProjectId);
+        Project parentProject = projectService.getProjectById(parentProjectId);
         Date projectStartDate = parentProject.getStartDate();
         Date projectEndDate = parentProject.getEndDate();
         if (deadlineDate.compareTo(projectEndDate) > 0 || deadlineDate.compareTo(projectStartDate) < 0) {
             throw new UnsupportedOperationException("Deadline date must be within the project dates");
+        } else if (!projectService.validTitle(deadline.getDeadlineName())){
+
+            throw new IllegalArgumentException("Deadline cannot contain special characters");
         }
         deadline.setDeadlineDate(deadlineDate);
         deadline.setDeadlineName(deadlineName);
@@ -128,13 +131,17 @@ public class DeadlineService {
      * @throws Exception Throws UnsupportedOperationException is the new date doesn't fall within the parent project dates
      */
     public void createNewDeadline(int parentProjectId, String deadLineName, Date deadlineDate) throws Exception {
-        Project parentProject = deadlineProjectService.getProjectById(parentProjectId);
+        Project parentProject = projectService.getProjectById(parentProjectId);
         Date projectStartDate = parentProject.getStartDate();
         Date projectEndDate = parentProject.getEndDate();
         if (deadlineDate.compareTo(projectEndDate) > 0 || deadlineDate.compareTo(projectStartDate) < 0) {
             throw new UnsupportedOperationException("Deadline date must be within the project dates");
+        } else if (!projectService.validTitle(deadLineName)){
+            throw new IllegalArgumentException("Deadline cannot contain special characters");
         } else {
             saveDeadline(new Deadline(parentProjectId, deadLineName, deadlineDate));
         }
     }
+
+
 }
