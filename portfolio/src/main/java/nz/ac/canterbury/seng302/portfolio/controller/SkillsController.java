@@ -113,7 +113,7 @@ public class SkillsController {
 
     public List<Evidence> getEvidenceBySkill(String skill, int userId, int projectId){
         if (skill.length()==0){
-            return evidenceService.retrieveEvidenceWithNoSkill(projectId);
+            return evidenceService.retrieveEvidenceWithNoSkill(userId, projectId);
         } else {
            return evidenceService.retrieveEvidenceBySkillAndUser(skill, userId, projectId);
         }

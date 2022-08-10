@@ -65,7 +65,7 @@ public class CategoriesController {
             categorySelection = Categories.Service;
             evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         } else if (Objects.equals(category, "")) {
-            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(projectId);
+            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(userId, projectId);
         } else {
             return PORTFOLIO_REDIRECT;
         }
@@ -112,7 +112,7 @@ public class CategoriesController {
             categorySelection = Categories.Service;
             evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         } else if (Objects.equals(category, "")) {
-            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(projectId);
+            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(userId, projectId);
         } else {
             return PORTFOLIO_REDIRECT;
         }

@@ -12,10 +12,10 @@ public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     List<Evidence> findByOwnerIdAndProjectIdOrderByDateDescIdDesc(int ownerId, int projectId);
 
     // Get evidence with no categories
-    List<Evidence> findByProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(int projectId);
+    List<Evidence> findByOwnerIdAndProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(int ownerId, int projectId);
 
     //Get evidence by skill, might need to be updated to include projectId too
     List<Evidence> findBySkillsAndProjectIdOrderByDateDescIdDesc(String skill, int projectId);
 
-    List<Evidence> findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(int projectId);
+    List<Evidence> findByOwnerIdAndProjectIdAndSkillsIsNullOrderByDateDescIdDesc(int ownerId, int projectId);
 }

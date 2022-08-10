@@ -151,8 +151,8 @@ public class EvidenceService {
      * @param projectId of evidence
      * @return list of evidences with no skill
      */
-    public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
-        return repository.findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(projectId);
+    public List<Evidence> retrieveEvidenceWithNoSkill(int userId, int projectId){
+        return repository.findByOwnerIdAndProjectIdAndSkillsIsNullOrderByDateDescIdDesc(userId, projectId);
     }
 
     /**
@@ -203,7 +203,7 @@ public class EvidenceService {
      * @param projectId of evidence
      * @return list of evidence with no category.
      */
-    public List<Evidence> retrieveEvidenceWithNoCategory(int projectId) {
-        return repository.findByProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(projectId);
+    public List<Evidence> retrieveEvidenceWithNoCategory(int userId, int projectId) {
+        return repository.findByOwnerIdAndProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(userId, projectId);
     }
 }

@@ -21,8 +21,6 @@ junit-identityprovider:
   artifacts:
     paths:
       - identityprovider/build/jacoco/test-report.xml
-  except:
-    - U10-Categories-On-Pieces-Of-Evidence
 
 junit-portfolio:
   stage: test
@@ -32,8 +30,6 @@ junit-portfolio:
   artifacts:
     paths:
       - portfolio/build/jacoco/test-report.xml
-  except:
-    - U10-Categories-On-Pieces-Of-Evidence
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -58,7 +54,6 @@ branch-build:
     - tags
     - master
     - dev
-    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-staging-identityprovider:
   stage: deploy
@@ -82,7 +77,6 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
-    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-staging-portfolio:
   stage: deploy
@@ -105,7 +99,6 @@ deploy-staging-portfolio:
     url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
-    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-production-identityprovider:
   stage: deploy
@@ -170,5 +163,3 @@ sonarqube-report:
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
   retry: 2
-  except:
-    - U10-Categories-On-Pieces-Of-Evidence
