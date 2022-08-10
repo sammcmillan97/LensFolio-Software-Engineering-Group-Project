@@ -78,7 +78,7 @@ class PortfolioControllerTests {
 
     // Check that the portfolio endpoint works with a valid user
     @Test
-    void getStandardPortfolioWithValidUserReturnPortfolio() throws Exception {
+    void getStandardPortfolio_givenValidUser_returnPortfolio() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
@@ -95,7 +95,7 @@ class PortfolioControllerTests {
     // Check that the portfolio endpoint redirects to the requesters profile
     // when viewing a user who does not exist
     @Test
-    void getOtherPortfolioWithInvalidUserReturnsRedirectToProfile() throws Exception {
+    void getOtherPortfolio_withInvalidUser_returnsRedirectToProfile() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
@@ -113,7 +113,7 @@ class PortfolioControllerTests {
     // Check that the portfolio endpoint works normally
     // when viewing another user
     @Test
-    void getOtherPortfolioWithOtherUserReturnsPortfolio() throws Exception {
+    void getOtherPortfolio_withOtherUser_returnsPortfolio() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
@@ -131,7 +131,7 @@ class PortfolioControllerTests {
     // Check that the portfolio endpoint redirects to the requesters' portfolio
     // when viewing your own portfolio
     @Test
-    void getOtherPortfolioWithSameUserReturnsRedirectToPortfolio() throws Exception {
+    void getOtherPortfolio_withSameUser_returnsRedirectToPortfolio() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));

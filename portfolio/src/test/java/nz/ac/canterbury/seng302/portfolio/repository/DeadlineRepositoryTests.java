@@ -40,7 +40,7 @@ class DeadlineRepositoryTests {
     }
     
     @Test
-    void findAllDeadlines() {
+    void givenMultipleDeadlinesExist_findAllDeadlines() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
         Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1",  Date.valueOf("2022-06-24"));
         Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", Date.valueOf("2022-06-10"));
@@ -63,7 +63,7 @@ class DeadlineRepositoryTests {
     }
     
     @Test
-    void findDeadlineById() {
+    void givenValidId_findDeadlineById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
         Deadline deadline1 = new Deadline(project1.getId(), "Deadline 1",  Date.valueOf("2022-06-24"));
         Deadline deadline2 = new Deadline(project1.getId(), "Deadline 2", Date.valueOf("2022-06-10"));
@@ -88,7 +88,7 @@ class DeadlineRepositoryTests {
     }
     
     @Test
-    void addDeadlineViaRepository() {
+    void givenValidDeadline_addDeadlineViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-09"), Date.valueOf("2022-06-10"));
         Deadline deadline = new Deadline(project1.getId(), "Deadline", Date.valueOf("2022-06-24"));
         projectRepository.save(project1);

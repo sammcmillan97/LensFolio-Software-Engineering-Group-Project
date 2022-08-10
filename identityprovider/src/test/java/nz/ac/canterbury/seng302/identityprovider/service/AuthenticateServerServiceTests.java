@@ -40,13 +40,12 @@ class AuthenticateServerServiceTests {
 
     //Tests that logging in fails if the username does not exist
     @Test
-    void testBadUsername(){
+    void givenBadUsername_authenticateRequest(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
                 .setUsername("not a username")
                 .setPassword(testPassword)
                 .build();
         AuthenticateResponse response = authService.authenticateHandler(authRequest);
-        System.out.println(response.getMessage());
         assertEquals("Log in attempt failed: username not registered", response.getMessage());
         assertEquals("", response.getToken());
         assertFalse(response.getSuccess());
@@ -54,7 +53,7 @@ class AuthenticateServerServiceTests {
 
     //Tests that logging in fails if the password is incorrect
     @Test
-    void testBadPassword(){
+    void givenBadPassword_authenticateRequest(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword("not a password")
@@ -68,7 +67,7 @@ class AuthenticateServerServiceTests {
 
     //Tests that logging in succeeds if the password and username are correct
     @Test
-    void testGoodLogin(){
+    void givenGoodLogin_authenticateRequest(){
         AuthenticateRequest authRequest = AuthenticateRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword(testPassword)

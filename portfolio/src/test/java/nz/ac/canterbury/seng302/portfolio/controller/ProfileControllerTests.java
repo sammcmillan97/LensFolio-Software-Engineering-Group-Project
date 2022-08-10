@@ -68,7 +68,7 @@ class ProfileControllerTests {
 
     // Check that the profile endpoint works with a valid user
     @Test
-    void getStandardProfileWithValidUserReturnProfile() throws Exception {
+    void getStandardProfile_withValidUser_returnProfile() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
@@ -83,7 +83,7 @@ class ProfileControllerTests {
     // Check that the profile endpoint redirects to the requesters profile
     // when viewing a user who does not exist
     @Test
-    void getOtherProfileWithInvalidUserReturnsRedirectToProfile() throws Exception {
+    void getOtherProfile_withInvalidUserReturns_redirectToProfile() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().build()));
@@ -99,7 +99,7 @@ class ProfileControllerTests {
     // Check that the profile endpoint works normally
     // when viewing another user
     @Test
-    void getOtherProfileWithOtherUserReturnsProfile() throws Exception {
+    void getOtherProfile_withOtherUser_returnsProfile() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
@@ -115,7 +115,7 @@ class ProfileControllerTests {
     // Check that the profile endpoint redirects to the requesters profile
     // when viewing your own profile
     @Test
-    void getOtherProfileWithSameUserReturnsRedirectToProfile() throws Exception {
+    void getOtherProfile_withSameUser_returnsRedirectToProfile() throws Exception {
 
         AuthState validAuthState = setupSecurity();
         Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));

@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.GetUserByIdRequest;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -287,27 +286,6 @@ public class User {
         Instant time = Instant.now();
         return Timestamp.newBuilder().setSeconds(time.getEpochSecond())
                 .setNanos(time.getNano()).build();
-    }
-
-    public UserResponse toUserResponse() {
-        UserResponse.Builder reply = UserResponse.newBuilder();
-        reply.setUsername(this.getUsername())
-                .setFirstName(this.getFirstName())
-                .setMiddleName(this.getMiddleName())
-                .setLastName(this.getLastName())
-                .setNickname(this.getNickname())
-                .setBio(this.getBio())
-                .setPersonalPronouns(this.getPersonalPronouns())
-                .setEmail(this.getEmail())
-                .setCreated(this.getTimeCreated())
-                .setId(this.getUserId())
-                .addAllRoles(this.getRoles());
-        if (this.getProfileImagePath() != null) {
-            reply.setProfileImagePath(context + "/ProfilePicture-" + this.getProfileImagePath());
-        } else {
-            reply.setProfileImagePath("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
-        }
-        return reply.build();
     }
 
     public GetUserByIdRequest getUserIdRequest() {

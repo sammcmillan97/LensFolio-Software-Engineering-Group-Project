@@ -45,7 +45,7 @@ class PortfolioUserRepositoryTests {
 
     // Test that a full list of users can be retrieved from the database
     @Test
-    void findAllUsers() {
+    void givenMultipeUsersExist_findAllUsers() {
         PortfolioUser user1 = new PortfolioUser(1, "test sort type", true);
         PortfolioUser user2 = new PortfolioUser(2, "test sort type 2", false);
         List<PortfolioUser> users = new ArrayList<>();
@@ -63,7 +63,7 @@ class PortfolioUserRepositoryTests {
 
     // Test a specific user can be retrieved from the database
     @Test
-    void findUserById() {
+    void givenVaidId_findUserById() {
         PortfolioUser user1 = new PortfolioUser(1, "test sort type", false);
         PortfolioUser user2 = new PortfolioUser(2, "test sort type 2", true);
         List<PortfolioUser> users = new ArrayList<>();

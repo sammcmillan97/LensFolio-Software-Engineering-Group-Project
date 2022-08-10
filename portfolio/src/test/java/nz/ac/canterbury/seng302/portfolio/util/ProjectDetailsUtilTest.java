@@ -39,7 +39,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenAllEventsOutsideSprintsTestEmbedEventsDoesNotEmbedAnyEvents() {
+    void whenAllEventsOutsideSprints_testEmbedEventsDoesNotEmbedAnyEvents() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-05"), Date.valueOf("2022-04-06")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -49,7 +49,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsOutsideFirstSprintAndEndsInsideFirstSprintTestEmbedEventsDoesEmbedEvent() {
+    void whenEventStartsOutsideFirstSprint_andEndsInsideFirstSprint_testEmbedEventsDoesEmbedEvent() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-05"), Date.valueOf("2022-04-16")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -58,7 +58,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsInsideFirstSprintAndEndsInsideSameSprintTestEmbedEventsDoesEmbedEvent() {
+    void whenEventStartsInsideFirstSprint_andEndsInsideSameSprint_testEmbedEventsDoesEmbedEvent() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-05-10")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -67,7 +67,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsOustideFirstSprintAndEndsInsideLastSprintTestEmbedEventsEmbedsEventInEachSprint() {
+    void whenEventStartsOustideFirstSprint_andEndsInsideLastSprint_testEmbedEventsEmbedsEventInEachSprint() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-05"), Date.valueOf("2022-07-25")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -78,7 +78,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsInsideFirstSprintAndEndsInsideLastSprintTestEmbedEventsEmbedsEventInEachSprint() {
+    void whenEventStartsInsideFirstSprint_andEndsInsideLastSprint_testEmbedEventsEmbedsEventInEachSprint() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-07-25")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -89,7 +89,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsInsideLastSprintAndEndsAfterLastSprintTestEmbedEventInLastSprint() {
+    void whenEventStartsInsideLastSprint_andEndsAfterLastSprint_testEmbedEventInLastSprint() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-07-20"), Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -98,7 +98,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsInsideFirstSprintAndEndsAfterLastSprintTestEmbedEventsInEachSprint() {
+    void whenEventStartsInsideFirstSprint_andEndsAfterLastSprint_testEmbedEventsInEachSprint() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -109,7 +109,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsBeforeFirstSprintAndEndsAfterLastSprintTestEmbedEventsInEachSprint() {
+    void whenEventStartsBeforeFirstSprint_andEndsAfterLastSprint_testEmbedEventsInEachSprint() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-10"), Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -120,7 +120,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventEndsDayBeforeSprintTestEventNotEmbedded() {
+    void whenEventEndsDayBeforeSprint_testEventNotEmbedded() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-13"), Date.valueOf("2022-04-14")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -128,7 +128,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventEndsOnSprintStartDateTestEventEmbedded() {
+    void whenEventEndsOnSprintStartDate_testEventEmbedded() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-13"), Date.valueOf("2022-04-15")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -136,7 +136,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsDayAfterSprintTestEventNotEmbedded() {
+    void whenEventStartsDayAfterSprint_testEventNotEmbedded() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-17"), Date.valueOf("2022-05-20")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -144,7 +144,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartsOnSprintEndDateTestEventEmbedded() {
+    void whenEventStartsOnSprintEndDate_testEventEmbedded() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-16"), Date.valueOf("2022-05-18")));
         ProjectDetailsUtil.embedEvents(eventList, sprintList);
@@ -152,7 +152,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartAndEndDateInSprintTestEmbedEventAndEventStartAndEndColourIsSameAsSprintColour() {
+    void whenEventStart_andEndDateInSprint_testEmbedEvent_andEventStart_andEndColourIsSameAsSprintColour() {
         ProjectDetailsUtil.colorSprints(sprintList);
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-04-22")));
@@ -162,7 +162,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartAndEndDateInDifferentSprintsTestEmbedEventAndEventStartAndEndColourIsSameAsSprintColour() {
+    void whenEventStart_andEndDateInDifferentSprints_testEmbedEvent_andEventStart_andEndColourIsSameAsSprintColour() {
         ProjectDetailsUtil.colorSprints(sprintList);
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-20"), Date.valueOf("2022-05-22")));
@@ -172,7 +172,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartAndEndDateOutsideAllSprintsTestEmbedEventAndEventStartAndEndNotColoured() {
+    void whenEventStart_andEndDateOutsideAllSprints_testEmbedEvent_andEventStart_andEndNotColoured() {
         ProjectDetailsUtil.colorSprints(sprintList);
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-03-20"), Date.valueOf("2022-03-22")));
@@ -182,7 +182,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenEventStartAndEndDateInsideSprintsSeperatedBySprintInTheMiddleTestStartAndEndColourNotOfSprintInside() {
+    void whenEventStart_andEndDateInsideSprintsSeperatedBySprintInTheMiddle_testStart_andEndColourNotOfSprintInside() {
         ProjectDetailsUtil.colorSprints(sprintList);
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-17"), Date.valueOf("2022-06-20")));
@@ -194,7 +194,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursBeforeAllSprintsTestDeadlineNotEmbedded() {
+    void whenDeadlineOccursBeforeAllSprints_testDeadlineNotEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-04-13")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -204,7 +204,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursAfterAllSprintsTestDeadlineNotEmbedded() {
+    void whenDeadlineOccursAfterAllSprints_testDeadlineNotEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -214,7 +214,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursDayBeforeSprintStartsTestDeadlineNotEmbedded() {
+    void whenDeadlineOccursDayBeforeSprintStarts_testDeadlineNotEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-04-14")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -222,7 +222,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursDayAfterSprintEndsTestDeadlineNotEmbedded() {
+    void whenDeadlineOccursDayAfterSprintEnds_testDeadlineNotEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-05-17")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -230,7 +230,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursDaySprintStartsTestDeadlineEmbedded() {
+    void whenDeadlineOccursDaySprintStarts_testDeadlineEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-04-15")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -239,7 +239,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursDaySprintEndsTestDeadlineEmbedded() {
+    void whenDeadlineOccursDaySprintEnds_testDeadlineEmbedded() {
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-05-16")));
         ProjectDetailsUtil.embedDeadlines(deadlineList, sprintList);
@@ -248,7 +248,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineOccursWithinSprintTestEmbedDeadlineAndDeadlineColourSameAsSprint() {
+    void whenDeadlineOccursWithinSprint_testEmbedDeadlineAndDeadlineColourSameAsSprint() {
         ProjectDetailsUtil.colorSprints(sprintList);
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-04-20")));
@@ -257,7 +257,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlineNotOccursWithinSprintTestEmbedDeadlineAndDeadlineColourNotExist() {
+    void whenDeadlineNotOccursWithinSprint_testEmbedDeadlineAndDeadlineColourNotExist() {
         ProjectDetailsUtil.colorSprints(sprintList);
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
                 Date.valueOf("2022-03-20")));
@@ -266,7 +266,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintEventDeadlineListsExistTestOrderImportantDates() {
+    void whenSprintEventDeadlineListsExist_testOrderImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-16"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -285,7 +285,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintEventDeadlineListsExistAndEventAndDeadlineDatesAreTheSameTestOrderImportantDates() {
+    void whenSprintEventDeadlineListsExistAndEventAndDeadlineDatesAreTheSame_testOrderImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-14"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -304,7 +304,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintEventDeadlineListsExistAndEventAndSprintDatesAreTheSameTestOrderImportantDates() {
+    void whenSprintEventDeadlineListsExistAndEventAndSprintDatesAreTheSame_testOrderImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -323,7 +323,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintEventDeadlineListsExistAndDeadlineAndSprintDatesAreTheSameTestOrderImportantDates() {
+    void whenSprintEventDeadlineListsExistAndDeadlineAndSprintDatesAreTheSame_testOrderImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-15"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -342,7 +342,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintEventDeadlineListsExistAndEventDeadlineAndSprintDatesAreTheSameTestOrderImportantDates() {
+    void whenSprintEventDeadlineListsExistAndEventDeadlineAndSprintDatesAreTheSame_testOrderImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-04-15"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -361,7 +361,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenDeadlinesAndEventsEmbeddedInSprintsTestNotIncludedInImportantDates() {
+    void whenDeadlinesAndEventsEmbeddedInSprints_testNotIncludedInImportantDates() {
         eventList.add(new Event(1, "Test Event Uno",
                 Date.valueOf("2022-05-10"), Date.valueOf("2022-05-20")));
         deadlineList.add(new Deadline(1, "Test Deadline Hand In",
@@ -380,7 +380,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenSprintListExistsTestColourSprints() {
+    void whenSprintListExists_testColourSprints() {
         for (Sprint sprint : sprintList) {
             assertNull(sprint.getColour());
         }
@@ -392,7 +392,7 @@ class ProjectDetailsUtilTest {
 
 
     @Test
-    void whenMilestoneOccursBeforeAllSprintsTestMilestoneNotEmbedded() {
+    void whenMilestoneOccursBeforeAllSprints_testMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-13")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -403,7 +403,7 @@ class ProjectDetailsUtilTest {
 
 
     @Test
-    void whenMilestoneOccursAfterAllSprintsTestMilestoneNotEmbedded() {
+    void whenMilestoneOccursAfterAllSprints_testMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-08-18")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -413,7 +413,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenMilestoneOccursDayBeforeSprintStartsTestMilestoneNotEmbedded() {
+    void whenMilestoneOccursDayBeforeSprintStarts_testMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-14")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -421,7 +421,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenMilestoneOccursDayAfterSprintEndsTestMilestoneNotEmbedded() {
+    void whenMilestoneOccursDayAfterSprintEnds_testMilestoneNotEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-05-17")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -429,7 +429,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenMilestoneOccursDaySprintStartsTestMilestoneEmbedded() {
+    void whenMilestoneOccursDaySprintStarts_testMilestoneEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-15")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -438,7 +438,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenMilestoneOccursDaySprintEndsTestMilestoneEmbedded() {
+    void whenMilestoneOccursDaySprintEnds_testMilestoneEmbedded() {
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-05-16")));
         ProjectDetailsUtil.embedMilestones(milestoneList, sprintList);
@@ -448,7 +448,7 @@ class ProjectDetailsUtilTest {
 
 
     @Test
-    void whenMilestoneOccursWithinSprintTestEmbedMilestoneAndMilestoneColourSameAsSprint() {
+    void whenMilestoneOccursWithinSprint_testEmbedMilestoneAndMilestoneColourSameAsSprint() {
         ProjectDetailsUtil.colorSprints(sprintList);
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-04-20")));
@@ -457,7 +457,7 @@ class ProjectDetailsUtilTest {
     }
 
     @Test
-    void whenMilestoneNotOccursWithinSprintTestEmbedMilestoneAndMilestoneColourNotExist() {
+    void whenMilestoneNotOccursWithinSprint_testEmbedMilestoneAndMilestoneColourNotExist() {
         ProjectDetailsUtil.colorSprints(sprintList);
         milestoneList.add(new Milestone(1, "Test Milestone Hand In",
                 Date.valueOf("2022-03-20")));

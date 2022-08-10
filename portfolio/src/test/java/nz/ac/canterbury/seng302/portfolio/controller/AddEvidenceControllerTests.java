@@ -119,7 +119,7 @@ class AddEvidenceControllerTests {
                 .andExpect(redirectedUrl("/portfolio"));
     }
 
-    // Check that saving evidence properly redirects to the portfolio page.
+    // Check that saving a piece of evidence properly redirects to the portfolio page.
     @Test
     void whenSaveEvidenceWithBadData_testReturnsAddEvidence() throws Exception {
         AuthState validAuthState = setupSecurity();
