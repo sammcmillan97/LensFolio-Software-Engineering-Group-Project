@@ -100,12 +100,19 @@ public class CategoriesController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         Categories categorySelection;
+        List<Evidence> evidenceList;
+
         if (Objects.equals(category, "Quantitative")) {
             categorySelection = Categories.Quantitative;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         } else if (Objects.equals(category, "Qualitative")) {
             categorySelection = Categories.Qualitative;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         } else  if (Objects.equals(category, "Service")) {
             categorySelection = Categories.Service;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
+        } else if (Objects.equals(category, "")) {
+            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(projectId);
         } else {
             return PORTFOLIO_REDIRECT;
         }
@@ -113,7 +120,6 @@ public class CategoriesController {
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 
-        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         model.addAttribute("evidenceList", evidenceList);
         model.addAttribute("categoryName", category);
         if (Objects.equals(pageUser.getUsername(), "")) {
