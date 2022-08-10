@@ -42,14 +42,14 @@ The `shared` class library is a dependency of the two main applications, so befo
 
 Assuming we start in the project root, the steps are as follows...
 
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd shared
 ./gradlew clean
 ./gradlew publishToMavenLocal
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd shared
 gradlew clean
@@ -64,13 +64,13 @@ In order to be able to log in through the Portfolio module, and access its prote
 
 Again, assuming we are starting in the root directory...
 
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd identityprovider
 ./gradlew bootRun
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd identityprovider
 gradlew bootRun
