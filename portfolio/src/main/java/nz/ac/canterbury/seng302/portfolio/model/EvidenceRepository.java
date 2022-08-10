@@ -9,9 +9,13 @@ import java.util.List;
 public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     Evidence findById(int id);
     List<Evidence> findByProjectId(int projectId);
-    List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
-    List<Evidence> findByOwnerIdAndProjectIdOrderByDateDesc(int ownerId, int projectId);
+    List<Evidence> findByOwnerIdAndProjectIdOrderByDateDescIdDesc(int ownerId, int projectId);
 
     // Get evidence with no categories
     List<Evidence> findByProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(int projectId);
+
+    //Get evidence by skill, might need to be updated to include projectId too
+    List<Evidence> findBySkillsAndProjectIdOrderByDateDescIdDesc(String skill, int projectId);
+
+    List<Evidence> findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(int projectId);
 }

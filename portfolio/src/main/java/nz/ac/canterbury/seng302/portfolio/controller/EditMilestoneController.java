@@ -34,8 +34,10 @@ public class EditMilestoneController {
     @Autowired
     MilestoneService milestoneService;
 
-    private static final String timeFormat = "yyyy-MM-dd";
-    private static final String redirectToProjects = "redirect:/projects";
+    private static final String TIME_FORMAT = "yyyy-MM-dd";
+    private static final String REDIRECT_PROJECTS = "redirect:/projects";
+
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
 
     /**
      * The get mapping to return the page with the form to add/edit milestones
@@ -51,7 +53,7 @@ public class EditMilestoneController {
                                 Model model) {
 
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         int userId = Integer.parseInt(principal.getClaimsList().stream()
@@ -69,7 +71,7 @@ public class EditMilestoneController {
             projectId = Integer.parseInt(parentProjectId);
             milestoneId = Integer.parseInt(milestoneIdString);
         } catch (NumberFormatException e) {
-            return redirectToProjects;
+            return REDIRECT_PROJECTS;
         }
         Project project = projectService.getProjectById(projectId);
         model.addAttribute("projectId", projectId);
@@ -93,9 +95,9 @@ public class EditMilestoneController {
 
         model.addAttribute("milestone", milestone);
         model.addAttribute("milestoneName", milestone.getMilestoneName());
-        model.addAttribute("milestoneDate", Project.dateToString(milestone.getMilestoneDate(), timeFormat));
-        model.addAttribute("minMilestoneDate", Project.dateToString(project.getStartDate(), timeFormat));
-        model.addAttribute("maxMilestoneDate", Project.dateToString(project.getEndDate(), timeFormat));
+        model.addAttribute("milestoneDate", Project.dateToString(milestone.getMilestoneDate(), TIME_FORMAT));
+        model.addAttribute("minMilestoneDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
+        model.addAttribute("maxMilestoneDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
         return "editMilestone";
     }
 
@@ -118,10 +120,10 @@ public class EditMilestoneController {
             Model model) throws ParseException {
 
         if (!userAccountClientService.isTeacher(principle)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
 
-        Date milestoneDate = new SimpleDateFormat(timeFormat).parse(milestoneDateString);
+        Date milestoneDate = new SimpleDateFormat(TIME_FORMAT).parse(milestoneDateString);
 
         int milestoneId;
         int projectId;
@@ -129,7 +131,7 @@ public class EditMilestoneController {
             projectId = Integer.parseInt(projectIdString);
             milestoneId = Integer.parseInt(milestoneIdString);
         } catch (NumberFormatException e) {
-            return redirectToProjects;
+            return REDIRECT_PROJECTS;
         }
 
         //check if creating or editing existing deadline
@@ -146,7 +148,7 @@ public class EditMilestoneController {
                 return ("redirect:/editMilestone-" + milestoneIdString + "-" + projectIdString);
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
     /**
@@ -161,11 +163,11 @@ public class EditMilestoneController {
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("milestoneId") String milestoneId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         milestoneService.deleteMilestoneById(Integer.parseInt(milestoneId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 
 }

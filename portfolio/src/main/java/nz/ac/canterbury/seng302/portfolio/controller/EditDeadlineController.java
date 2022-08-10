@@ -33,8 +33,10 @@ public class EditDeadlineController {
     @Autowired
     DeadlineService deadlineService;
 
-    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
-    private String redirectToProjects = "redirect:/projects";
+    private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
+    private static final String REDIRECT_PROJECTS = "redirect:/projects";
+
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
 
     /**
      * The get mapping to return the page with the form to add/edit deadlines
@@ -49,7 +51,7 @@ public class EditDeadlineController {
                             @PathVariable("deadlineId") String deadlineId,
                             Model model) throws Exception {
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
         int userId = Integer.parseInt(principal.getClaimsList().stream()
                 .filter(claim -> claim.getType().equals("nameid"))
@@ -81,9 +83,9 @@ public class EditDeadlineController {
         }
         model.addAttribute("deadline", deadline);
         model.addAttribute("deadlineName", deadline.getDeadlineName());
-        model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), timeFormat));
-        model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), timeFormat));
-        model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), timeFormat));
+        model.addAttribute("deadlineDate", Project.dateToString(deadline.getDeadlineDate(), TIME_FORMAT));
+        model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
+        model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
         return "editDeadline";
     }
 
@@ -106,7 +108,7 @@ public class EditDeadlineController {
             Model model) throws Exception {
 
         if (!userAccountClientService.isTeacher(principle)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
 
         int deadlineId;
@@ -119,7 +121,7 @@ public class EditDeadlineController {
             deadlineId = Integer.parseInt(deadlineIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            return redirectToProjects;
+            return REDIRECT_PROJECTS;
         }
 
         //check if creating or editing existing deadline
@@ -136,7 +138,7 @@ public class EditDeadlineController {
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
 
@@ -145,11 +147,11 @@ public class EditDeadlineController {
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("deadlineId") String deadlineId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         deadlineService.deleteDeadlineById(Integer.parseInt(deadlineId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 
 

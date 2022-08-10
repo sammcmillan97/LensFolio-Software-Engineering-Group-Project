@@ -2,6 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.util.PlannerUtil;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,13 +41,11 @@ public class PlannerController {
     @Autowired
     private UserAccountClientService userService;
 
-    @Autowired
-    private PortfolioUserService portfolioUserService;
-
     private boolean plannerUpdated = false;
     private String plannerDate;
 
-    private String redirectToProjects = "redirect:/projects";
+    private static final String PROJECTS_REDIRECT = "redirect:/projects";
+    private static final String PLANNER_REDIRECT = "redirect:/planner-";
 
     /**
      * GET endpoint for planner page. Returns the planner html page to the client with relevant project and sprint data
@@ -68,7 +64,7 @@ public class PlannerController {
         try {
             project = projectService.getProjectById(projectId);
         } catch (Exception ignored) {
-            return redirectToProjects;
+            return PROJECTS_REDIRECT;
         }
 
         int userId = Integer.parseInt(principal.getClaimsList().stream()
@@ -144,7 +140,7 @@ public class PlannerController {
                           @RequestParam Date paginationDate) {
         try {
             if (!userService.isTeacher(principal)) {
-                return "redirect:/planner-" + projectId;
+                return PLANNER_REDIRECT + projectId;
             }
             sprintService.updateStartDate(Integer.parseInt(sprintId), startDate);
             Calendar tempEndDate = Calendar.getInstance();
@@ -156,7 +152,7 @@ public class PlannerController {
         } catch ( Exception e ) {
             plannerUpdated = false;
         }
-        return "redirect:/planner-" + projectId;
+        return PLANNER_REDIRECT + projectId;
     }
 
     /**
@@ -171,7 +167,49 @@ public class PlannerController {
                           @RequestParam Date paginationDate) {
         plannerDate = new SimpleDateFormat("yyyy-MM-dd").format(paginationDate);
         plannerUpdated = true;
-        return "redirect:/planner-" + projectId;
+        return PLANNER_REDIRECT + projectId;
     }
 
+    /**
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a list of all sprints in the project
+     */
+    @GetMapping("/getSprintsList")
+    public @ResponseBody List<Sprint> getSprintsList(@RequestParam int projectId) {
+        return sprintService.getByParentProjectId(projectId);
+    }
+
+    /**
+     * Fetches a Map of all dates an event occurs on mapped to their names and number of events on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of events
+     */
+    @GetMapping("/getEventsList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getEventsList(@RequestParam int projectId) {
+        return PlannerUtil.getEventsForCalender(eventService.getByEventParentProjectId(projectId));
+    }
+
+    /**
+     * Fetches a Map of all dates a deadline occurs on mapped to their names and number of deadlines on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of deadlines
+     */
+    @GetMapping("/getDeadlinesList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getDeadlinesList(@RequestParam int projectId) {
+        return PlannerUtil.getDeadlinesForCalender(deadlineService.getByDeadlineParentProjectId(projectId));
+    }
+
+    /**
+     * Fetches a Map of all dates a milestone occurs on mapped to their names and number of milestones on that day
+     * Used by the planner page for live updating
+     * @param projectId the project id of the current project
+     * @return a map of milestones
+     */
+    @GetMapping("/getMilestonesList")
+    public @ResponseBody Map<String, PlannerDailyEvent> getMilestonesList(@RequestParam int projectId) {
+        return PlannerUtil.getMilestonesForCalender(milestoneService.getByMilestoneParentProjectId(projectId));
+    }
 }

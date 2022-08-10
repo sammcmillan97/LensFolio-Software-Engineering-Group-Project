@@ -20,6 +20,10 @@ public class DevTools {
     private static final String ADMIN_PASSWORD = "password400";
 
 
+    /**
+     * Adds some example users.
+     * For testing purposes.
+     */
     @GetMapping("/addExampleUsers")
     protected void addExampleUsers(){
         userRepository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "he/him", "jack@gmail.com", DEFAULT_PASSWORD));
@@ -41,6 +45,10 @@ public class DevTools {
         userRepository.save(onlyAdmin);
     }
 
+    /**
+     * Deletes all of the example users.
+     * For testing purposes.
+     */
     @GetMapping("/deleteExampleUsers")
     protected void deleteExampleUsers(){
         User testUser;

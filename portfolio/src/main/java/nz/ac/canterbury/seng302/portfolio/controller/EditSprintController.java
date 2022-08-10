@@ -33,6 +33,8 @@ public class EditSprintController {
     private static final String PROJECTS_REDIRECT = "redirect:/projects";
     private static final String TIME_FORMAT = "yyyy-MM-dd";
 
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
+
 
     /**
      * The get mapping to return the page to edit a sprint of a certain Project ID
@@ -48,7 +50,7 @@ public class EditSprintController {
                              @PathVariable("sprintId") String sprintIdString,
                              Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
         User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
@@ -120,7 +122,7 @@ public class EditSprintController {
             Model model
     ) throws ParseException {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
         User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
@@ -185,7 +187,7 @@ public class EditSprintController {
         } else {
             sprintService.createNewSprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
 
@@ -201,10 +203,10 @@ public class EditSprintController {
                                     @PathVariable("parentProjectId") String parentProjectId,
                                     @PathVariable("sprintId") String sprintId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECTS_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         sprintService.deleteSprint(Integer.parseInt(parentProjectId), Integer.parseInt(sprintId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 }

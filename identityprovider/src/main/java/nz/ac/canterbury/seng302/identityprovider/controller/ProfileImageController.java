@@ -15,6 +15,11 @@ public class ProfileImageController {
     @Autowired
     private UserAccountsServerService userAccountsServerService;
 
+    /**
+     * Finds the request profile picture if it exists and returns a byte array
+     * @param filename the filename of the profile picture to retrieve
+     * @return a byte array containing the image data
+     */
     @GetMapping("/ProfilePicture-{filename}")
     public ResponseEntity<byte[]> getProfilePicture(
             @PathVariable("filename") String filename

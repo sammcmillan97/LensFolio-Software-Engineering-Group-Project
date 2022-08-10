@@ -74,7 +74,29 @@ public class EvidenceService {
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
             throw new IllegalArgumentException("Date not valid");
         }
+        for (String skill : evidence.getSkills()) {
+            if (skill.length() > 50) {
+                throw new IllegalArgumentException("Skills not valid");
+            }
+        }
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
+    }
+
+    /**
+     * Gets all skills from a list of evidence. Each skill returned is unique.
+     * @param evidenceList A list of evidence to retrieve skills from.
+     * @return All the skills for that list of evidence.
+     */
+    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Collection<String> skills = new HashSet<>();
+        for (Evidence userEvidence : evidenceList) {
+            skills.addAll(userEvidence.getSkills());
+        }
+        List<String> skillList = new ArrayList<>(skills);
+        skillList.sort(String::compareToIgnoreCase);;
+        return skillList;
     }
 
     /**
@@ -85,6 +107,69 @@ public class EvidenceService {
         repository.deleteById(id);
     }
 
+    /**
+     * Saves a web link string to the evidence specified by evidenceId.
+     * @param evidenceId The evidence to have the web link added to.
+     * @param weblink The web link sting to be added to evidence of id=evidenceId.
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
+    public void saveWebLink(int evidenceId, WebLink weblink) throws NoSuchElementException {
+            try {
+                Evidence evidence = getEvidenceById(evidenceId);
+                evidence.addWebLink(weblink);
+                saveEvidence(evidence);
+            } catch (NoSuchElementException e) {
+                throw new NoSuchElementException("Evidence not found: web link not saved");
+            }
+    }
+
+    /**
+     * Checks that a weblink is in the correct format
+     * @param weblink The string representation of the weblink being validated
+     * @throws IllegalArgumentException If the weblink is in the wrong format IllegalArgumentException is thrown
+     */
+    public void validateWebLink(String weblink) {
+        Pattern fieldPattern = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+        Matcher weblinkMatcher = fieldPattern.matcher(weblink);
+        if (!weblinkMatcher.find()) {
+            throw new IllegalArgumentException("Weblink not in valid format");
+        }
+    }
+
+    /**
+     * Wrote a method for retrieve evidence by skill
+     * @param skill being searched for
+     * @return list of evidences containing skill
+     */
+    public List<Evidence> retrieveEvidenceBySkill(String skill, int projectId) {
+        return repository.findBySkillsAndProjectIdOrderByDateDescIdDesc(skill, projectId);
+    }
+
+    /**
+     * Retrieve all evidence for a project where skills is null
+     * @param projectId of evidence
+     * @return list of evidences with no skill
+     */
+    public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
+        return repository.findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(projectId);
+    }
+
+    /**
+     * Retrieves all evidence owned by the given user user and with the given skill
+     * @param skill The skill being searched for
+     * @param userId The owner of the Evidence
+     * @return A list of evidence owned by the user and containing the skill
+     */
+    public List<Evidence> retrieveEvidenceBySkillAndUser(String skill, int userId, int projectId) {
+        List<Evidence> usersEvidenceWithSkill = new ArrayList<>();
+        for (Evidence e : retrieveEvidenceBySkill(skill, projectId)) {
+            if (e.getOwnerId() == userId) {
+                usersEvidenceWithSkill.add(e);
+            }
+        }
+        return usersEvidenceWithSkill;
+    }
     /**
      * Service method for setting the categories of a piece of evidence.
      * @param categories A set of Categories enum (QUANTITATIVE, QUALITATIVE, SERVICE)
