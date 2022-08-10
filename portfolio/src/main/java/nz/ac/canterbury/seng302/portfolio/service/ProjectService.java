@@ -53,15 +53,4 @@ public class ProjectService {
             throw new NoSuchElementException("No project found to delete");
         }
     }
-
-    /**
-     * Validate titles for any titles (projects, deadlines, milestones, sprint, etc
-     * @param title of object
-     * @return true if valid else return if false
-     */
-    public boolean validTitle(String title) {
-        Pattern namePattern = Pattern.compile("[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð ,.'\\-]+");
-        Matcher nameMatcher = namePattern.matcher(title);
-        return nameMatcher.matches();
-    }
 }

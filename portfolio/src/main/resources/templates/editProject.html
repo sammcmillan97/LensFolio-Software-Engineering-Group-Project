@@ -38,7 +38,7 @@
             <!-- Add/Edit Project Form -->
             <form id="project-form__form" class="flex-column" th:action="@{editProject-{id}(id=${projectId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
-                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" minlength="1" maxlength="64" th:placeholder="${projectName}" th:value="${projectName}" title="Please enter 1 or more non whitespace characters" required pattern=".*\S.*">
+                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" minlength="1" maxlength="64" th:placeholder="${projectName}" th:value="${projectName}" title="Cannot be blank and must not contain special characters" required th:pattern="${titlePattern}">
 
                 <label for="project-form__description-field">Project Description</label>
                 <textarea id="project-form__description-field" class="edit-input" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>

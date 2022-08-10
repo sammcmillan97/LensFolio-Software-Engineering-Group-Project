@@ -114,9 +114,6 @@ public class DeadlineService {
         Date projectEndDate = parentProject.getEndDate();
         if (deadlineDate.compareTo(projectEndDate) > 0 || deadlineDate.compareTo(projectStartDate) < 0) {
             throw new UnsupportedOperationException("Deadline date must be within the project dates");
-        } else if (!projectService.validTitle(deadline.getDeadlineName())){
-
-            throw new IllegalArgumentException("Deadline cannot contain special characters");
         }
         deadline.setDeadlineDate(deadlineDate);
         deadline.setDeadlineName(deadlineName);
@@ -136,8 +133,6 @@ public class DeadlineService {
         Date projectEndDate = parentProject.getEndDate();
         if (deadlineDate.compareTo(projectEndDate) > 0 || deadlineDate.compareTo(projectStartDate) < 0) {
             throw new UnsupportedOperationException("Deadline date must be within the project dates");
-        } else if (!projectService.validTitle(deadLineName)){
-            throw new IllegalArgumentException("Deadline cannot contain special characters");
         } else {
             saveDeadline(new Deadline(parentProjectId, deadLineName, deadlineDate));
         }

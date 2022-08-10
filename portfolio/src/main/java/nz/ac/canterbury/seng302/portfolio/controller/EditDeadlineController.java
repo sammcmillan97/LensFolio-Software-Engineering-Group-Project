@@ -131,17 +131,11 @@ public class EditDeadlineController {
                 deadlineService.createNewDeadline(projectId, deadlineName, deadlineDate);
             } catch (UnsupportedOperationException e) {
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
-            } catch (IllegalArgumentException e) {
-                model.addAttribute("titleError", "Title cannot contain special characters");
-                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         } else {
             try {
                 deadlineService.updateDeadline(projectId, deadlineId, deadlineName, deadlineDate);
             } catch(UnsupportedOperationException e) {
-                return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
-            } catch (IllegalArgumentException e) {
-                model.addAttribute("titleError", "Title cannot contain special characters");
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         }

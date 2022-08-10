@@ -35,9 +35,8 @@
         <!-- Add/Edit Deadline Form -->
         <form id="form__body" class="flex-column" th:action="@{editDeadline-{deadline}-{project}(project=${parentProjectId}, deadline=${deadlineId})}" th:method="post">
             <label for="form__name-field">Name *</label>
-            <p th:text="${titleError}" class="form-error-message">HI</p>
 
-            <input type="text" id="form__name-field" class="edit-input" name="deadlineName" maxlength="30" placeholder="Deadline name" th:value="${deadline.deadlineName}" pattern=".*[^\s].*" required title="Deadline Name must not be blank" onkeyup="countCharacters()">
+            <input type="text" id="form__name-field" class="edit-input" name="deadlineName" maxlength="30" placeholder="Deadline name" th:value="${deadline.deadlineName}" th:pattern="${titlePattern}" required title="Deadline Name must not be blank, and must not contain special chars" onkeyup="countCharacters()">
             <span id="char_count">30/30 characters remain</span>
 
             <label for="form__date-field">Date *</label>

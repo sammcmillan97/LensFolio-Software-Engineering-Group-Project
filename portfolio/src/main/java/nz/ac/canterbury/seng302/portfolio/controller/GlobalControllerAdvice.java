@@ -27,6 +27,9 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    private static final String REGEX_WITH_SPACE = "[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð,. '\\-]";
+    private static final String REGEX_WITHOUT_SPACE = "[a-zA-Z1-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽ∂ð,.'\\-]";
+
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
@@ -69,5 +72,10 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @ModelAttribute("titlePattern")
+    public String getTitlePattern(){
+        return "(" + REGEX_WITH_SPACE + "*)(" + REGEX_WITHOUT_SPACE + ")("  + REGEX_WITH_SPACE + "*)";
     }
 }
