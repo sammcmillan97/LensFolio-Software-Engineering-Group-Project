@@ -1,9 +1,6 @@
 stages:
   - tagChecking
   - publishProtosToLocalMavenRepo
-  - build
-  - test
-  - sonarqube
   - deploy
 
 tag-checker:
