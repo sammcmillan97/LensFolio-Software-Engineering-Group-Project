@@ -187,7 +187,7 @@ public class EditSprintController {
         } else {
             sprintService.createNewSprint(projectId, sprintName, sprintDescription, sprintStartDate, sprintEndDate);
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
 
@@ -207,6 +207,6 @@ public class EditSprintController {
         }
 
         sprintService.deleteSprint(Integer.parseInt(parentProjectId), Integer.parseInt(sprintId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 }

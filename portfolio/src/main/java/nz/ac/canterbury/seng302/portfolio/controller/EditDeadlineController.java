@@ -138,7 +138,7 @@ public class EditDeadlineController {
                 return("redirect:/editDeadline-{deadlineId}-{parentProjectId}");
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
 
@@ -151,7 +151,7 @@ public class EditDeadlineController {
         }
 
         deadlineService.deleteDeadlineById(Integer.parseInt(deadlineId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 
 

@@ -9,12 +9,13 @@ import org.springframework.http.HttpStatus;
 @Configuration
 public class WebConfig implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
+    private static final String ERROR = "/errors";
     @Override
     public void customize(ConfigurableServletWebServerFactory factory) {
         factory.addErrorPages(
-                new ErrorPage(HttpStatus.UNAUTHORIZED, "/errors"),
-                new ErrorPage(HttpStatus.FORBIDDEN, "/errors"),
-                new ErrorPage(HttpStatus.NOT_FOUND, "/errors"),
-                new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/errors"));
+                new ErrorPage(HttpStatus.UNAUTHORIZED, ERROR),
+                new ErrorPage(HttpStatus.FORBIDDEN, ERROR),
+                new ErrorPage(HttpStatus.NOT_FOUND, ERROR),
+                new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, ERROR));
     }
 }

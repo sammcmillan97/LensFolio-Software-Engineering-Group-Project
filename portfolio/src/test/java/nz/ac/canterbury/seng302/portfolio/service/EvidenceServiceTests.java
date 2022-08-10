@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import io.cucumber.java.an.E;
 import nz.ac.canterbury.seng302.portfolio.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class EvidenceServiceTests {
 
-    private static final String TEST_DESCRIPTION = "According to all know laws of aviation, there is no way a bee should be able to fly.";
+    private static final String TEST_DESCRIPTION = "According to all known laws of aviation, there is no way a bee should be able to fly.";
 
     @Autowired
     EvidenceService evidenceService;
@@ -101,9 +100,9 @@ class EvidenceServiceTests {
     //When fields are made of only special characters, they should be rejected.
     @Test
     void whenTitleOnlySpecialCharacters_testEvidenceRejected() {
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "!!&683 7;'.} {-++++", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        Evidence evidence = new Evidence(1, projects.get(1).getId(), "!!&683 7;'.} {-++++", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Title not valid");
-        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(1, projects.get(1).getId());
         assertEquals(0, evidenceList.size());
     }
 
@@ -146,6 +145,7 @@ class EvidenceServiceTests {
 
     //When evidence is added, check that it is chronologically ordered.
     @Test
+    @Transactional
     void whenEvidenceAdded_testIsInOrder() {
         Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
@@ -163,8 +163,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testSaveOneWebLink() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "Test EvidenceTest EvidenceTest EvidenceTest EvidenceTest EvidenceTest Evidence", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
         Evidence receivedEvidence = evidenceService.getEvidenceById(evidence1.getId());
@@ -174,8 +173,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void whenEvidenceAdded_testSaveMultipleWebLinks() {
-        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three",
-                "Test EvidenceTest EvidenceTest EvidenceTest EvidenceTest EvidenceTest Evidence", Date.valueOf("2022-05-14"));
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio"));
@@ -196,6 +194,338 @@ class EvidenceServiceTests {
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
+
+    //When skills are added, test that they split up as expected.
+    @Test
+    @Transactional
+    void whenSkillsAdded_testSkillsSplitProperly() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "   skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        List<String> skills = evidenceList.get(0).getSkills();
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("skill1");
+        expectedSkills.add("skill_2");
+        expectedSkills.add("{skill}");
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        assertEquals(expectedSkills, skills);
+    }
+
+    //When skills are added, test duplicates are removed.
+    @Test
+    @Transactional
+    void whenSkillsAdded_testDuplicatesRemoved() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a b c b a");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        List<String> skills = evidenceList.get(0).getSkills();
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        expectedSkills.add("c");
+        assertEquals(expectedSkills, skills);
+    }
+
+    //Test long skills cause an error to be thrown
+    @Test
+    @Transactional
+    void when51CharSkillAdded_testErrorThrown() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(51));
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.saveEvidence(evidence), "Skills not valid");
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(1, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
+    //Test skills under the limit do not cause errors to be thrown
+    @Test
+    @Transactional
+    void when50CharSkillAdded_testErrorNotThrown() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a".repeat(50));
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+    }
+
+    //Test that capitalization of strings carries through in a user's evidence
+    @Test
+    @Transactional
+    void whenSkillsAdded_testCorrectCapitalization() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "blah tESt");
+        evidenceService.saveEvidence(evidence1);
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-13"), "TesT testing");
+        evidenceService.saveEvidence(evidence2);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(2, evidenceList.size());
+        List<String> skills1 = evidenceList.get(0).getSkills();
+        List<String> expectedSkills1 = new ArrayList<>();
+        expectedSkills1.add("blah");
+        expectedSkills1.add("tESt");
+        assertEquals(expectedSkills1, skills1);
+        List<String> skills2 = evidenceList.get(1).getSkills();
+        List<String> expectedSkills2 = new ArrayList<>();
+        expectedSkills2.add("tESt");
+        expectedSkills2.add("testing");
+        assertEquals(expectedSkills2, skills2);
+    }
+
+
+    /////////////////////////////////
+    ///GET EVIDENCE BY SKILL TESTS///
+    /////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExists_findBySkill(){
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkills_findByMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId()).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkills_findByNonMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByMatchingSkill_MatchOne(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("b", projects.get(1).getId()).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByMatchingSkill_MatchAll(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals(2, evidenceService.retrieveEvidenceBySkill("skill_2", projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findByNonMatchingSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkill("skill", projects.get(1).getId()).isEmpty());
+    }
+
+    ///////////////////////////////////////
+    ///GET EVIDENCE WITH NO SKILL TESTS////
+    ///////////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExists_findEvidenceWithNoSkill(){
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkills_findEvidenceWithNoSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithoutSkills_findEvidenceWithNoSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_findEvidenceWithNoSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertTrue(evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsOneWithSkills_findEvidenceWithNoSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertEquals(1, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithoutSkills_findEvidenceWithNoSkill(){
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        assertEquals(2, evidenceService.retrieveEvidenceWithNoSkill(projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_matchAll_testSortOrder() {
+        Evidence evidence = new Evidence(1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Evidence evidence2 = new Evidence(1, projects.get(1).getId(), "Evidence Three", TEST_DESCRIPTION, Date.valueOf("2022-05-10"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+
+        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId());
+        assertEquals(3, searchResults.size());
+        assertEquals("Evidence Two", searchResults.get(0).getTitle());
+        assertEquals("Evidence One", searchResults.get(1).getTitle());
+        assertEquals("Evidence Three", searchResults.get(2).getTitle());
+    }
+
+    //////////////////////////////////////////
+    ///GET EVIDENCE BY SKILL AND USER TESTS///
+    //////////////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenNoEvidenceExistsWithSkillAndUser_findBySkillAndUser() {
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser("skill", 1, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkillAndUser_findBySkillAndNonMatchingUser() {
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId2, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsForSkillAndUser_findByUserAndNonMatchingSkill() {
+        int testUserId = 1;
+        String testSkill = "skill1234";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExistsWithSkillAndUser_findBySkillAndUser() {
+        int testUserId = 1;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndNonMatchingUser() {
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId2, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId2, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId1, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsForSkillAndUser_findByUserAndNonMatchingSkill_NoMatches() {
+        int testUserId = 1;
+        String testSkill = "skill1234";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+
+        assertTrue(evidenceService.retrieveEvidenceBySkillAndUser(testSkill, testUserId, projects.get(1).getId()).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndUser_MatchOne() {
+        int testUserId = 1;
+        int testUserId2 = 2;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId2, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).get(0).getTitle());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidenceExistsWithSkillAndUser_findBySkillAndUser_MatchAll() {
+        int testUserId = 1;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+
+        assertEquals(2, evidenceService.retrieveEvidenceBySkillAndUser(testSkill, 1, projects.get(1).getId()).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkillAndUser_matchAll_testSortOrder() {
+        int testUserId = 1;
+        String testSkill = "skill1";
+        Evidence evidence = new Evidence(testUserId, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
+        Evidence evidence1 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Evidence evidence2 = new Evidence(testUserId, projects.get(1).getId(), "Evidence Three", TEST_DESCRIPTION, Date.valueOf("2022-05-10"), "skill1 skill_2 {skill}");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+
+        List<Evidence> searchResults = evidenceService.retrieveEvidenceBySkill(testSkill, projects.get(1).getId());
+        assertEquals(3, searchResults.size());
+        assertEquals("Evidence Two", searchResults.get(0).getTitle());
+        assertEquals("Evidence One", searchResults.get(1).getTitle());
+        assertEquals("Evidence Three", searchResults.get(2).getTitle());
+    }
+
+
+
 
     @Test
     @Transactional

@@ -82,6 +82,7 @@ html {
 .evidence__details {
     border-top: 1px solid var(--color-accent);
     padding-top: 1rem;
+    padding-bottom: 1rem;
     visibility: visible;
 }
 
@@ -93,6 +94,7 @@ html {
 }
 
 .evidence__description {
+    overflow-wrap: anywhere;
     margin: 0 0 1rem;
 }
 
@@ -166,3 +168,26 @@ html {
     float: right;
 }
 
+
+
+.evidence__skills {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.skill-link {
+    overflow-wrap: anywhere;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    background-color: var(--color-primary);
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    color: initial;
+    text-align: center;
+}
+
+.skill-link:hover {
+    background-color: #F67B50;
+}

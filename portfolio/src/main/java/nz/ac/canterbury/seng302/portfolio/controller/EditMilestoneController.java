@@ -148,7 +148,7 @@ public class EditMilestoneController {
                 return ("redirect:/editMilestone-" + milestoneIdString + "-" + projectIdString);
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
     /**
@@ -167,7 +167,7 @@ public class EditMilestoneController {
         }
 
         milestoneService.deleteMilestoneById(Integer.parseInt(milestoneId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 
 }

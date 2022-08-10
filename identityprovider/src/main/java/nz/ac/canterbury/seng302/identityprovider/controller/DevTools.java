@@ -24,6 +24,11 @@ public class DevTools {
     private static final String DEFAULT_PRONOUNS = "she/her";
     private static final String ADMIN_PASSWORD = "password400";
 
+
+    /**
+     * Adds some example users.
+     * For testing purposes.
+     */
     @GetMapping("/addExampleUsers")
     @ResponseBody
     protected String addExampleUsers(){
@@ -52,6 +57,10 @@ public class DevTools {
         }
     }
 
+    /**
+     * Deletes all of the example users.
+     * For testing purposes.
+     */
     @GetMapping("/deleteExampleUsers")
     @ResponseBody
     protected String deleteExampleUsers(){

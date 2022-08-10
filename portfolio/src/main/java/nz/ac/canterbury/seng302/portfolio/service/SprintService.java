@@ -110,15 +110,15 @@ public class SprintService {
         Sprint sprint;
         try {
             sprint = getSprintById(sprintId);
-            sprint.setName(sprintName);
-            sprint.setDescription(sprintDescription);
-            sprint.setStartDate(sprintStartDate);
-            sprint.setEndDate(sprintEndDate);
-            saveSprint(sprint);
-            updateSprintNumbers(projectId);
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
+            return; // Since the sprint does not exist, return without editing the sprint,
         }
+        sprint.setName(sprintName);
+        sprint.setDescription(sprintDescription);
+        sprint.setStartDate(sprintStartDate);
+        sprint.setEndDate(sprintEndDate);
+        saveSprint(sprint);
+        updateSprintNumbers(projectId);
     }
 
     /**

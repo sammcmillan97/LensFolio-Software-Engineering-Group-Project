@@ -17,6 +17,11 @@ public class IdpErrorController implements ErrorController {
     @Autowired
     private ErrorAttributes errorAttributes;
 
+    /**
+     * Returns a generic error page when an error occurs.
+     * @param request A HTTP Request
+     * @return a basic error page
+     */
     @GetMapping("/error")
     @ResponseBody
     public String handleError(HttpServletRequest request) {

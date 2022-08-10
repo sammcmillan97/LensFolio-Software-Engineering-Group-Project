@@ -42,14 +42,14 @@ The `shared` class library is a dependency of the two main applications, so befo
 
 Assuming we start in the project root, the steps are as follows...
 
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd shared
 ./gradlew clean
 ./gradlew publishToMavenLocal
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd shared
 gradlew clean
@@ -64,13 +64,13 @@ In order to be able to log in through the Portfolio module, and access its prote
 
 Again, assuming we are starting in the root directory...
 
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd identityprovider
 ./gradlew bootRun
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd identityprovider
 gradlew bootRun
@@ -83,13 +83,13 @@ Unlike in step 1, when you run this command, it won't 'finish'. This is because 
 Now that the IdP is up and running, we will be able to use the Portfolio module (note: it is entirely possible to start it up without the IdP running, you just won't be able to get very far).
 
 From the root directory (and likely in a second terminal tab / window)...
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd portfolio
 ./gradlew bootRun
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd portfolio
 gradlew bootRun
@@ -99,7 +99,7 @@ By default, the Portfolio will run on local port 9000 (`http://localhost:9000`)
 
 
 ### 4 - Connect to the Portfolio UI through your web brower
-Everything should now be up and running, so you can load up your preferred web browser and connect to the Portfolio UI by going to `http://localhost:9000` - though you will probably want to start at `http://localhost:9000/login` until you set up an automatic redirect, or a home page of sorts.
+Everything should now be up and running, so you can load up your preferred web browser and connect to the Portfolio UI by going to `http://localhost:9000`
 
 
 ## User Manual
