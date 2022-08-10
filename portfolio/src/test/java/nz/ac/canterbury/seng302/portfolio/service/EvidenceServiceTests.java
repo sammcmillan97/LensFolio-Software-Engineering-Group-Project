@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -163,13 +160,13 @@ class EvidenceServiceTests {
     void testSetCategoriesOfEvidenceAllThree() {
         Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test Evidence", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence);
-        Set<Categories> categoriesSet = new HashSet<>();
-        categoriesSet.add(Categories.Qualitative);
-        categoriesSet.add(Categories.Quantitative);
-        categoriesSet.add(Categories.Service);
-        evidenceService.setCategories(categoriesSet, evidenceService.getEvidenceById(evidence.getId()));
+        List<Categories> categoriesList = new ArrayList<>();
+        categoriesList.add(Categories.Quantitative);
+        categoriesList.add(Categories.Qualitative);
+        categoriesList.add(Categories.Service);
+        evidenceService.setCategories(new HashSet<>(categoriesList), evidenceService.getEvidenceById(evidence.getId()));
         evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
-        assertEquals(categoriesSet, evidence.getCategories());
+        assertEquals(categoriesList, evidence.getCategories());
     }
 
     @Test
@@ -178,17 +175,17 @@ class EvidenceServiceTests {
         evidenceService.saveEvidence(evidence);
         evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
 
-        Set<Categories> categoriesSet1 = new HashSet<>();
-        categoriesSet1.add(Categories.Qualitative);
-        evidenceService.setCategories(categoriesSet1, evidence);
+        List<Categories> categoriesList1 = new ArrayList<>();
+        categoriesList1.add(Categories.Qualitative);
+        evidenceService.setCategories(new HashSet<>(categoriesList1), evidence);
         evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
-        assertEquals(categoriesSet1, evidence.getCategories());
+        assertEquals(categoriesList1, evidence.getCategories());
 
-        Set<Categories> categoriesSet2 = new HashSet<>();
-        categoriesSet2.add(Categories.Service);
-        evidenceService.setCategories(categoriesSet2, evidence);
+        List<Categories> categoriesList2 = new ArrayList<>();
+        categoriesList2.add(Categories.Service);
+        evidenceService.setCategories(new HashSet<>(categoriesList2), evidence);
         evidence = evidenceRepository.findByProjectId(projects.get(1).getId()).get(0);
-        assertEquals(categoriesSet2, evidence.getCategories());
+        assertEquals(categoriesList2, evidence.getCategories());
     }
 
     @Test
