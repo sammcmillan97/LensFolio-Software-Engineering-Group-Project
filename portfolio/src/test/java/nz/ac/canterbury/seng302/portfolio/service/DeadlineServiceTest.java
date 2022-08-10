@@ -41,7 +41,7 @@ class DeadlineServiceTest {
     }
 
     /**
-     * Refresh the database each test
+     * Refresh the database after each test
      */
     @AfterEach
     void cleanDatabase() {
