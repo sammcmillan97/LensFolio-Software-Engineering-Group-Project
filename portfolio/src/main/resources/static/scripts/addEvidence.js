@@ -239,3 +239,9 @@ input.addEventListener('focus', (event) => {
 input.addEventListener('blur', (event) => {
     div.style.outline = '';
 });
+
+
+document.getElementById("skills-input").dispatchEvent(new Event('input', {
+    bubbles: true,
+    cancelable: true,
+}))

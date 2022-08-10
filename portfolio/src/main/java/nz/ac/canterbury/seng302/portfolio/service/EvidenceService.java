@@ -94,7 +94,9 @@ public class EvidenceService {
         for (Evidence userEvidence : evidenceList) {
             skills.addAll(userEvidence.getSkills());
         }
-        return skills;
+        List<String> skillList = new ArrayList<>(skills);
+        skillList.sort(String::compareToIgnoreCase);;
+        return skillList;
     }
 
     /**

@@ -35,6 +35,7 @@ public class PortfolioController {
     private PortfolioUserService portfolioUserService;
 
     private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
+
     private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
 
     /**
@@ -52,7 +53,6 @@ public class PortfolioController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
-        model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
 
         int userId = user.getId();
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
