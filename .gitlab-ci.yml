@@ -18,12 +18,18 @@ junit-identityprovider:
   script:
     - cd identityprovider
     - ./gradlew test
+  artifacts:
+    paths:
+      - identityprovider/build/jacoco/test-report.xml
 
 junit-portfolio:
   stage: test
   script:
     - cd portfolio
     - ./gradlew test
+  artifacts:
+    paths:
+      - portfolio/build/jacoco/test-report.xml
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -141,11 +147,13 @@ deploy-production-portfolio:
     - tags
     - master
 
+
 sonarqube-report:
   stage: sonarqube
   variables:
     GIT_DEPTH: 0
   script:
+    - set JAVA_OPTS="-Xms2048m -Xmx4096m"
     - cd identityprovider
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
@@ -154,3 +162,4 @@ sonarqube-report:
     - touch ./.env
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
+  retry: 2

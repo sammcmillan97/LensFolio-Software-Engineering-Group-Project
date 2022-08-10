@@ -1,10 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
+import nz.ac.canterbury.seng302.portfolio.model.DateRestrictions;
 import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.service.SprintService;
+import nz.ac.canterbury.seng302.portfolio.service.ProjectDateService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -25,10 +22,13 @@ import java.util.Objects;
  */
 @Controller
 public class EditProjectController {
+
     @Autowired
     ProjectService projectService;
+
     @Autowired
-    SprintService sprintService;
+    ProjectDateService projectDateService;
+
     @Autowired
     UserAccountClientService userAccountClientService;
 
@@ -39,6 +39,8 @@ public class EditProjectController {
     private static final String PROJECT_REDIRECT = "redirect:/projects";
     private static final String EDIT_PROJECT_REDIRECT = "redirect:/editProject-";
     private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
 
     /**
      * Method to return a calendar object representing the very beginning of a day
@@ -64,7 +66,7 @@ public class EditProjectController {
     @GetMapping("/editProject-{id}")
     public String projectForm(@AuthenticationPrincipal AuthState principal, @PathVariable("id") String projectId, Model model) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECT_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
 
         // Add user details to model
@@ -116,29 +118,8 @@ public class EditProjectController {
         java.util.Date maxEndDate = java.util.Date.from(cal.toInstant());
         model.addAttribute("maxProjectEndDate", Project.dateToString(maxEndDate, DATE_FORMAT_STRING));
 
-        // Check if the project has any sprints
-        List<Sprint> projectSprints = sprintService.getByParentProjectId(project.getId());
-        if (! projectSprints.isEmpty()) {
-            // Find the first sprint start date and last sprint end date
-            java.util.Date firstSprintStartDate = null;
-            java.util.Date lastSprintEndDate = null;
-            for (Sprint s: projectSprints) {
-                // Find the earliest sprint
-                if (Objects.equals(s.getNumber(), 1)) {
-                    firstSprintStartDate = s.getStartDate();
-                }
-                // Find the last sprint
-                if (Objects.equals(s.getNumber(), projectSprints.size())) {
-                    lastSprintEndDate = s.getEndDate();
-                }
-            }
-            // Add the attributes to the model
-            model.addAttribute("projectHasSprints", true);
-            model.addAttribute("projectFirstSprintStartDate", firstSprintStartDate);
-            model.addAttribute("projectLastSprintEndDate", lastSprintEndDate);
-        } else {
-            model.addAttribute("projectHasSprints", false);
-        }
+        DateRestrictions dateRestrictions = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+        model.addAttribute("dateRestrictions", dateRestrictions);
 
         return "editProject";
     }
@@ -163,7 +144,7 @@ public class EditProjectController {
             @RequestParam(value="projectDescription") String projectDescription
     ) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return PROJECT_REDIRECT;
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
 
         // Ensure request parameters represent a valid project
@@ -176,18 +157,11 @@ public class EditProjectController {
         }
 
         // Check the project name isn't null, empty, too long or consists of whitespace
-        if (projectName == null || projectName.length() > 255 || projectName.isBlank()) {
+        // Also check that the project description and date fields are valid.
+        if (projectName == null || projectName.length() > 255 || projectName.isBlank() ||
+                projectDescription.length() > 255 || projectEndDate == null || projectStartDate == null) {
             return EDIT_PROJECT_REDIRECT + projectId;
             // Check project name is
-        }
-
-        if (projectDescription.length() > 255) {
-            return EDIT_PROJECT_REDIRECT + projectId;
-        }
-
-        // Check dates are not null
-        if (projectEndDate == null || projectStartDate == null) {
-            return EDIT_PROJECT_REDIRECT + projectId;
         }
 
         // Check that projectStartDate does not occur more than a year ago
@@ -206,6 +180,16 @@ public class EditProjectController {
         projectEndCal.setTime(projectEndDate);
         if (!projectEndCal.after(projectStartCal)) {
             return EDIT_PROJECT_REDIRECT + projectId;
+        }
+
+        DateRestrictions dateRestrictions = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
+        if (dateRestrictions.hasRestrictions()) {
+            if (projectStartCal.before(dateRestrictions.getStartDate())) {
+                return EDIT_PROJECT_REDIRECT + projectId;
+            }
+            if (!projectEndCal.after(dateRestrictions.getEndDate())) {
+                return EDIT_PROJECT_REDIRECT + projectId;
+            }
         }
 
         // If editing existing project
@@ -229,7 +213,7 @@ public class EditProjectController {
             savedProject = projectService.saveProject(newProject);
         }
 
-        return "redirect:/projectDetails-" + savedProject.getId();
+        return REDIRECT_PROJECT_DETAILS + savedProject.getId();
     }
 
     /**
@@ -247,9 +231,9 @@ public class EditProjectController {
             } catch (Exception ignored) {
                 // Don't do anything if delete fails
             }
+        } else {
+            return REDIRECT_PROJECT_DETAILS + projectId;
         }
-
-
         return PROJECT_REDIRECT;
     }
 

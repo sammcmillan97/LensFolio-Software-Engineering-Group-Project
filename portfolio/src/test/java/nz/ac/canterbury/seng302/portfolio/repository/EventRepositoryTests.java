@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @DataJpaTest
-public class EventRepositoryTests {
+class EventRepositoryTests {
 
     @Autowired private DataSource dataSource;
     @Autowired private JdbcTemplate jdbcTemplate;
@@ -40,7 +40,7 @@ public class EventRepositoryTests {
     }
 
     @Test
-    void findAllEvents() {
+    void givenMultipleEventsExist_findAllEvents() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
         Event event2 = new Event(project1.getId(), "Event 2", Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
@@ -65,7 +65,7 @@ public class EventRepositoryTests {
     }
 
     @Test
-    void findEventById() {
+    void givenValidId_findEventById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
         Event event2 = new Event(project1.getId(), "Event 2", Date.valueOf("2022-05-21"), Date.valueOf("2022-06-05"));
@@ -92,7 +92,7 @@ public class EventRepositoryTests {
     }
 
     @Test
-    void addEventViaRepository() {
+    void givenValidEventDetals_addEventViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Event event1 = new Event(project1.getId(), "Event 1", Date.valueOf("2022-05-05"), Date.valueOf("2022-05-20"));
         projectRepository.save(project1);

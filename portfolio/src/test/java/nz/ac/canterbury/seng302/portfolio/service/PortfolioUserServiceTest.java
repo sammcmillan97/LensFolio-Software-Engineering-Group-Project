@@ -2,19 +2,16 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.PortfolioUserRepository;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
@@ -27,10 +24,15 @@ class PortfolioUserServiceTest {
     @Autowired
     PortfolioUserRepository repository;
 
+
     @BeforeEach
     void cleanDatabase() {
         repository.deleteAll();
     }
+
+    int userId = 1;
+
+
 
     //Test that querying a user which does not exist creates that user.
     @Test
@@ -45,7 +47,7 @@ class PortfolioUserServiceTest {
 
     //Test that querying a user which does exist does not create that user.
     @Test
-    void queryOldUserTest() {
+    void givenAUserHasBeenRemoved_queryUser() {
         service.getUserById(3);
         List<PortfolioUser> users = (List<PortfolioUser>) repository.findAll();
         assertEquals(1, users.size());
@@ -56,14 +58,14 @@ class PortfolioUserServiceTest {
 
     //Test that getting the default user list sort type works (should be by name)
     @Test
-    void getUserListSortTypeTest() {
+    void givenDefaultSortType_getUserList() {
         String resultSortType = service.getUserListSortType(3);
         assertEquals("name", resultSortType);
     }
 
     //Test that setting the user list sort type works
     @Test
-    void setUserListSortTypeTest() {
+    void givenValidSortType_getUserList() {
         String testSortType = "test sort type";
         service.setUserListSortType(3, testSortType);
         String resultSortType = service.getUserListSortType(3);
@@ -72,17 +74,115 @@ class PortfolioUserServiceTest {
 
     //Test that getting the default user list sort type works (should be ascending)
     @Test
-    void getUserListIsSortAscendingTest() {
+    void givenSortAscending_getUserList() {
         boolean resultSortType = service.isUserListSortAscending(3);
         assertTrue(resultSortType);
     }
 
     //Test that setting the user list sort type works
     @Test
-    void setUserListIsSortAscendingTest() {
+    void givenSortAscending_setUserListSort() {
         service.setUserListSortAscending(3, false);
         boolean resultSortType = service.isUserListSortAscending(3);
         assertFalse(resultSortType);
     }
 
+    ///////////////////////////////
+    //PORTFOLIO USER SKILLS TESTS//
+    ///////////////////////////////
+
+    @Test
+    @Transactional
+    void givenPortfolioUserExists_addOneSkillToPortfolioUser(){
+        PortfolioUser portfolioUser = new PortfolioUser(userId, "name", true);
+        service.savePortfolioUser(portfolioUser);
+
+        List<String> skills = new ArrayList<>();
+        skills.add("skill");
+
+        service.addPortfolioUserSkills(userId, skills);
+
+        assertEquals(skills, service.getPortfolioUserSkills(userId));
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserExists_addMultipleSkillsToPortfolioUser(){
+        PortfolioUser portfolioUser = new PortfolioUser(userId, "name", true);
+        service.savePortfolioUser(portfolioUser);
+
+        List<String> skills = new ArrayList<>();
+        skills.add("one");
+        skills.add("two");
+        skills.add("three");
+
+        service.addPortfolioUserSkills(userId, skills);
+
+        assertEquals(skills, repository.findByUserId(userId).getSkills());
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserDoesNotExist_addOneSkillToPortfolioUser(){
+        List<String> skills = new ArrayList<>();
+        skills.add("skill");
+
+        service.addPortfolioUserSkills(userId, skills);
+
+        assertEquals(skills, repository.findByUserId(userId).getSkills());
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserDoesNotExist_addMultipleSkillsToPortfolioUser(){
+        List<String> skills = new ArrayList<>();
+        skills.add("one");
+        skills.add("two");
+        skills.add("three");
+
+        service.addPortfolioUserSkills(userId, skills);
+
+        assertEquals(skills, repository.findByUserId(userId).getSkills());
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserExists_andHasNoSkills_getSkills(){
+        PortfolioUser portfolioUser = new PortfolioUser(userId, "name", true);
+        service.savePortfolioUser(portfolioUser);
+
+        assertTrue(service.getPortfolioUserSkills(userId).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserExists_andHasOneSkill_getSkills(){
+        PortfolioUser portfolioUser = new PortfolioUser(userId, "name", true);
+        List<String> skills = new ArrayList<>();
+        skills.add("skill");
+        portfolioUser.addSkills(skills);
+        service.savePortfolioUser(portfolioUser);
+
+        assertEquals(skills, service.getPortfolioUserSkills(userId));
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioUserExists_andHasMultipleSkills_getSkills(){
+        PortfolioUser portfolioUser = new PortfolioUser(userId, "name", true);
+        List<String> skills = new ArrayList<>();
+        skills.add("one");
+        skills.add("two");
+        skills.add("three");
+        portfolioUser.addSkills(skills);
+        service.savePortfolioUser(portfolioUser);
+
+        assertEquals(skills, service.getPortfolioUserSkills(userId));
+    }
+
+    @Test
+    @Transactional
+    void givenPortfolioDoesNotExist_getSkills(){
+        assertTrue(service.getPortfolioUserSkills(userId).isEmpty());
+    }
 }

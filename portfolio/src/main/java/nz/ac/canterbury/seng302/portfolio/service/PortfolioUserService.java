@@ -1,13 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
-import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 public class PortfolioUserService {
@@ -95,21 +92,55 @@ public class PortfolioUserService {
         } else {
             return project;
         }
-
     }
 
     /**
-     *
-     * @param userId
-     * @param projectId
+     * Set Portfolio Users currently selected project
+     * @param userId of user selecting a project
+     * @param projectId of project being selected
      */
     public void setProject(int userId, int projectId){
         PortfolioUser portfolioUser = repository.findByUserId(userId);
-        if (portfolioUser==null) {
+        if (portfolioUser == null) {
             PortfolioUser portfolioUser1 = new PortfolioUser(userId);
             repository.save(portfolioUser1);
-        }
+        } 
+        
+        assert portfolioUser != null;
         portfolioUser.setCurrentProject(projectId);
+        repository.save(portfolioUser);
+    }
+
+    /**
+     * Get a list of skills from a Portfolio User
+     * @param userId unique id of User from idp, and PortfolioUser
+     * @return list of their skills
+     */
+    public List<String> getPortfolioUserSkills(int userId){
+        PortfolioUser portfolioUser = getUserById(userId);
+        return portfolioUser.getSkills();
+    }
+
+    /**
+     * Iterate through the list of skills, and add to the given user
+     * @param userId unique id of User from idp, and PortfolioUser
+     * @param skills list of skills being added
+     */
+    public void addPortfolioUserSkills(int userId, List<String> skills){
+        try {
+            PortfolioUser portfolioUser = getUserById(userId);
+            portfolioUser.addSkills(skills);
+            savePortfolioUser(portfolioUser);
+        } catch (Exception e) {
+            //should never reach as getUserById creates user if one doesn't exist
+        }
+    }
+
+    /**
+     * Save user to Portfolio User Repository
+     * @param portfolioUser
+     */
+    public void savePortfolioUser(PortfolioUser portfolioUser){
         repository.save(portfolioUser);
     }
 

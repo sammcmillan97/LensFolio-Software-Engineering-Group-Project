@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng302.identityprovider.service;
 
-import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.identityprovider.entity.Group;
 import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
@@ -19,7 +18,6 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -343,6 +341,28 @@ class GroupsServerServiceTests {
     }
 
     @Test
+    void whenGroupExists_andGroupHasUsers_testDeleteGroupDoesntDeleteUsers() {
+        setupForPaginationTests();
+        Set<Group> groups = groupRepository.findAll();
+        assertEquals(3, groups.size());
+        DeleteGroupRequest request = DeleteGroupRequest.newBuilder()
+                .setGroupId(testGroupId)
+                .build();
+        DeleteGroupResponse response = groupServerService.deleteGroupHandler(request);
+        assertTrue(response.getIsSuccess());
+        assertEquals("Group deleted successfully", response.getMessage());
+        groups = groupRepository.findAll();
+        assertEquals(2, groups.size());
+        int groupId2 = groupRepository.findByShortName("Group 2").getGroupId();
+        int groupId3 = groupRepository.findByShortName("Group 3").getGroupId();
+        Group group2 = groupRepository.findByGroupId(groupId2);
+        Group group3 = groupRepository.findByGroupId(groupId3);
+
+        assertEquals(2, group2.getMembers().size());
+        assertEquals(1, group3.getMembers().size());
+    }
+
+    @Test
     void whenNoGroupsExist_testDeleteGroup() {
         Set<Group> groups = groupRepository.findAll();
         assertEquals(0, groups.size());
@@ -371,7 +391,7 @@ class GroupsServerServiceTests {
         GroupDetailsResponse response = groupServerService.getGroupDetailsHandler(request);
         List<UserResponse> userResponses = new ArrayList<>();
         for (User member : group.getMembers()) {
-            userResponses.add(member.toUserResponse());
+            userResponses.add(userService.getUserAccountByIdHandler(member.getUserIdRequest()));
         }
         assertEquals("ShortName", response.getShortName());
         assertEquals("LongName", response.getLongName());
@@ -690,7 +710,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(0, testGroup.getMembers().size());
         assertTrue(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "User(s) removed successfully");
+        assertEquals("User(s) removed successfully", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -711,7 +731,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(0, testGroup.getMembers().size());
         assertTrue(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "User(s) removed successfully");
+        assertEquals("User(s) removed successfully", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -732,7 +752,7 @@ class GroupsServerServiceTests {
         testGroup = groupRepository.findByGroupId(testGroup.getGroupId());
         assertEquals(1, testGroup.getMembers().size());
         assertFalse(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "Remove group members failed: User -1 does not exist");
+        assertEquals("Remove group members failed: User -1 does not exist", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -748,7 +768,7 @@ class GroupsServerServiceTests {
         RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
 
         assertFalse(removeGroupMembersResponse.getIsSuccess());
-        assertEquals(removeGroupMembersResponse.getMessage(), "Remove group members failed: Group -1 does not exist");
+        assertEquals("Remove group members failed: Group -1 does not exist", removeGroupMembersResponse.getMessage());
     }
 
     @Test
@@ -786,5 +806,23 @@ class GroupsServerServiceTests {
         RemoveGroupMembersResponse removeGroupMembersResponse = groupServerService.removeGroupMembersHandler(removeGroupMembersRequest);
         assertFalse(removeGroupMembersResponse.getIsSuccess());
         assertEquals(0, testGroup.getMembers().size());
+    }
+
+    @Test
+    void whenUserInGroup_testUserInGroup(){
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        groupRepository.save(testGroup);
+        assertTrue(groupServerService.userInGroup(testGroup.getGroupId(), testUser.getUserId()));
+    }
+
+    @Test
+    void whenUserNotInGroup_testUserInGroup(){
+        setUpForAddingRemovingMembers();
+        testGroup.addMember(testUser);
+        User testUser2 = new User("testUser2", "Frank2", "Frankie2", "McFrank2", "Frankie2", "I am Frank2", "he/him", "frank2@frank.com", "frank123");
+        groupRepository.save(testGroup);
+        userRepository.save(testUser2);
+        assertFalse(groupServerService.userInGroup(testGroup.getGroupId(), testUser2.getUserId()));
     }
 }

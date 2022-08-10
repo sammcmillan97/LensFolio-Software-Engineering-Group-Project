@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GroupListResponseTests {
     // Tests that creating a GroupListResponse from a PaginatedGroupResponse carries all the information over properly.
     @Test
-    void testCreateGroupListResponse() {
+    void givenValidDetails_testGroupDetailsResponse() {
 
         UserResponse userResponse = UserResponse.newBuilder().setFirstName("test").build();
         UserResponse userResponse2 = UserResponse.newBuilder().setFirstName("test2").build();

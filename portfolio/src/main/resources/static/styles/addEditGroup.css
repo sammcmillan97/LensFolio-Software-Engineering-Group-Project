@@ -1,4 +1,4 @@
-/******************** Add/Edit Event Form ********************/
+/******************** Add/Edit Group Form ********************/
 
 .group-form__header {
     padding: 3rem 2rem 3rem 2rem;
@@ -6,7 +6,6 @@
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #group-form__wrapper {

@@ -40,7 +40,7 @@ class MilestoneRepositoryTests {
     }
 
     @Test
-    void findAllMilestones() {
+    void givenMultipleMilestoneExist_findAllMilestones() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Milestone milestone1 = new Milestone(project1.getId(), "Milestone 1", Date.valueOf("2022-05-20"));
         Milestone milestone2 = new Milestone(project1.getId(), "Milestone 2", Date.valueOf("2022-05-22"));
@@ -63,7 +63,7 @@ class MilestoneRepositoryTests {
     }
 
     @Test
-    void findMilestoneById() {
+    void givenValidId_findMilestoneById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Milestone milestone1 = new Milestone(project1.getId(), "Milestone 1", Date.valueOf("2022-05-20"));
         Milestone milestone2 = new Milestone(project1.getId(), "Milestone 2", Date.valueOf("2022-05-22"));
@@ -88,7 +88,7 @@ class MilestoneRepositoryTests {
     }
 
     @Test
-    void addMilestoneViaRepository() {
+    void givenValidDetails_addMilestoneViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-05-05"), Date.valueOf("2022-06-06"));
         Milestone milestone1 = new Milestone(project1.getId(), "Milestone 1", Date.valueOf("2022-05-20"));
         projectRepository.save(project1);

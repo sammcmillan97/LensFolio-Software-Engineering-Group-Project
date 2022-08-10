@@ -19,7 +19,6 @@ public class IdentityProviderApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         SpringApplication.run(IdentityProviderApplication.class, args);
-
     }
 
     @Override

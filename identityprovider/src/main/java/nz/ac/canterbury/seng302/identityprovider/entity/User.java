@@ -7,8 +7,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.google.protobuf.Timestamp;
-import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
+import nz.ac.canterbury.seng302.shared.identityprovider.GetUserByIdRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.security.SecureRandom;
@@ -76,6 +77,10 @@ public class User {
 
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Group> groups = new HashSet<>();
+
+    @Transient
+    @Value("${IDENTITY_CONTEXT}")
+    private String context;
 
 
     /**
@@ -283,28 +288,11 @@ public class User {
                 .setNanos(time.getNano()).build();
     }
 
-    public UserResponse toUserResponse() {
-        UserResponse.Builder reply = UserResponse.newBuilder();
-        reply.setUsername(this.getUsername())
-                .setFirstName(this.getFirstName())
-                .setMiddleName(this.getMiddleName())
-                .setLastName(this.getLastName())
-                .setNickname(this.getNickname())
-                .setBio(this.getBio())
-                .setPersonalPronouns(this.getPersonalPronouns())
-                .setEmail(this.getEmail())
-                .setCreated(this.getTimeCreated())
-                .setId(this.getUserId())
-                .addAllRoles(this.getRoles());
-        if (this.getProfileImagePath() != null) {
-            reply.setProfileImagePath("resources/" + this.getProfileImagePath());
-        } else {
-            reply.setProfileImagePath("resources/profile-images/default/default.jpg");
-        }
-        return reply.build();
+    public GetUserByIdRequest getUserIdRequest() {
+        GetUserByIdRequest.Builder id = GetUserByIdRequest.newBuilder();
+        id.setId(this.userId);
+        return id.build();
     }
-
-
 
 
     /**

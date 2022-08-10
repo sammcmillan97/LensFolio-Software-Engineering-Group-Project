@@ -26,6 +26,9 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
     private final JwtTokenUtil jwtTokenService = JwtTokenUtil.getInstance();
 
+    @Autowired
+    private UserAccountsServerService userAccountsServerService;
+
     /**
      * Attempts to authenticate a user with a given username and password. 
      */
@@ -38,11 +41,16 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
     @VisibleForTesting
     AuthenticateResponse authenticateHandler(AuthenticateRequest request) {
+        AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
+        if (userAccountsServerService.isBadUserName(request.getUsername())){
+            reply
+                    .setMessage("Log in attempt failed: username cannot contain special characters")
+                    .setSuccess(false)
+                    .setToken("");
+            return reply.build();
+        }
 
         User user = repository.findByUsername(request.getUsername());
-
-        AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
-
         if (user == null) {
             reply
                     .setMessage("Log in attempt failed: username not registered")

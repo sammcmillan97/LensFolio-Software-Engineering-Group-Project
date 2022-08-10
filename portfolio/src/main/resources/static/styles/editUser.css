@@ -16,9 +16,6 @@
     margin-top: 10px;
 }
 
-div {
-    padding: 10px;
-}
 
 input, textarea {
     margin-left: 10px;
@@ -42,7 +39,7 @@ input:valid, textarea {
 input.readonly{
     border: none;
     border-bottom: 2px solid lightgray;
-    font-colour: #c8c8c8;
+    color: #c8c8c8;
 }
 
 input.required:valid {

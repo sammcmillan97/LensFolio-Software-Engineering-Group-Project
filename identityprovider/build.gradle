@@ -89,7 +89,6 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
@@ -133,6 +132,9 @@ jacocoTestReport {
     }
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
 // Sonarqube specific configuration (task)
 sonarqube {
     properties {

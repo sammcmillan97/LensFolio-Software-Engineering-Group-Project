@@ -3,6 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.User;
+import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.SprintService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
@@ -31,6 +32,8 @@ public class ProjectSummariesController {
     private SprintService sprintService;
     @Autowired
     private UserAccountClientService userAccountClientService;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the
@@ -47,6 +50,11 @@ public class ProjectSummariesController {
         List<Project> projects = projectService.getAllProjects();
         Map<Integer, List<Sprint>> sprints = sprintService.getAllByParentProjectId();
 
+        int id = Integer.parseInt(principal.getClaimsList().stream()
+                .filter(claim -> claim.getType().equals("nameid"))
+                .findFirst()
+                .map(ClaimDTO::getValue)
+                .orElse("-100"));
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {
@@ -56,6 +64,7 @@ public class ProjectSummariesController {
                 Project defaultProject = new Project();
                 projectService.saveProject(defaultProject);
                 projects = projectService.getAllProjects();
+                portfolioUserService.setProject(id, projects.get(0).getId());
             }
 
             model.addAttribute("projects", projects);

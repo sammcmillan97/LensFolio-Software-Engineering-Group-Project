@@ -187,8 +187,8 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @VisibleForTesting
     CreateGroupResponse createGroupHandler(CreateGroupRequest request){
         CreateGroupResponse.Builder reply = CreateGroupResponse.newBuilder();
-        String shortName = request.getShortName();
-        String longName = request.getLongName();
+        String shortName = request.getShortName().trim();
+        String longName = request.getLongName().trim();
 
         if (groupRepository.findByShortName(shortName) != null) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
@@ -206,7 +206,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             groupRepository.save(new Group(shortName, longName));
             reply
                     .setIsSuccess(true)
-                    .setNewGroupId(groupRepository.findByShortName(request.getShortName()).getGroupId())
+                    .setNewGroupId(groupRepository.findByShortName(request.getShortName().trim()).getGroupId())
                     .setMessage("Successfully created group");
         } else {
             reply
@@ -262,7 +262,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
         ModifyGroupDetailsResponse reply;
-        if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
+        if (userAccountsServerService.isAuthenticated() && (userAccountsServerService.isTeacher()||userInGroup(request.getGroupId(), userAccountsServerService.getAuthStateUserId()))) {
             reply = modifyGroupDetailsHandler(request);
         } else {
             reply = ModifyGroupDetailsResponse.newBuilder()
@@ -278,8 +278,8 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
     ModifyGroupDetailsResponse modifyGroupDetailsHandler (ModifyGroupDetailsRequest request){
         ModifyGroupDetailsResponse.Builder reply = ModifyGroupDetailsResponse.newBuilder();
         int groupId = request.getGroupId();
-        String shortName = request.getShortName();
-        String longName = request.getLongName();
+        String shortName = request.getShortName().trim();
+        String longName = request.getLongName().trim();
 
         if (groupRepository.findByGroupId(groupId) == null) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Group does not exist").setFieldName(GROUP_ID_FIELD).build();
@@ -345,7 +345,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             Set<User> members = group.getMembers();
             List<UserResponse> userResponses = new ArrayList<>();
             for (User member : members) {
-                userResponses.add(member.toUserResponse());
+                userResponses.add(userAccountsServerService.getUserAccountByIdHandler(member.getUserIdRequest()));
             }
             reply
                     .setGroupId(groupId)
@@ -365,6 +365,9 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         } else if (longName.isEmpty()){
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Long name cannot be empty").setFieldName(LONG_NAME_FIELD).build();
             validationErrors.add(validationError);
+        } else if (longName.equalsIgnoreCase("Teaching Staff") || longName.equalsIgnoreCase("Members without a group")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group long name already in use").setFieldName(LONG_NAME_FIELD).build();
+            validationErrors.add(validationError);
         }
         return validationErrors;
     }
@@ -376,6 +379,9 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
             validationErrors.add(validationError);
         } else if (shortName.isEmpty()) {
             ValidationError validationError = ValidationError.newBuilder().setErrorText("Short name cannot be empty").setFieldName(SHORT_NAME_FIELD).build();
+            validationErrors.add(validationError);
+        } else if (shortName.equalsIgnoreCase("teachers") || shortName.equalsIgnoreCase("Groupless")) {
+            ValidationError validationError = ValidationError.newBuilder().setErrorText("Group short name already in use").setFieldName(SHORT_NAME_FIELD).build();
             validationErrors.add(validationError);
         }
         return validationErrors;
@@ -481,5 +487,21 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .addAllMembers(members);
         }
         return reply.build();
+    }
+
+    /**
+     * Check if user in group
+     * Used for checking edit privileges
+     * @param groupId of group being checked
+     * @return true if user in group, else false
+     */
+    protected boolean userInGroup(int groupId, int userId) {
+        Group group = groupRepository.findByGroupId(groupId);
+        for (User user : group.getMembers()) {
+            if (user.getUserId() == userId) {
+                return true;
+            }
+        }
+        return false;
     }
 }

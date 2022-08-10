@@ -5,7 +5,6 @@ import nz.ac.canterbury.seng302.portfolio.service.EventService;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
-import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,8 +29,10 @@ public class AddEditEventController {
     @Autowired
     EventService eventService;
 
-    private String timeFormat = "yyyy-MM-dd'T'HH:mm";
-    private String redirectToProjects = "redirect:/projects";
+    private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
+    private static final String REDIRECT_PROJECTS = "redirect:/projects";
+    private static final String REDIRECT_PROJECT_DETAILS = "redirect:/projectDetails-";
+    private static final String REDIRECT_EVENT_FORM = "redirect:/addEditEvent";
 
 
     /**
@@ -41,11 +42,11 @@ public class AddEditEventController {
     public String eventForm(@AuthenticationPrincipal AuthState principal,
                             @PathVariable("parentProjectId") String parentProjectId,
                             @PathVariable("eventId") String eventId,
-                            Model model) throws Exception {
+                            Model model) {
 
         //Check User is a teacher otherwise return to project page
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         // Add user details to model for displaying in top banner
@@ -73,13 +74,12 @@ public class AddEditEventController {
 
         //Add event details to model
         model.addAttribute("eventName", event.getEventName());
-        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), timeFormat));
-        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), timeFormat));
+        model.addAttribute("eventStartDate", Project.dateToString(event.getEventStartDate(), TIME_FORMAT));
+        model.addAttribute("eventEndDate", Project.dateToString(event.getEventEndDate(), TIME_FORMAT));
 
         // Add event date boundaries for event to the model
-        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), timeFormat));
-        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), timeFormat));
-
+        model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
+        model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
         return "addEditEvent";
     }
 
@@ -94,8 +94,14 @@ public class AddEditEventController {
             Model model) throws ParseException {
         //Check if it is a teacher making the request
         if (!userAccountClientService.isTeacher(principle)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + projectIdString;
         }
+
+        // Add user details to model for displaying in top banner
+        int userId = userAccountClientService.getUserId(principle);
+        User user = userAccountClientService.getUserAccountById(userId);
+        model.addAttribute("user", user);
+
         // Ensure request parameters represent a valid sprint.
         // Check ids can be parsed
         int eventId;
@@ -114,29 +120,28 @@ public class AddEditEventController {
             eventId = Integer.parseInt(eventIdString);
             projectId = Integer.parseInt(projectIdString);
         } catch (NumberFormatException e) {
-            return redirectToProjects;
+            return REDIRECT_PROJECTS;
         }
         //Check if it's an existing event
         if(eventId == -1) {
             try {
                 Event newEvent = new Event(projectId, eventName, eventStartDate, eventEndDate);
                 eventService.saveEvent(newEvent);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (Exception ignored) {
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         } else {
             //Edit existing event
             try {
                 Event existingEvent = eventService.getEventById(eventId);
                 existingEvent.setEventName(eventName);
-                eventService.updateStartDate(eventId, eventStartDate);
-                eventService.updateEndDate(eventId, eventEndDate);
+                eventService.updateEventDates(eventId, eventStartDate, eventEndDate);
                 eventService.saveEvent(existingEvent);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            } catch (Exception ignored) {
+                return REDIRECT_EVENT_FORM + "-" + eventId + "-" + projectId;
             }
         }
-        return "redirect:/projectDetails-" + projectIdString;
+        return REDIRECT_PROJECT_DETAILS + projectIdString;
     }
 
     /**
@@ -151,10 +156,10 @@ public class AddEditEventController {
                                          @PathVariable("parentProjectId") String parentProjectId,
                                          @PathVariable("eventId") String eventId) {
         if (!userAccountClientService.isTeacher(principal)) {
-            return redirectToProjects;
+            return REDIRECT_PROJECT_DETAILS + parentProjectId;
         }
 
         eventService.deleteEventById(Integer.parseInt(eventId));
-        return "redirect:/projectDetails-" + parentProjectId;
+        return REDIRECT_PROJECT_DETAILS + parentProjectId;
     }
 }

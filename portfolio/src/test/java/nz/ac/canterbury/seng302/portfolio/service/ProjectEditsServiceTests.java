@@ -12,7 +12,7 @@ class ProjectEditsServiceTests {
 
     // Tests an edit appears in getEdits after being logged with newEdit
     @Test
-    void testProjectEditsNewEditAppears() {
+    void givenProjectIsUpdated_testNewEditAppears() {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
@@ -23,7 +23,7 @@ class ProjectEditsServiceTests {
 
     // Tests an edit from the same user overwrites the old edit
     @Test
-    void testProjectEditsOverwriteSameUserEdit() {
+    void givenEditIsOverwrriten_testDetailsAreOverwritten() {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
@@ -37,7 +37,7 @@ class ProjectEditsServiceTests {
 
     // Tests multiple edits appear in the edit list
     @Test
-    void testProjectEditsTwoEdits() {
+    void givenTwoEdits_testProjectEdits() {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;
@@ -51,7 +51,7 @@ class ProjectEditsServiceTests {
     // Tests that the refresh value is true when the getEdits function is called for the first time after refreshing,
     // and false afterwards.
     @Test
-    void testProjectEditsRefreshTrueOnceAfterRefresh() {
+    void givenRefresh_testProjectEditsRefreshTrueOnce() {
         int projectId = 1;
         int userId = 1;
         ProjectEditsService edits = new ProjectEditsService();
@@ -62,7 +62,7 @@ class ProjectEditsServiceTests {
 
     // Tests that the refresh value is false when the getEdits function is called with a project that has not been refreshed
     @Test
-    void testProjectEditsRefreshFalseIfNoRefresh() {
+    void givenNoRefresh_testProjectEditsRefreshFalse() {
         int projectId = 1;
         int otherProjectId = 2;
         int userId = 1;
@@ -74,7 +74,7 @@ class ProjectEditsServiceTests {
     // Tests that the refresh value is true when the getEdits function is called with a project that has been refreshed,
     // and remains true for a separate user
     @Test
-    void testProjectEditsRefreshTrueForAllUsers() {
+    void givenGetEditsCalled_givenProjectIsRefreshed_testRefreshValueIsTrue() {
         int projectId = 1;
         int userId = 1;
         int otherUserId = 2;

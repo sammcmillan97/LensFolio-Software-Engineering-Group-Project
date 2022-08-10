@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{styles/addEvidence.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+    <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+    <title>Add Evidence</title>
+    <script th:inline="javascript">
+        const ALL_SKILLS = [[${skillsList}]];
+    </script>
+</head>
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div id="evidence-form__wrapper">
+        <!-- Heading -->
+        <header class="evidence-form__header flex-column">
+            <h1 id="evidence__name" th:text="'Add Evidence'"></h1>
+        </header>
+
+        <!-- Add Evidence Form -->
+        <form id="evidence-form__form" class="flex-column" th:action="@{addEvidence}" th:method="post">
+            <!-- Evidence Name !-->
+            <label>Title *</label>
+            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" th:pattern="${titlePattern}" title="Evidence Name must not be blank and cannot contain special characters" required>
+            <p class="form-error-message" th:text="${titleError}" />
+            <!-- Evidence Description !-->
+            <label>Description *</label>
+            <span id="evidence-form__helper">Minimum 50 characters</span>
+            <textarea minlength="50" maxlength="1024" type="text" id="evidence-form__description-field" class="edit-input" onkeyup="checkEmpty()" name="evidenceDescription" placeholder="Evidence Description" th:value="${evidenceDescription}" required></textarea>
+            <p class="form-error-message" th:text="${descriptionError}" />
+            <!-- Evidence Date !-->
+            <label>Date *
+                <span data-toggle="tooltip"
+                      data-placement="top" data-html=true class="bi bi-question-circle-fill"
+                      title="The date the evidence occurred (Cannot be outside project dates)">
+                </span>
+            </label>
+            <input type="date" id="evidence-form__date-field" class="edit-input" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
+            <p class="form-error-message" th:text="${dateError}" />
+            <!-- Evidence Categories !-->
+            <!-- (Can add th:checked values in the future for editing evidence, so the pre existing categories are pre-ticked) !-->
+            <label for="evidence-form__categoriesCheck">
+                Select Categories
+            </label>
+            <div class="flex-row" id="evidence-form__categoriesCheck">
+                <div class="form-check edit-input">
+                    <input type="checkbox" value="" id="flexCheckQuantitative" name="isQuantitative">
+                    <label class="form-check-label" for="flexCheckQuantitative">
+                        Quantitative
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" value="" id="flexCheckQualitative" name="isQualitative">
+                    <label class="form-check-label" for="flexCheckQualitative">
+                        Qualitative
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" value="" id="flexCheckService" name="isService">
+                    <label class="form-check-label" for="flexCheckService">
+                        Service
+                    </label>
+                </div>
+            </div>
+            <!-- Submit form !-->
+            <label>Skills
+                <span data-toggle="tooltip"
+                      data-placement="top" data-html=true class="bi bi-question-circle-fill"
+                      title="Skills are separated by spaces. Use underscores instead of spaces inside a skill. For example, Intra-team_Communication.">
+                </span>
+            </label>
+            <div id="skill-input-container">
+                <div id="skill-container">
+                  <div id="input-container">
+                    <input type="text" id="skills-input" class="edit-input" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
+                       placeholder="Add Skills"/>
+                  </div>
+                </div>
+            </div>
+            <input type="hidden" id="evidence-form__hidden-skills-field" name="evidenceSkills"/>
+            <p class="form-error-message" th:text="${skillsError}" />
+
+            <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
+            <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
+            <p class="form-error-message" th:text="${generalError}" />
+        </form>
+    </div>
+</div>
+<script rel="script" th:src="@{scripts/addEvidence.js}"></script>
+</body>
+</html>

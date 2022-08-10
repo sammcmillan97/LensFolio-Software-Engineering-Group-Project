@@ -55,20 +55,20 @@ class MilestoneServiceTests {
     @Test
     void whenNoMilestones_testSaveMilestoneToProject() {
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isZero();
+        assertTrue(milestones.isEmpty());
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
     }
 
     @Test
     void whenOneMilestone_testSaveMilestoneToSameProject() {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Duo", Date.valueOf("2022-07-07")));
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(2);
+        assertEquals(2, milestones.size());
     }
 
     @Test
@@ -78,21 +78,21 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Tri", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Quad", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(4);
+        assertEquals(4, milestones.size());
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Pent", Date.valueOf("2022-06-06")));
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(5);
+        assertEquals(5, milestones.size());
     }
 
     @Test
     void whenOneMilestone_testSaveMilestoneToDifferentProject() {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone Duo", Date.valueOf("2022-06-06")));
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(2);
+        assertEquals(2, milestones.size());
     }
 
     @Test
@@ -102,28 +102,28 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone 3", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone 4", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(4);
+        assertEquals(4, milestones.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone 5", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone 6", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone 7", Date.valueOf("2022-06-06")));
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(7);
+        assertEquals(7, milestones.size());
     }
 
     @Test
     void whenNoMilestonesSaved_testGetAllMilestones() {
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isZero();
-        assertThat(milestoneService.getAllMilestones().size()).isZero();
+        assertTrue(milestones.isEmpty());
+        assertTrue(milestoneService.getAllMilestones().isEmpty());
     }
 
     @Test
     void whenOneMilestoneSaved_testGetAllMilestones() {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
-        assertThat(milestoneService.getAllMilestones().size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
+        assertEquals(1, milestoneService.getAllMilestones().size());
     }
 
     @Test
@@ -133,14 +133,14 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Tri", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone Quad", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(4);
-        assertThat(milestoneService.getAllMilestones().size()).isEqualTo(4);
+        assertEquals(4, milestones.size());
+        assertEquals(4, milestoneService.getAllMilestones().size());
     }
 
     @Test
     void whenMilestoneIdDoesNotExist_testGetMilestoneById() {
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isZero();
+        assertTrue(milestones.isEmpty());
         Exception exception = assertThrows(Exception.class, () -> milestoneService.getMilestoneById(999999));
         String expectedMessage = "Milestone not found";
         String actualMessage = exception.getMessage();
@@ -152,7 +152,7 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
         int milestoneId = milestones.get(0).getId();
-        assertThat(milestoneId).isNotNull();
+        assertNotEquals(0, milestoneId);
         Milestone milestone = milestoneService.getMilestoneById(milestoneId);
         assertThat(milestone.getMilestoneName()).isEqualTo("Test Milestone");
         assertThat(milestone.getMilestoneDate()).isEqualTo(Timestamp.valueOf("2022-06-06 00:00:00"));
@@ -161,18 +161,18 @@ class MilestoneServiceTests {
     @Test
     void whenNoMilestonesSaved_testGetByParentProjectId() {
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isZero();
+        assertTrue(milestones.isEmpty());
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
-        assertThat(milestoneList.size()).isZero();
+        assertTrue(milestoneList.isEmpty());
     }
 
     @Test
     void whenOneMilestoneSaved_testGetByParentProjectId() {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
-        assertThat(milestoneList.size()).isEqualTo(1);
+        assertEquals(1, milestoneList.size());
     }
 
     @Test
@@ -182,9 +182,9 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone 3", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(0).getId(), "Test Milestone 4", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(4);
+        assertEquals(4, milestones.size());
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
-        assertThat(milestoneList.size()).isEqualTo(4);
+        assertEquals(4, milestoneList.size());
     }
 
     @Test
@@ -194,7 +194,7 @@ class MilestoneServiceTests {
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone Tri", Date.valueOf("2022-06-06")));
         milestoneService.saveMilestone(new Milestone(projects.get(1).getId(), "Test Milestone Quad", Date.valueOf("2022-06-06")));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(4);
+        assertEquals(4, milestones.size());
         List<Milestone> milestoneList = milestoneService.getByMilestoneParentProjectId(projects.get(0).getId());
         int listSize = milestoneList.size();
         assertThat(listSize).isEqualTo(2);
@@ -209,17 +209,17 @@ class MilestoneServiceTests {
         Milestone milestone = new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06"));
         milestoneService.saveMilestone(milestone);
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(1);
+        assertEquals(1, milestones.size());
         milestoneService.deleteMilestoneById(milestone.getId());
         milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isZero();
+        assertTrue(milestones.isEmpty());
     }
 
     @Test
     void whenMilestoneDoesNotExist_testDeleteMilestoneThrowsException () {
         Milestone milestone = new Milestone(projects.get(0).getId(), "Test Milestone", Date.valueOf("2022-06-06"));
         List<Milestone> milestones = (List<Milestone>) milestoneRepository.findAll();
-        assertThat(milestones.size()).isEqualTo(0);
+        assertTrue(milestones.isEmpty());
 
         Exception exception = assertThrows(Exception.class, () ->
                 milestoneService.deleteMilestoneById(milestone.getId()));

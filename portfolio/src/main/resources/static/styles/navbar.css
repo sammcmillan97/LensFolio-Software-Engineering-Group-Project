@@ -78,7 +78,7 @@ h5 {
     position: absolute;
     background-color: var(--color-secondary);
     min-width: 200px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 1;
 }
 
@@ -119,7 +119,6 @@ h5 {
 
     /* Text */
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #site-navigation.expanded {
@@ -177,6 +176,7 @@ h5 {
 
 .site-navigation__link:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    color: white;
 }
 
 
@@ -200,7 +200,7 @@ h5 {
     display: inline-block;
     position: relative;
     margin: 0;
-    pagging: 0;
+    padding: 0;
 }
 
 #projects-button {
@@ -236,7 +236,7 @@ h5 {
     position: absolute;
     width: 100%;
     overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 .dropdown-content.active {
@@ -261,4 +261,5 @@ h5 {
 
 .site-navigation__sublink:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    color: white;
 }

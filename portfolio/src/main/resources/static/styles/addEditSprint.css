@@ -6,7 +6,6 @@
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
     color: var(--color-complement);
-    text-outline: var(--color-accent);
 }
 
 #sprint-form__wrapper {
@@ -30,6 +29,14 @@
     border: none;
     border-bottom: 2px solid lightgray;
 }
+
+.form-error-message {
+    margin-left: 10px;
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
 
 /* Set a style for the  button */
 #sprint-form__form button, #sprint-form__form a {

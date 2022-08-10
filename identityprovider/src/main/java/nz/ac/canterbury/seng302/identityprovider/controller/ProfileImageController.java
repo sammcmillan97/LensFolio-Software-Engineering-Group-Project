@@ -2,19 +2,12 @@ package nz.ac.canterbury.seng302.identityprovider.controller;
 
 import nz.ac.canterbury.seng302.identityprovider.service.UserAccountsServerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 
 @Controller
 public class ProfileImageController {
@@ -22,8 +15,13 @@ public class ProfileImageController {
     @Autowired
     private UserAccountsServerService userAccountsServerService;
 
+    /**
+     * Finds the request profile picture if it exists and returns a byte array
+     * @param filename the filename of the profile picture to retrieve
+     * @return a byte array containing the image data
+     */
     @GetMapping("/ProfilePicture-{filename}")
-    public ResponseEntity<byte[]> ProfilePicture(
+    public ResponseEntity<byte[]> getProfilePicture(
             @PathVariable("filename") String filename
     ) {
         try {

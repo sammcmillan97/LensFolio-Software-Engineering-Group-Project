@@ -9,8 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class PortfolioUserController {
@@ -18,7 +16,7 @@ public class PortfolioUserController {
     @Autowired
     private PortfolioUserService portfolioUserService;
 
-    @RequestMapping("setCurrentProject-{id}")
+    @GetMapping("setCurrentProject-{id}")
     public String getCurrentProject(
         @AuthenticationPrincipal AuthState principal,
         @PathVariable("id") String projectIdString

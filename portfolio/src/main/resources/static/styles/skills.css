@@ -1,0 +1,114 @@
+:root {
+    /* CSS variables */
+    --color-primary: #FBAA60;
+    --color-secondary: #FADFC6FF;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/* Hide scrollbar */
+html::-webkit-scrollbar {
+    /* Chrome, Safari, Opera */
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
+/******************** Evidence Cards ********************/
+
+.evidence__form-wrapper {
+    visibility: hidden !important;
+}
+
+.evidence__collapsed {
+    display: block;
+    position: relative;
+
+    border: 1px solid var(--color-accent);
+    border-radius: 1.5rem;
+    background-color: var(--color-complement);
+    padding: 0 2rem 0 2rem;
+    margin-top: 1rem;
+}
+
+.evidence_title_child {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.evidence__title, .evidence__date {
+    margin: 0 1rem 0 0;
+    padding: 0;
+    float: left;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.evidence_title_child:hover {
+    color: var(--color-accent);
+}
+
+.evidence__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    visibility: visible;
+}
+
+.evidence__details_expanded {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.evidence__description {
+    overflow-wrap: anywhere;
+    margin: 0 0 1rem;
+}
+
+.skill-link {
+    border: 1px solid #F67B50;
+    border-radius: 5px;
+    background-color: #F67B50;
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+}
+
+.skill-link:hover {
+    color:white;
+    filter: brightness(85%);
+}
+
+.no-skill-link {
+    border: 1px solid #F67B50;
+    border-radius: 5px;
+    background-color: var(--color-complement);
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    text-align: center;
+    color: #F67B50;
+}
+
+.no-skill-link:hover {
+    color:inherit;
+    filter: brightness(85%);
+}
