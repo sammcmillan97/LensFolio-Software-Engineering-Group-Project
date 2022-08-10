@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
+import nz.ac.canterbury.seng302.portfolio.model.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
 import nz.ac.canterbury.seng302.portfolio.model.User;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The controller for handling backend of the add evidence page
@@ -72,6 +71,11 @@ public class AddEvidenceController {
         Date evidenceDate;
         Date currentDate = new Date();
 
+        List<String> categories = new ArrayList<>();
+        categories.add("Qualitative");
+        categories.add("Quantitative");
+        categories.add("Service");
+
         if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
             evidenceDate = currentDate;
         } else {
@@ -102,9 +106,13 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
+            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQualitative", required = false) String isQualitative,
+            @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
             Model model
     ) {
+
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
@@ -119,8 +127,20 @@ public class AddEvidenceController {
         } catch (ParseException exception) {
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
+
+        Set<Categories> categories = new HashSet<>();
+        if(isQuantitative != null) {
+            categories.add(Categories.Quantitative);
+        }
+        if(isQualitative != null) {
+            categories.add(Categories.Qualitative);
+        }
+        if(isService != null) {
+            categories.add(Categories.Service);
+        }
         int userId = userService.getUserId(principal);
         Evidence evidence = new Evidence(userId, projectId, title, description, date, skills);
+        evidence.setCategories(categories);
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {

@@ -25,7 +25,7 @@ public class EvidenceService {
      * @return A list of all evidence relating to this portfolio. It is ordered chronologically.
      */
     public List<Evidence> getEvidenceForPortfolio(int userId, int projectId) {
-        List<Evidence> evidence = repository.findByOwnerIdAndProjectId(userId, projectId);
+        List<Evidence> evidence = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         evidence.sort(Comparator.comparing(Evidence::getDate));
         Collections.reverse(evidence);
         return evidence;
@@ -79,7 +79,7 @@ public class EvidenceService {
                 throw new IllegalArgumentException("Skills not valid");
             }
         }
-        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(evidence.getOwnerId(), evidence.getProjectId());
         evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
     }
@@ -151,8 +151,8 @@ public class EvidenceService {
      * @param projectId of evidence
      * @return list of evidences with no skill
      */
-    public List<Evidence> retrieveEvidenceWithNoSkill(int projectId){
-        return repository.findByProjectIdAndSkillsIsNullOrderByDateDescIdDesc(projectId);
+    public List<Evidence> retrieveEvidenceWithNoSkill(int userId, int projectId){
+        return repository.findByOwnerIdAndProjectIdAndSkillsIsNullOrderByDateDescIdDesc(userId, projectId);
     }
 
     /**
@@ -169,5 +169,41 @@ public class EvidenceService {
             }
         }
         return usersEvidenceWithSkill;
+    }
+    /**
+     * Service method for setting the categories of a piece of evidence.
+     * @param categories A set of Categories enum (QUANTITATIVE, QUALITATIVE, SERVICE)
+     */
+    public void setCategories(Set<Categories> categories, Evidence evidence) {
+        evidence.setCategories(categories);
+        saveEvidence(evidence);
+    }
+
+    /**
+     * Evidence service method for getting a list of evidence with a given user, project and category
+     * @param userId The user ID
+     * @param projectId The project ID
+     * @param categorySelection The Category selection
+     * @return List of evidence with the given parameters
+     */
+    public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, Categories categorySelection) {
+
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
+        List<Evidence> evidenceListWithCategory = new ArrayList<>();
+        for(Evidence e: evidenceList) {
+            if(e.getCategories().contains(categorySelection)) {
+                evidenceListWithCategory.add(e);
+            }
+        }
+        return evidenceListWithCategory;
+    }
+
+    /**
+     * Retrieves all evidence for a project where the category is null
+     * @param projectId of evidence
+     * @return list of evidence with no category.
+     */
+    public List<Evidence> retrieveEvidenceWithNoCategory(int userId, int projectId) {
+        return repository.findByOwnerIdAndProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(userId, projectId);
     }
 }

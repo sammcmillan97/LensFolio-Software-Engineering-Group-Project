@@ -191,3 +191,20 @@ html {
 .skill-link:hover {
     background-color: #F67B50;
 }
+
+.category-link {
+    border: 1px solid #A82810;
+    border-radius: 5px;
+    background-color: #A82810;
+    padding: 2px 4px 2px 4px;
+    margin: 4px;
+    display: inline;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+}
+
+.category-link:hover {
+    color: white;
+    filter: brightness(85%);
+}
