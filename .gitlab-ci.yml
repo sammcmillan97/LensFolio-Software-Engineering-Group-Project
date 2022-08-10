@@ -1,6 +1,9 @@
 stages:
   - tagChecking
   - publishProtosToLocalMavenRepo
+  - build
+  - test
+  - sonarqube
   - deploy
 
 tag-checker:
@@ -18,6 +21,8 @@ junit-identityprovider:
   artifacts:
     paths:
       - identityprovider/build/jacoco/test-report.xml
+  except:
+    - U10-Categories-On-Pieces-Of-Evidence
 
 junit-portfolio:
   stage: test
@@ -27,6 +32,8 @@ junit-portfolio:
   artifacts:
     paths:
       - portfolio/build/jacoco/test-report.xml
+  except:
+    - U10-Categories-On-Pieces-Of-Evidence
 
 publish-protos-to-maven-local:
   stage: publishProtosToLocalMavenRepo
@@ -51,6 +58,7 @@ branch-build:
     - tags
     - master
     - dev
+    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-staging-identityprovider:
   stage: deploy
