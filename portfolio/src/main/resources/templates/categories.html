@@ -23,7 +23,8 @@
 
 <div id="page-content" class="constrict">
     <div class="container">
-        <h1 th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence in category: ' + ${categoryName}"></h1>
+        <h1 th:if="${categoryName != ''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence in category: ' + ${categoryName}"></h1>
+        <h1 th:if="${categoryName == ''}" th:text="(${owner} ? 'Your ' : ${pageUser.getFullName()} + 's ') + 'evidence with no category'"></h1>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
     <div th:replace="fragments/evidence"></div>

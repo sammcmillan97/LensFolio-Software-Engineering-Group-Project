@@ -38,7 +38,7 @@
                 <h2>Categories</h2>
                 <div class="categories__details">
                     <a class="no-category__link" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category='">No Category</a>
-                    <a class="category__link" th:each="category: ${categoryList}" th:text="${category}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
+                    <a class="category-link" th:each="category: ${categoryList}" th:text="${category}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
                 </div>
             </div>
         </div>

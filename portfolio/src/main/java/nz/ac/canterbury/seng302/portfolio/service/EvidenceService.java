@@ -112,4 +112,13 @@ public class EvidenceService {
         }
         return evidenceListWithCategory;
     }
+
+    /**
+     * Retrieves all evidence for a project where the category is null
+     * @param projectId of evidence
+     * @return list of evidence with no category.
+     */
+    public List<Evidence> retrieveEvidenceWithNoCategory(int projectId) {
+        return repository.findByProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(projectId);
+    }
 }

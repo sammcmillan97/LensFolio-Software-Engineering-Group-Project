@@ -52,9 +52,9 @@ public class PortfolioController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
         List<String> categoryList = new ArrayList<>();
-        categoryList.add("Quantitative");
-        categoryList.add("Qualitative");
-        categoryList.add("Service");
+        categoryList.add("QUANTITATIVE");
+        categoryList.add("QUALITATIVE");
+        categoryList.add("SERVICE");
 
         model.addAttribute("evidenceList", evidenceList);
         model.addAttribute("categoryList", categoryList);
@@ -88,9 +88,9 @@ public class PortfolioController {
         model.addAttribute("evidenceList", evidenceList);
 
         List<String> categoryList = new ArrayList<>();
-        categoryList.add("Quantitative");
-        categoryList.add("Qualitative");
-        categoryList.add("Service");
+        categoryList.add("QUANTITATIVE");
+        categoryList.add("QUALITATIVE");
+        categoryList.add("SERVICE");
 
         model.addAttribute("categoryList", categoryList);
 
