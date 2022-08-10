@@ -170,3 +170,5 @@ sonarqube-report:
     - echo -e "SONARQUBE_API_KEY=$SONARQUBE_API_KEY" > ./.env
     - ./gradlew sonarqube
   retry: 2
+  except:
+    - U10-Categories-On-Pieces-Of-Evidence
