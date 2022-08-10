@@ -99,7 +99,7 @@ By default, the Portfolio will run on local port 9000 (`http://localhost:9000`)
 
 
 ### 4 - Connect to the Portfolio UI through your web brower
-Everything should now be up and running, so you can load up your preferred web browser and connect to the Portfolio UI by going to `http://localhost:9000` - though you will probably want to start at `http://localhost:9000/login` until you set up an automatic redirect, or a home page of sorts.
+Everything should now be up and running, so you can load up your preferred web browser and connect to the Portfolio UI by going to `http://localhost:9000`
 
 
 ## User Manual
