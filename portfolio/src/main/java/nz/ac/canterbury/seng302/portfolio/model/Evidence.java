@@ -2,9 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.model;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity // this is an entity, assumed to be in a table called evidence
@@ -69,8 +67,10 @@ public class Evidence {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
-    public Set<Categories> getCategories() {
-        return categories;
+    public List<Categories> getCategories() {
+        List<Categories> sortedCategories = new ArrayList<>(categories);
+        Collections.sort(sortedCategories);
+        return sortedCategories;
     }
 
     public void setCategories(Set<Categories> categories) {

@@ -53,16 +53,22 @@ public class CategoriesController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         Categories categorySelection;
-        if (Objects.equals(category, "quantitative")) {
-            categorySelection = Categories.QUANTITATIVE;
-        } else if (Objects.equals(category, "qualitative")) {
-            categorySelection = Categories.QUALITATIVE;
-        } else  if (Objects.equals(category, "service")) {
-            categorySelection = Categories.SERVICE;
+        List<Evidence> evidenceList;
+
+        if (Objects.equals(category, "Quantitative")) {
+            categorySelection = Categories.Quantitative;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
+        } else if (Objects.equals(category, "Qualitative")) {
+            categorySelection = Categories.Qualitative;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
+        } else  if (Objects.equals(category, "Service")) {
+            categorySelection = Categories.Service;
+            evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
+        } else if (Objects.equals(category, "")) {
+            evidenceList = evidenceService.retrieveEvidenceWithNoCategory(projectId);
         } else {
             return PORTFOLIO_REDIRECT;
         }
-        List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         model.addAttribute("categoryName", category);
         model.addAttribute("evidenceList", evidenceList);
         return "categories";
@@ -90,12 +96,12 @@ public class CategoriesController {
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         Categories categorySelection;
-        if (Objects.equals(category, "quantitative")) {
-            categorySelection = Categories.QUANTITATIVE;
-        } else if (Objects.equals(category, "qualitative")) {
-            categorySelection = Categories.QUALITATIVE;
-        } else  if (Objects.equals(category, "service")) {
-            categorySelection = Categories.SERVICE;
+        if (Objects.equals(category, "Quantitative")) {
+            categorySelection = Categories.Quantitative;
+        } else if (Objects.equals(category, "Qualitative")) {
+            categorySelection = Categories.Qualitative;
+        } else  if (Objects.equals(category, "Service")) {
+            categorySelection = Categories.Service;
         } else {
             return PORTFOLIO_REDIRECT;
         }

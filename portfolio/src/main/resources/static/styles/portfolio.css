@@ -37,3 +37,17 @@
     font-size: 1.5rem;
     text-decoration: none;
 }
+
+.categories {
+    background-color: var(--color-secondary);
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.categories__details {
+    padding-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--color-accent);
+}

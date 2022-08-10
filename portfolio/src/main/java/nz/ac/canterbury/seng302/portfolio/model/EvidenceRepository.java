@@ -11,4 +11,7 @@ public interface EvidenceRepository extends CrudRepository<Evidence, Integer> {
     List<Evidence> findByProjectId(int projectId);
     List<Evidence> findByOwnerIdAndProjectId(int ownerId, int projectId);
     List<Evidence> findByOwnerIdAndProjectIdOrderByDateDesc(int ownerId, int projectId);
+
+    // Get evidence with no categories
+    List<Evidence> findByProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(int projectId);
 }

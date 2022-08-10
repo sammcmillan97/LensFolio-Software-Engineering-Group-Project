@@ -27,9 +27,16 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
+    private static final List<String> CATEGORIES_LIST = List.of("Quantitative", "Qualitative", "Service");
+
     @ModelAttribute("allProjects")
     public List<Project> getAllProjects(){
         return projectService.getAllProjects();
+    }
+
+    @ModelAttribute("categoryList")
+    public List<String> getAllCategories(){
+        return CATEGORIES_LIST;
     }
 
     @ModelAttribute("currentProject")

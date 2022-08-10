@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,8 @@ public class PortfolioController {
 
     @Autowired
     private PortfolioUserService portfolioUserService;
+
+
 
     /**
      * Display the user's portfolio page.
@@ -72,6 +75,7 @@ public class PortfolioController {
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
+
         User pageUser = userService.getUserAccountById(userId);
         model.addAttribute("pageUser", pageUser);
 
