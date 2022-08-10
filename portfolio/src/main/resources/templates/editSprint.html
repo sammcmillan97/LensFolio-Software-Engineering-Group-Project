@@ -34,7 +34,7 @@
             <!-- Add/Edit Sprint Form -->
             <form id="sprint-form__form" class="flex-column" th:action="@{editSprint-{sprint}-{project}(project=${projectId}, sprint=${sprintId})}" th:method="post">
                 <label for="sprint-form__name-field">Sprint Name *</label>
-                <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" minlength="1" maxlength="64" th:placeholder="${sprintName}" th:value="${sprintName}" required pattern=".*\S.*" title="Sprint Name must not be blank">
+                <input type="text" id="sprint-form__name-field" class="edit-input" name="sprintName" minlength="1" maxlength="64" th:placeholder="${sprintName}" th:value="${sprintName}" required th:pattern="${titlePattern}" title="Sprint Name must not be blank and cannot contain special characters">
 
                 <label for="sprint-form__description-field">Sprint Description</label>
                 <textarea id="sprint-form__description-field" class="edit-input" name="sprintDescription" maxlength="255" th:placeholder="${sprintDescription}" th:text="${sprintDescription}"></textarea>
