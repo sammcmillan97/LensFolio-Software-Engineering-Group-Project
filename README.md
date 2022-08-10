@@ -83,13 +83,13 @@ Unlike in step 1, when you run this command, it won't 'finish'. This is because 
 Now that the IdP is up and running, we will be able to use the Portfolio module (note: it is entirely possible to start it up without the IdP running, you just won't be able to get very far).
 
 From the root directory (and likely in a second terminal tab / window)...
-On Linux:
+On Linux, MacOS and Windows Powershell:
 ```
 cd portfolio
 ./gradlew bootRun
 ```
 
-On Windows:
+On Windows Command Prompt:
 ```
 cd portfolio
 gradlew bootRun
