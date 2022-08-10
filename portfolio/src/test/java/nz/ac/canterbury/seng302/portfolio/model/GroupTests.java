@@ -13,7 +13,7 @@ class GroupTests {
 
     // Test that groups are equal with all properties
     @Test
-    void testGroupsEqualAllProperties() {
+    void givenTwoGroupsHaveEqualProperties_testGroupsAreEqual() {
         List<UserResponse> members = new ArrayList<>();
         members.add(UserResponse.newBuilder().setFirstName("Frank").build());
         members.add(UserResponse.newBuilder().setLastName("Frankie").build());
@@ -30,7 +30,7 @@ class GroupTests {
 
     // Test that the groups aren't equal when their short names don't match
     @Test
-    void testUsersUnequalWhenShortNamesDifferent() {
+    void givenShortNamesDifferent_testGroupsUnequal() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setShortName("Goup").build();
         GroupDetailsResponse response2 = GroupDetailsResponse.newBuilder().setShortName("Group").build();
         Group group = new Group(response);
@@ -38,9 +38,9 @@ class GroupTests {
         assertNotEquals(group, group2);
     }
 
-    // Test that the users are equal when their short names match
+    // Test that the groups are equal when their short names match
     @Test
-    void testUsersEqualWhenShortNamesSame() {
+    void givenShortNamesSame_testGroupsEqual() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setShortName("Goup").build();
         Group group = new Group(response);
         Group group2 = new Group(response);
@@ -49,7 +49,7 @@ class GroupTests {
 
     // Test that the groups aren't equal when their long names don't match
     @Test
-    void testUsersUnequalWhenLongNamesDifferent() {
+    void givenLongNamesDifferent_testGroupsUnequal() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setLongName("Goup").build();
         GroupDetailsResponse response2 = GroupDetailsResponse.newBuilder().setLongName("Group").build();
         Group group = new Group(response);
@@ -57,9 +57,9 @@ class GroupTests {
         assertNotEquals(group, group2);
     }
 
-    // Test that the users are equal when their long names match
+    // Test that the groups are equal when their long names match
     @Test
-    void testUsersEqualWhenLongNamesSame() {
+    void givenLongNamesSame_testGroupsEqual() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setLongName("Goup").build();
         Group group = new Group(response);
         Group group2 = new Group(response);
@@ -68,7 +68,7 @@ class GroupTests {
 
     // Test that the groups aren't equal when their ids don't match
     @Test
-    void testUsersUnequalWhenIdsDifferent() {
+    void givenIdsDifferent_testGroupsUnequal() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setGroupId(1).build();
         GroupDetailsResponse response2 = GroupDetailsResponse.newBuilder().setGroupId(2).build();
         Group group = new Group(response);
@@ -76,9 +76,9 @@ class GroupTests {
         assertNotEquals(group, group2);
     }
 
-    // Test that the users are equal when their ids match
+    // Test that the groups are equal when their ids match
     @Test
-    void testUsersEqualWhenIdsSame() {
+    void givenIdsSame_testGroupsEqual() {
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().setGroupId(1).build();
         Group group = new Group(response);
         Group group2 = new Group(response);
@@ -87,7 +87,7 @@ class GroupTests {
 
     // Test that the groups aren't equal when their user lists don't match
     @Test
-    void testUsersUnequalWhenUsersDifferent() {
+    void givenUsersDifferent_testGroupsUnequal() {
         List<UserResponse> members = new ArrayList<>();
         members.add(UserResponse.newBuilder().setFirstName("Frank").build());
         GroupDetailsResponse response = GroupDetailsResponse.newBuilder().addAllMembers(members).build();
@@ -98,9 +98,9 @@ class GroupTests {
         assertNotEquals(group, group2);
     }
 
-    // Test that the users are equal when their user lists match
+    // Test that the groups are equal when their user lists match
     @Test
-    void testUsersEqualWhenUsersSame() {
+    void givenUsersSame_testGroupsEqual() {
         List<UserResponse> members = new ArrayList<>();
         members.add(UserResponse.newBuilder().setFirstName("Frank").build());
         members.add(UserResponse.newBuilder().setLastName("Frankie").build());

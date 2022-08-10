@@ -41,7 +41,7 @@ class DeadlineServiceTest {
     }
 
     /**
-     * Refresh the database each test
+     * Refresh the database after each test
      */
     @AfterEach
     void cleanDatabase() {
@@ -55,10 +55,10 @@ class DeadlineServiceTest {
     @Test
     void whenNoDeadlines_testSaveDeadlineToSameProject() {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isZero();
+        assertTrue(deadlines.isEmpty());
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
     }
 
     /**
@@ -68,10 +68,10 @@ class DeadlineServiceTest {
     void whenOneDeadline_testSaveDeadlineToSameProject() {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Duo", Date.valueOf("2022-07-07")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(2);
+        assertEquals(2, deadlines.size());
     }
 
     /**
@@ -84,10 +84,10 @@ class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Tri", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(4);
+        assertEquals(4, deadlines.size());
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline Pent", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(5);
+        assertEquals(5, deadlines.size());
     }
 
     /**
@@ -97,11 +97,11 @@ class DeadlineServiceTest {
     void whenOneDeadline_testSaveDeadlineToDifferentProject() {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Duo", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(2);
+        assertEquals(2, deadlines.size());
     }
 
     /**
@@ -114,13 +114,13 @@ class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(4);
+        assertEquals(4, deadlines.size());
         assertThat(projects.get(0).getId()).isNotEqualTo(projects.get(1).getId());
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 5", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 6", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline 7", Date.valueOf("2022-06-06")));
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(7);
+        assertEquals(7, deadlines.size());
     }
 
     /**
@@ -129,8 +129,8 @@ class DeadlineServiceTest {
     @Test
     void whenNoDeadlinesSaved_testGetAllDeadlines() {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isZero();
-        assertThat(deadlineService.getAllDeadlines().size()).isZero();
+        assertTrue(deadlines.isEmpty());
+        assertTrue(deadlineService.getAllDeadlines().isEmpty());
     }
 
     /**
@@ -140,8 +140,8 @@ class DeadlineServiceTest {
     void whenOneDeadlineSaved_testGetAllDeadlines() {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
-        assertThat(deadlineService.getAllDeadlines().size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
+        assertEquals(1, deadlineService.getAllDeadlines().size());
     }
 
     /**
@@ -154,8 +154,8 @@ class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Tri", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(4);
-        assertThat(deadlineService.getAllDeadlines().size()).isEqualTo(4);
+        assertEquals(4, deadlines.size());
+        assertEquals(4, deadlineService.getAllDeadlines().size());
     }
 
     /**
@@ -164,7 +164,7 @@ class DeadlineServiceTest {
     @Test
     void whenDeadlineIdDoesNotExist_testGetDeadlineById() {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isZero();
+        assertTrue(deadlines.isEmpty());
         Exception exception = assertThrows(Exception.class, () -> deadlineService.getDeadlineById(999999));
         String expectedMessage = "Deadline not found";
         String actualMessage = exception.getMessage();
@@ -191,9 +191,9 @@ class DeadlineServiceTest {
     @Test
     void whenNoDeadlinesSaved_testGetByParentProjectId() {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isZero();
+        assertTrue(deadlines.isEmpty());
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
-        assertThat(deadlineList.size()).isZero();
+        assertTrue(deadlineList.isEmpty());
     }
 
     /**
@@ -203,9 +203,9 @@ class DeadlineServiceTest {
     void whenOneDeadlineSaved_testGetByParentProjectId() {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
-        assertThat(deadlineList.size()).isEqualTo(1);
+        assertEquals(1, deadlineList.size());
     }
 
     /**
@@ -218,9 +218,9 @@ class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 3", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(0).getId(), "Test deadline 4", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(4);
+        assertEquals(4, deadlines.size());
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
-        assertThat(deadlineList.size()).isEqualTo(4);
+        assertEquals(4, deadlineList.size());
     }
 
     /**
@@ -233,7 +233,7 @@ class DeadlineServiceTest {
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Tri", Date.valueOf("2022-06-06")));
         deadlineService.saveDeadline(new Deadline(projects.get(1).getId(), "Test deadline Quad", Date.valueOf("2022-06-06")));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(4);
+        assertEquals(4, deadlines.size());
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
         int listSize = deadlineList.size();
         assertThat(listSize).isEqualTo(2);
@@ -248,17 +248,17 @@ class DeadlineServiceTest {
         Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
         deadlineService.saveDeadline(deadline);
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(1);
+        assertEquals(1, deadlines.size());
         deadlineService.deleteDeadlineById(deadline.getDeadlineId());
         deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isZero();
+        assertTrue(deadlines.isEmpty());
     }
 
     @Test
     void whenDeadlineDoesNotExist_testDeleteDeadlineThrowsException () {
         Deadline deadline = new Deadline(projects.get(0).getId(), "Test deadline", Date.valueOf("2022-06-06"));
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
-        assertThat(deadlines.size()).isEqualTo(0);
+        assertTrue(deadlines.isEmpty());
 
         Exception exception = assertThrows(Exception.class, () ->
                 deadlineService.deleteDeadlineById(deadline.getDeadlineId()));
@@ -295,7 +295,7 @@ class DeadlineServiceTest {
     void whenNoDeadlineExists_testCreateNewDeadline() throws Exception {
         deadlineService.createNewDeadline(projects.get(0).getId(), "Test Deadline", Date.valueOf("2022-06-06"));
         List<Deadline> deadlineList = deadlineService.getByDeadlineParentProjectId(projects.get(0).getId());
-        assertEquals(deadlineList.get(0).getDeadlineName(), "Test Deadline");
+        assertEquals("Test Deadline", deadlineList.get(0).getDeadlineName() );
     }
 
     @Test

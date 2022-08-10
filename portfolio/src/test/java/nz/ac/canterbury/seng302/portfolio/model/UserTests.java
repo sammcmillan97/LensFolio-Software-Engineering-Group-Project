@@ -24,7 +24,7 @@ class UserTests {
 
     // Test that creating a User from a UserResponse puts all the fields in the correct places.
     @Test
-    void testCreateUser() {
+    void givenValidDetails_testCreateUser() {
         ArrayList<UserRole> roles = new ArrayList<>();
         roles.add(UserRole.STUDENT);
         roles.add(UserRole.COURSE_ADMINISTRATOR);
@@ -68,7 +68,7 @@ class UserTests {
 
     // Test that when a middle name is missing the full name renders correctly
     @Test
-    void testGetFullNameNoMiddleName() {
+    void givenNoMiddleName_testGetFullName() {
         String testFirstName = "fname";
         String testLastName = "lname";
         UserResponse source = UserResponse.newBuilder()
@@ -80,7 +80,7 @@ class UserTests {
 
     // Test that when a middle name is present the full name renders correctly
     @Test
-    void testGetFullNameWithMiddleName() {
+    void givenValidMiddleName_testGetFullName() {
         String testFirstName = "fname";
         String testMiddleName = "mname";
         String testLastName = "lname";
@@ -94,7 +94,7 @@ class UserTests {
 
     // Test that when no roles are present no roles are returned from getRoleStrings
     @Test
-    void testGetRoleStringsWithNoRoles() {
+    void givenNoRoles_testGetRoleStrings() {
         UserResponse source = UserResponse.newBuilder().build();
         User testUser = new User(source);
         assertEquals(0, testUser.getRoleStrings().size());
@@ -102,7 +102,7 @@ class UserTests {
 
     // Test that when all roles are present all roles are returned from getRoleStrings
     @Test
-    void testGetRoleStringsWithAllRoles() {
+    void givenAllRoles_testGetRoleStrings() {
         ArrayList<UserRole> roles = new ArrayList<>();
         roles.add(UserRole.STUDENT);
         roles.add(UserRole.TEACHER);
@@ -120,7 +120,7 @@ class UserTests {
 
     // Test that when a user has just been created the end of getMemberSince says 0 months
     @Test
-    void testGetMemberSinceWithNewUser() {
+    void givenNewUser_testGetMemberSince() {
         Instant time = Instant.now();
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
         UserResponse source = UserResponse.newBuilder()
@@ -134,7 +134,7 @@ class UserTests {
     }
 
     // Provides arguments for the parameterized tests for getting membership time
-    static Stream<Arguments> getMemberSinceTestParamProvider() {
+    static Stream<Arguments> getMemberSince_testParamProvider() {
         return Stream.of(
                 arguments(40, " (1 month)"), // Tests one month ago
                 arguments(100, " (3 months)"), // Tests 3 months ago
@@ -146,7 +146,7 @@ class UserTests {
     // Tests that the user's membership length is correctly converted into string format
     // Uses parameters from the above method
     @ParameterizedTest
-    @MethodSource("getMemberSinceTestParamProvider")
+    @MethodSource("getMemberSince_testParamProvider")
     void testGetMemberSince(int daysToSubtract, String expectedTime) {
         Instant time = Instant.now().minus(daysToSubtract, ChronoUnit.DAYS);
         Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
@@ -162,7 +162,7 @@ class UserTests {
 
     // Test that the users aren't equal when their first names don't match
     @Test
-    void testUsersUnequalWhenFirstNamesDifferent() {
+    void givenFirstNamesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setFirstName("Frank").build();
         UserResponse response2 = UserResponse.newBuilder().setFirstName("Franklin").build();
         User user = new User(response);
@@ -172,7 +172,7 @@ class UserTests {
 
     // Test that the users are equal when their first names match
     @Test
-    void testUsersEqualWhenFirstNamesSame() {
+    void givenFirstNamesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setFirstName("Frank").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -181,7 +181,7 @@ class UserTests {
 
     // Test that the users aren't equal when their middle names don't match
     @Test
-    void testUsersUnequalWhenMiddleNamesDifferent() {
+    void givenMiddleNamesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setMiddleName("Frank").build();
         UserResponse response2 = UserResponse.newBuilder().setMiddleName("Franklin").build();
         User user = new User(response);
@@ -191,7 +191,7 @@ class UserTests {
 
     // Test that the users are equal when their middle names match
     @Test
-    void testUsersEqualWhenMiddleNamesSame() {
+    void givenMiddleNamesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setMiddleName("Frank").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -200,7 +200,7 @@ class UserTests {
 
     // Test that the users aren't equal when their last names don't match
     @Test
-    void testUsersUnequalWhenLastNamesDifferent() {
+    void givenLastNamesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setLastName("Frank").build();
         UserResponse response2 = UserResponse.newBuilder().setLastName("Franklin").build();
         User user = new User(response);
@@ -210,7 +210,7 @@ class UserTests {
 
     // Test that the users are equal when their last names match
     @Test
-    void testUsersEqualWhenLastNamesSame() {
+    void givenLastNamesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setLastName("Frank").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -219,7 +219,7 @@ class UserTests {
 
     // Test that the users aren't equal when their bios don't match
     @Test
-    void testUsersUnequalWhenBioDifferent() {
+    void whenBioDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setBio("Frank").build();
         UserResponse response2 = UserResponse.newBuilder().setBio("Franklin").build();
         User user = new User(response);
@@ -229,7 +229,7 @@ class UserTests {
 
     // Test that the users are equal when their bios match
     @Test
-    void testUsersEqualWhenBioSame() {
+    void whenBioSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setBio("Frank").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -238,7 +238,7 @@ class UserTests {
 
     // Test that the users aren't equal when their emails don't match
     @Test
-    void testUsersUnequalWhenEmailsDifferent() {
+    void whenEmailsDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setEmail("frank@gmail.com").build();
         UserResponse response2 = UserResponse.newBuilder().setEmail("frank@hotmail.com").build();
         User user = new User(response);
@@ -248,7 +248,7 @@ class UserTests {
 
     // Test that the users are equal when their emails match
     @Test
-    void testUsersEqualWhenLastEmailsSame() {
+    void whenLastEmailsSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setEmail("frank@gmail.com").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -257,7 +257,7 @@ class UserTests {
 
     // Test that the users aren't equal when their usernames don't match
     @Test
-    void testUsersUnequalWhenUsernamesDifferent() {
+    void whenUsernamesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setUsername("Frank123").build();
         UserResponse response2 = UserResponse.newBuilder().setUsername("Franklinabc123").build();
         User user = new User(response);
@@ -267,7 +267,7 @@ class UserTests {
 
     // Test that the users are equal when their usernames match
     @Test
-    void testUsersEqualWhenUsernamesSame() {
+    void whenUsernamesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setUsername("Frank123").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -276,7 +276,7 @@ class UserTests {
 
     // Test that the users aren't equal when their nicknames don't match
     @Test
-    void testUsersUnequalWhenNicknamesDifferent() {
+    void whenNicknamesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setNickname("Frank").build();
         UserResponse response2 = UserResponse.newBuilder().setNickname("Franklin").build();
         User user = new User(response);
@@ -286,7 +286,7 @@ class UserTests {
 
     // Test that the users are equal when their nicknames match
     @Test
-    void testUsersEqualWhenNicknamesSame() {
+    void whenNicknamesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setNickname("Frank").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -295,7 +295,7 @@ class UserTests {
 
     // Test that the users aren't equal when their personal pronouns don't match
     @Test
-    void testUsersUnequalWhenPronounsDifferent() {
+    void whenPronounsDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setPersonalPronouns("he/him").build();
         UserResponse response2 = UserResponse.newBuilder().setPersonalPronouns("she/her").build();
         User user = new User(response);
@@ -305,7 +305,7 @@ class UserTests {
 
     // Test that the users are equal when their personal pronouns match
     @Test
-    void testUsersEqualWhenPronounsSame() {
+    void whenPronounsSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setPersonalPronouns("he/him").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -314,7 +314,7 @@ class UserTests {
 
     // Test that the users aren't equal when their ids don't match
     @Test
-    void testUsersUnequalWhenIdsDifferent() {
+    void whenIdsDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setId(1).build();
         UserResponse response2 = UserResponse.newBuilder().setId(2).build();
         User user = new User(response);
@@ -324,7 +324,7 @@ class UserTests {
 
     // Test that the users are equal when their ids match
     @Test
-    void testUsersEqualWhenIdsSame() {
+    void whenIdsSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setId(1).build();
         User user = new User(response);
         User user2 = new User(response);
@@ -333,7 +333,7 @@ class UserTests {
 
     // Test that the users aren't equal when their profile image paths don't match
     @Test
-    void testUsersUnequalWhenImagePathsDifferent() {
+    void whenImagePathsDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setProfileImagePath("/images/1").build();
         UserResponse response2 = UserResponse.newBuilder().setProfileImagePath("/images/2").build();
         User user = new User(response);
@@ -343,7 +343,7 @@ class UserTests {
 
     // Test that the users are equal when their profile image paths match
     @Test
-    void testUsersEqualWhenImagePathsSame() {
+    void whenImagePathsSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setProfileImagePath("/images/1").build();
         User user = new User(response);
         User user2 = new User(response);
@@ -352,7 +352,7 @@ class UserTests {
 
     // Test that the users aren't equal when their roles don't match
     @Test
-    void testUsersUnequalWhenRolesDifferent() {
+    void whenRolesDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().addRoles(UserRole.STUDENT).build();
         UserResponse response2 = UserResponse.newBuilder().addRoles(UserRole.TEACHER).addRoles(UserRole.STUDENT).build();
         User user = new User(response);
@@ -362,7 +362,7 @@ class UserTests {
 
     // Test that the users are equal when their roles match
     @Test
-    void testUsersEqualWhenRolesSame() {
+    void whenRolesSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().addRoles(UserRole.STUDENT).build();
         User user = new User(response);
         User user2 = new User(response);
@@ -371,7 +371,7 @@ class UserTests {
 
     // Test that the users aren't equal when their timestamps don't match
     @Test
-    void testUsersUnequalWhenTimestampsDifferent() {
+    void whenTimestampsDifferent_testUsersUnequal() {
         UserResponse response = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(5)).build();
         UserResponse response2 = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(10)).build();
         User user = new User(response);
@@ -381,7 +381,7 @@ class UserTests {
 
     // Test that the users are equal when their timestamps match
     @Test
-    void testUsersEqualWhenTimestampsSame() {
+    void whenTimestampsSame_testUsersEqual() {
         UserResponse response = UserResponse.newBuilder().setCreated(Timestamp.newBuilder().setSeconds(5)).build();
         User user = new User(response);
         User user2 = new User(response);
@@ -390,7 +390,7 @@ class UserTests {
 
     // Test that the users are equal with all properties
     @Test
-    void testUsersEqualAllProperties() {
+    void givenValidDetails_testUsersEqualAllProperties() {
         UserResponse response = UserResponse.newBuilder()
                 .setUsername("frank123")
                 .setFirstName("Frank")

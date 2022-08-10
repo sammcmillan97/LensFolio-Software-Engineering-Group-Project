@@ -82,7 +82,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that sort by name works correctly on the get paginated users service
     @Test
-    void getPaginatedUsersSortByName(){
+    void getPaginatedUsers_whenSortByName(){
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
@@ -98,7 +98,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that sort by username works correctly on the get paginated users service
     @Test
-    void getPaginatedUsersSortByUsername(){
+    void getPaginatedUsers_whenSortByUsername(){
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
@@ -113,7 +113,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that sort by alias works correctly on the get paginated users service
     @Test
-    void getPaginatedUsersSortByAlias() {
+    void getPaginatedUsers_whenSortByAlias() {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
@@ -128,7 +128,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that sort by role works correctly on the get paginated users service
     @Test
-    void getPaginatedUsersSortByRoles() {
+    void getPaginatedUsers_whenSortByRoles() {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
@@ -143,7 +143,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that sort in descending order works on the get paginated users service
     @Test
-    void getPaginatedUsersSortByUsernameDescending() {
+    void getPaginatedUsers_whenSortByUsernameDescending() {
         addUsers();
         GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
                 .setOffset(0)
@@ -184,7 +184,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that the password change fails if the new password is too short
     @Test
-    void changePasswordEmptyPasswordTest() {
+    void givenEmptyPassword_changePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(testId)
                 .setCurrentPassword(testPassword)
@@ -199,7 +199,7 @@ class UserAccountsServerServiceTests {
 
     //Test the max length for the new password field
     @Test
-    void changePasswordLongFieldTest() {
+    void givenLongFieldInBounds_changePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(testId)
                 .setCurrentPassword(testPassword)
@@ -212,7 +212,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that the password change fails if the new password is too long
     @Test
-    void changePasswordExtraLongPasswordTest() {
+    void givenLongFieldOutOfBounds_changePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(testId)
                 .setCurrentPassword(testPassword)
@@ -228,7 +228,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that password change fails if the user does not exist
     @Test
-    void changePasswordBadUserTest() {
+    void givenBadUser_changePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(-1)
                 .setCurrentPassword("Not a password")
@@ -243,7 +243,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that password change fails if the password is incorrect
     @Test
-    void changePasswordBadPasswordTest() {
+    void givenBadPassword_changePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(testId)
                 .setCurrentPassword("Not a password")
@@ -258,7 +258,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that password change succeeds if password is correct
     @Test
-    void changePasswordGoodPasswordTest() {
+    void givenGoodPassword_changePasswordRequest() {
         final String newPassword = "new password";
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.newBuilder()
                 .setUserId(testId)
@@ -273,7 +273,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that editing a user fails if no fields are entered
     @Test
-    void editUserEmptyFieldsTest() {
+    void givenEmptyFields_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(testId)
                 .setFirstName("")
@@ -311,7 +311,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that editing a user fails if names contain special characters
     @Test
-    void editUserBadNamesTest() {
+    void givenBadNames_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(testId)
                 .setFirstName("??")
@@ -349,7 +349,7 @@ class UserAccountsServerServiceTests {
 
     // Tests the max field length
     @Test
-    void editUserLongFieldsTest() {
+    void givenLongFields_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(testId)
                 .setFirstName("a".repeat(64))
@@ -378,7 +378,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that if fields are too long, the request is rejected
     @Test
-    void editUserExtraLongFieldsTest() {
+    void givenExtraLongFields_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(testId)
                 .setFirstName("a".repeat(65))
@@ -411,7 +411,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that editing user fails if user does not exist
     @Test
-    void editUserBadUserTest() {
+    void givenBadUser_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(-1)
                 .setFirstName(testFirstName + "new")
@@ -440,7 +440,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that editing user succeeds if user exists
     @Test
-    void editUserGoodUserTest() {
+    void givenGoodUser_editUser() {
         EditUserRequest editUserRequest = EditUserRequest.newBuilder()
                 .setUserId(testId)
                 .setFirstName(testFirstName + "new")
@@ -469,7 +469,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that getting user fails if user does not exist
     @Test
-    void getUserByIdBadUserTest() {
+    void givenBadUser_getUserById() {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(-1)
                 .build();
@@ -487,7 +487,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that getting user succeeds if user exists
     @Test
-    void getUserByIdGoodUserTest() {
+    void givenGoodUser_getUserById() {
         GetUserByIdRequest getUserByIdRequest = GetUserByIdRequest.newBuilder()
                 .setId(testId)
                 .build();
@@ -525,7 +525,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that getting profile picture path succeeds when it is changed from default
     @Test
-    void getUserByIdProfileImagePathTest() {
+    void givenUserExists_getUserByIdProfileImagePath() {
         String testPath = "test.png";
         User testUser = userRepository.findByUserId(testId);
         testUser.setProfileImagePath(testPath);
@@ -534,14 +534,12 @@ class UserAccountsServerServiceTests {
                 .setId(testId)
                 .build();
         UserResponse response = userService.getUserAccountByIdHandler(getUserByIdRequest);
-        System.out.println("resources/" + testPath);
-        System.out.println(response.getProfileImagePath());
         assertEquals("http://localhost:8080/ProfilePicture-" + testPath, response.getProfileImagePath());
     }
 
     // Tests that creating user fails if no fields are entered
     @Test
-    void userRegisterEmptyFieldsTest() {
+    void givenEmptyFields_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder().build();
         UserRegisterResponse response = userService.registerHandler(userRegisterRequest);
         assertEquals("Register attempt failed: Validation failed", response.getMessage());
@@ -561,7 +559,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that creating user fails if nonames contain special characters
     @Test
-    void userRegisterBadNamesTest() {
+    void givenBadNames_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setFirstName("I999")
                 .setMiddleName("|||")
@@ -585,7 +583,7 @@ class UserAccountsServerServiceTests {
 
     // Tests the max length for each field
     @Test
-    void userRegisterLongFieldsTest() {
+    void givenLongFields_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername("a".repeat(64))
                 .setPassword("a".repeat(64))
@@ -604,7 +602,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that if fields are too long, the request is rejected
     @Test
-    void userRegisterExtraLongFieldsTest() {
+    void givenExtraLongFields_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername("a".repeat(65))
                 .setPassword("a".repeat(65))
@@ -642,7 +640,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that creating user fails if username already exists
     @Test
-    void userRegisterRepeatedUsernameTest() {
+    void givenUserWithUsernameExists_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername)
                 .setPassword(testPassword + "2")
@@ -664,7 +662,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that an email that does not contain @ and . is rejected
     @Test
-    void userRegisterBadEmailTest() {
+    void givenBadEmail_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
@@ -690,7 +688,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that a password less than 8 characters is rejected
     @Test
-    void userRegisterBadPasswordTest() {
+    void givenBadPassword_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(":seven:")
@@ -712,7 +710,7 @@ class UserAccountsServerServiceTests {
 
     // Tests that creating user succeeds if username does not exist
     @Test
-    void userRegisterGoodUsernameTest() {
+    void givenGoodUsername_registerUser() {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.newBuilder()
                 .setUsername(testUsername + "2")
                 .setPassword(testPassword + "2")
@@ -743,7 +741,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that role can be added to a user
     @Test
-    void addRoleToUserTest() {
+    void givenUserExists_addRoleToUser() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(teacherRole)
@@ -760,7 +758,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that role can be added to a user
     @Test
-    void addRoleToUserTwiceTest() {
+    void givenUserExists_addRoleToUserTwice() {
         ModifyRoleOfUserRequest modifyRoleOfUserRequest = ModifyRoleOfUserRequest.newBuilder()
                 .setUserId(testId)
                 .setRole(studentRole)
@@ -776,7 +774,7 @@ class UserAccountsServerServiceTests {
 
     //Tests that role can be removed from a user
     @Test
-    void removeRoleFromUserTest() {
+    void givenUserExists_removeRoleFromUser() {
         userRepository.deleteAll();
         User userA = new User(testUsername, testFirstName, testMiddleName, testLastName, testNickname, testBio, testPronouns, testEmail, testPassword);
         userA.addRole(teacherRole);

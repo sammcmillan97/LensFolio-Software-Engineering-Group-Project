@@ -42,7 +42,7 @@ class ProjectRepositoryTests {
     }
 
     @Test
-    void findAllProjects() {
+    void givenMultipleProjectsExist_findAllProjects() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Project project2 = new Project("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
         List<Project> projects = new ArrayList<>();
@@ -58,7 +58,7 @@ class ProjectRepositoryTests {
     }
 
     @Test
-    void findProjectById() {
+    void givenValidId_findProjectById() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
         Project project2 = new Project("Project1", "Test Project", Date.valueOf("2022-03-22"), Date.valueOf("2022-04-01"));
         List<Project> projects = new ArrayList<Project>();
@@ -74,7 +74,7 @@ class ProjectRepositoryTests {
     }
 
     @Test
-    void addProjectViaRepository() {
+    void givenValidDetails_addProjectViaRepository() {
         Project project1 = new Project("Project1", "Test Project", Date.valueOf("2022-04-15"), Date.valueOf("2022-05-16"));
 
         projectRepository.save(project1);
