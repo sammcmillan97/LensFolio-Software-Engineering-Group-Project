@@ -123,6 +123,7 @@ public class Evidence {
     }
 
     public int getNumberWeblinks() { return webLinks.size(); }
+
     public List<Categories> getCategories() {
         List<Categories> sortedCategories = new ArrayList<>(categories);
         Collections.sort(sortedCategories);

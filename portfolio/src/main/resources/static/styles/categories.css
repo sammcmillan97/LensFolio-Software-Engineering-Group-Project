@@ -92,7 +92,7 @@ html {
 }
 
 .category__link:hover {
-    color: white;
+    color:white;
     filter: brightness(85%);
 }
 
@@ -109,6 +109,6 @@ html {
 }
 
 .no-category__link:hover {
-    color: #A82810;
+    color:inherit;
     filter: brightness(85%);
 }

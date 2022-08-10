@@ -25,7 +25,7 @@ public class EvidenceService {
      * @return A list of all evidence relating to this portfolio. It is ordered chronologically.
      */
     public List<Evidence> getEvidenceForPortfolio(int userId, int projectId) {
-        List<Evidence> evidence = repository.findByOwnerIdAndProjectId(userId, projectId);
+        List<Evidence> evidence = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         evidence.sort(Comparator.comparing(Evidence::getDate));
         Collections.reverse(evidence);
         return evidence;
@@ -79,7 +79,7 @@ public class EvidenceService {
                 throw new IllegalArgumentException("Skills not valid");
             }
         }
-        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectId(evidence.getOwnerId(), evidence.getProjectId());
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(evidence.getOwnerId(), evidence.getProjectId());
         evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
     }
@@ -188,7 +188,7 @@ public class EvidenceService {
      */
     public List<Evidence> getEvidenceByCategoryForPortfolio(int userId, int projectId, Categories categorySelection) {
 
-        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDesc(userId, projectId);
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         List<Evidence> evidenceListWithCategory = new ArrayList<>();
         for(Evidence e: evidenceList) {
             if(e.getCategories().contains(categorySelection)) {

@@ -69,6 +69,10 @@ public class CategoriesController {
         } else {
             return PORTFOLIO_REDIRECT;
         }
+
+        // Add all of the skills that the user has to the page
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
         model.addAttribute("categoryName", category);
         model.addAttribute("evidenceList", evidenceList);
         return "categories";
@@ -105,6 +109,9 @@ public class CategoriesController {
         } else {
             return PORTFOLIO_REDIRECT;
         }
+        // Add all of the skills that the user has to the page
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
 
         List<Evidence> evidenceList = evidenceService.getEvidenceByCategoryForPortfolio(userId, projectId, categorySelection);
         model.addAttribute("evidenceList", evidenceList);

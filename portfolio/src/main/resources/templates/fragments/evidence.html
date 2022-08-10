@@ -15,6 +15,7 @@
             <div class="evidence__details_expanded flex-column" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
                 <div class="evidence__skills">
+                    <a th:each="category: ${evidence.getCategories}" class="category-link" th:text="${category}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
                     <a th:each="skill: ${evidence.getSkills}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                 </div>
                 <div class="web-link-container">
@@ -65,7 +66,6 @@
                     </div>
                 </div>
             </div>
-            <a th:each="category: ${evidence.getCategories}" class="category-link" th:text="${category}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
         </div>
     </div>
 </div>

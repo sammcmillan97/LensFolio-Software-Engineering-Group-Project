@@ -77,6 +77,7 @@ deploy-staging-identityprovider:
     url: https://csse-s302g4.canterbury.ac.nz/test/identity
   only:
     - dev
+    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-staging-portfolio:
   stage: deploy
@@ -99,6 +100,7 @@ deploy-staging-portfolio:
     url: https://csse-s302g4.canterbury.ac.nz/test/portfolio
   only:
     - dev
+    - U10-Categories-On-Pieces-Of-Evidence
 
 deploy-production-identityprovider:
   stage: deploy

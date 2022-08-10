@@ -36,20 +36,20 @@
                 <div th:replace="fragments/evidence"></div>
             </div>
             <div class="col-lg">
-                <div class="skills">
-                    <!-- Skill list -->
-                    <h2 th:text="Skills"></h2>
-                    <div class="skill__details">
-                        <a class="no-skill-link " th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill='">No Skill</a>
-                        <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
-                    </div>
-                </div>
                 <div class="categories">
                     <!-- Categories Tab -->
                     <h2>Categories</h2>
                     <div class="categories__details">
                         <a class="no-category__link" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category='">No Category</a>
                         <a class="category__link" th:each="category: ${categoryList}" th:text="${category}" th:href="@{${owner} ? '/portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
+                    </div>
+                </div>
+                <div class="skills">
+                    <!-- Skill list -->
+                    <h2 th:text="Skills"></h2>
+                    <div class="skill__details">
+                        <a class="no-skill-link " th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill='">No Skill</a>
+                        <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                     </div>
                 </div>
             </div>
