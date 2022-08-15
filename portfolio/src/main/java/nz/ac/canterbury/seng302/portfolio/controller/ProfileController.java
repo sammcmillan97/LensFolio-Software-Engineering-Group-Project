@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,9 @@ public class ProfileController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
+        Logger logger = LoggerFactory.getLogger("com.portfolio");
+        logger.error("error message");
+        logger.info("info message");
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
