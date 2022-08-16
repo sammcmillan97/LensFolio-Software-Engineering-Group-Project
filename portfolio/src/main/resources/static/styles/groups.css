@@ -1,31 +1,5 @@
-:root {
-    /* CSS variables */
-    --color-primary: #FBAA60;
-    --color-secondary: #FADFC6FF;
-    --color-tertiary: #F67B50;
-    --color-complement: #F4EAE6;
-    --color-accent: #A82810;
-}
 
-
-/* Hide scrollbar */
-html::-webkit-scrollbar {
-    /* Chrome, Safari, Opera */
-    display: none;
-}
-
-html {
-    -ms-overflow-style: none; /* IE, Edge */
-    scrollbar-width: none; /* Firefox */
-}
-
-/* Simple class for hiding components */
-.hidden {
-    display: none !important;
-}
-
-
-/******************** Project Cards ********************/
+/******************** Group Cards ********************/
 
 .group, #new-group-button {
     position: relative;
@@ -56,6 +30,16 @@ html {
 
 .group__name:hover {
     color: var(--color-accent);
+}
+
+.table {
+    table-layout: fixed;
+    overflow-wrap: break-word;
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+    font-size: small;
+    margin: 25px auto;
 }
 
 .group__details {
