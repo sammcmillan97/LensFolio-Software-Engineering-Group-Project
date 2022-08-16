@@ -14,6 +14,8 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc.AuthenticationServiceImplBase;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
 
     /**
      * Attempts to authenticate a user with a given username and password. 

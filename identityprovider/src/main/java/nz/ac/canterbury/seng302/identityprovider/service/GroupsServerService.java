@@ -9,6 +9,8 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import nz.ac.canterbury.seng302.shared.util.ValidationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -34,6 +36,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
 
     /**
      * GRPC Method to add a collection of users to a group

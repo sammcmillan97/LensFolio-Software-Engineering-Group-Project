@@ -4,6 +4,8 @@ import nz.ac.canterbury.seng302.portfolio.model.DateRestrictions;
 import nz.ac.canterbury.seng302.portfolio.model.User;
 import nz.ac.canterbury.seng302.portfolio.service.ProjectDateService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class EditProjectController {
 
     @Autowired
     UserAccountClientService userAccountClientService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",

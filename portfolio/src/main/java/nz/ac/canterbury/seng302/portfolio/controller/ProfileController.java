@@ -22,6 +22,7 @@ public class ProfileController {
 
     @Autowired
     private UserAccountClientService userService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Display the user's profile page.
