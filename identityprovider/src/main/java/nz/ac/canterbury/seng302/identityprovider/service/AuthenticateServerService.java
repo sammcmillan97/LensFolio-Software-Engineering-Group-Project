@@ -46,6 +46,7 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
     AuthenticateResponse authenticateHandler(AuthenticateRequest request) {
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
         if (userAccountsServerService.isBadUserName(request.getUsername())){
+            IDENTITY_LOGGER.info("Log in attempt failed: cannot contain special characters");
             reply
                     .setMessage("Log in attempt failed: username cannot contain special characters")
                     .setSuccess(false)
@@ -55,11 +56,13 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
         User user = repository.findByUsername(request.getUsername());
         if (user == null) {
+            IDENTITY_LOGGER.info("Log in attempt failed: username not registered");
             reply
                     .setMessage("Log in attempt failed: username not registered")
                     .setSuccess(false)
                     .setToken("");
         } else if (Boolean.FALSE.equals(user.checkPassword(request.getPassword()))) {
+            IDENTITY_LOGGER.info("Log in attempt failed: password incorrect");
             reply
                     .setMessage("Log in attempt failed: password incorrect")
                     .setSuccess(false)
@@ -89,6 +92,8 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
                     .setToken(token)
                     .setUserId(user.getUserId())
                     .setUsername(user.getUsername());
+            String loggerMessage = String.format("User #%d: %s logged in successfully", user.getUserId(), user.getUsername());
+            IDENTITY_LOGGER.info(loggerMessage);
         }
 
         return reply.build();

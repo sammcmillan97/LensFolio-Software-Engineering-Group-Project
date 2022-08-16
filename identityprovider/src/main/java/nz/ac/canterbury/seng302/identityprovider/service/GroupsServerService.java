@@ -46,6 +46,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
     @Override
     public void addGroupMembers(AddGroupMembersRequest request, StreamObserver<AddGroupMembersResponse> responseObserver) {
+        IDENTITY_LOGGER.info("Attempting to add members to group " + request.getGroupId() + ".");
         AddGroupMembersResponse reply;
         if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
             reply = addGroupMembersHandler(request);
@@ -55,6 +56,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .setMessage("Add group members failed: Not Authorised")
                     .build();
         }
+        IDENTITY_LOGGER.info(reply.getMessage());
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -107,6 +109,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
      */
     @Override
     public void removeGroupMembers(RemoveGroupMembersRequest request, StreamObserver<RemoveGroupMembersResponse> responseObserver) {
+        IDENTITY_LOGGER.info("Attempting to remove members from group " + request.getGroupId() + ".");
         RemoveGroupMembersResponse reply;
         if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
             reply = removeGroupMembersHandler(request);
@@ -116,6 +119,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .setMessage("Remove group members failed: Not Authorised")
                     .build();
         }
+        IDENTITY_LOGGER.info(reply.getMessage());
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -174,6 +178,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
     @Override
     public void createGroup (CreateGroupRequest request, StreamObserver<CreateGroupResponse> responseObserver) {
+        IDENTITY_LOGGER.info("Attempting to create a new group: " + request.getShortName() + " - " + request.getLongName() + ".");
         CreateGroupResponse reply;
         if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
             reply = createGroupHandler(request);
@@ -183,6 +188,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .setMessage("Create group failed: User Not Authenticated")
                     .build();
         }
+        IDENTITY_LOGGER.info(reply.getMessage());
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -226,6 +232,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
      */
     @Override
     public void deleteGroup(DeleteGroupRequest request, StreamObserver<DeleteGroupResponse> responseObserver) {
+        IDENTITY_LOGGER.info("Attempting to delete group " + request.getGroupId() + ".");
         DeleteGroupResponse reply;
         if (userAccountsServerService.isAuthenticated() && userAccountsServerService.isTeacher()) {
             reply = deleteGroupHandler(request);
@@ -235,6 +242,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .setMessage("Delete group failed: User Not Authenticated")
                     .build();
         }
+        IDENTITY_LOGGER.info(reply.getMessage());
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -264,6 +272,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
 
     @Override
     public void modifyGroupDetails (ModifyGroupDetailsRequest request, StreamObserver<ModifyGroupDetailsResponse> responseObserver) {
+        IDENTITY_LOGGER.info("Attempting to modify group " + request.getGroupId() + "'s details.");
         ModifyGroupDetailsResponse reply;
         if (userAccountsServerService.isAuthenticated() && (userAccountsServerService.isTeacher()||userInGroup(request.getGroupId(), userAccountsServerService.getAuthStateUserId()))) {
             reply = modifyGroupDetailsHandler(request);
@@ -273,6 +282,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
                     .setMessage("Modify group failed: User Not Authenticated")
                     .build();
         }
+        IDENTITY_LOGGER.info(reply.getMessage());
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -329,6 +339,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         } else {
             reply = GroupDetailsResponse.newBuilder().build();
         }
+        IDENTITY_LOGGER.info("Group " + request.getGroupId() + " details requested");
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
@@ -404,6 +415,7 @@ public class GroupsServerService extends GroupsServiceGrpc.GroupsServiceImplBase
         } else {
             reply = PaginatedGroupsResponse.newBuilder().build();
         }
+        IDENTITY_LOGGER.info("Paginated groups requested. " + reply.getGroupsList().size() + " groups returned");
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
