@@ -116,8 +116,6 @@ public class EvidenceService {
      * is thrown.
      */
     public void saveWebLink(int evidenceId, WebLink weblink) throws NoSuchElementException {
-
-
         try {
             Evidence evidence = getEvidenceById(evidenceId);
             evidence.addWebLink(weblink);
