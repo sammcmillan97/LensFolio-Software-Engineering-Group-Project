@@ -25,10 +25,7 @@ public class EvidenceService {
      * @return A list of all evidence relating to this portfolio. It is ordered chronologically.
      */
     public List<Evidence> getEvidenceForPortfolio(int userId, int projectId) {
-        List<Evidence> evidence = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
-        evidence.sort(Comparator.comparing(Evidence::getDate));
-        Collections.reverse(evidence);
-        return evidence;
+        return repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
     }
 
     /**
@@ -95,7 +92,7 @@ public class EvidenceService {
             skills.addAll(userEvidence.getSkills());
         }
         List<String> skillList = new ArrayList<>(skills);
-        skillList.sort(String::compareToIgnoreCase);;
+        skillList.sort(String::compareToIgnoreCase);
         return skillList;
     }
 
