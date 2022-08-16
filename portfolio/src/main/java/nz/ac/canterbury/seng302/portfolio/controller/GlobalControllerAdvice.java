@@ -80,6 +80,15 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         }
     }
 
+    @ModelAttribute("authUserIsPrivileged")
+    public boolean userIsPrivileged(@AuthenticationPrincipal AuthState principal) {
+        try {
+            return userIsAdmin(principal) || userIsTeacher(principal);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * This regex will reject blanks, and emojis,
      * but still allow specific characters and numbers
