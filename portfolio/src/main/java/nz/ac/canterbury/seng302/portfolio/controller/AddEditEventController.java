@@ -67,9 +67,17 @@ public class AddEditEventController {
             //Create new event
             event = new Event();
             event.setEventName("EventName");
-            //Default start and end date is the project start and end date
-            event.setEventStartDate(project.getStartDate());
-            event.setEventEndDate(project.getEndDate());
+
+            Date currentDate = new Date();
+            // Set the start and end dates to the current date if the event occurs within the project,
+            // else set them to the project start date.
+            if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+                event.setEventStartDate(currentDate);
+                event.setEventEndDate(currentDate);
+            } else {
+                event.setEventStartDate(project.getStartDate());
+                event.setEventEndDate(project.getStartDate());
+            }
         }
 
         //Add event details to model
