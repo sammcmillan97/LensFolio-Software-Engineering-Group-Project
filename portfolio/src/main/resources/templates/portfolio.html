@@ -25,8 +25,11 @@
 <nav th:replace="fragments/navbar :: navbar"></nav>
 
 <div id="page-content" class="constrict">
-    <div class="container">
-        <h1 th:text="(${owner} ? 'Your portfolio' : ${pageUser.getFullName()} + 's portfolio')"></h1>
+    <div id="container">
+        <div id="evidence__header-div">
+            <h1 id="evidence__header-title" th:text="(${owner} ? 'Your portfolio' : ${pageUser.getFullName()} + 's portfolio')"></h1>
+            <h2 id="evidence__header-project" th:text="${currentProject.getName}"></h2>
+        </div>
         <a th:if="${owner}" class="add-evidence__button" th:href="@{addEvidence}">Add Evidence</a>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
