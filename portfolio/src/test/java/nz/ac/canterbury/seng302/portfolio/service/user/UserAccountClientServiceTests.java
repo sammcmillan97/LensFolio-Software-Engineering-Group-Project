@@ -1,5 +1,6 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.user;
 
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 

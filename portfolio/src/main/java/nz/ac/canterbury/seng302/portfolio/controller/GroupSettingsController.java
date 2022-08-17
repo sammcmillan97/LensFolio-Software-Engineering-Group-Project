@@ -6,7 +6,7 @@ import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.group.GitlabConnectionService;
 import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.group.GroupRepositorySettingsService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import org.gitlab4j.api.GitLabApiException;

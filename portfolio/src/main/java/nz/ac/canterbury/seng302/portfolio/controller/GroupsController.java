@@ -5,7 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.group.GroupListResponse;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.model.user.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;

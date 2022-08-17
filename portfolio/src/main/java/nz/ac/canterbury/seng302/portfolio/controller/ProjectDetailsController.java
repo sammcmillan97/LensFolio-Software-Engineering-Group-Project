@@ -2,8 +2,9 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.*;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
-import nz.ac.canterbury.seng302.portfolio.service.*;
 import nz.ac.canterbury.seng302.portfolio.service.project.*;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.portfolio.util.ProjectDetailsUtil;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.springframework.beans.factory.annotation.Autowired;

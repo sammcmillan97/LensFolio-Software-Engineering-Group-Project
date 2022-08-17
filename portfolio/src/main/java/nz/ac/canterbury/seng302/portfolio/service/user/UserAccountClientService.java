@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.user;
 
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;

@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.user;
 
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;

@@ -1,7 +1,8 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.user;
 
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.repository.user.PortfolioUserRepository;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

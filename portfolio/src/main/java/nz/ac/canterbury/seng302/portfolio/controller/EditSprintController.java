@@ -5,7 +5,7 @@ import nz.ac.canterbury.seng302.portfolio.model.project.Sprint;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.project.SprintService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
