@@ -157,4 +157,37 @@ class ProjectServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
         assertNotEquals(0, projects.get(0).getId());
     }
+
+    @Test
+    void givenValidTitle_testTitleValid(){
+        String title = "Normal Title";
+        assertTrue(projectService.titleValid(title));
+    }
+
+    @Test
+    void givenValidAlphaNumericTitle_testTitleValid(){
+        String title = "SENG302";
+        assertTrue(projectService.titleValid(title));
+    }
+
+    @Test
+    void givenValidExceptionalTitle_testTitleValid(){
+        String title = "Māori, a-zA-Z0123456789àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆŠŽð,. '";
+        assertTrue(projectService.titleValid(title));
+    }
+
+    @Test
+    void givenValidDifferingLanguageTitle_testTitleValid(){
+        String title = "私のプロジェクト";
+        assertTrue(projectService.titleValid(title));
+    }
+
+    @Test
+    void givenInvalid_testTitleValid(){
+        String title = "😎💖❤🎂🎉✔🎁";
+        assertFalse(projectService.titleValid(title));
+    }
+
+
+
 }
