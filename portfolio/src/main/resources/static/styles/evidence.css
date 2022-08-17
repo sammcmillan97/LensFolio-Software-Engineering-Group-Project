@@ -72,7 +72,7 @@ html {
     float: right;
     font-size: 15px;
     width: 100px;
-    padding-top: 15px;
+    padding-top: 25px;
     padding-left: 50px;
 }
 
@@ -82,8 +82,9 @@ html {
 }
 
 .evidence__title_icon {
-    font-size: 30px;
+    font-size: 25px;
 }
+
 
 .evidence__title, .evidence__date {
     margin: 0 1rem 0 0;
