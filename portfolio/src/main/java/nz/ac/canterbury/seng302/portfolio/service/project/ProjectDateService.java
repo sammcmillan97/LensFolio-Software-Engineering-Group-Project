@@ -1,7 +1,8 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.project;
 
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.project.*;
+import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

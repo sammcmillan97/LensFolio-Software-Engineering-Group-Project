@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;

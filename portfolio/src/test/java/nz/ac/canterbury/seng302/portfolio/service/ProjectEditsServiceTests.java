@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectEditsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

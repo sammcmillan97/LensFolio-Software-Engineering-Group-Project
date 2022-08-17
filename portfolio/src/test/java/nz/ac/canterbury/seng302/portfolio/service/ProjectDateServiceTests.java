@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.*;
+import nz.ac.canterbury.seng302.portfolio.service.project.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
