@@ -83,6 +83,23 @@ public class EvidenceService {
     }
 
     /**
+     * Copies an evidence from the owner to the portfolio of a new user
+     * Throws illegal argument exception if the evidence does not exist
+     * @param evidenceId  is the id of the evidence to be copied
+     * @param userId is the id of the user who gets the copied evidence
+     */
+    public void copyEvidenceToNewUser(Integer evidenceId, Integer userId) {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
+            evidence.addUser(userId);
+            repository.save(copiedEvidence);
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Evidence does not exist");
+        }
+    }
+
+    /**
      * Gets all skills from a list of evidence. Each skill returned is unique.
      * @param evidenceList A list of evidence to retrieve skills from.
      * @return All the skills for that list of evidence.

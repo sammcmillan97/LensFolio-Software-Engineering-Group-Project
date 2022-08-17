@@ -32,6 +32,8 @@ public class Evidence {
     private List<WebLink> webLinks;
     @ElementCollection
     private List<String> skills; //skills related to this piece of evidence
+    @Transient
+    private Set<Integer> users = new HashSet<>();
 
 
     public Evidence() {
@@ -98,6 +100,14 @@ public class Evidence {
     public List<String> getSkills() {return skills;}
 
     public void addSkill (String skill) {this.skills.add(skill);}
+
+    public Set<Integer> getUsers() {
+        return users;
+    }
+
+    public void addUser(Integer userId) {
+        this.users.add(userId);
+    }
 
     /**
      * Forces skills to conform to a list of master skills.
