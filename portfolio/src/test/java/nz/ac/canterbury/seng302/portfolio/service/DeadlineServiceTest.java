@@ -166,7 +166,7 @@ class DeadlineServiceTest {
         List<Deadline> deadlines = (List<Deadline>) deadlineRepository.findAll();
         assertTrue(deadlines.isEmpty());
         Exception exception = assertThrows(Exception.class, () -> deadlineService.getDeadlineById(999999));
-        String expectedMessage = "Deadline not found";
+        String expectedMessage = "Deadline " + 999999 + " not found";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -286,9 +286,9 @@ class DeadlineServiceTest {
 
         Exception exception = assertThrows(Exception.class, () ->
                 deadlineService.updateDeadlineDate(deadlineId, Date.valueOf("2022-07-02")));
-        String expectedMessage = "Deadline date must be within the project dates";
+        String expectedMessage = "Deadline date (2022-07-02) must be within the project dates (2022-05-01 00:00:00.0 - 2022-06-30 00:00:00.0)";
         String actualMessage = exception.getMessage();
-        assertThat(expectedMessage).isEqualTo(actualMessage);
+        assertThat(actualMessage).isEqualTo(expectedMessage);
     }
 
     @Test

@@ -112,7 +112,6 @@ public class EventService {
             saveEvent(eventToChange);
             String message = "Event " + eventId + " dates changed to " + newStartDate + " - " + newEndDate;
             PORTFOLIO_LOGGER.info(message);
-            throw new UnsupportedOperationException(message);
         }
     }
 }
