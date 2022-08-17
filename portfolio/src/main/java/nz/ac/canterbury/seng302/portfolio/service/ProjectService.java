@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ProjectService {
 
     @Autowired
     private ProjectEditsService projectEditsService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Get list of all projects
@@ -42,6 +45,8 @@ public class ProjectService {
 
     public Project saveProject(Project project) {
         projectEditsService.refreshProject(project.getId());
+        String message = "Project "+ project.getId() + " saved successfully";
+        PORTFOLIO_LOGGER.info(message);
         return repository.save(project);
     }
 
@@ -49,7 +54,11 @@ public class ProjectService {
         try {
             repository.deleteById(id);
             projectEditsService.refreshProject(id);
+            String message = "Project "+ id + " deleted successfully";
+            PORTFOLIO_LOGGER.info(message);
         } catch (EmptyResultDataAccessException e) {
+            String message = "Project "+ id + " not found to delete";
+            PORTFOLIO_LOGGER.error(message);
             throw new NoSuchElementException("No project found to delete");
         }
     }

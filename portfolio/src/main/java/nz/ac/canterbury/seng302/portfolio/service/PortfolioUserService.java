@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ public class PortfolioUserService {
 
     @Autowired
     private ProjectRepository projectRepository;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Gets a user by their id. Creates a default user with that id if none exists.
@@ -53,6 +56,8 @@ public class PortfolioUserService {
         PortfolioUser user = getUserById(id);
         user.setUserListSortType(userListSortType);
         repository.save(user);
+        String message = "User "+ id + " sort type changed to " + userListSortType;
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -76,6 +81,8 @@ public class PortfolioUserService {
         PortfolioUser user = getUserById(id);
         user.setUserListSortAscending(userListSortIsAscending);
         repository.save(user);
+        String message = "User "+ id + " sort order is ascending changed to " + userListSortIsAscending;
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -109,6 +116,8 @@ public class PortfolioUserService {
         assert portfolioUser != null;
         portfolioUser.setCurrentProject(projectId);
         repository.save(portfolioUser);
+        String message = "User "+ userId + " current project changed to project " + projectId;
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -131,6 +140,8 @@ public class PortfolioUserService {
             PortfolioUser portfolioUser = getUserById(userId);
             portfolioUser.addSkills(skills);
             savePortfolioUser(portfolioUser);
+            String message = "User "+ userId + " given skills " + skills;
+            PORTFOLIO_LOGGER.info(message);
         } catch (Exception e) {
             //should never reach as getUserById creates user if one doesn't exist
         }

@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettingsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ public class GroupRepositorySettingsService {
 
     @Autowired
     private GroupRepositorySettingsRepository groupRepository;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Gets a group by its id. Creates a default group with that id if it doesn't exist
@@ -47,6 +50,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository server url updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -68,6 +73,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabProjectId(gitlabProjectId);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository id updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -89,6 +96,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabAccessToken(gitlabAccessToken);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository access token updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -110,6 +119,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository name updated successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -127,6 +138,8 @@ public class GroupRepositorySettingsService {
         group.setGitlabProjectId(gitlabProjectId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
+        String message = "Group " + groupId + " settings updated successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -138,6 +151,8 @@ public class GroupRepositorySettingsService {
             GroupRepositorySettings group = groupRepository.findByGroupId(groupId);
             groupRepository.delete(group);
         }
+        String message = "Group " + groupId + " settings deleted successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**

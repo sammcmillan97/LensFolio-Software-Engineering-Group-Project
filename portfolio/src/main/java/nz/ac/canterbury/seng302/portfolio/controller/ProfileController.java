@@ -34,9 +34,6 @@ public class ProfileController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        Logger logger = LoggerFactory.getLogger("com.portfolio");
-        logger.error("error message");
-        logger.info("info message");
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);

@@ -5,6 +5,8 @@ import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Commit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 public class GitlabConnectionService {
     @Autowired
     GroupRepositorySettingsService groupRepositorySettingsService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Fetches the given group's repository information
@@ -23,6 +26,8 @@ public class GitlabConnectionService {
     @VisibleForTesting
     protected GroupRepositorySettings getGroupRepositorySettings(int groupId) throws NoSuchFieldException {
         if (!groupRepositorySettingsService.existsByGroupId(groupId)) {
+            String message = "Group " + groupId + " doesn't have any repository settings";
+            PORTFOLIO_LOGGER.error(message);
             throw new NoSuchFieldException("Given group id doesn't have any repository settings");
         }
         return groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(groupId);

@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 import nz.ac.canterbury.seng302.portfolio.model.Milestone;
 import nz.ac.canterbury.seng302.portfolio.model.MilestoneRepository;
 import nz.ac.canterbury.seng302.portfolio.model.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ public class MilestoneService {
     private ProjectService projectService;
     @Autowired
     private ProjectEditsService projectEditsService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Get a list of all milestones
@@ -70,6 +73,8 @@ public class MilestoneService {
         }
         projectEditsService.refreshProject(milestoneRepository.findById(milestoneId).getMilestoneParentProjectId());
         milestoneRepository.deleteById(milestoneId);
+        String message = "Milestone " + milestoneId + " deleted successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -86,11 +91,15 @@ public class MilestoneService {
         Date projectStartDate = parentProject.getStartDate();
         Date projectEndDate = parentProject.getEndDate();
         if (milestoneDate.compareTo(projectEndDate) > 0 || milestoneDate.compareTo(projectStartDate) < 0) {
-            throw new UnsupportedOperationException("Milestone date must be within the project dates");
+            String message = "Milestone date (" + milestoneDate + ") must be within the project dates (" + projectStartDate + " - " + projectEndDate + ")";
+            PORTFOLIO_LOGGER.error(message);
+            throw new UnsupportedOperationException(message);
         }
         milestone.setMilestoneDate(milestoneDate);
         milestone.setMilestoneName(milestoneName);
         saveMilestone(milestone);
+        String message = "Milestone updated to have name " + milestoneName + " and date " + milestoneDate;
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -105,9 +114,13 @@ public class MilestoneService {
         Date projectStartDate = parentProject.getStartDate();
         Date projectEndDate = parentProject.getEndDate();
         if (milestoneDate.compareTo(projectEndDate) > 0 || milestoneDate.compareTo(projectStartDate) < 0) {
-            throw new UnsupportedOperationException("Milestone date must be within the project dates");
+            String message = "Milestone date (" + milestoneDate + ") must be within the project dates (" + projectStartDate + " - " + projectEndDate + ")";
+            PORTFOLIO_LOGGER.error(message);
+            throw new UnsupportedOperationException(message);
         } else {
             saveMilestone(new Milestone(parentProjectId, milestoneName, milestoneDate));
+            String message = "New milestone created with name " + milestoneName + " and date " + milestoneDate;
+            PORTFOLIO_LOGGER.info(message);
         }
     }
 }

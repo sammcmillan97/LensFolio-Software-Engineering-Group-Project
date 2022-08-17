@@ -105,7 +105,6 @@
         <level value="INFO" />
         <appender-ref ref="IdentityErrorLogs" />
         <appender-ref ref="IdentityInfoLogs" />
-        <appender-ref ref="Console" />
     </logger>
 
     <root level="INFO">

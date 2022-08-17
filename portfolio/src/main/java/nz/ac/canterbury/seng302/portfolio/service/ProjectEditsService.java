@@ -2,6 +2,8 @@ package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.ProjectEdit;
 import nz.ac.canterbury.seng302.portfolio.model.ProjectRefresh;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

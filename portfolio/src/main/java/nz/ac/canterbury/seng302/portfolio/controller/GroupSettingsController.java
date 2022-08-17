@@ -11,6 +11,8 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.GroupDetailsResponse;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Commit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -35,10 +37,6 @@ public class GroupSettingsController {
 
     @Autowired
     private GroupRepositorySettingsService groupRepositorySettingsService;
-
-    @Autowired
-    private GroupsController groupsController;
-
     @Autowired
     private GitlabConnectionService gitlabConnectionService;
 

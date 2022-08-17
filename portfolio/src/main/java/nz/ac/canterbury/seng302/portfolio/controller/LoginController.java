@@ -7,6 +7,8 @@ import nz.ac.canterbury.seng302.portfolio.service.AuthenticateClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ public class LoginController {
 
     @Autowired
     private UserAccountClientService userService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String COOKIE_NAME = "lens-session-token";
 
@@ -72,11 +75,14 @@ public class LoginController {
      * @return the mapping to the login html page.
      */
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    public String logout(@AuthenticationPrincipal AuthState principal, HttpServletResponse response) {
+        User user = userService.getUserAccountByPrincipal(principal);
         CookieUtil.clear(
                 response,
                 COOKIE_NAME
         );
+        String message = user.getUsername() + " logged out";
+        PORTFOLIO_LOGGER.info(message);
         return "redirect:/" + LOGIN;
     }
 
@@ -124,6 +130,8 @@ public class LoginController {
                 5 * 60 * 60, // Expires in 5 hours
                 domain.startsWith("localhost") ? null : domain
             );
+            String message = username + " logged in";
+            PORTFOLIO_LOGGER.info(message);
 
             return "redirect:/profile";
         } else {

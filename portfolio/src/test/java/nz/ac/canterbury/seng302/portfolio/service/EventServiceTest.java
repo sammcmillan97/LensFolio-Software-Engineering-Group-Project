@@ -190,7 +190,7 @@ class EventServiceTest {
         List<Event> events = (List<Event>) eventRepository.findAll();
         assertTrue(events.isEmpty());
         Exception exception = assertThrows(Exception.class, () -> eventService.getEventById(999999));
-        String expectedMessage = "Event not found";
+        String expectedMessage = "Event " + 999999 + " not found";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -321,7 +321,7 @@ class EventServiceTest {
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
         Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-04-20"), Date.valueOf("2022-06-06")));
-        String expectedMessage = "Event start date must be within the project dates";
+        String expectedMessage = "start date (2022-04-20) must be within the project dates (2022-05-01 00:00:00.0 - 2022-06-30 00:00:00.0)";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -353,7 +353,7 @@ class EventServiceTest {
         int eventId = events.get(0).getEventId();
 
         Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-06-20"), Date.valueOf("2022-06-06")));
-        String expectedMessage = "Event start date must not proceed the end date";
+        String expectedMessage = "start date (2022-06-20) must not proceed the end date (2022-06-06)";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -384,7 +384,7 @@ class EventServiceTest {
         List<Event> events = (List<Event>) eventRepository.findAll();
         int eventId = events.get(0).getEventId();
         Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-05-05"), Date.valueOf("2022-04-20")));
-        String expectedMessage = "Event start date must not proceed the end date";
+        String expectedMessage = "start date (2022-05-05) must not proceed the end date (2022-04-20)";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
@@ -416,7 +416,7 @@ class EventServiceTest {
         int eventId = events.get(0).getEventId();
 
         Exception exception = assertThrows(Exception.class, () -> eventService.updateEventDates(eventId, Date.valueOf("2022-05-05"), Date.valueOf("2022-08-06")));
-        String expectedMessage = "Event end date must be within the project dates";
+        String expectedMessage = "end date (2022-08-06) must be within the project dates (2022-05-01 00:00:00.0 - 2022-06-30 00:00:00.0)";
         String actualMessage = exception.getMessage();
         assertTrue(actualMessage.contains(expectedMessage));
     }
