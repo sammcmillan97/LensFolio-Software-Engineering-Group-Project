@@ -25,3 +25,15 @@ function toggleNavbarVisibility() {
         collapseNav();
     }
 }
+
+let toggle = 0;
+function dropDown() {
+    let dropdown = document.getElementById("js-dropdown__list");
+    if (toggle === 0) {
+        dropdown.style.display = 'block';
+        toggle = 1;
+    } else {
+        dropdown.style.display = 'none';
+        toggle = 0;
+    }
+}
