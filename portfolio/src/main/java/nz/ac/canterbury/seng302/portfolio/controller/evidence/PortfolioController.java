@@ -61,7 +61,7 @@ public class PortfolioController {
         model.addAttribute("evidenceList", evidenceList);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(evidenceList));
         model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
-        return "portfolio";
+        return "evidenceTemplates/portfolio";
     }
 
     /**
@@ -99,7 +99,7 @@ public class PortfolioController {
             return PORTFOLIO_REDIRECT; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
-            return "portfolio";
+            return "evidenceTemplates/portfolio";
         }
     }
 
