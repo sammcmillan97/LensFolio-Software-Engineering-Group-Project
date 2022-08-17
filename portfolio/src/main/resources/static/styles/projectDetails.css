@@ -26,7 +26,7 @@ html {
 
 /******************** Project Details ********************/
 
-#project, .project__button-wrapper button, .sprint__button-wrapper button, .event__button-wrapper button {
+#project, .project__button-wrapper button, .sprint__button-wrapper button, .event__button-wrapper button, .deadline__button-wrapper button, .milestone__button-wrapper button {
     position: relative;
 
     padding-top: 0;
@@ -200,7 +200,9 @@ html {
     margin-left: 0.5rem;
 }
 
-.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint__button:hover, .new-event__button:hover, .new-deadline__button:hover, .new-milestone__button:hover {
+.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint__button:hover,
+.new-event__button:hover, .new-deadline__button:hover, .new-milestone__button:hover,
+.deadline__button-wrapper button:hover, .milestone__button-wrapper button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
