@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.model.group.Group;
-import nz.ac.canterbury.seng302.portfolio.model.GroupListResponse;
-import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.model.UserListResponse;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupListResponse;
+import nz.ac.canterbury.seng302.portfolio.model.user.User;
+import nz.ac.canterbury.seng302.portfolio.model.user.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;

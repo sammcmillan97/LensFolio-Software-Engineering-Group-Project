@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.portfolio.model.portfolio.Categories;
+import nz.ac.canterbury.seng302.portfolio.model.portfolio.Evidence;
+import nz.ac.canterbury.seng302.portfolio.model.portfolio.WebLink;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.repository.EvidenceRepository;
 import org.slf4j.Logger;

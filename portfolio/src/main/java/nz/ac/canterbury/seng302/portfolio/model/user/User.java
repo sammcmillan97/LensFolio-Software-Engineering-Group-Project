@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.model;
+package nz.ac.canterbury.seng302.portfolio.model.user;
 
 import com.google.protobuf.Timestamp;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
