@@ -1,6 +1,7 @@
-package nz.ac.canterbury.seng302.portfolio.controller;
+package nz.ac.canterbury.seng302.portfolio.controller.group;
 
 import com.google.protobuf.Timestamp;
+import nz.ac.canterbury.seng302.portfolio.controller.group.GroupsController;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.junit.jupiter.api.BeforeEach;

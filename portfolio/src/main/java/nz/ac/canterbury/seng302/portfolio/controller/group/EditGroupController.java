@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.controller;
+package nz.ac.canterbury.seng302.portfolio.controller.group;
 
 import nz.ac.canterbury.seng302.portfolio.model.group.Group;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
