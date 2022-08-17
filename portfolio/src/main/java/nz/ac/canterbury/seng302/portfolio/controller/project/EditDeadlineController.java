@@ -87,7 +87,7 @@ public class EditDeadlineController {
         model.addAttribute("minDeadlineDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
         model.addAttribute("maxDeadlineDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
-        return "editDeadline";
+        return "projectTemplates/editDeadline";
     }
 
     /**

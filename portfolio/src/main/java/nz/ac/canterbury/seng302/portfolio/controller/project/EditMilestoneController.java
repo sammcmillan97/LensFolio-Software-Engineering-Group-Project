@@ -98,7 +98,7 @@ public class EditMilestoneController {
         model.addAttribute("milestoneDate", Project.dateToString(milestone.getMilestoneDate(), TIME_FORMAT));
         model.addAttribute("minMilestoneDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxMilestoneDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
-        return "editMilestone";
+        return "projectTemplates/editMilestone";
     }
 
     /**

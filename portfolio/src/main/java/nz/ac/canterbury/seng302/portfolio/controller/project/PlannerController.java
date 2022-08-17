@@ -93,7 +93,7 @@ public class PlannerController {
             plannerUpdated = false;
         }
 
-        return "planner";
+        return "projectTemplates/planner";
     }
 
     /**
@@ -128,7 +128,7 @@ public class PlannerController {
             plannerUpdated = false;
         }
 
-        return "planner";
+        return "projectTemplates/planner";
     }
 
     @PostMapping("/editPlanner-{sprintId}-{projectId}")

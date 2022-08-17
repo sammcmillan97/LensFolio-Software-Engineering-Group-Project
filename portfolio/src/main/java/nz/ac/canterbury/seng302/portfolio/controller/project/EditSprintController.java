@@ -95,7 +95,7 @@ public class EditSprintController {
         // Add date boundaries for sprint to model
         model.addAttribute("minSprintStartDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxSprintEndDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
-        return "editSprint";
+        return "projectTemplates/editSprint";
     }
 
     /**

@@ -82,7 +82,7 @@ public class AddEditEventController {
         // Add event date boundaries for event to the model
         model.addAttribute("minEventStartDate", Project.dateToString(project.getStartDate(), TIME_FORMAT));
         model.addAttribute("maxEventEndDate", Project.dateToString(project.getEndDate(), TIME_FORMAT));
-        return "addEditEvent";
+        return "projectTemplates/addEditEvent";
     }
 
     @PostMapping("/editEvent-{eventId}-{parentProjectId}")
