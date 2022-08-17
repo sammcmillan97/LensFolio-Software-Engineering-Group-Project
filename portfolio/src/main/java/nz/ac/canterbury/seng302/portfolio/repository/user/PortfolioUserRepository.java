@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.repository;
+package nz.ac.canterbury.seng302.portfolio.repository.user;
 
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import org.springframework.data.repository.CrudRepository;
