@@ -26,10 +26,7 @@ public class EvidenceService {
      * @return A list of all evidence relating to this portfolio. It is ordered chronologically.
      */
     public List<Evidence> getEvidenceForPortfolio(int userId, int projectId) {
-        List<Evidence> evidence = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
-        evidence.sort(Comparator.comparing(Evidence::getDate));
-        Collections.reverse(evidence);
-        return evidence;
+        return repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
     }
 
     /**
