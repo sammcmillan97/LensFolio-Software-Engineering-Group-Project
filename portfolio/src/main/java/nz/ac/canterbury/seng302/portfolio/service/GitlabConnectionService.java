@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import com.google.common.annotations.VisibleForTesting;
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Commit;

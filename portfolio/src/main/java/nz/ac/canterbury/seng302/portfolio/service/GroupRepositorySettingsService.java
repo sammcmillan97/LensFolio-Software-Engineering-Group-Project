@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.repository.GroupRepositorySettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

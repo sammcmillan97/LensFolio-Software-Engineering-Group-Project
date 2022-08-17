@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.repository;
 
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

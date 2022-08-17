@@ -1,6 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.repository.GroupRepositorySettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -138,7 +138,7 @@ class GroupRepositorySettingsServiceTest {
         try {
             groupRepositorySettingsService.deleteGroupRepositoryByGroupId(1234);
         } catch (EmptyResultDataAccessException e) {
-            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings entity with id 1234 exists!";
+            String expectedMessage = "No class nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings entity with id 1234 exists!";
             assertEquals(expectedMessage, e.getMessage());
         }
 
