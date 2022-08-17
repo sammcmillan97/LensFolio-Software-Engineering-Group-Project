@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettings;
-import nz.ac.canterbury.seng302.portfolio.model.GroupRepositorySettingsRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.GroupRepositorySettingsRepository;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.models.Commit;
 import org.junit.jupiter.api.BeforeEach;

@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity // this is an entity, assumed to be in a table called Event
 @Table(name="EVENT")
-public class Event implements ImportantDate{
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int eventId;

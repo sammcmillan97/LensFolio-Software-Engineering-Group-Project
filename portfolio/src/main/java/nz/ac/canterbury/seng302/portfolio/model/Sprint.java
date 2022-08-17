@@ -6,7 +6,7 @@ import java.util.*;
 
 @Entity // this is an entity, assumed to be in a table called Sprint
 @Table(name="SPRINT")
-public class Sprint implements ImportantDate {
+public class Sprint {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
