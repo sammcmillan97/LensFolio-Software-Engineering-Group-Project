@@ -135,7 +135,7 @@ public class PortfolioController {
                 }
                 evidenceService.saveWebLink(id, webLink1);
             } catch (Exception e) {
-                //left blank on purpose
+                model.addAttribute("urlError", "Weblink is invalid");
             }
         }
         return PORTFOLIO_REDIRECT;

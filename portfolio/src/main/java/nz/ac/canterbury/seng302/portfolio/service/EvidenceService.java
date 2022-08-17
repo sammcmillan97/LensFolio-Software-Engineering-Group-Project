@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -113,7 +114,7 @@ public class EvidenceService {
             skills.addAll(userEvidence.getSkills());
         }
         List<String> skillList = new ArrayList<>(skills);
-        skillList.sort(String::compareToIgnoreCase);;
+        skillList.sort(String::compareToIgnoreCase);
         return skillList;
     }
 
@@ -157,6 +158,11 @@ public class EvidenceService {
         if (!weblinkMatcher.find()) {
             String message = "Evidence weblink" + weblink + " in invalid format";
             PORTFOLIO_LOGGER.error(message);
+            throw new IllegalArgumentException("Weblink not in valid format");
+        }
+        try {
+            new URL(weblink).toURI();
+        } catch (Exception e) {
             throw new IllegalArgumentException("Weblink not in valid format");
         }
     }

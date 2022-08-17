@@ -69,8 +69,6 @@ public class EditGroupController {
         model.addAttribute("groupId", Integer.parseInt(groupId));
         model.addAttribute("groupShortName", group.getShortName());
         model.addAttribute("groupLongName", group.getLongName());
-        model.addAttribute("userIsTeacher", groupsController.isTeacher(user));
-
         return "addEditGroup";
     }
 
@@ -79,7 +77,7 @@ public class EditGroupController {
      * @param principal Authentication principal storing current user information
      * @param groupIdString The id in string form of the group to be updated
      * @param groupShortName The new/updated short name of the group to be updated
-     * @param groupLongName The new/updated long name of the group to be ypdated
+     * @param groupLongName The new/updated long name of the group to be updated
      * @param model ThymeLeaf model
      * @return a redirect to either the edit group page or the main groups page
      */
@@ -139,8 +137,6 @@ public class EditGroupController {
             model.addAttribute("groupId", groupId);
             model.addAttribute("groupShortName", groupShortName);
             model.addAttribute("groupLongName", groupLongName);
-            model.addAttribute("userIsTeacher", groupsController.isTeacher(user));
-
             return "addEditGroup";
         } else {
             return GROUPS_REDIRECT;
