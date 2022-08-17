@@ -1,11 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.util;
 
-import nz.ac.canterbury.seng302.portfolio.model.Deadline;
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.Milestone;
-import nz.ac.canterbury.seng302.portfolio.model.Sprint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nz.ac.canterbury.seng302.portfolio.model.project.Deadline;
+import nz.ac.canterbury.seng302.portfolio.model.project.Event;
+import nz.ac.canterbury.seng302.portfolio.model.project.Milestone;
+import nz.ac.canterbury.seng302.portfolio.model.project.Sprint;
 import org.springframework.data.util.Pair;
 
 import java.util.*;

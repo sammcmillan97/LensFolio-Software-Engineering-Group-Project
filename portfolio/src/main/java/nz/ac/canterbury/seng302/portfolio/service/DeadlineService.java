@@ -1,8 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.Deadline;
+import nz.ac.canterbury.seng302.portfolio.model.project.Deadline;
 import nz.ac.canterbury.seng302.portfolio.repository.DeadlineRepository;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
