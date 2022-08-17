@@ -19,7 +19,7 @@
 <!-- Page content -->
 <div id="page-content" class="constrict">
     <div id="projectId" style="display: none;" th:text="${projectId}"></div>
-  <div id="nameOfEdited" style="display: none;" th:text="${milestoneName}"></div>
+  <div id="name-of-edited" style="display: none;" th:text="${milestoneName}"></div>
     <div id="form__wrapper">
 
         <header class="form__header flex-column">
@@ -34,11 +34,11 @@
         <!-- Add/Edit Milestone Form -->
         <form id="form__body" class="flex-column" th:action="@{editMilestone-{milestone}-{project}(project=${parentProjectId}, milestone=${milestoneId})}" th:method="post">
             <label for="form__name-field">Name *</label>
-            <input type="text" id="form__name-field" class="edit-input" name="milestoneName" maxlength="30" placeholder="Milestone name" th:value="${milestone.milestoneName}" onkeyup="countCharacters()" th:pattern="${titlePattern}" required title="Milestone Name must not be blank and cannot contain special characters">
+            <input type="text" id="form__name-field" name="milestoneName" maxlength="30" placeholder="Milestone name" th:value="${milestone.milestoneName}" onkeyup="countCharacters()" th:pattern="${titlePattern}" required title="Milestone Name must not be blank and cannot contain special characters">
             <span id="char_count">30/30 characters remain</span>
 
             <label for="form__date-field">Date *</label>
-            <input type="date" id="form__date-field" class="edit-input" name="milestoneDate" th:placeholder="${milestoneDate}" th:value="${milestoneDate}" th:min="${minMilestoneDate}" th:max="${maxMilestoneDate}" required>
+            <input type="date" id="form__date-field" name="milestoneDate" th:placeholder="${milestoneDate}" th:value="${milestoneDate}" th:min="${minMilestoneDate}" th:max="${maxMilestoneDate}" required>
             <button type="submit" class="form__button">Save Changes</button>
             <a class="form__button" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
         </form>

@@ -27,7 +27,7 @@
 <div id="page-content" class="constrict">
     <div class="container">
         <h1 th:text="(${owner} ? 'Your portfolio' : ${pageUser.getFullName()} + 's portfolio')"></h1>
-        <a th:if="${owner}" class="add-evidence-button" th:href="@{addEvidence}">Add Evidence</a>
+        <a th:if="${owner}" class="add-evidence__button" th:href="@{addEvidence}">Add Evidence</a>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
     <div class="container">
@@ -48,8 +48,8 @@
                     <!-- Skill list -->
                     <h2 th:text="Skills"></h2>
                     <div class="skill__details">
-                        <a class="no-skill-link " th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill='">No Skill</a>
-                        <a th:each="skill: ${skillsList}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
+                        <a class="no-skill__link " th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill='">No Skill</a>
+                        <a th:each="skill: ${skillsList}"  class="skill__link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                     </div>
                 </div>
             </div>

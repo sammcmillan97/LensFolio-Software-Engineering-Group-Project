@@ -25,8 +25,8 @@
       <div class="event__details">
         <div th:each="event : ${sprintList.get(importantDate.getFirst()).getEventsInside}">
           <div class="event">
-            <div class="event_title_child"> <em class="bi bi-calendar-event"></em> </div>
-            <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2> </div>
+            <div class="event-title__child"> <em class="bi bi-calendar-event"></em> </div>
+            <div class="event-title__child"> <h2 class="event__name" th:text="${eventList.get(event).getEventName}"></h2> </div>
             <!-- Edit/Delete Inside event Buttons -->
             <div class="event__button-wrapper flex-row">
 
@@ -50,14 +50,14 @@
 
       <div class="break"></div>
 
-<!--      Embedded Deadlines-->
-      <div class="event__details">
+      <!--      Embedded Deadlines-->
+      <div class="deadline__details">
         <div th:each="deadline : ${sprintList.get(importantDate.getFirst()).getDeadlinesInside}">
-          <div class="event">
-            <div class="event_title_child"> <em class="bi bi-alarm"></em> </div>
-            <div class="event_title_child"> <h2 class="event__name" th:text="${deadlineList.get(deadline).getDeadlineName}"></h2> </div>
+          <div class="deadline">
+            <div class="deadline-title__child"> <em class="bi bi-alarm"></em> </div>
+            <div class="deadline-title__child"> <h2 class="deadline__name" th:text="${deadlineList.get(deadline).getDeadlineName}"></h2> </div>
             <!-- Edit/Delete Inside Deadline Buttons -->
-            <div class="event__button-wrapper flex-row">
+            <div class="deadline__button-wrapper flex-row">
 
               <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadlineList.get(deadline).getDeadlineId}, project=${project.getId})}"  th:method="get">
                 <button type="submit">Edit</button>
@@ -68,8 +68,8 @@
               </form>
             </div>
             <!-- Inside deadline Details -->
-            <div class="event__details flex-row" >
-              <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(deadline).getColour()}" th:text="${deadlineList.get(deadline).getDateString()} "></h4>
+            <div class="deadline__details flex-row" >
+              <h4 class="deadline__date" th:style="'color : ' + ${deadlineList.get(deadline).getColour()}" th:text="${deadlineList.get(deadline).getDateString()} "></h4>
             </div>
           </div>
         </div>
@@ -78,13 +78,13 @@
       <div class="break"></div>
 
       <!--      Embedded Milestones-->
-      <div class="event__details">
+      <div class="milestone__details">
         <div th:each="milestone : ${sprintList.get(importantDate.getFirst()).getMilestonesInside}">
-          <div class="event">
-            <div class="event_title_child"> <em class="bi bi-trophy"></em> </div>
-            <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(milestone).getMilestoneName}"></h2> </div>
+          <div class="milestone">
+            <div class="milestone-title__child"> <em class="bi bi-trophy"></em> </div>
+            <div class="milestone-title__child"> <h2 class="milestone__name" th:text="${milestoneList.get(milestone).getMilestoneName}"></h2> </div>
             <!-- Edit/Delete Inside Milestone Buttons -->
-            <div class="event__button-wrapper flex-row">
+            <div class="milestone__button-wrapper flex-row">
 
               <form action="#" th:action="@{editMilestone-{milestone}-{project}(milestone=${milestoneList.get(milestone).getId}, project=${project.getId})}"  th:method="get">
                 <button type="submit">Edit</button>
@@ -95,8 +95,8 @@
               </form>
             </div>
             <!-- Inside milestone Details -->
-            <div class="event__details flex-row" >
-              <h4 class="event__date" th:style="'color : ' + ${milestoneList.get(milestone).getColour()}" th:text="${milestoneList.get(milestone).getDateString()} "></h4>
+            <div class="milestone__details flex-row" >
+              <h4 class="milestone__date" th:style="'color : ' + ${milestoneList.get(milestone).getColour()}" th:text="${milestoneList.get(milestone).getDateString()} "></h4>
             </div>
           </div>
         </div>
@@ -104,8 +104,8 @@
     </div>
     <!-- Independent Events -->
     <div class="event__outside" th:if="${importantDate.getSecond() == 'Event'}">
-      <div class="event_title_child"> <em class="bi bi-calendar-event"></em> </div>
-      <div class="event_title_child"> <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2> </div>
+      <div class="event-title__child"> <em class="bi bi-calendar-event"></em> </div>
+      <div class="event-title__child"> <h2 class="event__name" th:text="${eventList.get(importantDate.getFirst()).getEventName}"></h2> </div>
       <!-- Edit/Delete Independent events -->
       <div class="event__button-wrapper flex-row">
         <form action="#" th:action="@{editEvent-{event}-{project}?tab=0(project=${project.getId}, event=${eventList.get(importantDate.getFirst()).getEventId})}" th:method="get">
@@ -126,11 +126,11 @@
       </div>
     </div>
 <!--    Independent Deadlines-->
-    <div class="event__outside" th:if="${importantDate.getSecond() == 'Deadline'}">
-      <div class="event_title_child"> <em class="bi bi-alarm"></em> </div>
-      <div class="event_title_child"> <h2 class="event__name" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineName}"></h2> </div>
+    <div class="deadline__outside" th:if="${importantDate.getSecond() == 'Deadline'}">
+      <div class="deadline-title__child"> <em class="bi bi-alarm"></em> </div>
+      <div class="deadline-title__child"> <h2 class="deadline__name" th:text="${deadlineList.get(importantDate.getFirst()).getDeadlineName}"></h2> </div>
       <!-- Edit/Delete Independent Deadlines -->
-      <div class="event__button-wrapper flex-row">
+      <div class="deadline__button-wrapper flex-row">
         <form action="#" th:action="@{editDeadline-{deadline}-{project}(deadline=${deadlineList.get(importantDate.getFirst()).getDeadlineId}, project=${project.getId})}" th:method="get">
           <button type="submit">Edit</button>
         </form>
@@ -140,18 +140,18 @@
         </form>
       </div>
       <!-- Independent Deadline Details -->
-      <div class="event__details">
-        <div class="event__details flex-row" >
-          <h4 class="event__date" th:style="'color : ' + ${deadlineList.get(importantDate.getFirst()).getColour()}" th:text="${deadlineList.get(importantDate.getFirst()).getDateString()} "></h4>
+      <div class="deadline__details">
+        <div class="deadline__details flex-row" >
+          <h4 class="deadline__date" th:style="'color : ' + ${deadlineList.get(importantDate.getFirst()).getColour()}" th:text="${deadlineList.get(importantDate.getFirst()).getDateString()} "></h4>
         </div>
       </div>
     </div>
     <!--    Independent Milestones-->
-    <div class="event__outside" th:if="${importantDate.getSecond() == 'Milestone'}">
-      <div class="event_title_child"> <em class="bi bi-trophy"></em> </div>
-      <div class="event_title_child"> <h2 class="event__name" th:text="${milestoneList.get(importantDate.getFirst()).getMilestoneName}"></h2> </div>
+    <div class="milestone__outside" th:if="${importantDate.getSecond() == 'Milestone'}">
+      <div class="milestone-title__child"> <em class="bi bi-trophy"></em> </div>
+      <div class="milestone-title__child"> <h2 class="milestone__name" th:text="${milestoneList.get(importantDate.getFirst()).getMilestoneName}"></h2> </div>
       <!-- Edit/Delete Independent Milestones -->
-      <div class="event__button-wrapper flex-row">
+      <div class="milestone__button-wrapper flex-row">
         <form action="#" th:action="@{editMilestone-{milestone}-{project}(milestone=${milestoneList.get(importantDate.getFirst()).getId}, project=${project.getId})}" th:method="get">
           <button type="submit">Edit</button>
         </form>
@@ -161,9 +161,9 @@
         </form>
       </div>
       <!-- Independent Milestone Details -->
-      <div class="event__details">
-        <div class="event__details flex-row" >
-          <h4 class="event__date" th:style="'color : ' + ${milestoneList.get(importantDate.getFirst()).getColour()}" th:text="${milestoneList.get(importantDate.getFirst()).getDateString()} "></h4>
+      <div class="milestone__details">
+        <div class="milestone__details flex-row" >
+          <h4 class="milestone__date" th:style="'color : ' + ${milestoneList.get(importantDate.getFirst()).getColour()}" th:text="${milestoneList.get(importantDate.getFirst()).getDateString()} "></h4>
         </div>
       </div>
     </div>

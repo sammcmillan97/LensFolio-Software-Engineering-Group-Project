@@ -3,7 +3,7 @@ function checkResponse(data){
     if (jsondata.refresh) {
         updatePage();
     }
-    let editNotification = document.getElementById("editNotification");
+    let editNotification = document.getElementById("edit-notification");
     if (jsondata.edits.length === 0) {
         editNotification.className = "";
     } else {

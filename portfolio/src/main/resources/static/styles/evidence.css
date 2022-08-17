@@ -60,7 +60,7 @@ html {
     margin-top: 1rem;
 }
 
-.evidence_title_child {
+.evidence-title__child {
     display: inline-block;
     vertical-align: middle;
 }
@@ -75,7 +75,7 @@ html {
     cursor: pointer;
 }
 
-.evidence_title_child:hover {
+.evidence-title__child:hover {
     color: var(--color-accent);
 }
 
@@ -86,7 +86,7 @@ html {
     visibility: visible;
 }
 
-.evidence__details_expanded {
+.evidence__details--expanded {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -192,7 +192,7 @@ html {
     background-color: #F67B50;
 }
 
-.category-link {
+.category__link {
     border: 1px solid #A82810;
     border-radius: 5px;
     background-color: #A82810;
@@ -204,7 +204,7 @@ html {
     text-align: center;
 }
 
-.category-link:hover {
+.category__link:hover {
     color: white;
     filter: brightness(85%);
 }

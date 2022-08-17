@@ -26,14 +26,14 @@ async function updateGroupRepositoryElement(firstLoad) {
  * edit modal. Then updates the repository information on the page with the updated information.
  */
 async function saveGroupRepositorySettings() {
-    bootstrap.Modal.getInstance(document.getElementById("group-repository-settings-modal")).hide()
+    bootstrap.Modal.getInstance(document.getElementById("group-repository-settings__modal")).hide()
     // Build the url with the repository information as parameters
     let url
     url = new URL (`${CONTEXT}/groupSettings-${GROUP_ID}-repository`)
-    url.searchParams.append("repositoryName", document.getElementById("group_repository_name").value)
-    url.searchParams.append("gitlabAccessToken", document.getElementById("group_repository_api_key").value)
-    url.searchParams.append("gitlabProjectId", document.getElementById("group_repository_id").value)
-    url.searchParams.append("gitlabServerUrl", document.getElementById("group_repository_server_url").value)
+    url.searchParams.append("repositoryName", document.getElementById("group-repository__name").value)
+    url.searchParams.append("gitlabAccessToken", document.getElementById("group-repository__api-key").value)
+    url.searchParams.append("gitlabProjectId", document.getElementById("group-repository__id").value)
+    url.searchParams.append("gitlabServerUrl", document.getElementById("group-repository__server-url").value)
 
 
     // Send a post request to update the group repository

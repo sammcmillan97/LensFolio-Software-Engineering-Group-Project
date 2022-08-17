@@ -32,7 +32,7 @@
     border-bottom: 2px solid lightgray;
 }
 
-#char_count_long_name, #char_count_short_name {
+#char-count__long_name, #char-count__short_name {
     font-size: x-small;
     padding-bottom: 10px;
 }

@@ -1,4 +1,4 @@
-.add-evidence-button {
+.add-evidence__button {
     position: relative;
     border: 1px solid var(--color-accent);
     border-radius: 1.5rem;
@@ -11,7 +11,7 @@
     color: black;
 }
 
-.add-evidence-button:hover {
+.add-evidenc__-button:hover {
     color: inherit;
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
@@ -53,7 +53,7 @@
     border-top: 1px solid var(--color-accent);
 }
 
-.web-link-container {
+.web-link__container {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
@@ -66,7 +66,7 @@
     flex-wrap: wrap;
 }
 
-.web-link-name {
+.web-link__name {
     padding: 0;
     margin: 0;
 }

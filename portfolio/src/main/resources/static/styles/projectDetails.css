@@ -90,7 +90,7 @@ html {
 
 /********************Sprints ********************/
 
-.sprint, .event__outside, .new-sprint-button, .new-event-button {
+.sprint, .event__outside, .deadline__outside, .milestone__outside, .new-sprint__button, .new-event__button, .new-deadline__button, .new-milestone__button {
     display: block;
     position: relative;
 
@@ -101,7 +101,7 @@ html {
     margin-top: 1rem;
 }
 
-.event {
+.event, .deadline, .milestone {
     display: block;
     position: relative;
 
@@ -111,7 +111,7 @@ html {
     padding: 0 2rem 0 2rem;
 }
 
-.event_title_child {
+.event-title__child, .deadline-title__child, .milestone-title__child {
     display: inline-block;
     padding: 1rem 1rem;
     vertical-align: middle;
@@ -133,20 +133,20 @@ html {
 /*    border-bottom: 1px solid var(--color-accent);*/
 /*}*/
 
-.sprint__name, .event__name {
+.sprint__name, .event__name, .deadline__name, .milestone__name {
     margin: 0 10rem 0 0;
     padding: 0;
     height: 5rem;
     line-height: 5rem;
 }
 
-.sprint__button-wrapper, .event__button-wrapper {
+.sprint__button-wrapper, .event__button-wrapper, .deadline__button-wrapper, .milestone__button-wrapper {
     position: absolute;
     top: 1rem;
     right: 0;
 }
 
-.sprint__button-wrapper button, .event__button-wrapper button {
+.sprint__button-wrapper button, .event__button-wrapper button, .deadline__button-wrapper button, .milestone__button-wrapper button {
     /* Position & Size */
     margin-right: 1rem;
     padding: 0;
@@ -170,18 +170,18 @@ html {
     margin-bottom: 1rem;
 }
 
-.event__details {
+.event__details, .deadline__details, .milestone__details {
     display: flex;
     flex-direction: row;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-.sprint__date, .event__start-date, .event__end-date, .event__date {
-    margin: 0rem 0rem 1rem;
+.sprint__date, .event__start-date, .event__end-date, .event__date, .deadline__date, .milestone__date {
+    margin: 0 0 1rem;
 }
 
-.new-sprint-button, .new-event-button {
+.new-sprint__button, .new-event__button, .new-deadline__button, .new-milestone__button {
     padding: 0;
     height: 3rem;
     width: 100%;
@@ -192,15 +192,15 @@ html {
     color: black;
     text-align: center;
 }
-.new-sprint-button {
+.new-sprint__button {
     margin-right: 0.5rem;
 }
 
-.new-event-button {
+.new-event__button, .new-deadline__button, .new-milestone__button {
     margin-left: 0.5rem;
 }
 
-.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint-button:hover, .new-event-button:hover {
+.sprint__button-wrapper button:hover, .event__button-wrapper button:hover, .new-sprint__button:hover, .new-event__button:hover, .new-deadline__button:hover, .new-milestone__button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
@@ -210,7 +210,7 @@ html {
 }
 
 /* Adapted from w3schools https://www.w3schools.com/howto/howto_js_snackbar.asp */
-#editNotification {
+#edit-notification {
   visibility: hidden;
   min-width: 250px;
   max-width: 250px;
@@ -220,15 +220,15 @@ html {
   text-align: center;
   border-radius: 15px;
   padding: 8px;
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
   position: fixed;
   z-index: 1;
   left: 100%;
   bottom: 30px;
 }
 
-#editNotification.show {
+#edit-notification.show {
   visibility: visible;
 }
 

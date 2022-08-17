@@ -63,7 +63,7 @@
     cursor: default;
 }
 
-.form-error-message {
+.evidence-form__error-message {
     margin-left: 10px;
     color: red;
     font-size: small;

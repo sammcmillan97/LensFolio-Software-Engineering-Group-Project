@@ -19,7 +19,7 @@
 
     <!-- Page content -->
     <div id="page-content" class="constrict">
-        <div id="editNotification"></div>
+        <div id="edit-notification"></div>
         <div id="projectId" style="display: none;" th:text="${project.getId}"></div>
         <!-- Project -->
         <div id="project">
@@ -64,13 +64,13 @@
         </div>
         <div id="new-buttons" class="flex-row">
           <!-- New Sprint Button -->
-          <a class="new-sprint-button" th:href="@{editSprint-{sprint}-{project}(sprint=-1, project=${project.getId})}">Add Sprint</a>
+          <a class="new-sprint__button" th:href="@{editSprint-{sprint}-{project}(sprint=-1, project=${project.getId})}">Add Sprint</a>
           <!-- New Event Button -->
-          <a class="new-event-button" th:href="@{editEvent-{event}-{project}(event=-1, project=${project.getId})}">Add Event</a>
+          <a class="new-event__button" th:href="@{editEvent-{event}-{project}(event=-1, project=${project.getId})}">Add Event</a>
           <!-- New Deadline Button -->
-          <a class="new-event-button" th:href="@{editDeadline-{deadline}-{project}(deadline=-1, project=${project.getId})}">Add Deadline</a>
+          <a class="new-deadline__button" th:href="@{editDeadline-{deadline}-{project}(deadline=-1, project=${project.getId})}">Add Deadline</a>
             <!-- New Milestone Button -->
-            <a class="new-event-button" th:href="@{editMilestone-{milestone}-{project}(milestone=-1, project=${project.getId})}">Add Milestone</a>
+            <a class="new-milestone__button" th:href="@{editMilestone-{milestone}-{project}(milestone=-1, project=${project.getId})}">Add Milestone</a>
         </div>
       <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
         <div class="carousel-inner">
