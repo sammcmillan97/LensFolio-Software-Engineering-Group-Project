@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.repository;
+package nz.ac.canterbury.seng302.portfolio.repository.projcet;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Milestone;
 import org.springframework.data.repository.CrudRepository;

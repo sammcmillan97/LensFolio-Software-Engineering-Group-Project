@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Milestone;
-import nz.ac.canterbury.seng302.portfolio.repository.MilestoneRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.projcet.MilestoneRepository;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
-import nz.ac.canterbury.seng302.portfolio.repository.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.projcet.ProjectRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
