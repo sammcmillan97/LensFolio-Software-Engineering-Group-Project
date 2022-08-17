@@ -63,6 +63,26 @@ html {
 .evidence_title_child {
     display: inline-block;
     vertical-align: middle;
+    margin: auto;
+}
+
+ /** Evidence trash and settings buttons */
+
+.evidence_title_buttons {
+    float: right;
+    font-size: 15px;
+    width: 100px;
+    padding-top: 15px;
+    padding-left: 50px;
+}
+
+.evidence__title_icon_container {
+    width: 100%;
+    color: black;
+}
+
+.evidence__title_icon {
+    font-size: 30px;
 }
 
 .evidence__title, .evidence__date {
@@ -75,7 +95,7 @@ html {
     cursor: pointer;
 }
 
-.evidence_title_child:hover {
+.evidence_title_child:hover, .evidence__title_icon_container:hover {
     color: var(--color-accent);
 }
 

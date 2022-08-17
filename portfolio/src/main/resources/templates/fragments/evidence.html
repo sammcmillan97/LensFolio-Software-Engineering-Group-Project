@@ -9,6 +9,12 @@
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
             <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
         </div>
+        <div th:if="${owner}" class="evidence_title_buttons">
+            <a class="evidence__title_icon_container">
+                <i class="bi bi-trash evidence__title_icon"></i>
+            </a>
+        </div>
+
 
         <!-- Evidence Details -->
         <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
