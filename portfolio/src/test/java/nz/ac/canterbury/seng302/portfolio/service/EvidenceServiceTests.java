@@ -1,10 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.service;
 
-import nz.ac.canterbury.seng302.portfolio.model.portfolio.Categories;
-import nz.ac.canterbury.seng302.portfolio.model.portfolio.Evidence;
-import nz.ac.canterbury.seng302.portfolio.model.portfolio.WebLink;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.WebLink;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
-import nz.ac.canterbury.seng302.portfolio.repository.EvidenceRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.evidence.EvidenceRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

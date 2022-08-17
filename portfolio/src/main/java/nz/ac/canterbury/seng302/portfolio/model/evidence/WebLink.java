@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.model.portfolio;
+package nz.ac.canterbury.seng302.portfolio.model.evidence;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
