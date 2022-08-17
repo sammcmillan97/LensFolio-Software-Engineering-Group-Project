@@ -26,7 +26,6 @@ public class ProjectDateService {
 
     @Autowired
     private EvidenceService evidenceService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Gets date restrictions for a project. Date restrictions tell the rest of the application the first and last day

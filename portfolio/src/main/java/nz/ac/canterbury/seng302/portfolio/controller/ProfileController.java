@@ -22,7 +22,6 @@ public class ProfileController {
 
     @Autowired
     private UserAccountClientService userService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Display the user's profile page.
@@ -35,9 +34,6 @@ public class ProfileController {
             @AuthenticationPrincipal AuthState principal,
             Model model
     ) {
-        Logger logger = LoggerFactory.getLogger("com.portfolio");
-        logger.error("error message");
-        logger.info("info message");
         User user = userService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);

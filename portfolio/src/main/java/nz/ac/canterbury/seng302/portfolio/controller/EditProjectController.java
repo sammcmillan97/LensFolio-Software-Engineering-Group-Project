@@ -33,7 +33,6 @@ public class EditProjectController {
 
     @Autowired
     UserAccountClientService userAccountClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",

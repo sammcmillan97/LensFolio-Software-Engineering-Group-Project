@@ -26,6 +26,8 @@ public class GitlabConnectionService {
     @VisibleForTesting
     protected GroupRepositorySettings getGroupRepositorySettings(int groupId) throws NoSuchFieldException {
         if (!groupRepositorySettingsService.existsByGroupId(groupId)) {
+            String message = "Group " + groupId + " doesn't have any repository settings";
+            PORTFOLIO_LOGGER.error(message);
             throw new NoSuchFieldException("Given group id doesn't have any repository settings");
         }
         return groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(groupId);

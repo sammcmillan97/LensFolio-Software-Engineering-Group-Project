@@ -43,7 +43,6 @@ public class AddEvidenceController {
 
     @Autowired
     private EvidenceService evidenceService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String TIMEFORMAT = "yyyy-MM-dd";
 

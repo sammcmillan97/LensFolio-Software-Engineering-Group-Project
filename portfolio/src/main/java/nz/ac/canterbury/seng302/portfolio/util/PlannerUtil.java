@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class PlannerUtil {
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private PlannerUtil() {
         throw new IllegalStateException("Utility class");

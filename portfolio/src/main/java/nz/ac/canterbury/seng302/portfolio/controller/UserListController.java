@@ -24,7 +24,6 @@ public class UserListController {
 
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Redirects to the first page of the user list.

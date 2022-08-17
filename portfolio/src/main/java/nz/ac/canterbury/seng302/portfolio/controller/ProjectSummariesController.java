@@ -36,7 +36,6 @@ public class ProjectSummariesController {
     private UserAccountClientService userAccountClientService;
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * GET endpoint for projects. Returns the projects html page to the client with relevant projects data from the

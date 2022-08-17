@@ -25,7 +25,6 @@ public class GroupsClientService {
 
     @Autowired
     GroupRepositorySettingsService groupRepositorySettingsService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     public CreateGroupResponse createGroup(final String shortName, final String longName) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()

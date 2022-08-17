@@ -29,7 +29,6 @@ public class EditGroupController {
 
     @Autowired
     private GroupsController groupsController;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String GROUPS_REDIRECT = "redirect:/groups";
 

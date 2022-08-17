@@ -11,7 +11,6 @@ import org.springframework.data.util.Pair;
 import java.util.*;
 
 public class ProjectDetailsUtil {
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Takes a list of Event objects and a list of Sprint objects and determines which Events occur within a Sprint. If

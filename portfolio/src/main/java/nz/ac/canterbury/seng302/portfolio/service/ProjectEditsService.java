@@ -18,7 +18,6 @@ public class ProjectEditsService {
     private final List<ProjectEdit> projectEditList;
 
     private final List<ProjectRefresh> projectRefreshList;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
 
     /**

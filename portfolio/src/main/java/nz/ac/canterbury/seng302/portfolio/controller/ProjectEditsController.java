@@ -27,7 +27,6 @@ public class ProjectEditsController {
 
     @Autowired
     ProjectService projectService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     @Autowired
     private ProjectEditsService projectEditsService;

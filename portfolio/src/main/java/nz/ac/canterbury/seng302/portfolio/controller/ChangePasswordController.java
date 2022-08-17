@@ -23,7 +23,6 @@ public class ChangePasswordController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String CHANGE_PASSWORD_ENDPOINT = "changePassword";
 

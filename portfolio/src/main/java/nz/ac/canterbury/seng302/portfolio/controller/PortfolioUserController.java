@@ -17,7 +17,6 @@ public class PortfolioUserController {
 
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     @GetMapping("setCurrentProject-{id}")
     public String getCurrentProject(

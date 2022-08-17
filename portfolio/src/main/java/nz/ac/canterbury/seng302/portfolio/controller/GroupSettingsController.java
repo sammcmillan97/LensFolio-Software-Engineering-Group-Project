@@ -39,7 +39,6 @@ public class GroupSettingsController {
     private GroupRepositorySettingsService groupRepositorySettingsService;
     @Autowired
     private GitlabConnectionService gitlabConnectionService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Get mapping to fetch group settings page

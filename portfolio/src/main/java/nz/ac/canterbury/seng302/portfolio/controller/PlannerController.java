@@ -42,7 +42,6 @@ public class PlannerController {
 
     @Autowired
     private UserAccountClientService userService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private boolean plannerUpdated = false;
     private String plannerDate;

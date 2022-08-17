@@ -31,6 +31,8 @@ public class EvidenceService {
         List<Evidence> evidence = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         evidence.sort(Comparator.comparing(Evidence::getDate));
         Collections.reverse(evidence);
+        String message = "Evidence for user " + userId + " and project " + projectId + " retrieved";
+        PORTFOLIO_LOGGER.info(message);
         return evidence;
     }
 
@@ -39,12 +41,13 @@ public class EvidenceService {
      */
     public Evidence getEvidenceById(Integer id) throws NoSuchElementException {
         Optional<Evidence> evidence = repository.findById(id);
-        if(evidence.isPresent()) {
+        if (evidence.isPresent()) {
             return evidence.get();
         }
-        else
-        {
-            throw new NoSuchElementException("Evidence not found");
+        else {
+            String message = "Evidence " + id + " not found";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException(message);
         }
     }
 
@@ -63,28 +66,40 @@ public class EvidenceService {
         try {
             project = projectService.getProjectById(evidence.getProjectId());
         } catch (NoSuchElementException exception) {
-            throw new IllegalArgumentException("Project does not exist");
+            String message = "Evidence parent project " + evidence.getProjectId() + " not found";
+            PORTFOLIO_LOGGER.error(message);
+            throw new IllegalArgumentException(message);
         }
         Pattern fieldPattern = Pattern.compile("[a-zA-Z]+");
         Matcher titleMatcher = fieldPattern.matcher(evidence.getTitle());
         if (!titleMatcher.find() || evidence.getTitle().length() < 2 || evidence.getTitle().length() > 64) {
+            String message = "Evidence title (" + evidence.getTitle() + ") is invalid";
+            PORTFOLIO_LOGGER.error(message);
             throw new IllegalArgumentException("Title not valid");
         }
         Matcher descriptionMatcher = fieldPattern.matcher(evidence.getDescription());
         if (!descriptionMatcher.find() || evidence.getDescription().length() < 50 || evidence.getDescription().length() > 1024) {
+            String message = "Evidence description (" + evidence.getDescription() + ") is invalid";
+            PORTFOLIO_LOGGER.error(message);
             throw new IllegalArgumentException("Description not valid");
         }
         if (project.getStartDate().after(evidence.getDate()) || project.getEndDate().before(evidence.getDate())) {
+            String message = "Evidence date (" + evidence.getDateString() + ") is invalid";
+            PORTFOLIO_LOGGER.error(message);
             throw new IllegalArgumentException("Date not valid");
         }
         for (String skill : evidence.getSkills()) {
             if (skill.length() > 50) {
+                String message = "Evidence skill (" + skill + ") is invalid";
+                PORTFOLIO_LOGGER.error(message);
                 throw new IllegalArgumentException("Skills not valid");
             }
         }
         List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(evidence.getOwnerId(), evidence.getProjectId());
         evidence.conformSkills(getSkillsFromEvidence(evidenceList));
         repository.save(evidence);
+        String message = "Evidence " + evidence.getId() + " saved successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -122,7 +137,11 @@ public class EvidenceService {
                 Evidence evidence = getEvidenceById(evidenceId);
                 evidence.addWebLink(weblink);
                 saveEvidence(evidence);
+                String message = "Evidence weblink" + weblink.getName() + " saved successfully";
+                PORTFOLIO_LOGGER.info(message);
             } catch (NoSuchElementException e) {
+                String message = "Evidence " + evidenceId + " not found. Weblink not saved";
+                PORTFOLIO_LOGGER.error(message);
                 throw new NoSuchElementException("Evidence not found: web link not saved");
             }
     }
@@ -136,6 +155,8 @@ public class EvidenceService {
         Pattern fieldPattern = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
         Matcher weblinkMatcher = fieldPattern.matcher(weblink);
         if (!weblinkMatcher.find()) {
+            String message = "Evidence weblink" + weblink + " in invalid format";
+            PORTFOLIO_LOGGER.error(message);
             throw new IllegalArgumentException("Weblink not in valid format");
         }
     }

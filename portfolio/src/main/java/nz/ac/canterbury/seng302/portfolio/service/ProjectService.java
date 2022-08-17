@@ -45,6 +45,8 @@ public class ProjectService {
 
     public Project saveProject(Project project) {
         projectEditsService.refreshProject(project.getId());
+        String message = "Project "+ project.getId() + " saved successfully";
+        PORTFOLIO_LOGGER.info(message);
         return repository.save(project);
     }
 
@@ -52,7 +54,11 @@ public class ProjectService {
         try {
             repository.deleteById(id);
             projectEditsService.refreshProject(id);
+            String message = "Project "+ id + " deleted successfully";
+            PORTFOLIO_LOGGER.info(message);
         } catch (EmptyResultDataAccessException e) {
+            String message = "Project "+ id + " not found to delete";
+            PORTFOLIO_LOGGER.error(message);
             throw new NoSuchElementException("No project found to delete");
         }
     }

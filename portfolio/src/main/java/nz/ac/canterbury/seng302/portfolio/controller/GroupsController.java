@@ -27,7 +27,6 @@ public class GroupsController {
 
     @Autowired
     private GroupsClientService groupsClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String GROUPS_PAGE = "groups";
 

@@ -36,7 +36,6 @@ public class ProjectDetailsController {
     private UserAccountClientService userAccountClientService;
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * The Get mapping for displaying the details of a specific project through the project details page. Will display a

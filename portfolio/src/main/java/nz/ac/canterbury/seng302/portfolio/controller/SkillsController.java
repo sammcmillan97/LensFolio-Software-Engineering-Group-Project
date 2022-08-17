@@ -31,7 +31,6 @@ public class SkillsController {
     EvidenceService evidenceService;
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
 

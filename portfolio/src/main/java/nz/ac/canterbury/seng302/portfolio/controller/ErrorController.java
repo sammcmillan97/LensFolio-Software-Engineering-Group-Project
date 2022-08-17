@@ -15,7 +15,6 @@ public class ErrorController {
 
     @Autowired
     UserAccountClientService userAccountClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     @RequestMapping(value="/errors", method = {RequestMethod.GET, RequestMethod.POST})
     public String forbidden(@AuthenticationPrincipal AuthState principal) {

@@ -31,7 +31,6 @@ public class RegisterController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String REGISTER = "register";
     private static final String COOKIE_NAME = "lens-session-token";

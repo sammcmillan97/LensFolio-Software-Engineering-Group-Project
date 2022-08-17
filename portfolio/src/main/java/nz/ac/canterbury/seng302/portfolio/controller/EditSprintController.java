@@ -31,7 +31,6 @@ public class EditSprintController {
     ProjectService projectService;
     @Autowired
     SprintService sprintService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String PROJECTS_REDIRECT = "redirect:/projects";
     private static final String TIME_FORMAT = "yyyy-MM-dd";

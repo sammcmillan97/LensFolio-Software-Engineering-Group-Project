@@ -50,6 +50,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository server url updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -71,6 +73,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabProjectId(gitlabProjectId);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository id updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -92,6 +96,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setGitlabAccessToken(gitlabAccessToken);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository access token updated successfully";
+        PORTFOLIO_LOGGER.error(message);
     }
 
     /**
@@ -113,6 +119,8 @@ public class GroupRepositorySettingsService {
         GroupRepositorySettings group = getGroupRepositorySettingsByGroupId(groupId);
         group.setRepositoryName(repositoryName);
         groupRepository.save(group);
+        String message = "Group " + groupId + " repository name updated successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -130,6 +138,8 @@ public class GroupRepositorySettingsService {
         group.setGitlabProjectId(gitlabProjectId);
         group.setGitlabServerUrl(gitlabServerUrl);
         groupRepository.save(group);
+        String message = "Group " + groupId + " settings updated successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -141,6 +151,8 @@ public class GroupRepositorySettingsService {
             GroupRepositorySettings group = groupRepository.findByGroupId(groupId);
             groupRepository.delete(group);
         }
+        String message = "Group " + groupId + " settings deleted successfully";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**

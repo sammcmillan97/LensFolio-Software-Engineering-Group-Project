@@ -20,7 +20,6 @@ public class EditUserController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
      * Get mapping to open editUser page

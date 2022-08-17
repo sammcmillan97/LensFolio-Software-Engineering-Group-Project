@@ -35,7 +35,6 @@ public class PortfolioController {
 
     @Autowired
     private PortfolioUserService portfolioUserService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
 

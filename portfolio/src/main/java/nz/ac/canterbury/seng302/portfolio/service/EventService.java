@@ -35,14 +35,16 @@ public class EventService {
      * Get the event by id
      * @param eventId the id of the event
      * @return the event which has the required id
-     * @throws IllegalArgumentException when event is not found
+     * @throws NoSuchElementException when event is not found
      */
-    public Event getEventById(Integer eventId) throws IllegalArgumentException {
+    public Event getEventById(Integer eventId) throws NoSuchElementException {
         Optional<Event> event = eventRepository.findById(eventId);
         if (event.isPresent()) {
             return event.get();
         } else {
-            throw new IllegalArgumentException("Event not found");
+            String message = "Event " + eventId + " not found.";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException(message);
         }
     }
 
@@ -61,6 +63,8 @@ public class EventService {
     public void saveEvent(Event event) {
         projectEditsService.refreshProject(event.getEventParentProjectId());
         eventRepository.save(event);
+        String message = "Event " + event.getEventId() + " saved";
+        PORTFOLIO_LOGGER.info(message);
     }
 
     /**
@@ -68,8 +72,13 @@ public class EventService {
      * @param eventId the id of the event
      */
     public void deleteEventById(int eventId) {
+        if (eventRepository.findById(eventId) == null) {
+            throw new UnsupportedOperationException("Event does not exist");
+        }
         projectEditsService.refreshProject(eventRepository.findById(eventId).getEventParentProjectId());
         eventRepository.deleteById(eventId);
+        String message = "Event " + eventId + " deleted";
+        PORTFOLIO_LOGGER.info(message);
     }
 
 
@@ -86,15 +95,24 @@ public class EventService {
         Date projectStartDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getStartDate();
         Date projectEndDate = eventProjectService.getProjectById(eventToChange.getEventParentProjectId()).getEndDate();
         if (newStartDate.compareTo(newEndDate) > 0) {
-            throw new UnsupportedOperationException("Event start date must not proceed the end date");
+            String message = "Event " + eventId + " start date (" + newStartDate + ") must not proceed the end date (" + newEndDate + ")";
+            PORTFOLIO_LOGGER.error(message);
+            throw new UnsupportedOperationException(message);
         } else if (newStartDate.compareTo(projectStartDate) < 0 || newStartDate.compareTo(projectEndDate) > 0) {
-            throw new UnsupportedOperationException("Event start date must be within the project dates");
+            String message = "Event " + eventId + " start date (" + newStartDate + ") must be within the project dates (" + projectStartDate + " - " + projectEndDate + ")";
+            PORTFOLIO_LOGGER.error(message);
+            throw new UnsupportedOperationException(message);
         } else if (newEndDate.compareTo(projectStartDate) < 0 || newEndDate.compareTo(projectEndDate) > 0) {
-            throw new UnsupportedOperationException("Event end date must be within the project dates");
+            String message = "Event " + eventId + " end date (" + newEndDate + ") must be within the project dates (" + projectStartDate + " - " + projectEndDate + ")";
+            PORTFOLIO_LOGGER.error(message);
+            throw new UnsupportedOperationException(message);
         } else {
             eventToChange.setEventStartDate(newStartDate);
             eventToChange.setEventEndDate(newEndDate);
             saveEvent(eventToChange);
+            String message = "Event " + eventId + " dates changed to " + newStartDate + " - " + newEndDate;
+            PORTFOLIO_LOGGER.info(message);
+            throw new UnsupportedOperationException(message);
         }
     }
 }

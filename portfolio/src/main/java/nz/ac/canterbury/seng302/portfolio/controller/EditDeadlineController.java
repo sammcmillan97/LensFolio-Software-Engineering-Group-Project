@@ -34,7 +34,6 @@ public class EditDeadlineController {
 
     @Autowired
     DeadlineService deadlineService;
-    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
     private static final String REDIRECT_PROJECTS = "redirect:/projects";
