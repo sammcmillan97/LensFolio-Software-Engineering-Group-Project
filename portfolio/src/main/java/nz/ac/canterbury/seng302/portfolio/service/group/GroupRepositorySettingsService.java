@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.group;
 
 import nz.ac.canterbury.seng302.portfolio.model.group.GroupRepositorySettings;
 import nz.ac.canterbury.seng302.portfolio.repository.group.GroupRepositorySettingsRepository;

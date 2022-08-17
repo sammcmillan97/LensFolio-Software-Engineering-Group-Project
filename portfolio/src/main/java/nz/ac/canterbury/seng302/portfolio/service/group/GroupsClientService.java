@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.group;
 
 import com.google.common.annotations.VisibleForTesting;
 import net.devh.boot.grpc.client.inject.GrpcClient;
