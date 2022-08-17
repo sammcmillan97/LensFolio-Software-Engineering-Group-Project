@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.service;
+package nz.ac.canterbury.seng302.portfolio.service.evidence;
 
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
