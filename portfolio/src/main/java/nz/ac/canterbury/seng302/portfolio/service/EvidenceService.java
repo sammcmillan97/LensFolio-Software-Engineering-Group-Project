@@ -97,6 +97,9 @@ public class EvidenceService {
             Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
             copiedEvidence.addSkill(skillList);
             copiedEvidence.setCategories(categoriesSet);
+            for (WebLink webLink: evidence.getWebLinks()) {
+                copiedEvidence.addWebLink(webLink);
+            }
             evidence.addUser(userId);
             repository.save(copiedEvidence);
         } catch (NoSuchElementException e) {

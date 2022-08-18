@@ -14,7 +14,6 @@ import java.sql.Date;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -894,6 +893,7 @@ class EvidenceServiceTests {
         int testUserId2 = 2;
         int testUserId3 = 3;
         Set<Integer> userId = new HashSet<>();
+        userId.add(testUserId0);
         userId.add(testUserId1);
         userId.add(testUserId2);
         userId.add(testUserId3);
@@ -908,7 +908,22 @@ class EvidenceServiceTests {
         assertEquals(4, evidenceList.size());
         assertThat(evidenceList.get(0).getId()).isNotIn(evidenceList.get(1).getId(), evidenceList.get(2).getId(), evidenceList.get(3).getId());
         assertEquals(userId, evidenceRepository.findById(evidence.getId()).getUsers());
+    }
 
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithWeblinks_testCopyToAnotherUserPortfolio() {
+        int testUser0 = 0;
+        int testUser1 = 1;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), testUser1);
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertEquals("My web link", evidenceList.get(1).getWebLinks().get(0).getName());
     }
 
 }

@@ -33,7 +33,7 @@ public class Evidence {
     @ElementCollection
     private List<String> skills; //skills related to this piece of evidence
     @Transient
-    private Set<Integer> users = new HashSet<>();
+    private Set<Integer> users = new HashSet<>(Set.of(ownerId));
 
 
     public Evidence() {
