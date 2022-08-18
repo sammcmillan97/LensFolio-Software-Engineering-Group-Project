@@ -6,8 +6,8 @@ const maxNumOfChars = 30;
  * user to use
  */
 function countCharacters() {
-    let numOfEnteredChars = document.getElementById("form__name-field").value.length;
-    let characterCounter = document.getElementById("char_count")
+    let numOfEnteredChars = document.getElementById("event-form__name-field").value.length;
+    let characterCounter = document.getElementById("char-count")
     characterCounter.textContent = String(maxNumOfChars - numOfEnteredChars) + "/30 characters remain";
 }
 

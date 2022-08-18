@@ -8,7 +8,7 @@ const longNameMaxNumChars = 30;
  */
 function countShortNameCharacters() {
     let numOfEnteredChars = document.getElementById("group-form__short_name-field").value.length;
-    let characterCounter = document.getElementById("char_count_short_name")
+    let characterCounter = document.getElementById("char-count__short_name")
     characterCounter.textContent = String(shortNameMaxNumChars - numOfEnteredChars) + "/" + shortNameMaxNumChars + " characters remain";
 }
 
@@ -18,7 +18,7 @@ function countShortNameCharacters() {
  */
 function countLongNameCharacters() {
     let numOfEnteredChars = document.getElementById("group-form__long_name-field").value.length;
-    let characterCounter = document.getElementById("char_count_long_name")
+    let characterCounter = document.getElementById("char-count__long_name")
     characterCounter.textContent = String(longNameMaxNumChars - numOfEnteredChars) + "/" + longNameMaxNumChars + " characters remain";
 }
 

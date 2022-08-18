@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <div class="group-member">
   <img class="member-image" th:src="${member.getProfileImagePath()}" alt="Profile Photo">
-  <div class="member-details-container">
-    <div class="name-container">
+  <div class="member-details__container">
+    <div class="member-name__container">
       <h2 class="member-name" th:text="${member.getFirstName()}"></h2>
       <h2 class="member-name" th:text="${member.getLastName()}"></h2>
     </div>

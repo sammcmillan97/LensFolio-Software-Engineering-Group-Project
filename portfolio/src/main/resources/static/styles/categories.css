@@ -41,7 +41,7 @@ html {
     margin-top: 1rem;
 }
 
-.evidence_title_child {
+.evidence-title__child {
     display: inline-block;
     vertical-align: middle;
 }
@@ -56,7 +56,7 @@ html {
     cursor: pointer;
 }
 
-.evidence_title_child:hover {
+.evidence-title__child:hover {
     color: var(--color-accent);
 }
 
@@ -67,7 +67,7 @@ html {
     visibility: visible;
 }
 
-.evidence__details_expanded {
+.evidence__details--expanded {
     display: flex;
     flex-direction: row;
     gap: 10px;

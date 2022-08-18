@@ -19,7 +19,7 @@
 <!-- Page content -->
 <div id="page-content" class="constrict">
     <div id="projectId" style="display: none;" th:text="${projectId}"></div>
-    <div id="nameOfEdited" style="display: none;" th:text="${eventName}"></div>
+    <div id="name-of-edited" style="display: none;" th:text="${eventName}"></div>
     <div id="event-form__wrapper">
         <!-- Name, Date -->
         <header class="event-form__header flex-column">
@@ -33,14 +33,14 @@
 
         <!-- Add/Edit Event Form -->
         <form id="event-form__form" class="flex-column" th:action="@{editEvent-{event}-{project}(project=${parentProjectId}, event=${eventId})}" th:method="post">
-            <label for="form__name-field">Event Name *</label>
-            <input type="text" id="form__name-field" class="edit-input" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" th:pattern="${titlePattern}" title="Event Name must not be blank and cannot contain special characters" onkeyup="countCharacters()">
-            <span id="char_count">30/30 characters remain</span>
+            <label for="event-form__name-field">Event Name *</label>
+            <input type="text" id="event-form__name-field" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" th:pattern="${titlePattern}" title="Event Name must not be blank and cannot contain special characters" onkeyup="countCharacters()">
+            <span id="char-count">30/30 characters remain</span>
 
             <label for="event-form__start-date-field">Event Start Date *</label>
-            <input type="datetime-local" id="event-form__start-date-field" class="edit-input" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
+            <input type="datetime-local" id="event-form__start-date-field" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
             <label for="event-form__end-date-field">Event End Date *</label>
-            <input type="datetime-local" id="event-form__end-date-field" class="edit-input" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
+            <input type="datetime-local" id="event-form__end-date-field" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
             <button type="submit" id="event-form__save">Save Changes</button>
             <a id="event-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
         </form>
