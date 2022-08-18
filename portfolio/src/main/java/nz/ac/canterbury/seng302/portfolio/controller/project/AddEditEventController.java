@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -69,9 +70,24 @@ public class AddEditEventController {
             //Create new event
             event = new Event();
             event.setEventName("EventName");
-            //Default start and end date is the project start and end date
-            event.setEventStartDate(project.getStartDate());
-            event.setEventEndDate(project.getEndDate());
+
+            Date currentDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            calendar.add(Calendar.DATE, 2);
+            Date twoDaysTime = calendar.getTime();
+            // Set the start and end dates to the current date and two days time if the event occurs within the project,
+            // else set them to the project start date and two days after that.
+            if(currentDate.after(project.getStartDate()) && twoDaysTime.before(project.getEndDate())) {
+                event.setEventStartDate(currentDate);
+                event.setEventEndDate(twoDaysTime);
+            } else {
+                calendar.setTime(project.getStartDate());
+                calendar.add(Calendar.DATE, 2);
+                Date twoDaysAfterProjectStart = calendar.getTime();
+                event.setEventStartDate(project.getStartDate());
+                event.setEventEndDate(twoDaysAfterProjectStart);
+            }
         }
 
         //Add event details to model
