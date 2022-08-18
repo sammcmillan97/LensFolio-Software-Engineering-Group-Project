@@ -1,7 +1,7 @@
 .add-evidence-button {
     position: relative;
     border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    border-radius: 5px;
     background-color: var(--color-complement);
     padding: 10px;
     height: 3rem;
