@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Profile Picture</title>
+    <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{styles/user/addProfilePicture.css}">
+</head>
+<body>
+    <!-- Import the application's header bar. -->
+    <header th:replace="fragments/header :: header"></header>
+    <!-- Import the application's navigation bar. -->
+    <nav th:replace="fragments/navbar :: navbar"></nav>
+
+    <div id="page-content" class="constrict">
+        <form th:action="@{addProfilePicture}" method="post" enctype="multipart/form-data">
+            <!--HIDDEN-->
+            <input type="hidden" th:name="fileContent" th:value="null" id="fileContent"/>
+            <input type="hidden" th:name="fileType" th:value="null" id="fileType"/>
+
+            <h1>Update Profile Picture</h1><br>
+
+            <div class="container">
+                <p class="helper-inline">Current Picture</p>
+                <p class="helper-inline" style="margin-left: 67px;"> Preview will appear here</p>
+                <br>
+                <img th:src="${user.profileImagePath}" style="z-index: 1;" id="profile-image-display" alt="profilePhoto">
+                <div id="root"></div>
+            </div>
+
+            <h4>Upload a new photo</h4>
+            <input type="file" id="img-input" required accept=".jpg,.png,.jpeg">
+            <br><label class="helper" >Must be filetype jpg, jpeg, or png, will be cropped to 1:1 ratio</label><br>
+            <p class="helper">Upload an image to see the preview</p><br>
+            <p class="error" th:text="${deleteMessage}"></p>
+            <p class="" th:text="${successMessage}"></p>
+            <p class="error" th:text="${errorMessage}"></p>
+            <input class="button" id="submit-button" type="submit" value="Save new Profile Picture" />
+        </form><br>
+
+        <form th:action="@{removeProfilePicture}"  method="post">
+            <input type="hidden" th:name="username"  th:value="${username}" id="delete-username"/><br>
+            <button class="button" id="delete-button" type="submit" onClick="return confirm('Are you sure you want to permanently delete your profile picture?')">
+                Delete my Profile Picture
+            </button>
+        </form>
+
+    </div>
+
+</body>
+</html>
+
+<script rel="script" th:src="@{scripts/user/addProfilePicture.js}"></script>

@@ -105,7 +105,6 @@
         <level value="INFO" />
         <appender-ref ref="PortfolioErrorLogs" />
         <appender-ref ref="PortfolioInfoLogs" />
-        <appender-ref ref="Console" />
     </logger>
 
     <root level="INFO">
