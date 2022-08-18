@@ -200,7 +200,7 @@ h5 {
     display: block;
     position: relative;
     margin: 0;
-    padding: 0;
+    padding: 1px;
 }
 
 #projects-button {
@@ -243,9 +243,9 @@ h5 {
     background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+/*.dropdown:hover .dropdown-content {*/
+/*    display: block;*/
+/*}*/
 
 .site-navigation__sublink {
     /* Position & size */
@@ -270,8 +270,8 @@ h5 {
     align-items: center;
     justify-content: center;
     text-indent: 0 !important;
-    padding-left: 6px;
-    gap: 0.28rem;
+    padding-left: 7px;
+    gap: 0.3rem;
 }
 
 .clear-decoration {
