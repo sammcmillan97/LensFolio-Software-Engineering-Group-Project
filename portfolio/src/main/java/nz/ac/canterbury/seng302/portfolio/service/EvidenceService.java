@@ -91,7 +91,12 @@ public class EvidenceService {
     public void copyEvidenceToNewUser(Integer evidenceId, Integer userId) {
         try {
             Evidence evidence = getEvidenceById(evidenceId);
+            String skillList = String.join(" ", evidence.getSkills());
+            Set<Categories> categoriesSet = new HashSet<>(evidence.getCategories());
+
             Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
+            copiedEvidence.addSkill(skillList);
+            copiedEvidence.setCategories(categoriesSet);
             evidence.addUser(userId);
             repository.save(copiedEvidence);
         } catch (NoSuchElementException e) {

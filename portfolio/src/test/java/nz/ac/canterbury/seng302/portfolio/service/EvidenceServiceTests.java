@@ -799,4 +799,44 @@ class EvidenceServiceTests {
         assertEquals("Evidence Three", searchResults.get(2).getTitle());
     }
 
+    ////////////////////////////////////////////////
+    ///COPY EVIDENCE TO ANOTHER USER'S PORTFOLIO////
+    ////////////////////////////////////////////////
+
+    @Test
+    void whenEvidenceExists_testCopyToAnotherUserPortfolio() {
+        int testUserId1 = 0;
+        int testUserId2 = 1;
+        Evidence evidence = new Evidence(testUserId1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertNotEquals(evidenceList.get(0).getOwnerId(), evidenceList.get(1).getOwnerId());
+        assertEquals(evidenceList.get(0).getTitle(), evidenceList.get(1).getTitle());
+        assertEquals(evidenceList.get(0).getDescription(), evidenceList.get(1).getDescription());
+        assertEquals(evidenceList.get(0).getDate(), evidenceList.get(1).getDate());
+    }
+    
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithSkillsAndCategories_testCopyToAnotherUserPortfolio() {
+        int testUserId1 = 0;
+        int testUserId2 = 1;
+        Evidence evidence = new Evidence(testUserId1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        evidence.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertEquals("skill1 skill_2 {skill}", String.join(" ", evidenceList.get(1).getSkills()));
+        assertEquals(evidenceList.get(0).getCategories(), evidenceList.get(1).getCategories());
+    }
+
 }
