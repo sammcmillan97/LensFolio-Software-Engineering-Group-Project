@@ -68,7 +68,7 @@ public class ProfilePictureController {
 
         if (fileType == null) {
             model.addAttribute("errorMessage", "Please select a profile before saving changes");
-            return "/addProfilePicture";
+            return "templatesUser/addProfilePicture";
         }
 
         //get userId using the Authentication Principal
@@ -139,7 +139,7 @@ public class ProfilePictureController {
             //if edit user was unsuccessful
             model.addAttribute("deleteMessage", "");
             model.addAttribute("deleteMessage", deleteUserProfilePhotoResponse.getMessage());
-            return "/addProfilePicture";
+            return "templatesUser/addProfilePicture";
         }
     }
 
