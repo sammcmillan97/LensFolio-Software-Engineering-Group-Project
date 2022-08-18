@@ -73,7 +73,7 @@ h5 {
     float: right;
 }
 
-.header__dropdown_content {
+.header__dropdown--content {
     display: none;
     position: absolute;
     background-color: var(--color-secondary);
@@ -82,7 +82,7 @@ h5 {
     z-index: 1;
 }
 
-.header__dropdown_content a {
+.header__dropdown--content a {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -90,11 +90,11 @@ h5 {
     text-align: left;
 }
 
-.header__dropdown_content a:hover {
+.header__dropdown--content a:hover {
     background-color: #F67B50;
 }
 
-.header__dropdown:hover .header__dropdown_content {
+.header__dropdown:hover .header__dropdown--content {
     right: 0;
     display: block;
 }

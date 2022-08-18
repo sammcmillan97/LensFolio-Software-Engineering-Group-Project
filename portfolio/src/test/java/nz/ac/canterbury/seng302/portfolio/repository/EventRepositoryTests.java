@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.repository;
 
-import nz.ac.canterbury.seng302.portfolio.model.*;
+import nz.ac.canterbury.seng302.portfolio.model.project.Event;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
+import nz.ac.canterbury.seng302.portfolio.repository.projcet.EventRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.projcet.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
