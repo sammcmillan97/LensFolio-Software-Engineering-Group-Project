@@ -4,7 +4,7 @@ const options = {
 method: 'POST'
 };
 
-var networkPromise = fetch('projects-editing?id=' + document.getElementById("projectId").textContent + '&name=' + document.getElementById("nameOfEdited").textContent, options);
+var networkPromise = fetch('projects-editing?id=' + document.getElementById("projectId").textContent + '&name=' + document.getElementById("name-of-edited").textContent, options);
 
 //This promise will resolve when 2 seconds have passed
 var timeOutPromise = new Promise(function(resolve, reject) {

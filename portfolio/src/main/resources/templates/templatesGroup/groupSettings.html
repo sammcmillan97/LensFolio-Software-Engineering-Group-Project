@@ -27,8 +27,8 @@
 <div id="page-content" class="constrict">
   <div id="group">
     <header class="group_header flex-column">
-      <h1 class="group_short_name" th:text="${group.getShortName()}"></h1>
-      <h2 class="group_long_name" th:text="${group.getLongName()}"></h2>
+      <h1 class="group-short_name" th:text="${group.getShortName()}"></h1>
+      <h2 class="group-long_name" th:text="${group.getLongName()}"></h2>
     </header>
     <div class="group-repository__wrapper">
       <div class="repository_container" id="repository_container" th:if="${userInGroup || authUserIsTeacher}">

@@ -28,7 +28,7 @@
     <!-- Page content -->
     <div id="page-content" class="constrict">
         <div id="projectId" style="display: none;" th:text="${projectId}"></div>
-        <div id="nameOfEdited" style="display: none;" th:text="${projectName}"></div>
+        <div id="name-of-edited" style="display: none;" th:text="${projectName}"></div>
         <div id="project-form__wrapper">
             <!-- Name, Date -->
             <header class="project-form__header flex-column">
@@ -38,10 +38,10 @@
             <!-- Add/Edit Project Form -->
             <form id="project-form__form" class="flex-column" th:action="@{editProject-{id}(id=${projectId})}" th:method="post">
                 <label for="project-form__name-field">Project Name *</label>
-                <input type="text" id="project-form__name-field" class="edit-input" name="projectName" minlength="1" maxlength="64" th:placeholder="${projectName}" th:value="${projectName}" title="Cannot be blank and must not contain special characters" required th:pattern="${titlePattern}">
+                <input type="text" id="project-form__name-field" name="projectName" minlength="1" maxlength="64" th:placeholder="${projectName}" th:value="${projectName}" title="Cannot be blank and must not contain special characters" required th:pattern="${titlePattern}">
 
                 <label for="project-form__description-field">Project Description</label>
-                <textarea id="project-form__description-field" class="edit-input" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
+                <textarea id="project-form__description-field" name="projectDescription" maxlength="255" th:placeholder="${projectDescription}" th:text="${projectDescription}"></textarea>
 
                 <label for="project-form__start-date-field">Project Start Date *
                     <span th:if="${dateRestrictions.hasRestrictions}" data-toggle="tooltip"
@@ -50,7 +50,7 @@
                           + ' and cannot be moved beyond it'">
                 </span></label>
 
-                <input type="date" id="project-form__start-date-field" class="edit-input" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>
+                <input type="date" id="project-form__start-date-field" name="projectStartDate" th:placeholder="${projectStartDateString}" th:value="${projectStartDateString}" th:min="${minProjectStartDate}" onchange="updateMinEndDate()" required>
 
                 <label for="project-form__end-date-field">Project End Date *
                     <span th:if="${dateRestrictions.hasRestrictions}" data-toggle="tooltip"
@@ -58,7 +58,7 @@
                           th:attr="title='Project end date is restricted by ' + ${dateRestrictions.endDateText}
                           + ' and cannot be moved beyond it'">
                 </span></label>
-                <input type="date" id="project-form__end-date-field" class="edit-input" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" th:max="${maxProjectEndDate}" onchange="updateMaxStartDate()" required>
+                <input type="date" id="project-form__end-date-field" name="projectEndDate" th:placeholder="${projectEndDateString}" th:value="${projectEndDateString}" th:max="${maxProjectEndDate}" onchange="updateMaxStartDate()" required>
 
                 <button type="submit" id="project-form__save">Save Changes</button>
                 <a id="project-form__discard" th:href="@{projects}">Discard</a>

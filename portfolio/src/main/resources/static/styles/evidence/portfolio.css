@@ -1,4 +1,25 @@
-.add-evidence-button {
+
+#evidence__header-div {
+    position: relative;
+    padding: 15px 15px 15px 15px;
+    border: 1px solid var(--color-accent);
+    background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
+    color: var(--color-complement);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+#evidence__header-title {
+    margin-left: 30px;
+}
+
+#evidence__header-project {
+    margin-left: 30px;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.add-evidence__button {
     position: relative;
     border: 1px solid var(--color-accent);
     border-radius: 1.5rem;
@@ -11,7 +32,7 @@
     color: black;
 }
 
-.add-evidence-button:hover {
+.add-evidence__button:hover {
     color: inherit;
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
@@ -53,7 +74,7 @@
     border-top: 1px solid var(--color-accent);
 }
 
-.web-link-container {
+.web-link__container {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
@@ -66,7 +87,7 @@
     flex-wrap: wrap;
 }
 
-.web-link-name {
+.web-link__name {
     padding: 0;
     margin: 0;
 }

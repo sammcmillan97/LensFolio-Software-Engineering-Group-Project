@@ -80,12 +80,12 @@ html {
     border-radius: 5px;
 }
 
-.member-details-container {
+.member-details__container {
     display: flex;
     flex-direction: column;
 }
 
-.name-container {
+.member-name__container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -168,7 +168,7 @@ html {
     background-color: var(--color-complement);
 }
 
-#open-modal-button {
+#open-modal__button {
     padding: 0.5rem 1rem 0.5rem 1rem;
     font-size: x-large;
     height: 3rem;

@@ -22,12 +22,12 @@
 
 #group__header-project {
     margin-left: 30px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     font-weight: normal;
 }
 
 
-.group, #new-group-button, .group__button-wrapper button, #open-modal-button {
+.group, #new-group-button, .group__button-wrapper button, #open-modal__button {
     padding-top: 0;
     padding-bottom: 0;
     border: 1px solid var(--color-accent);
@@ -104,7 +104,7 @@
     text-align: center;
 }
 
-#new-group-button:hover, #open-modal-button:hover, .group__button-wrapper button:hover{
+#new-group-button:hover, #open-modal__button:hover, .group__button-wrapper button:hover{
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
