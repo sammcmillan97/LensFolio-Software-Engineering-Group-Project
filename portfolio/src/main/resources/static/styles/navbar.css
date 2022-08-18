@@ -197,10 +197,10 @@ h5 {
 
 /******************** Project Selection ********************/
 .dropdown {
-    display: inline-block;
+    display: block;
     position: relative;
     margin: 0;
-    padding: 0;
+    padding: 1px;
 }
 
 #projects-button {
@@ -243,9 +243,9 @@ h5 {
     background-color: rgba(168, 40, 16, 0.5); /* Accent Colour */
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+/*.dropdown:hover .dropdown-content {*/
+/*    display: block;*/
+/*}*/
 
 .site-navigation__sublink {
     /* Position & size */
@@ -262,4 +262,20 @@ h5 {
 .site-navigation__sublink:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     color: white;
+}
+
+.dropdown__container {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-indent: 0 !important;
+    padding-left: 7px;
+    gap: 0.3rem;
+}
+
+.clear-decoration {
+    text-decoration: none;
+    color: var(--color-complement) !important;
+    font-weight: 200;
 }
