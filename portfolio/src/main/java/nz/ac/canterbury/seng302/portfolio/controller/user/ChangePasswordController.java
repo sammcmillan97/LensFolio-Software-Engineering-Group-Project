@@ -22,7 +22,7 @@ public class ChangePasswordController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
-    private static final String CHANGE_PASSWORD_ENDPOINT = "changePassword";
+    private static final String CHANGE_PASSWORD_ENDPOINT = "userTemplates/changePassword";
 
     /**
      * Get mapping to return change password page

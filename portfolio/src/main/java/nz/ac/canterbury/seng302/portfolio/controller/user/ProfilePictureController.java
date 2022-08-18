@@ -48,7 +48,7 @@ public class ProfilePictureController {
         User user = userAccountClientService.getUserAccountById(id);
         model.addAttribute("user", user);
         model.addAttribute("username", user.getUsername());
-        return "addProfilePicture";
+        return "userTemplates/addProfilePicture";
     }
 
 
@@ -93,7 +93,7 @@ public class ProfilePictureController {
             model.addAttribute("errorMessage", e);
         }
 
-        return "addProfilePicture";
+        return "userTemplates/addProfilePicture";
     }
 
     /**

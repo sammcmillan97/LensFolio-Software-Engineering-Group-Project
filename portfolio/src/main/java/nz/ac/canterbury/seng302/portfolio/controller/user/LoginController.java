@@ -28,7 +28,7 @@ import java.util.Objects;
 @Controller
 public class LoginController {
 
-    private static final String LOGIN = "login";
+    private static final String LOGIN = "userTemplates/login";
 
     @Autowired
     private AuthenticateClientService authenticateClientService;

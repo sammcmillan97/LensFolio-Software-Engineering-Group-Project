@@ -33,7 +33,7 @@ public class EditUserController {
 
         User user = userAccountClientService.getUserAccountByPrincipal(principal);
         model.addAttribute("user", user);
-        return "editUser";
+        return "userTemplates/editUser";
     }
 
 
@@ -77,7 +77,7 @@ public class EditUserController {
 
         } catch (Exception e){
             model.addAttribute("errorMessage", e);
-            return "editUser";
+            return "userTemplates/editUser";
         }
 
         //Get the new version of user

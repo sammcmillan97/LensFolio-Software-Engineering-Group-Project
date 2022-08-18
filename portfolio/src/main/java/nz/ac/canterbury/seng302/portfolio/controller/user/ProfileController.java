@@ -36,7 +36,7 @@ public class ProfileController {
         model.addAttribute("user", user);
         model.addAttribute("pageUser", user);
         model.addAttribute("owner", true);
-        return "profile";
+        return "userTemplates/profile";
     }
 
     /**
@@ -60,7 +60,7 @@ public class ProfileController {
             return "redirect:/profile";
         } else {
             model.addAttribute("owner", false);
-            return "profile";
+            return "userTemplates/profile";
         }
     }
 }
