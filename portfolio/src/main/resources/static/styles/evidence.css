@@ -79,6 +79,10 @@ html {
 .evidence__title_icon_container {
     width: 100%;
     color: black;
+    padding: 20px 20px 10px 20px;
+    border: 1px solid var(--color-accent);
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 .evidence__title_icon {
