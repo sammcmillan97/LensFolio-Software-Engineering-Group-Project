@@ -1,14 +1,12 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
