@@ -75,7 +75,7 @@ public class CategoriesController {
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
         model.addAttribute("categoryName", category);
         model.addAttribute("evidenceList", evidenceList);
-        return "evidenceTemplates/categories";
+        return "templatesEvidence/categories";
     }
 
     /**
@@ -128,7 +128,7 @@ public class CategoriesController {
             return PORTFOLIO_REDIRECT + "-categories?category=" + category; // Take user to their own portfolio if they try to view it
         } else {
             model.addAttribute("owner", false);
-            return "evidenceTemplates/categories";
+            return "templatesEvidence/categories";
         }
     }
 }

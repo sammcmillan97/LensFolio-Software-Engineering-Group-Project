@@ -101,7 +101,7 @@ public class UserListController {
         model.addAttribute("sortType", sortType);
         model.addAttribute("isAscending", isAscending);
         model.addAttribute("sortingSuffix", sortingSuffix(sortType, isAscending));
-        return "userTemplates/userList";
+        return "templatesUser/userList";
     }
 
     /**

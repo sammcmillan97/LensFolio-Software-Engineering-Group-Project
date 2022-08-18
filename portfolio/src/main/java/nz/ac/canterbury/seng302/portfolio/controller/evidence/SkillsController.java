@@ -65,7 +65,7 @@ public class SkillsController {
         String skillName = skill.replace("_", " ");
         model.addAttribute("skillName", skillName);
 
-        return "evidenceTemplates/skills";
+        return "templatesEvidence/skills";
     }
 
     /**
@@ -107,7 +107,7 @@ public class SkillsController {
             return "redirect:/portfolio-skill?skill=" + skill; // Take user to their own skills if they try to view it
         } else {
             model.addAttribute("owner", false);
-            return "evidenceTemplates/skills";
+            return "templatesEvidence/skills";
         }
     }
 

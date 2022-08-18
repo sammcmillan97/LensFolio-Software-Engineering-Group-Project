@@ -24,7 +24,7 @@ import java.util.List;
 
 @Controller
 public class GroupSettingsController {
-    private static final String SETTINGS_PAGE = "groupTemplates/groupSettings";
+    private static final String SETTINGS_PAGE = "templatesGroup/groupSettings";
     private static final String GROUP_REPOSITORY = "elements/groupRepository";
 
     @Autowired

@@ -27,7 +27,7 @@ import java.util.*;
 @Controller
 public class AddEvidenceController {
 
-    private static final String ADD_EVIDENCE = "evidenceTemplates/addEvidence";
+    private static final String ADD_EVIDENCE = "templatesEvidence/addEvidence";
     private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
 
     @Autowired

@@ -121,7 +121,7 @@ public class EditProjectController {
         DateRestrictions dateRestrictions = projectDateService.getDateRestrictions(Integer.parseInt(projectId));
         model.addAttribute("dateRestrictions", dateRestrictions);
 
-        return "projectTemplates/editProject";
+        return "templatesProject/editProject";
     }
 
     /**

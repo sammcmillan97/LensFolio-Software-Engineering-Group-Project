@@ -67,7 +67,7 @@ public class EditGroupController {
         model.addAttribute("groupId", Integer.parseInt(groupId));
         model.addAttribute("groupShortName", group.getShortName());
         model.addAttribute("groupLongName", group.getLongName());
-        return "groupTemplates/addEditGroup";
+        return "templatesGroup/addEditGroup";
     }
 
     /**
@@ -135,7 +135,7 @@ public class EditGroupController {
             model.addAttribute("groupId", groupId);
             model.addAttribute("groupShortName", groupShortName);
             model.addAttribute("groupLongName", groupLongName);
-            return "groupTemplates/addEditGroup";
+            return "templatesGroup/addEditGroup";
         } else {
             return GROUPS_REDIRECT;
         }

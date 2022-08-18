@@ -80,10 +80,10 @@ public class ProjectDetailsController {
         /* Return the name of the Thymeleaf template
         detects the role of the current user and returns appropriate page */
         if (userAccountClientService.isTeacher(principal)) {
-            return "projectTemplates/teacherProjectDetails";
+            return "templatesProject/teacherProjectDetails";
 
         } else {
-            return "projectTemplates/userProjectDetails";
+            return "templatesProject/userProjectDetails";
         }
     }
 

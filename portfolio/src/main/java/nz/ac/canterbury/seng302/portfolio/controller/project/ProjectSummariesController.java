@@ -70,13 +70,13 @@ public class ProjectSummariesController {
             model.addAttribute("projects", projects);
             model.addAttribute("sprints", sprints);
 
-            return "projectTemplates/teacherProjectSummaries";
+            return "templatesProject/teacherProjectSummaries";
 
         } else {
             model.addAttribute("projects", projects);
             model.addAttribute("sprints", sprints);
 
-            return "projectTemplates/userProjectSummaries";
+            return "templatesProject/userProjectSummaries";
         }
     }
 }

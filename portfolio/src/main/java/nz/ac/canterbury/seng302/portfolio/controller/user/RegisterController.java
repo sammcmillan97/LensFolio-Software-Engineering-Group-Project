@@ -30,9 +30,9 @@ public class RegisterController {
     @Autowired
     private UserAccountClientService userAccountClientService;
 
-    private static final String REGISTER = "userTemplates/register";
+    private static final String REGISTER = "templatesUser/register";
     private static final String COOKIE_NAME = "lens-session-token";
-    private static final String LOGIN = "userTemplates/login";
+    private static final String LOGIN = "templatesUser/login";
 
     /**
      * Register a user with the IDP.

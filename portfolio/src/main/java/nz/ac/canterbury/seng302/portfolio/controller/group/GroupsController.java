@@ -26,7 +26,7 @@ public class GroupsController {
     @Autowired
     private GroupsClientService groupsClientService;
 
-    private static final String GROUPS_PAGE = "groupTemplates/groups";
+    private static final String GROUPS_PAGE = "templatesGroup/groups";
 
     private static final String GROUP_STRING = "group";
     private static final String GROUPS_STRING = "groups";
