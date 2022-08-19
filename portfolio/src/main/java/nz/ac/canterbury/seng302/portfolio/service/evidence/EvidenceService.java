@@ -127,6 +127,9 @@ public class EvidenceService {
                 copiedEvidence.addWebLink(webLink);
             }
             evidence.addUser(userId);
+            // make sure getting the ri ght user's evidence
+            List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(evidence.getOwnerId(), evidence.getProjectId());
+            evidence.conformSkills(getSkillsFromEvidence(evidenceList));
             repository.save(copiedEvidence);
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Evidence does not exist");
