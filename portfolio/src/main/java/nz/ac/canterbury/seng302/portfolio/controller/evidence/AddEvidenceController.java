@@ -162,6 +162,15 @@ public class AddEvidenceController {
         return PORTFOLIO_REDIRECT;
     }
 
+    /**
+     * Gets a piece of evidence based on an id in string form.
+     * If the id is valid, that evidence is returned. If it is -1, a new piece is returned.
+     * Else, an error is thrown.
+     * @param evidenceId The id of the evidence
+     * @param userId The id of the user who the evidence belongs to
+     * @param projectId The id of the project the evidence belongs to
+     * @return A piece of evidence
+     */
     private Evidence getEvidenceById(String evidenceId, int userId, int projectId) {
         try {
             int id = Integer.parseInt(evidenceId);
