@@ -24,7 +24,7 @@ html {
     display: none !important;
 }
 
-.skill-link {
+.skill__link {
     border: 1px solid #F67B50;
     border-radius: 5px;
     background-color: #F67B50;

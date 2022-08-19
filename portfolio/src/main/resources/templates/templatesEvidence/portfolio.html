@@ -30,10 +30,10 @@
             <h1 id="evidence__header-title" th:text="(${owner} ? 'Your portfolio' : ${pageUser.getFullName()} + 's portfolio')"></h1>
             <h2 id="evidence__header-project" th:text="${currentProject.getName}"></h2>
         </div>
-        <a th:if="${owner}" class="add-evidence__button" th:href="@{addEvidence}">Add Evidence</a>
-        <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
     </div>
     <div class="container">
+        <a th:if="${owner}" class="add-evidence__button" th:href="@{addEvidence}">Add Evidence</a>
+        <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
         <div class="row">
             <div class="col-lg-8">
                 <div th:replace="fragments/evidence"></div>

@@ -68,7 +68,7 @@ html {
 
  /** Evidence trash and settings buttons */
 
-.evidence_title_buttons {
+.evidence-title__buttons {
     float: right;
     font-size: 15px;
     width: 100px;
@@ -76,7 +76,7 @@ html {
     padding-left: 50px;
 }
 
-.evidence__title_icon_container {
+.evidence-title--icon_container {
     width: 100%;
     color: black;
     padding: 20px 20px 10px 20px;
@@ -85,7 +85,7 @@ html {
     cursor: pointer;
 }
 
-.evidence__title_icon {
+.evidence-title--icon {
     font-size: 25px;
 }
 
@@ -100,7 +100,7 @@ html {
     cursor: pointer;
 }
 
-.evidence-title__child:hover, .evidence__title_icon_container:hover {
+.evidence-title__child:hover, .evidence__title--icon_container:hover {
     color: var(--color-accent);
 }
 
@@ -198,38 +198,4 @@ html {
 .evidence__skills {
     display: flex;
     flex-wrap: wrap;
-}
-
-.skill-link {
-    overflow-wrap: anywhere;
-    border: 1px solid var(--color-secondary);
-    border-radius: 5px;
-    background-color: var(--color-primary);
-    padding: 2px 4px 2px 4px;
-    margin: 4px;
-    display: inline;
-    text-decoration: none;
-    color: initial;
-    text-align: center;
-}
-
-.skill-link:hover {
-    background-color: #F67B50;
-}
-
-.category__link {
-    border: 1px solid #A82810;
-    border-radius: 5px;
-    background-color: #A82810;
-    padding: 2px 4px 2px 4px;
-    margin: 4px;
-    display: inline;
-    text-decoration: none;
-    color: white;
-    text-align: center;
-}
-
-.category__link:hover {
-    color: white;
-    filter: brightness(85%);
 }
