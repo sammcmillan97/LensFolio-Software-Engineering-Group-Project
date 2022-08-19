@@ -3,7 +3,7 @@ package nz.ac.canterbury.seng302.portfolio.cucumber;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import nz.ac.canterbury.seng302.portfolio.model.Event;
+import nz.ac.canterbury.seng302.portfolio.model.project.Event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

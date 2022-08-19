@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Edit event</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/project/addEditEvent.css}" rel="stylesheet" />
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div id="projectId" style="display: none;" th:text="${projectId}"></div>
+    <div id="name-of-edited" style="display: none;" th:text="${eventName}"></div>
+    <div id="event-form__wrapper">
+        <!-- Name, Date -->
+        <header class="event-form__header flex-column">
+            <div th:if="${eventId == '-1'}">
+                <h1> Create New Event</h1>
+            </div>
+            <div th:if="${eventId != '-1'}">
+                <h1 th:text="'Editing: ' + ${eventName}"></h1>
+            </div>
+        </header>
+
+        <!-- Add/Edit Event Form -->
+        <form id="event-form__form" class="flex-column" th:action="@{editEvent-{event}-{project}(project=${parentProjectId}, event=${eventId})}" th:method="post">
+            <label for="event-form__name-field">Event Name *</label>
+            <input type="text" id="event-form__name-field" name="eventName" maxlength="30" placeholder="Event Name" th:value="${eventName}" th:pattern="${titlePattern}" title="Event Name must not be blank and cannot contain special characters" onkeyup="countCharacters()">
+            <span id="char-count">30/30 characters remain</span>
+
+            <label for="event-form__start-date-field">Event Start Date *</label>
+            <input type="datetime-local" id="event-form__start-date-field" name="eventStartDate" th:placeholder="${eventStartDate}" th:value="${eventStartDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMinEndDate()" required>
+            <label for="event-form__end-date-field">Event End Date *</label>
+            <input type="datetime-local" id="event-form__end-date-field" name="eventEndDate" th:placeholder="${eventEndDate}" th:value="${eventEndDate}" th:min="${minEventStartDate}" th:max="${maxEventEndDate}" onchange="updateMaxStartDate()" required>
+            <button type="submit" id="event-form__save">Save Changes</button>
+            <a id="event-form__discard" th:href="@{projectDetails-{project}(project=${projectId})}">Discard</a>
+        </form>
+    </div>
+</div>
+<script rel="script" th:src="@{scripts/project/addEditEvent.js}"></script>
+<script rel="script" th:src="@{scripts/project/sendProjectEditNotifications.js}"></script>
+</body>
+
+
+</html>

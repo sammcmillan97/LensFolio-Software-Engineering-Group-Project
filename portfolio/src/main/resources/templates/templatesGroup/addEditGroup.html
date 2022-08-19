@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Edit Group</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{styles/stylesheet.css}" rel="stylesheet" />
+    <link th:href="@{styles/group/addEditGroup.css}" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+    <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+    <div id="group-form__wrapper">
+        <!-- Name, Date -->
+        <header class="group-form__header flex-column">
+            <div th:if="${groupId == -1}">
+                <h1> Create New Group</h1>
+            </div>
+            <div th:if="${groupId != -1}">
+                <h1 th:text="'Editing: ' + ${groupShortName} + ' - ' + ${groupLongName}"></h1>
+            </div>
+        </header>
+
+        <!-- Add/Edit Group Form -->
+        <form id="group-form__form" class="flex-column" th:action="@{editGroup-{group}(group=${groupId})}" th:method="post">
+            <div th:if="${authUserIsPrivileged}">
+                <label for="group-form__short_name-field">Group Short Name *</label>
+                <p th:text="${shortNameErrorMessage}" class="form-error-message"></p>
+                <input type="text" id="group-form__short_name-field" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" th:pattern="${titlePattern}" title="Group Name must not be blank and cannot contain special characters" required onkeyup="countShortNameCharacters()">
+                <span id="char-count__short_name">20/20 characters remain</span>
+            </div>
+            <div th:if="${!authUserIsPrivileged}">
+                <label for="group-form__short_name-field">Group Short Name *</label>
+                <p th:text="${shortNameErrorMessage}" class="form-error-message"></p>
+
+<!--                Has a hidden and disabled input field because disabled fields aren't sent with the form whereas hidden ones are-->
+                <input type="text" id="group-form__short_name-field-disabled" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" th:pattern="${titlePattern}" title="Group Name must not be blank and cannot contain special characters" required onkeyup="countShortNameCharacters()" disabled>
+                <input type="text" id="group-form__short_name-field" name="groupShortName" maxlength="20" placeholder="Group Short Name" th:value="${groupShortName}" th:pattern="${titlePattern}" title="Group Name must not be blank and cannot contain special characters" required onkeyup="countShortNameCharacters()" hidden>
+                <span id="char-count__short_name">20/20 characters remain</span>
+            </div>
+
+            <label for="group-form__long_name-field">Group Long Name *</label>
+            <p th:text="${longNameErrorMessage}" class="form-error-message"></p>
+            <input type="text" id="group-form__long_name-field" name="groupLongName" maxlength="30" placeholder="Group Long Name" th:value="${groupLongName}" th:pattern="${titlePattern}" title="Group long name must not be blank" required onkeyup="countLongNameCharacters()">
+            <span id="char-count__long_name">30/30 characters remain</span>
+
+            <button type="submit" id="group-form__save">Save Changes</button>
+            <a id="group-form__discard" th:href="@{groups}">Discard</a>
+        </form>
+    </div>
+</div>
+<script rel="script" th:src="@{scripts/group/addEditGroup.js}"></script>
+</body>
+
+
+</html>

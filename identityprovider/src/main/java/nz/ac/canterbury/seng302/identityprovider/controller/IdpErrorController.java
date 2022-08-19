@@ -1,5 +1,7 @@
 package nz.ac.canterbury.seng302.identityprovider.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -16,6 +18,7 @@ public class IdpErrorController implements ErrorController {
 
     @Autowired
     private ErrorAttributes errorAttributes;
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
 
     /**
      * Returns a generic error page when an error occurs.
@@ -35,7 +38,10 @@ public class IdpErrorController implements ErrorController {
                 .append(value)
                 .append("</pre></td></tr>"));
 
+        String errorMessage = errorDetails.toString();
+        IDENTITY_LOGGER.error(errorMessage);
+
         return String.format("<html><head><style>td{vertical-align:top;border:solid 1px #A82810;}</style>"
-                + "</head><body><h2>Identity Provider - Error Page</h2><table>%s</table></body></html>", errorDetails.toString());
+                + "</head><body><h2>Identity Provider - Error Page</h2><table>%s</table></body></html>", errorDetails);
     }
 }

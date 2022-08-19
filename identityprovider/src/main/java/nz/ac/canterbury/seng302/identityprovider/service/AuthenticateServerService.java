@@ -14,6 +14,8 @@ import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateRequest;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticateResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthenticationServiceGrpc.AuthenticationServiceImplBase;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
 
     /**
      * Attempts to authenticate a user with a given username and password. 
@@ -43,6 +46,7 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
     AuthenticateResponse authenticateHandler(AuthenticateRequest request) {
         AuthenticateResponse.Builder reply = AuthenticateResponse.newBuilder();
         if (userAccountsServerService.isBadUserName(request.getUsername())){
+            IDENTITY_LOGGER.info("Log in attempt failed: cannot contain special characters");
             reply
                     .setMessage("Log in attempt failed: username cannot contain special characters")
                     .setSuccess(false)
@@ -52,11 +56,13 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
 
         User user = repository.findByUsername(request.getUsername());
         if (user == null) {
+            IDENTITY_LOGGER.info("Log in attempt failed: username not registered");
             reply
                     .setMessage("Log in attempt failed: username not registered")
                     .setSuccess(false)
                     .setToken("");
         } else if (Boolean.FALSE.equals(user.checkPassword(request.getPassword()))) {
+            IDENTITY_LOGGER.info("Log in attempt failed: password incorrect");
             reply
                     .setMessage("Log in attempt failed: password incorrect")
                     .setSuccess(false)
@@ -86,6 +92,8 @@ public class AuthenticateServerService extends AuthenticationServiceImplBase{
                     .setToken(token)
                     .setUserId(user.getUserId())
                     .setUsername(user.getUsername());
+            String loggerMessage = String.format("User #%d: %s logged in successfully", user.getUserId(), user.getUsername());
+            IDENTITY_LOGGER.info(loggerMessage);
         }
 
         return reply.build();

@@ -1,12 +1,13 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.model.User;
-import nz.ac.canterbury.seng302.portfolio.service.EvidenceService;
-import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.controller.evidence.AddEvidenceController;
+import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
+import nz.ac.canterbury.seng302.portfolio.model.user.User;
+import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
@@ -20,9 +21,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.sound.sampled.Port;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
