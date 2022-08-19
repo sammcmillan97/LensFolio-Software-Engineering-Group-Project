@@ -93,7 +93,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(get("/addEvidence"))
+        mockMvc.perform(get("/editEvidence--1"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -109,7 +109,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
@@ -130,7 +130,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
@@ -149,7 +149,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "bad date")
