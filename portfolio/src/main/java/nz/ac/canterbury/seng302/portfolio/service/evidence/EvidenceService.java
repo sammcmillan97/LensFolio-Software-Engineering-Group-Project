@@ -109,6 +109,17 @@ public class EvidenceService {
     }
 
     /**
+     *
+     * @param evidence
+     */
+    public void deleteEvidence(Evidence evidence) {
+
+        deleteById(evidence.getId());
+        String message = "Deleted evidence: " + evidence.getId();
+        PORTFOLIO_LOGGER.info(message);
+    }
+
+    /**
      * Gets all skills from a list of evidence. Each skill returned is unique.
      * @param evidenceList A list of evidence to retrieve skills from.
      * @return All the skills for that list of evidence.
