@@ -9,6 +9,8 @@ import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,8 @@ public class AddEvidenceController {
 
     private static final String TIMEFORMAT = "yyyy-MM-dd";
 
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
+
     /**
      * Display the add evidence page.
      * @param principal Authentication state of client
@@ -68,29 +72,16 @@ public class AddEvidenceController {
         }
         Project project = projectService.getProjectById(projectId);
 
-        Evidence evidence;
-
-        Date evidenceDate;
-        Date currentDate = new Date();
-
-        List<String> categories = new ArrayList<>();
-        categories.add("Qualitative");
-        categories.add("Quantitative");
-        categories.add("Service");
-
-        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
-            evidenceDate = currentDate;
-        } else {
-            evidenceDate = project.getStartDate();
+        try {
+            Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
+            addEvidenceToModel(model, projectId, userId, evidence);
+            model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
+            model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
+            model.addAttribute("evidenceId", Integer.parseInt(evidenceId));
+            return ADD_EVIDENCE;
+        } catch (IllegalArgumentException e) {
+            return PORTFOLIO_REDIRECT;
         }
-
-        evidence = new Evidence(userId, projectId, "", "", evidenceDate);
-
-        addEvidenceToModel(model, projectId, userId, evidence);
-        model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
-        model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
-        model.addAttribute("evidenceId", Integer.parseInt(evidenceId));
-        return ADD_EVIDENCE;
     }
 
     /**
@@ -133,18 +124,24 @@ public class AddEvidenceController {
         }
 
         Set<Categories> categories = new HashSet<>();
-        if(isQuantitative != null) {
+        if (isQuantitative != null) {
             categories.add(Categories.Quantitative);
         }
-        if(isQualitative != null) {
+        if (isQualitative != null) {
             categories.add(Categories.Qualitative);
         }
-        if(isService != null) {
+        if (isService != null) {
             categories.add(Categories.Service);
         }
+
         int userId = userService.getUserId(principal);
-        Evidence evidence = new Evidence(userId, projectId, title, description, date, skills);
+        Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
+        evidence.setTitle(title);
+        evidence.setDescription(description);
+        evidence.setSkills(skills);
+        evidence.setDate(date);
         evidence.setCategories(categories);
+
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
@@ -163,6 +160,39 @@ public class AddEvidenceController {
             return ADD_EVIDENCE; // Fail silently as client has responsibility for error checking
         }
         return PORTFOLIO_REDIRECT;
+    }
+
+    private Evidence getEvidenceById(String evidenceId, int userId, int projectId) {
+        try {
+            int id = Integer.parseInt(evidenceId);
+            if (id == -1) {
+                Date evidenceDate;
+                Date currentDate = new Date();
+                Project project = projectService.getProjectById(projectId);
+                if (currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+                    evidenceDate = currentDate;
+                } else {
+                    evidenceDate = project.getStartDate();
+                }
+                return new Evidence(userId, projectId, "", "", evidenceDate);
+            } else {
+                Evidence evidence = evidenceService.getEvidenceById(id);
+                if (userId != evidence.getOwnerId()) {
+                    String errorMessage = "User " + userId + " tried to access evidence they did not own";
+                    PORTFOLIO_LOGGER.error(errorMessage);
+                    throw new IllegalArgumentException();
+                }
+                return evidence;
+            }
+        } catch (NumberFormatException e) {
+            String errorMessage = "Not a number id in add evidence get request: " + evidenceId;
+            PORTFOLIO_LOGGER.error(errorMessage);
+            throw new IllegalArgumentException();
+        } catch (NoSuchElementException e) {
+            String errorMessage = "Non-existent id in add evidence get request: " + evidenceId;
+            PORTFOLIO_LOGGER.error(errorMessage);
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
