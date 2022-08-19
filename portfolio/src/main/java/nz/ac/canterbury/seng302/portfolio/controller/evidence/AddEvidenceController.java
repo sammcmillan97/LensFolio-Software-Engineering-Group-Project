@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -50,9 +51,10 @@ public class AddEvidenceController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The add evidence page.
      */
-    @GetMapping("/addEvidence")
+    @GetMapping("/editEvidence-{evidenceId}")
     public String addEvidence(
             @AuthenticationPrincipal AuthState principal,
+            @PathVariable("evidenceId") String evidenceId,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -87,6 +89,7 @@ public class AddEvidenceController {
         addEvidenceToModel(model, projectId, userId, evidence);
         model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
         model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
+        model.addAttribute("evidenceId", Integer.parseInt(evidenceId));
         return ADD_EVIDENCE;
     }
 
@@ -100,13 +103,14 @@ public class AddEvidenceController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return A redirect to the portfolio page, or staying on the add evidence page
      */
-    @PostMapping("/addEvidence")
+    @PostMapping("/editEvidence-{evidenceId}")
     public String saveEvidence(
             @AuthenticationPrincipal AuthState principal,
+            @PathVariable("evidenceId") String evidenceId,
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
-            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQuantitative", required = false) String isQuantitative,
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
