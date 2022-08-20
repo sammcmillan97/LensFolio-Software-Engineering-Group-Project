@@ -8,6 +8,9 @@ function checkEmpty() {
 }
 
 let skillList = []
+let userList = []
+
+
 
 // Adds a skill to the list of skills. Makes sure it is not already present,
 // and if the user has already entered that skill on another piece of evidence, make sure the capitalization is correct.
@@ -34,13 +37,42 @@ function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
 }
 
-// Remove a tag when the 'x' button is clicked
-function clickXButton(tag) {
+// Adds a user to the list of users. Makes sure it is not already present.
+// Users must be in the form of ids.
+function addToUsers(user) {
+    for (const testUser of userList) {
+        if (testUser === user) {
+            return;
+        }
+    }
+    userList.push(user);
+}
+
+function removeLastUser() {
+    userList.pop();
+}
+
+function removeUser(user) {
+    userList.splice(userList.indexOf(user), 1);
+}
+
+// Remove a skill tag when the 'x' button is clicked
+function clickSkillXButton(tag) {
     removeSkill(tag);
-    updateTagsInDOM(skillList);
+    updateSkillTagsInDOM(skillList);
 
     if (skillList.length === 0) {
         document.getElementById("skills-input").placeholder = 'Add Skills';
+    }
+}
+
+// Remove a user tag when the 'x' button is clicked
+function clickUserXButton(tag) {
+    removeUser(tag);
+    updateUserTagsInDOM(userList);
+
+    if (userList.length === 0) {
+        document.getElementById("users-input").placeholder = 'Add Users';
     }
 }
 
@@ -62,7 +94,7 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     lastSkill = lastSkill.slice(0, 50);
     document.getElementById("skills-input").value = lastSkill;
     if (shouldUpdateSkills) {
-        updateTagsInDOM(skillList);
+        updateSkillTagsInDOM(skillList);
         event.target.style.width = "80px";
     }
     if (skillList.length > 0) {
@@ -70,7 +102,18 @@ document.getElementById("skills-input").addEventListener("input", (event) => {
     } else {
         event.target.placeholder = 'Add Skills';
     }
-    autocomplete(event); // Call the autocomplete function whenever the input changes
+    autocompleteSkills(event); // Call the autocomplete function whenever the input changes
+})
+
+// Listen for input so the autocomplete can be triggered for the users field
+document.getElementById("users-input").addEventListener("input", (event) => {
+    event.target.style.width = event.target.value.length > 8 ? event.target.value.length + "ch" : "80px";
+    if (userList.length > 0) {
+        event.target.placeholder = '';
+    } else {
+        event.target.placeholder = 'Add Users';
+    }
+    autocompleteUsers(event); // Call the autocomplete function whenever the input changes
 })
 
 // Listen for key press so keys which do not change the input (backspace, enter, up, down) can be detected
@@ -78,7 +121,7 @@ document.getElementById("skills-input").addEventListener("keydown", (event) => {
     let skillText = event.target.value
     if (event.key === "Backspace" && skillText === "") {
         removeLastSkill();
-        updateTagsInDOM(skillList);
+        updateSkillTagsInDOM(skillList);
 
         if (skillList.length === 0) {
             event.target.placeholder = 'Add Skills';
@@ -87,8 +130,22 @@ document.getElementById("skills-input").addEventListener("keydown", (event) => {
     updateFocus(event);
 })
 
+// Listen for key press so keys which do not change the input (backspace, enter, up, down) can be detected
+document.getElementById("users-input").addEventListener("keydown", (event) => {
+    let userText = event.target.value
+    if (event.key === "Backspace" && userText === "") {
+        removeLastUser();
+        updateUserTagsInDOM(userList);
+
+        if (userList.length === 0) {
+            event.target.placeholder = 'Add Users';
+        }
+    }
+    updateFocus(event);
+})
+
 // Updates the tags shown before the skills input list to reflect the list of tags given.
-function updateTagsInDOM(tags) {
+function updateSkillTagsInDOM(tags) {
     let skills = "";
     for (const skill of tags) {
         skills += skill.replaceAll(" ", "_");
@@ -106,11 +163,46 @@ function updateTagsInDOM(tags) {
                                                           <div class="skill-tag">
                                                             <div class="skill-tag-inside">
                                                               <p>${sanitizeHTML(tag)}</p>
-                                                              <i class="bi bi-x" onclick="clickXButton('${sanitizeHTML(tag)}')"></i>
+                                                              <i class="bi bi-x" onclick="clickSkillXButton('${sanitizeHTML(tag)}')"></i>
                                                             </div>
                                                           </div>
                                                         </div>`)
         parent.insertBefore(element, skillInput);
+    }
+}
+
+// Updates the tags shown before the users input list to reflect the list of tags given.
+function updateUserTagsInDOM(tags) {
+    let users = "";
+    for (const user of tags) {
+        users += user;
+        users += " ";
+    }
+    document.getElementById("evidence-form__hidden-users-field").value = users;
+
+    let parent = document.getElementById("user-container");
+    while (parent.childNodes.length > 2) {
+        parent.removeChild(parent.firstChild);
+    }
+    let userInput = parent.firstChild
+    console.log(userInput);
+    for (let tag of tags) {
+        for (user of ALL_USERS) {
+            if (tag === user.id) {
+                let element = createElementFromHTML(`
+                            <div class="skill-tag-con">
+                              <div class="skill-tag">
+                                <div class="skill-tag-inside">
+                                  <img class="member-image" src=${user.profilePicture} alt="Profile Photo">
+                                  <p>${sanitizeHTML(user.fullName)}</p>
+                                  <p>${sanitizeHTML(user.username)}</p>
+                                  <i class="bi bi-x" onclick="clickSkillXButton('${sanitizeHTML(tag)}')"></i>
+                                </div>
+                              </div>
+                            </div>`)
+                parent.insertBefore(element, userInput);
+            }
+        }
     }
 }
 
@@ -125,10 +217,10 @@ function createElementFromHTML(htmlString) {
     return template.content.firstChild;
 }
 
-// Perform autocompleting. This is a complex endeavour!
+// Perform autocompleting on skills. This is a complex endeavour!
 // Credit to w3schools for lighting the path on how to do this.
 let focus; // Where the user is at any point in time in the autocomplete list.
-function autocomplete(event) {
+function autocompleteSkills(event) {
     let val = event.target.value;
     /*close any already open lists of autocompleted values*/
     destroyAutocomplete();
@@ -147,13 +239,44 @@ function autocomplete(event) {
             autocompleteItem.addEventListener("click", function(clickEvent) {
                 event.target.value = "";
                 addToSkills(clickEvent.target.getElementsByTagName("input")[0].value);
-                updateTagsInDOM(skillList);
+                updateSkillTagsInDOM(skillList);
                 destroyAutocomplete();
             });
             autocompleteList.appendChild(autocompleteItem);
         }
     }
 }
+
+// Perform autocompleting on users. This is a complex endeavour!
+function autocompleteUsers(event) {
+    console.log(ALL_USERS);
+    let val = event.target.value;
+    /*close any already open lists of autocompleted values*/
+    destroyAutocomplete();
+    if (!val) { return; } // No need to autocomplete if there is nothing in the box
+    focus = -1; // when a new character is pressed remove the autocomplete focus
+    let autocompleteList = document.createElement("DIV");
+    autocompleteList.setAttribute("id", event.target.id + "autocomplete-list");
+    autocompleteList.setAttribute("class", "autocomplete-items");
+    event.target.parentNode.appendChild(autocompleteList);
+    for (let user of ALL_USERS) {
+        if (user.fullName.substr(0, val.length).toLowerCase() === val.toLowerCase()) {
+            let autocompleteItem = document.createElement("DIV");
+            autocompleteItem.innerHTML = sanitizeHTML(user.fullName);
+            autocompleteItem.innerHTML += "<input type='hidden' value='" + sanitizeHTML(user.id) + "'>";
+            // When the user clicks a link, destroy the autocomplete field.
+            autocompleteItem.addEventListener("click", function(clickEvent) {
+                event.target.value = "";
+                addToUsers(clickEvent.target.getElementsByTagName("input")[0].value);
+                updateUserTagsInDOM(userList);
+                destroyAutocomplete();
+            });
+            autocompleteList.appendChild(autocompleteItem);
+        }
+    }
+}
+
+
 
 // Updates the focus. This is called on every key press in the entry box and looks for up arrow, down arrow and enter.
 function updateFocus(event) {
@@ -211,7 +334,7 @@ function destroyAutocomplete() {
 document.addEventListener("click", function (event) {
     let autocompleteList = document.getElementsByClassName("autocomplete-items");
     for (let autocompleteItem of autocompleteList) {
-        if (event.target !== autocompleteItem && event.target !== document.getElementById("skills-input")) {
+        if (event.target !== autocompleteItem) {
             autocompleteItem.parentNode.removeChild(autocompleteItem);
         }
     }
@@ -224,24 +347,49 @@ function sanitizeHTML(string) {
 	});
 }
 
-let input = document.getElementById("skills-input");
-let div = document.getElementById("skill-input-container")
+let skillsInput = document.getElementById("skills-input");
+let skillsDiv = document.getElementById("skill-input-container")
+
+let usersInput = document.getElementById("users-input");
+let usersDiv = document.getElementById("user-input-container")
 
 /**
  * allows clicking skills container to select the input and puts outline on div
  */
-div.addEventListener('click', (event) => {
-    input.focus();
+skillsDiv.addEventListener('click', (event) => {
+    skillsInput.focus();
 });
-input.addEventListener('focus', (event) => {
-    div.style.outline = 'black solid 2px';
+skillsInput.addEventListener('focus', (event) => {
+    skillsDiv.style.outline = 'black solid 2px';
 });
-input.addEventListener('blur', (event) => {
-    div.style.outline = '';
+skillsInput.addEventListener('blur', (event) => {
+    skillsDiv.style.outline = '';
 });
+
+
+/**
+ * allows clicking skills container to select the input and puts outline on div
+ */
+usersDiv.addEventListener('click', (event) => {
+    usersInput.focus();
+});
+usersInput.addEventListener('focus', (event) => {
+    usersDiv.style.outline = 'black solid 2px';
+});
+usersInput.addEventListener('blur', (event) => {
+    usersDiv.style.outline = '';
+});
+
 
 
 document.getElementById("skills-input").dispatchEvent(new Event('input', {
     bubbles: true,
     cancelable: true,
 }))
+
+document.getElementById("users-input").dispatchEvent(new Event('input', {
+    bubbles: true,
+    cancelable: true,
+}))
+
+console.log("Hi luke")

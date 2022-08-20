@@ -12,7 +12,20 @@
     <title>Add Evidence</title>
     <script th:inline="javascript">
         const ALL_SKILLS = [[${skillsList}]];
+        let ALL_USERS = [];
     </script>
+
+    <script type="text/javascript" th:inline="javascript" th:each="user, iterInfo: ${users}">
+        user = {
+            id: [[${user.id}]],
+            fullName: [[${user.fullName}]],
+            username: [[${user.username}]],
+            profilePicture: [[${user.profileImagePath}]]
+        }
+        user.id = user.id.toString();
+        ALL_USERS.push(user);
+    </script>
+
 </head>
 <body>
 <!-- Import the application's header bar. -->
@@ -85,14 +98,24 @@
             </label>
             <div id="skill-input-container">
                 <div id="skill-container">
-                  <div id="input-container">
+                  <div>
                     <input type="text" id="skills-input" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
                        placeholder="Add Skills"/>
                   </div>
                 </div>
             </div>
-            <input type="hidden" id="evidence-form__hidden-skills-field" name="evidenceSkills"/>
             <p class="evidence-form__error-message" th:text="${skillsError}" />
+            <input type="hidden" id="evidence-form__hidden-skills-field" name="evidenceSkills"/>
+            <div id="user-input-container">
+                <div id="user-container">
+                    <div>
+                        <input type="text" id="users-input" th:value="${evidenceUsers}" contenteditable="true" autocomplete="off"
+                               placeholder="Add Skills"/>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="evidence-form__hidden-users-field" name="evidenceUsers"/>
+
 
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
             <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>

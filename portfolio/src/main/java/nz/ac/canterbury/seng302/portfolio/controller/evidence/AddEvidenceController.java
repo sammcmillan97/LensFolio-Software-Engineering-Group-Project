@@ -83,7 +83,6 @@ public class AddEvidenceController {
         }
 
         evidence = new Evidence(userId, projectId, "", "", evidenceDate);
-
         addEvidenceToModel(model, projectId, userId, evidence);
         model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
         model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
@@ -176,6 +175,9 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+        model.addAttribute("evidenceUsers", ""); // TODO
+        List<User> users = userService.getPaginatedUsers(0, Integer.MAX_VALUE, "name", true).getUsers();
+        model.addAttribute("users", users);
     }
 }
 
