@@ -72,17 +72,17 @@ html {
     float: right;
     font-size: 15px;
     width: 100px;
-    padding-top: 25px;
+    padding-top: 10px;
     padding-left: 50px;
 }
 
 .evidence-title--icon_container {
     width: 100%;
     color: black;
-    padding: 20px 20px 10px 20px;
+    padding: 10px;
     border: 1px solid var(--color-accent);
     border-radius: 5px;
-    cursor: pointer;
+    background-color: transparent;
 }
 
 .evidence-title--icon {
