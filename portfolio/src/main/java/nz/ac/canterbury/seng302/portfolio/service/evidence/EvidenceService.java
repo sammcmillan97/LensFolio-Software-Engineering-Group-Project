@@ -130,9 +130,8 @@ public class EvidenceService {
     public void deleteById(int id) {
         Evidence evidence;
         try {
-            evidence = getEvidenceById(id);
             repository.deleteById(id);
-            String message = "Deleted evidence: " + evidence.getId();
+            String message = "Deleted evidence: " + id;
             PORTFOLIO_LOGGER.info(message);
         } catch(NoSuchElementException exception) {
             String message = "Evidence " + id + " not found";
