@@ -128,12 +128,11 @@ public class EvidenceService {
      * @param id The ID of the evidence to delete
      */
     public void deleteById(int id) {
-        Evidence evidence;
         try {
             repository.deleteById(id);
             String message = "Deleted evidence: " + id;
             PORTFOLIO_LOGGER.info(message);
-        } catch(NoSuchElementException exception) {
+        } catch(Exception exception) {
             String message = "Evidence " + id + " not found";
             PORTFOLIO_LOGGER.error(message);
             throw new IllegalArgumentException(message);

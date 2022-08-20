@@ -206,7 +206,7 @@ class EvidenceServiceTests {
     @Test
     @Transactional
     void givenEvidenceDoesNotExist_testDeleteById() {
-        assertThrows(IllegalArgumentException.class, () -> evidenceService.deleteById(1), "Evidence  " + 1 + "  not found");
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.deleteById(1), "Evidence " + 1 + " not found");
     }
 
     @Test
