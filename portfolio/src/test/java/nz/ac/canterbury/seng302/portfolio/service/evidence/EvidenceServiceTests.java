@@ -815,7 +815,7 @@ class EvidenceServiceTests {
         int testUserId2 = 1;
         Evidence evidence = new Evidence(testUserId1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
         evidenceService.saveEvidence(evidence);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(2, evidenceList.size());
@@ -837,7 +837,7 @@ class EvidenceServiceTests {
         categoriesSet.add(Categories.Qualitative);
         evidence.setCategories(categoriesSet);
         evidenceService.saveEvidence(evidence);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(2, evidenceList.size());
@@ -860,9 +860,9 @@ class EvidenceServiceTests {
         categoriesSet.add(Categories.Qualitative);
         evidence.setCategories(categoriesSet);
         evidenceService.saveEvidence(evidence);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId1);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId3);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId3));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         Evidence evidence0 = evidenceList.get(0);
@@ -880,7 +880,7 @@ class EvidenceServiceTests {
     @Test
     void whenEvidenceDoesNotExist_testCopyToAnotherUserPortfolioThrowsError() {
         int testUserId = 0;
-        assertThrows(NoSuchElementException.class, () -> evidenceService.copyEvidenceToNewUser(0, testUserId),
+        assertThrows(NoSuchElementException.class, () -> evidenceService.copyEvidenceToNewUser(0, List.of(testUserId)),
                 "Evidence does not exist");
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(0, evidenceList.size());
@@ -902,9 +902,9 @@ class EvidenceServiceTests {
 
         Evidence evidence = new Evidence(testUserId0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId1);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId2);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), testUserId3);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId3));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(4, evidenceList.size());
@@ -920,7 +920,7 @@ class EvidenceServiceTests {
         Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
-        evidenceService.copyEvidenceToNewUser(evidence1.getId(), testUser1);
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), List.of(testUser1));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(2, evidenceList.size());
@@ -937,7 +937,7 @@ class EvidenceServiceTests {
         Evidence evidence2 = new Evidence(testUser1, projects.get(1).getId(), "One", TEST_DESCRIPTION, Date.valueOf("2022-05-9"), "SKILLS");
         evidenceService.saveEvidence(evidence1);
         evidenceService.saveEvidence(evidence2);
-        evidenceService.copyEvidenceToNewUser(evidence1.getId(), testUser1);
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), List.of(testUser1));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(testUser1, projects.get(1).getId());

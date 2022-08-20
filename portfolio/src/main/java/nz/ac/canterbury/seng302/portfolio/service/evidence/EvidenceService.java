@@ -114,28 +114,29 @@ public class EvidenceService {
      * Conforms the skills to match the existing skills in the new user's portfolio
      * Throws illegal argument exception if the evidence does not exist
      * @param evidenceId  is the id of the evidence to be copied
-     * @param userId is the id of the user who gets the copied evidence
+     * @param userIdList is the list of ids of the users who get the copied evidence
      */
-    public void copyEvidenceToNewUser(Integer evidenceId, Integer userId) {
+    public void copyEvidenceToNewUser(Integer evidenceId, List<Integer> userIdList) {
         try {
             Evidence evidence = getEvidenceById(evidenceId);
             String skillList = String.join(" ", evidence.getSkills());
             Set<Categories> categoriesSet = new HashSet<>(evidence.getCategories());
 
-            Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
-            copiedEvidence.addSkill(skillList);
-            copiedEvidence.setCategories(categoriesSet);
-            for (WebLink webLink: evidence.getWebLinks()) {
-                copiedEvidence.addWebLink(webLink);
+            for (Integer userId: userIdList) {
+                Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
+                copiedEvidence.addSkill(skillList);
+                copiedEvidence.setCategories(categoriesSet);
+                for (WebLink webLink : evidence.getWebLinks()) {
+                    copiedEvidence.addWebLink(webLink);
+                }
+                evidence.addUser(userId);
+                // This is to make sure that there are no duplicate skills in the other user's portfolio
+                List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
+                copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
+                String message = "Evidence " + evidenceId + " copied to " + userId + "'s portfolio";
+                PORTFOLIO_LOGGER.info(message);
+                repository.save(copiedEvidence);
             }
-            evidence.addUser(userId);
-            // This is to make sure that there are no duplicate skills in the other user's portfolio
-            List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
-            copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
-
-            String message = "Evidence " + evidenceId + " copied to " + userId + "'s portfolio";
-            PORTFOLIO_LOGGER.info(message);
-            repository.save(copiedEvidence);
         } catch (NoSuchElementException e) {
             String message = "Evidence " + evidenceId + " not found";
             PORTFOLIO_LOGGER.error(message);
