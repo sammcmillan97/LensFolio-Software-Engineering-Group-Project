@@ -31,6 +31,7 @@ public class CategoriesController {
     private PortfolioUserService portfolioUserService;
 
     private static final String PORTFOLIO_REDIRECT = "redirect:/portfolio";
+    private static final int MAX_WEBLINKS_PER_EVIDENCE = 5;
 
     /**
      * Get request for getting all evidence pieces for the current user with the defined category
@@ -72,6 +73,7 @@ public class CategoriesController {
 
         // Add all of the skills that the user has to the page
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("maxWeblinks", MAX_WEBLINKS_PER_EVIDENCE);
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(allUsersEvidenceList));
         model.addAttribute("categoryName", category);
         model.addAttribute("evidenceList", evidenceList);
