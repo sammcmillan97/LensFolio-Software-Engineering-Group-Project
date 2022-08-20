@@ -110,6 +110,8 @@ public class EvidenceService {
 
     /**
      * Copies an evidence from the owner to the portfolio of a new user
+     * Copies the skills, categories and weblinks of the evidence across as well
+     * Conforms the skills to match the existing skills in the new user's portfolio
      * Throws illegal argument exception if the evidence does not exist
      * @param evidenceId  is the id of the evidence to be copied
      * @param userId is the id of the user who gets the copied evidence
@@ -127,11 +129,16 @@ public class EvidenceService {
                 copiedEvidence.addWebLink(webLink);
             }
             evidence.addUser(userId);
-            // make sure getting the ri ght user's evidence
-            List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(evidence.getOwnerId(), evidence.getProjectId());
-            evidence.conformSkills(getSkillsFromEvidence(evidenceList));
+            // This is to make sure that there are no duplicate skills in the other user's portfolio
+            List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
+            copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
+
+            String message = "Evidence " + evidenceId + " copied to " + userId + "'s portfolio";
+            PORTFOLIO_LOGGER.info(message);
             repository.save(copiedEvidence);
         } catch (NoSuchElementException e) {
+            String message = "Evidence " + evidenceId + " not found";
+            PORTFOLIO_LOGGER.error(message);
             throw new NoSuchElementException("Evidence does not exist");
         }
     }

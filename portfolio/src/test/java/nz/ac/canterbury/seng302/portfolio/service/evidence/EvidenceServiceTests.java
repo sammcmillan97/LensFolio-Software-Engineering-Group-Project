@@ -928,4 +928,21 @@ class EvidenceServiceTests {
         assertEquals("My web link", evidenceList.get(1).getWebLinks().get(0).getName());
     }
 
+    @Test
+    @Transactional
+    void whenOtherUserAlreadyHasSkills_testCopiedEvidenceConformSkills() {
+        int testUser0 = 0;
+        int testUser1 = 1;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skills");
+        Evidence evidence2 = new Evidence(testUser1, projects.get(1).getId(), "One", TEST_DESCRIPTION, Date.valueOf("2022-05-9"), "SKILLS");
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), testUser1);
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(testUser1, projects.get(1).getId());
+        assertEquals(3, evidenceList.size());
+        assertEquals(1, evidenceService.getSkillsFromEvidence(allUsersEvidenceList).size());
+    }
+
 }
