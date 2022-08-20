@@ -119,18 +119,6 @@ class EvidenceServiceTests {
         assertEquals(0, evidenceList.size());
     }
 
-    //When evidence is deleted, check that it has been.
-    @Test
-    void whenEvidenceDeleted_testIsDeleted() {
-        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-16"));
-        evidenceService.saveEvidence(evidence);
-        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
-        assertEquals(1, evidenceList.size());
-        evidenceService.deleteById(evidenceList.get(0).getId());
-        List<Evidence> deletedEvidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
-        assertEquals(0, deletedEvidenceList.size());
-    }
-
     //When evidence is added, check that can be accessed.
     @Test
     void whenEvidenceAdded_testEvidenceExists() {
@@ -197,6 +185,68 @@ class EvidenceServiceTests {
         String expectedMessage = "Evidence not found: web link not saved";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
+    }
+
+    /////////////////////////////////
+    /////////Delete Evidence/////////
+    /////////////////////////////////
+
+    @Test
+    @Transactional
+    void givenOneEvidenceExists_testDeleteById() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(1, evidenceList.size());
+        evidenceService.deleteById(evidence.getId());
+        evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
+    }
+
+    @Test
+    @Transactional
+    void givenEvidenceDoestExist_testDeleteById() {
+        assertThrows(IllegalArgumentException.class, () -> evidenceService.deleteById(1), "Evidence  " + 1 + "  not found");
+    }
+
+    @Test
+    @Transactional
+    void givenEvidenceExistWithSkills_testRemovesSkillsFromUser() {
+        Evidence evidence = new Evidence(0, projects.get(1).getId(), "Test", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a b c");
+        evidenceService.saveEvidence(evidence);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        List<String> skills = (List<String>) evidenceService.getSkillsFromEvidence(evidenceList);
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        expectedSkills.add("c");
+        assertEquals(expectedSkills, skills);
+        evidenceService.deleteById(evidence.getId());
+        evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        skills = (List<String>) evidenceService.getSkillsFromEvidence(evidenceList);
+        expectedSkills.clear();
+        assertEquals(expectedSkills, skills);
+    }
+
+    @Test
+    @Transactional
+    void givenTwoEvidenceExistWithOverlappingSkills_testRemovesCorrectSkillsFromUser() {
+        Evidence evidence1 = new Evidence(0, projects.get(1).getId(), "Test1", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "a b");
+        Evidence evidence2 = new Evidence(0, projects.get(1).getId(), "Test2", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "b c");
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+        List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        List<String> skills = (List<String>) evidenceService.getSkillsFromEvidence(evidenceList);
+        List<String> expectedSkills = new ArrayList<>();
+        expectedSkills.add("a");
+        expectedSkills.add("b");
+        expectedSkills.add("c");
+        assertEquals(expectedSkills, skills);
+        evidenceService.deleteById(evidence2.getId());
+        evidenceList = evidenceService.getEvidenceForPortfolio(0, projects.get(1).getId());
+        skills = (List<String>) evidenceService.getSkillsFromEvidence(evidenceList);
+        expectedSkills.remove("c");
+        assertEquals(expectedSkills, skills);
     }
 
     //When skills are added, test that they split up as expected.

@@ -109,17 +109,6 @@ public class EvidenceService {
     }
 
     /**
-     *
-     * @param evidence
-     */
-    public void deleteEvidence(Evidence evidence) {
-
-        deleteById(evidence.getId());
-        String message = "Deleted evidence: " + evidence.getId();
-        PORTFOLIO_LOGGER.info(message);
-    }
-
-    /**
      * Gets all skills from a list of evidence. Each skill returned is unique.
      * @param evidenceList A list of evidence to retrieve skills from.
      * @return All the skills for that list of evidence.
@@ -139,7 +128,17 @@ public class EvidenceService {
      * @param id The ID of the evidence to delete
      */
     public void deleteById(int id) {
-        repository.deleteById(id);
+        Evidence evidence;
+        try {
+            evidence = getEvidenceById(id);
+            repository.deleteById(id);
+            String message = "Deleted evidence: " + evidence.getId();
+            PORTFOLIO_LOGGER.info(message);
+        } catch(NoSuchElementException exception) {
+            String message = "Evidence " + id + " not found";
+            PORTFOLIO_LOGGER.error(message);
+            throw new IllegalArgumentException(message);
+        }
     }
 
     /**
