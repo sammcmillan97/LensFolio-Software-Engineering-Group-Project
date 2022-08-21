@@ -178,14 +178,13 @@ public class AddEvidenceController {
 
     /**
      * A method which deletes the evidence based on its id.
-     * @param principal is the authentication principal storing the current users' information.
      * @return the portfolio page of the user
      */
     @DeleteMapping(value = "/addEvidence-{evidenceId}")
     public String deleteEvidenceById(
-            @AuthenticationPrincipal AuthState principal,
             @PathVariable(name="evidenceId") String evidenceId) {
-        evidenceService.deleteById(Integer.parseInt(evidenceId));
+        int id = Integer.parseInt(evidenceId);
+        evidenceService.deleteById(id);
         return PORTFOLIO_REDIRECT;
     }
 }
