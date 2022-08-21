@@ -85,6 +85,10 @@ html {
     background-color: transparent;
 }
 
+.evidence-title--icon_container:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+}
+
 .evidence-title--icon {
     font-size: 25px;
 }
