@@ -889,27 +889,28 @@ class EvidenceServiceTests {
 
     @Test
     @Transactional
-    void whenEvidenceCopiedToMultipleUsers_testGetUserIdFromEvidence() {
+    void whenEvidenceCopiedToMultipleUsers_testGetUserIdFromEachCopiedEvidence() {
         int testUserId0 = 0;
         int testUserId1 = 1;
         int testUserId2 = 2;
         int testUserId3 = 3;
-        Set<Integer> userId = new HashSet<>();
-        userId.add(testUserId0);
-        userId.add(testUserId1);
-        userId.add(testUserId2);
-        userId.add(testUserId3);
+        Set<Integer> userIdSet = new HashSet<>();
+        userIdSet.add(testUserId0);
+        userIdSet.add(testUserId1);
+        userIdSet.add(testUserId2);
+        userIdSet.add(testUserId3);
 
         Evidence evidence = new Evidence(testUserId0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
         evidenceService.saveEvidence(evidence);
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1));
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
-        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId3));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1, testUserId2, testUserId3));
 
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(4, evidenceList.size());
         assertThat(evidenceList.get(0).getId()).isNotIn(evidenceList.get(1).getId(), evidenceList.get(2).getId(), evidenceList.get(3).getId());
-        assertEquals(userId, evidenceRepository.findById(evidence.getId()).getUsers());
+        assertEquals(userIdSet, evidenceRepository.findById(evidence.getId()).getUsers());
+        assertEquals(userIdSet, evidenceList.get(1).getUsers());
+        assertEquals(userIdSet, evidenceList.get(2).getUsers());
+        assertEquals(userIdSet, evidenceList.get(3).getUsers());
     }
 
     @Test

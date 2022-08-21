@@ -121,6 +121,9 @@ public class EvidenceService {
             Evidence evidence = getEvidenceById(evidenceId);
             String skillList = String.join(" ", evidence.getSkills());
             Set<Categories> categoriesSet = new HashSet<>(evidence.getCategories());
+            for (Integer id: userIdList) {
+                evidence.addUser(id);
+            }
 
             for (Integer userId: userIdList) {
                 Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
@@ -129,7 +132,9 @@ public class EvidenceService {
                 for (WebLink webLink : evidence.getWebLinks()) {
                     copiedEvidence.addWebLink(webLink);
                 }
-                evidence.addUser(userId);
+                for (Integer user: evidence.getUsers()) {
+                    copiedEvidence.addUser(user);
+                }
                 // This is to make sure that there are no duplicate skills in the other user's portfolio
                 List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
                 copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
