@@ -9,9 +9,14 @@
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
             <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
         </div>
-        <div th:if="${owner}" class="evidence-title__buttons">
+        <div th:if="${owner}" class="evidence-title-div__buttons">
             <a class="evidence-title--icon_container">
                 <em class="bi bi-trash evidence-title--icon"></em>
+            </a>
+        </div>
+        <div th:if="${owner}" class="evidence-title-div__buttons">
+            <a class="evidence-title--icon_container">
+                <em class="bi bi-pencil-square evidence-title--icon"></em>
             </a>
         </div>
 

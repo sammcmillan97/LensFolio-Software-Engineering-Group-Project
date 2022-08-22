@@ -68,15 +68,17 @@ html {
 
  /** Evidence trash and settings buttons */
 
-.evidence-title__buttons {
+.evidence-title-div__buttons {
+    display: inline;
     float: right;
     font-size: 15px;
     width: 100px;
-    padding-top: 25px;
-    padding-left: 50px;
+    padding: 25px 10px 25px 10px;
+    margin: 0 -20px 0 0;
 }
 
 .evidence-title--icon_container {
+    display: inline;
     width: 100%;
     color: black;
     padding: 20px 20px 10px 20px;
