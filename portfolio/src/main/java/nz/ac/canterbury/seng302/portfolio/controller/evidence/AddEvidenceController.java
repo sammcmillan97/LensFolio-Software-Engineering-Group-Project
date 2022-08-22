@@ -135,7 +135,7 @@ public class AddEvidenceController {
         }
 
         int userId = user.getId();
-        evidenceService.updateEvidenceSkills(userId, projectId, "a A b c d a");
+        evidenceService.updateEvidenceSkills(userId, projectId, skillsToChange);
         Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
         evidence.setTitle(title);
         evidence.setDescription(description);

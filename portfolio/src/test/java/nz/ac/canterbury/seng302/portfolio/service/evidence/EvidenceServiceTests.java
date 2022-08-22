@@ -930,7 +930,8 @@ class EvidenceServiceTests {
     @Test
     void whenEvidenceDoesNotExist_testCopyToAnotherUserPortfolioThrowsError() {
         int testUserId = 0;
-        assertThrows(NoSuchElementException.class, () -> evidenceService.copyEvidenceToNewUser(0, List.of(testUserId)),
+        List<Integer> userIdList = List.of(testUserId);
+        assertThrows(NoSuchElementException.class, () -> evidenceService.copyEvidenceToNewUser(0, userIdList),
                 "Evidence does not exist");
         List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
         assertEquals(0, evidenceList.size());
@@ -994,6 +995,18 @@ class EvidenceServiceTests {
         List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(testUser1, projects.get(1).getId());
         assertEquals(3, evidenceList.size());
         assertEquals(1, evidenceService.getSkillsFromEvidence(allUsersEvidenceList).size());
+    }
+
+    @Test
+    @Transactional
+    void givenMultipleEvidencesExistsWithSkills_testChangeOneSkill(){
+        Evidence evidence = new Evidence(1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 skill_3");
+        Evidence evidence1 = new Evidence(1, projects.get(1).getId(), "Evidence Two", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 skill4");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.updateEvidenceSkills(1, projects.get(1).getId(), "skill1 skill_1");
+        assertEquals("Evidence One", evidenceService.retrieveEvidenceBySkill("skill_1", projects.get(1).getId()).get(0).getTitle());
+        assertEquals("Evidence Two", evidenceService.retrieveEvidenceBySkill("skill_1", projects.get(1).getId()).get(1).getTitle());
     }
 
 }
