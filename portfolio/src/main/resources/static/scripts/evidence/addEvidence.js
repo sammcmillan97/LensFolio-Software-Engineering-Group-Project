@@ -190,13 +190,15 @@ function updateUserTagsInDOM(tags) {
         for (user of ALL_USERS) {
             if (tag === user.id) {
                 let element = createElementFromHTML(`
-                            <div class="skill-tag-con">
-                              <div class="skill-tag">
-                                <div class="skill-tag-inside">
-                                  <img class="member-image" src=${user.profilePicture} alt="Profile Photo">
-                                  <p>${sanitizeHTML(user.fullName)}</p>
-                                  <p>${sanitizeHTML(user.username)}</p>
-                                  <i class="bi bi-x" onclick="clickSkillXButton('${sanitizeHTML(tag)}')"></i>
+                            <div class="user-tag-con">
+                              <div class="user-tag">
+                                <div class="user-tag-inside">
+                                  <img class="user-tag-image" src=${user.profilePicture} alt="Profile Photo">
+                                  <div class="user-tag-text" >
+                                      <p class="user-tag-fullName">${sanitizeHTML(user.fullName)}</p>
+                                      <p class="user-tag-nickname"> ${sanitizeHTML(user.username)}</p>
+                                  </div>
+                                  <i class="bi bi-x" onclick="clickUserXButton('${sanitizeHTML(tag)}')"></i>
                                 </div>
                               </div>
                             </div>`)
@@ -392,4 +394,3 @@ document.getElementById("users-input").dispatchEvent(new Event('input', {
     cancelable: true,
 }))
 
-console.log("Hi luke")

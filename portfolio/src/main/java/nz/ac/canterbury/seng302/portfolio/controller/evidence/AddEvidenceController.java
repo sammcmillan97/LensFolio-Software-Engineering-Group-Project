@@ -109,9 +109,9 @@ public class AddEvidenceController {
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
+            @RequestParam(name="evidenceUsers") String users,
             Model model
     ) {
-
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
