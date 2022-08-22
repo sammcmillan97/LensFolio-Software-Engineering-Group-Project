@@ -191,6 +191,69 @@ class UserAccountClientServiceTests {
         }
     }
 
+    @Test
+    void whenEmptyStringGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("");
+        assertEquals(0, result.size());
+    }
 
+    @Test
+    void whenStringWithSpacesGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("  ");
+        assertEquals(0, result.size());
+    }
 
+    @Test
+    void whenStringWithOneStringGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("Hello");
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void whenStringWithMultipleStringsGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("Hello my name is Inigo Montoya");
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void whenStringWithOneIntegerGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1");
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void whenStringWithMultipleIntegersGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1 2 3 4 5");
+        assertEquals(5, result.size());
+    }
+
+    @Test
+    void whenStringWithIntegersThenStringsGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1 2 3 4 I declare a thumb war");
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    void whenStringWithIntegersAndStringsGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1 fish 2 fish red fish blue fish");
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void whenStringWithFloatGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1.5");
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void whenStringWithMultipleFloatsGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1.5 4.2 6.5 6.0");
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void whenStringWithRepeatIntegersGiven_testGetUserIdListFromString() {
+        List<Integer> result = userAccountClientService.getUserIdListFromString("1 2 1 2 3 4 4 3");
+        assertEquals(4, result.size());
+    }
 }

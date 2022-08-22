@@ -55,9 +55,6 @@ public class DevTools {
             onlyAdmin.addRole(UserRole.COURSE_ADMINISTRATOR);
             onlyAdmin.removeRole(UserRole.STUDENT);
             userRepository.save(onlyAdmin);
-            for (int i = 0; i < 100; i++) {
-                userRepository.save(new User("abc123" + i,"Michelle", "Harriet", "Dessler", "Shelly", "hi", "he/him", "shelly@gmail.com", "Password123!"));
-            }
             IDENTITY_LOGGER.info("Example users added");
             return "<html><head><style>td{vertical-align:top;border:solid 1px #A82810;}</style>"
                     + "</head><body><h2>Identity Provider - Users Added</h2></body></html>";

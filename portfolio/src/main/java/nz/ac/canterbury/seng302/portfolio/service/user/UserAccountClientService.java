@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserAccountClientService {
@@ -284,6 +281,28 @@ public class UserAccountClientService {
 
     protected boolean isAdminHandler(Collection<UserRole> roles){
         return roles.contains(UserRole.COURSE_ADMINISTRATOR);
+    }
+
+    /**
+     * Takes a list of user ids in a space separated string and returns a list of integers
+     * @param idString a space separated string of integers
+     * @return a list of user id integers
+     */
+    public List<Integer> getUserIdListFromString(String idString) {
+        // Split the string where it has any spaces
+        List<String> stringIdList = List.of(idString.split(" "));
+
+        // Try to convert the strings into integers
+        Set<Integer> userIds = new HashSet<>();
+        for (String stringId : stringIdList) {
+            try {
+                userIds.add(Integer.parseInt(stringId));
+            } catch (NumberFormatException e) {
+                String errorMessage = "Could not parse " + stringId + " to an integer";
+                PORTFOLIO_LOGGER.error(errorMessage);
+            }
+        }
+        return new ArrayList<>(userIds);
     }
 
     /**
