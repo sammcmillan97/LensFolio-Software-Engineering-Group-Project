@@ -106,13 +106,13 @@ public class AddEvidenceController {
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
-            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQuantitative", required = false) String isQuantitative,
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
+            @RequestParam(name="skillsToChange") String skillsToChange,
             Model model
     ) {
-
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
@@ -138,7 +138,8 @@ public class AddEvidenceController {
         if(isService != null) {
             categories.add(Categories.Service);
         }
-        int userId = userService.getUserId(principal);
+        int userId = user.getId();
+        evidenceService.updateEvidenceSkills(userId, projectId, "a A b c d a");
         Evidence evidence = new Evidence(userId, projectId, title, description, date, skills);
         evidence.setCategories(categories);
         try {

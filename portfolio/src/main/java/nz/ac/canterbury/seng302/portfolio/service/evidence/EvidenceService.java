@@ -27,6 +27,36 @@ public class EvidenceService {
     private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
+     * Updates a user's evidence with new skills.
+     * Skills are space separated in order, i.e. old new old2 new2 old3 new3 ...
+     *
+     * @param userId The user of this portfolio
+     * @param projectId The project for this portfolio
+     * @param skillsToChange A string in form 'old new old2 new2 old3 new3' stating skills to change
+     */
+    public void updateEvidenceSkills(int userId, int projectId, String skillsToChange) {
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
+        List<String> skills = getSkillsFromEvidence(evidenceList);
+        List<String> skillsList = new ArrayList<>(Arrays.asList(skillsToChange.split("\\s+")));
+        List<List<String>> skillChanges = new ArrayList<>();
+        for (int i = 1; i < skillsList.size(); i += 2) {
+            String old = skillsList.get(i - 1);
+            String changed = skillsList.get(i);
+            List<String> skillPair = new ArrayList<>();
+            skillPair.add(old);
+            skillPair.add(changed);
+            skillChanges.add(skillPair);
+            if (old.equalsIgnoreCase(changed) && skills.contains(old)) {
+                skills.set(skills.indexOf(old), changed);
+            }
+        }
+        for (Evidence evidence : evidenceList) {
+            evidence.changeSkills(skillChanges);
+            evidence.conformSkills(skills);
+        }
+    }
+
+    /**
      * Get list of all pieces of evidence for a specific portfolio.
      * Portfolios can be identified by a user and project.
      * @param userId The user of this portfolio
@@ -154,8 +184,8 @@ public class EvidenceService {
      * @param evidenceList A list of evidence to retrieve skills from.
      * @return All the skills for that list of evidence.
      */
-    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
-        Collection<String> skills = new HashSet<>();
+    public List<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Set<String> skills = new HashSet<>();
         for (Evidence userEvidence : evidenceList) {
             skills.addAll(userEvidence.getSkills());
         }
