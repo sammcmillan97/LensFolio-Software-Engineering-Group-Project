@@ -35,6 +35,9 @@ public class EvidenceService {
      * @param skillsToChange A string in form 'old new old2 new2 old3 new3' stating skills to change
      */
     public void updateEvidenceSkills(int userId, int projectId, String skillsToChange) {
+        if (Objects.equals(skillsToChange, "")) {
+            return; // No need to update skills if there are none to change.
+        }
         List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         List<String> skills = getSkillsFromEvidence(evidenceList);
         List<String> skillsList = new ArrayList<>(Arrays.asList(skillsToChange.split("\\s+")));
