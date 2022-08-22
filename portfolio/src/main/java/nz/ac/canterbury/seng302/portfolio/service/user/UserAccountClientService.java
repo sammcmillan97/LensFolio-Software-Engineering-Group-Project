@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng302.portfolio.service.user;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -56,6 +57,58 @@ public class UserAccountClientService {
                 .build();
         PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
         return new UserListResponse(response);
+    }
+
+    /**
+     * Uses a dummy request to fetch the number of users in the database, then performs a
+     * request to fetch all of the users in the database.
+     * Results are sorted by userId in ascending order.
+     * @return A list of paginated, sorted and ordered user responses
+     */
+    public UserListResponse getAllUsers() {
+        // Set variables for sort order and offset/limit
+        int offset = 0;
+        int limit = 0;
+        String orderBy = "userId";
+        boolean isAscending = true;
+
+        // Send a request to find out how many users are in the database
+        GetPaginatedUsersRequest infoPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy(orderBy)
+                .setIsAscendingOrder(isAscending)
+                .build();
+
+        PaginatedUsersResponse tempResponse = userStub.getPaginatedUsers(infoPaginatedUsersRequest);
+
+        // Make the limit the number of users in the database and then fetch all users.
+        limit = tempResponse.getResultSetSize();
+        GetPaginatedUsersRequest getPaginatedUsersRequest = GetPaginatedUsersRequest.newBuilder()
+                .setOffset(offset)
+                .setLimit(limit)
+                .setOrderBy(orderBy)
+                .setIsAscendingOrder(isAscending)
+                .build();
+        PaginatedUsersResponse response = userStub.getPaginatedUsers(getPaginatedUsersRequest);
+        return new UserListResponse(response);
+    }
+
+    /**
+     * Fetches all users from the idp then filters them to a list of users without the given id.
+     * Used for autofill on the create evidence page because you shouldn't be able to add yourself to a piece of evidence
+     * @param userId The user id that isn't wanted
+     * @return a list of all users with a different user id to the one given
+     */
+    public List<User> getAllUsersExcept(int userId) {
+        UserListResponse userListResponse = getAllUsers();
+        List<User> users = new ArrayList<>();
+        for (User user : userListResponse.getUsers()) {
+            if (userId != user.getId()) {
+                users.add(user);
+            }
+        }
+        return users;
     }
 
     /**
@@ -231,6 +284,25 @@ public class UserAccountClientService {
 
     protected boolean isAdminHandler(Collection<UserRole> roles){
         return roles.contains(UserRole.COURSE_ADMINISTRATOR);
+    }
+
+    /**
+     * Only for mocking purposes
+     * Updates the current stub with a new one
+     * @param newStub the new (mocked) GroupsServiceBlockingStub
+     */
+    @VisibleForTesting
+    protected void setUserStub(UserAccountServiceGrpc.UserAccountServiceBlockingStub newStub) {
+        userStub = newStub;
+    }
+
+    /**
+     * Only for mocking purposes
+     * @return the current groups stub
+     */
+    @VisibleForTesting
+    protected UserAccountServiceGrpc.UserAccountServiceBlockingStub getUserStub() {
+        return userStub;
     }
 
 }

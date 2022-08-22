@@ -1,10 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.service.project;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
-import nz.ac.canterbury.seng302.portfolio.repository.projcet.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.project.ProjectRepository;
 import nz.ac.canterbury.seng302.portfolio.model.project.Sprint;
-import nz.ac.canterbury.seng302.portfolio.repository.projcet.SprintRepository;
-import nz.ac.canterbury.seng302.portfolio.service.project.SprintService;
+import nz.ac.canterbury.seng302.portfolio.repository.project.SprintRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
