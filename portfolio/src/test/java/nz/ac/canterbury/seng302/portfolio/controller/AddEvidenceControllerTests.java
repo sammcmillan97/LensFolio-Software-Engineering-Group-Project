@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.controller.evidence.AddEvidenceController;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
@@ -22,7 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -93,7 +96,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
 
-        mockMvc.perform(get("/addEvidence"))
+        mockMvc.perform(get("/editEvidence--1"))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -109,7 +112,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
@@ -130,7 +133,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
@@ -149,7 +152,7 @@ class AddEvidenceControllerTests {
         Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
         Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
-        mockMvc.perform(post("/addEvidence")
+        mockMvc.perform(post("/editEvidence--1")
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "bad date")
@@ -158,6 +161,97 @@ class AddEvidenceControllerTests {
                 .andExpect(redirectedUrl(null));
     }
 
+    // Check that trying to edit evidence with a mangled evidence id fails.
+    @Test
+    void whenEditEvidenceWithBadEvidence_testReturnsPortfolio() throws Exception {
+        AuthState validAuthState = setupSecurity();
+        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
+        Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
+        PortfolioUser user = new PortfolioUser(1, "name", true);
+        user.setCurrentProject(1);
+        Mockito.when(portfolioUserService.getUserById(1)).thenReturn(user);
+        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
 
+        mockMvc.perform(get("/editEvidence-bad"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/portfolio"));
+    }
+
+    // Check that trying to edit evidence with a nonexistent evidence id fails.
+    @Test
+    void whenEditEvidenceWithNonexistentEvidence_testReturnsPortfolio() throws Exception {
+        AuthState validAuthState = setupSecurity();
+        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
+        Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
+        PortfolioUser user = new PortfolioUser(1, "name", true);
+        user.setCurrentProject(1);
+        Mockito.when(portfolioUserService.getUserById(1)).thenReturn(user);
+        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
+        // This line is what makes the evidence not exist
+        Mockito.when(evidenceService.getEvidenceById(1)).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/editEvidence-1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/portfolio"));
+    }
+
+    // Check that trying to edit evidence with a real evidence but the wrong user fails.
+    @Test
+    void whenEditEvidenceWithRealEvidenceButWrongUser_testReturnsPortfolio() throws Exception {
+        AuthState validAuthState = setupSecurity();
+        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
+        Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
+        PortfolioUser user = new PortfolioUser(1, "name", true);
+        user.setCurrentProject(1);
+        Mockito.when(portfolioUserService.getUserById(1)).thenReturn(user);
+        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
+        // This line is what makes the evidence exist
+        Mockito.when(evidenceService.getEvidenceById(1)).thenReturn(new Evidence(2, 1, "test", "test", new Date()));
+
+        mockMvc.perform(get("/editEvidence-1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/portfolio"));
+    }
+
+    // Check that trying to edit evidence with a real evidence succeeds.
+    @Test
+    void whenEditEvidenceWithRealEvidence_testReturnsEditEvidence() throws Exception {
+        AuthState validAuthState = setupSecurity();
+        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
+        Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
+        PortfolioUser user = new PortfolioUser(1, "name", true);
+        user.setCurrentProject(1);
+        Mockito.when(portfolioUserService.getUserById(1)).thenReturn(user);
+        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+        Mockito.when(projectService.getProjectById(any(Integer.class))).thenReturn(new Project());
+        // This line is what makes the evidence exist
+        Mockito.when(evidenceService.getEvidenceById(1)).thenReturn(new Evidence(1, 1, "test", "test", new Date()));
+
+        mockMvc.perform(get("/editEvidence-1"))
+                .andExpect(status().isOk())
+                .andExpect(redirectedUrl(null));
+    }
+
+    // Check that trying to edit evidence with a project that does not exist fails.
+    @Test
+    void whenAddEvidenceWithNoProject_testReturnsPortfolio() throws Exception {
+        AuthState validAuthState = setupSecurity();
+        Mockito.when(userService.getUserAccountByPrincipal(validAuthState)).thenReturn(new User(UserResponse.newBuilder().setId(1).build()));
+        Mockito.when(userService.getUserId(validAuthState)).thenReturn(1);
+        Mockito.when(portfolioUserService.getUserById(1)).thenReturn(new PortfolioUser(1, "name", true));
+        Mockito.when(globalControllerAdvice.getCurrentProject(validAuthState)).thenReturn(new Project());
+        Mockito.when(globalControllerAdvice.getAllProjects()).thenReturn(List.of(new Project()));
+
+        mockMvc.perform(get("/editEvidence-1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/portfolio"));
+    }
 
 }

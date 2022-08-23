@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng302.portfolio.repository.projcet;
+package nz.ac.canterbury.seng302.portfolio.repository.project;
 
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Deadline;

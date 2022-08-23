@@ -1,7 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service.project;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Milestone;
-import nz.ac.canterbury.seng302.portfolio.repository.projcet.MilestoneRepository;
+import nz.ac.canterbury.seng302.portfolio.repository.project.MilestoneRepository;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

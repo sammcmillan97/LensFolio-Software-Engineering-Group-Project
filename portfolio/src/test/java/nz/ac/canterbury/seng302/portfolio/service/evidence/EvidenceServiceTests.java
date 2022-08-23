@@ -1,11 +1,8 @@
 package nz.ac.canterbury.seng302.portfolio.service.evidence;
 
-import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
-import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
-import nz.ac.canterbury.seng302.portfolio.model.evidence.WebLink;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.*;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.repository.evidence.EvidenceRepository;
-import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.*;
+import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase
@@ -853,6 +852,148 @@ class EvidenceServiceTests {
         assertEquals("Evidence Two", searchResults.get(0).getTitle());
         assertEquals("Evidence One", searchResults.get(1).getTitle());
         assertEquals("Evidence Three", searchResults.get(2).getTitle());
+    }
+
+    ////////////////////////////////////////////////
+    ///COPY EVIDENCE TO ANOTHER USER'S PORTFOLIO////
+    ////////////////////////////////////////////////
+
+    @Test
+    @Transactional
+    void whenEvidenceExists_testCopyToAnotherUserPortfolio() {
+        int testUserId1 = 0;
+        int testUserId2 = 1;
+        Evidence evidence = new Evidence(testUserId1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertNotEquals(evidenceList.get(0).getOwnerId(), evidenceList.get(1).getOwnerId());
+        assertEquals(evidenceList.get(0).getTitle(), evidenceList.get(1).getTitle());
+        assertEquals(evidenceList.get(0).getDescription(), evidenceList.get(1).getDescription());
+        assertEquals(evidenceList.get(0).getDate(), evidenceList.get(1).getDate());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithSkillsAndCategories_testCopyToAnotherUserPortfolio() {
+        int testUserId1 = 0;
+        int testUserId2 = 1;
+        Evidence evidence = new Evidence(testUserId1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill_2 {skill}");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        categoriesSet.add(Categories.Qualitative);
+        evidence.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertEquals("skill1 skill_2 {skill}", String.join(" ", evidenceList.get(1).getSkills()));
+        assertEquals(evidenceList.get(0).getCategories(), evidenceList.get(1).getCategories());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithSkillsAndCategories_testCopyToMultipleUserPortfolio() {
+        int testUserId0 = 0;
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        int testUserId3 = 3;
+
+        Evidence evidence = new Evidence(testUserId0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}");
+        Set<Categories> categoriesSet = new HashSet<>();
+        categoriesSet.add(Categories.Quantitative);
+        categoriesSet.add(Categories.Qualitative);
+        evidence.setCategories(categoriesSet);
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId2));
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId3));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        Evidence evidence0 = evidenceList.get(0);
+        Evidence evidence1 = evidenceList.get(1);
+        Evidence evidence2 = evidenceList.get(2);
+        Evidence evidence3 = evidenceList.get(3);
+
+        assertEquals(4, evidenceList.size());
+        assertThat(evidence0.getId()).isNotIn(evidence1.getId(), evidence2.getId(), evidence3.getId());
+        assertThat(evidenceList.get(0).getTitle()).isIn(evidenceList.get(1).getTitle(), evidenceList.get(2).getTitle(), evidenceList.get(3).getTitle());
+        Stream.of(evidence1, evidence2, evidence3).forEach(evidenceSkill -> assertEquals("skill1 skill_2 {skill}", String.join(" ", evidenceSkill.getSkills())));
+        Stream.of(evidence1, evidence2, evidence3).forEach(evidenceCategory -> assertEquals(evidence0.getCategories(), evidenceCategory.getCategories()));
+    }
+
+    @Test
+    void whenEvidenceDoesNotExist_testCopyToAnotherUserPortfolioThrowsError() {
+        int testUserId = 0;
+        assertThrows(NoSuchElementException.class, () -> evidenceService.copyEvidenceToNewUser(0, List.of(testUserId)),
+                "Evidence does not exist");
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(0, evidenceList.size());
+
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceCopiedToMultipleUsers_testGetUserIdFromEachCopiedEvidence() {
+        int testUserId0 = 0;
+        int testUserId1 = 1;
+        int testUserId2 = 2;
+        int testUserId3 = 3;
+        Set<Integer> userIdSet = new HashSet<>();
+        userIdSet.add(testUserId0);
+        userIdSet.add(testUserId1);
+        userIdSet.add(testUserId2);
+        userIdSet.add(testUserId3);
+
+        Evidence evidence = new Evidence(testUserId0, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-12"), "skill1 skill_2 {skill}  a     b  ");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.copyEvidenceToNewUser(evidence.getId(), List.of(testUserId1, testUserId2, testUserId3));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(4, evidenceList.size());
+        assertThat(evidenceList.get(0).getId()).isNotIn(evidenceList.get(1).getId(), evidenceList.get(2).getId(), evidenceList.get(3).getId());
+        assertEquals(userIdSet, evidenceRepository.findById(evidence.getId()).getUsers());
+        assertEquals(userIdSet, evidenceList.get(1).getUsers());
+        assertEquals(userIdSet, evidenceList.get(2).getUsers());
+        assertEquals(userIdSet, evidenceList.get(3).getUsers());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithWeblinks_testCopyToAnotherUserPortfolio() {
+        int testUser0 = 0;
+        int testUser1 = 1;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), List.of(testUser1));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        assertEquals(2, evidenceList.size());
+        assertNotEquals(evidenceList.get(0).getId(), evidenceList.get(1).getId());
+        assertEquals("My web link", evidenceList.get(1).getWebLinks().get(0).getName());
+    }
+
+    @Test
+    @Transactional
+    void whenOtherUserAlreadyHasSkills_testCopiedEvidenceConformSkills() {
+        int testUser0 = 0;
+        int testUser1 = 1;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skills");
+        Evidence evidence2 = new Evidence(testUser1, projects.get(1).getId(), "One", TEST_DESCRIPTION, Date.valueOf("2022-05-9"), "SKILLS");
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveEvidence(evidence2);
+        evidenceService.copyEvidenceToNewUser(evidence1.getId(), List.of(testUser1));
+
+        List<Evidence> evidenceList = (List<Evidence>) evidenceRepository.findAll();
+        List<Evidence> allUsersEvidenceList = evidenceService.getEvidenceForPortfolio(testUser1, projects.get(1).getId());
+        assertEquals(3, evidenceList.size());
+        assertEquals(1, evidenceService.getSkillsFromEvidence(allUsersEvidenceList).size());
     }
 
 }

@@ -15,6 +15,7 @@ public class Evidence {
     private int id;
     private int ownerId; // ID of the user who owns this evidence piece
     private int projectId; // ID of the project this evidence relates to
+
     private String title;
     @Column(columnDefinition = "LONGTEXT")
     private String description;
@@ -32,6 +33,8 @@ public class Evidence {
     private List<WebLink> webLinks;
     @ElementCollection
     private List<String> skills; //skills related to this piece of evidence
+    @Transient
+    private Set<Integer> users = new HashSet<>(Set.of(ownerId));
 
 
     public Evidence() {
@@ -99,6 +102,14 @@ public class Evidence {
 
     public void addSkill (String skill) {this.skills.add(skill);}
 
+    public Set<Integer> getUsers() {
+        return users;
+    }
+
+    public void addUser(Integer userId) {
+        this.users.add(userId);
+    }
+
     /**
      * Forces skills to conform to a list of master skills.
      * If capitalization differs between a skill in this evidence and the master skills,
@@ -128,6 +139,32 @@ public class Evidence {
         List<Categories> sortedCategories = new ArrayList<>(categories);
         Collections.sort(sortedCategories);
         return sortedCategories;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * Sets the skills from a list. The list should be separated by spaces.
+     * @param skills The skills to set
+     */
+    public void setSkills(String skills) {
+        this.skills = new ArrayList<>(Arrays.asList(skills.split("\\s+")));
+        // If the entered string is "" or has leading spaces, the regex adds an empty element at the start of the skill list
+        // which should not happen.
+        if (Objects.equals(this.skills.get(0), "")) {
+            this.skills.remove(0);
+        }
+        this.skills = this.skills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void setCategories(Set<Categories> categories) {

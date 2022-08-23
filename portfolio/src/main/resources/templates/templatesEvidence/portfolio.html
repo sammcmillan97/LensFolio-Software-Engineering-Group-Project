@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="container">
-        <a th:if="${owner}" class="add-evidence__button" th:href="@{addEvidence}">Add Evidence</a>
+        <a th:if="${owner}" class="add-evidence__button" th:href="@{editEvidence-{evidenceId}(evidenceId=-1)}">Add Evidence</a>
         <a class="btn-fill-tertiary" th:href="@{${owner} ? 'profile' : 'profile-' + ${pageUser.id}}">Profile</a>
         <div class="row">
             <div class="col-lg-8">

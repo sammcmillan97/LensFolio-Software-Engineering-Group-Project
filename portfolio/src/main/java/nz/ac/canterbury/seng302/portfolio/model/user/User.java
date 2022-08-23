@@ -108,6 +108,7 @@ public class User {
         return roles;
     }
 
+
     /**
      * Gets roles in string form. Useful for display on the website.
      * Each role is split into capitalised words.
