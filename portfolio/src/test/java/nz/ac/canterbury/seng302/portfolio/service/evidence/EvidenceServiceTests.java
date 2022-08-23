@@ -1012,7 +1012,7 @@ class EvidenceServiceTests {
         assertEquals(0, badEvidenceList.size());
     }
 
-    // Test skills can be chnaged to the same skill but capitalized
+    // Test skills can be changed to the same skill but capitalized
     @Test
     @Transactional
     void givenEvidenceExistsWithSkills_testChangeSkillCapitalization(){
@@ -1051,18 +1051,41 @@ class EvidenceServiceTests {
         assertTrue(skills.contains("skill1"));
     }
 
-    // If skills are swapped, the intended? behavior is that the capitalization of the original skill is kept
+    // If a skill is changed to an existing skill, check that it is not changed.
     @Test
     @Transactional
-    void givenEvidenceExistsWithSkills_testSwapSkills(){
+    void givenEvidenceExistsWithSkills_testChangeSkillToExistingSkill(){
         Evidence evidence = new Evidence(1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill2");
         evidenceService.saveEvidence(evidence);
-        evidenceService.updateEvidenceSkills(1, projects.get(1).getId(), "skill1 SKILL2 skill2 Skill1");
+        evidenceService.updateEvidenceSkills(1, projects.get(1).getId(), "skill1 SKILL2");
         List<Evidence> evidenceList = evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId());
         List<String> skills = evidenceList.get(0).getSkills();
         System.out.println(skills);
         assertTrue(skills.contains("skill1"));
         assertTrue(skills.contains("skill2"));
+    }
+
+    // If a skill is changed that does not exist, check the rest of the app functions properly.
+    @Test
+    @Transactional
+    void givenEvidenceExistsWithSkills_testChangeNonexistentSkill(){
+        Evidence evidence = new Evidence(1, projects.get(1).getId(), "Evidence One", TEST_DESCRIPTION, Date.valueOf("2022-05-14"), "skill1 skill2");
+        evidenceService.saveEvidence(evidence);
+        evidenceService.updateEvidenceSkills(1, projects.get(1).getId(), "non-existent_skill another_non-existent_skill");
+        List<Evidence> evidenceList = evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId());
+        List<String> skills = evidenceList.get(0).getSkills();
+        System.out.println(skills);
+        assertTrue(skills.contains("skill1"));
+        assertTrue(skills.contains("skill2"));
+    }
+
+    // If a skill is changed and no evidence exists, check that nothing breaks.
+    @Test
+    @Transactional
+    void givenEvidenceExistsWithSkills_testChangeSkillWithoutEvidence(){
+        evidenceService.updateEvidenceSkills(1, projects.get(1).getId(), "skill1 skill2");
+        List<Evidence> evidenceList = evidenceService.retrieveEvidenceBySkill("skill1", projects.get(1).getId());
+        assertEquals(0, evidenceList.size());
     }
 
 }

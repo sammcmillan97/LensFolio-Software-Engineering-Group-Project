@@ -40,22 +40,24 @@ public class EvidenceService {
         }
         List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
         List<String> skills = getSkillsFromEvidence(evidenceList);
+        for (int i = 0; i < skills.size(); i += 1) {
+            skills.set(i, skills.get(i).toLowerCase());
+        }
         List<String> skillsList = new ArrayList<>(Arrays.asList(skillsToChange.split("\\s+")));
         List<List<String>> skillChanges = new ArrayList<>();
         for (int i = 1; i < skillsList.size(); i += 2) {
             String old = skillsList.get(i - 1);
             String changed = skillsList.get(i);
-            List<String> skillPair = new ArrayList<>();
-            skillPair.add(old);
-            skillPair.add(changed);
-            skillChanges.add(skillPair);
-            if (old.equalsIgnoreCase(changed) && skills.contains(old)) {
-                skills.set(skills.indexOf(old), changed);
+            // Either a skill is having its capitalization changed, or the changed skill should not already be a skill
+            if (old.equalsIgnoreCase(changed) || !skills.contains(changed.toLowerCase())) {
+                List<String> skillPair = new ArrayList<>();
+                skillPair.add(old);
+                skillPair.add(changed);
+                skillChanges.add(skillPair);
             }
         }
         for (Evidence evidence : evidenceList) {
             evidence.changeSkills(skillChanges);
-            evidence.conformSkills(skills);
         }
     }
 
