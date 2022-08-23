@@ -2,9 +2,7 @@ package nz.ac.canterbury.seng302.portfolio.service.project;
 
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.project.Sprint;
-import nz.ac.canterbury.seng302.portfolio.repository.projcet.SprintRepository;
-import nz.ac.canterbury.seng302.portfolio.service.project.ProjectEditsService;
-import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.repository.project.SprintRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

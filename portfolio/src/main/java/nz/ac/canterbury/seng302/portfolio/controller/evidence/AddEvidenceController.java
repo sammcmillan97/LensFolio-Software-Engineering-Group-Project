@@ -5,9 +5,8 @@ import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
-import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.user.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -220,6 +216,18 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+    }
+
+    /**
+     * A method which deletes the evidence based on its id.
+     * @return the portfolio page of the user
+     */
+    @DeleteMapping(value = "/addEvidence-{evidenceId}")
+    public String deleteEvidenceById(
+            @PathVariable(name="evidenceId") String evidenceId) {
+        int id = Integer.parseInt(evidenceId);
+        evidenceService.deleteById(id);
+        return PORTFOLIO_REDIRECT;
     }
 }
 
