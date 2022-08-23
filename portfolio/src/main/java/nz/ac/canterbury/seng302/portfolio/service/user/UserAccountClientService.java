@@ -11,11 +11,13 @@ import nz.ac.canterbury.seng302.shared.util.FileUploadStatus;
 import nz.ac.canterbury.seng302.shared.util.FileUploadStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Configuration
 public class UserAccountClientService {
 
     @GrpcClient("identity-provider-grpc-server")
