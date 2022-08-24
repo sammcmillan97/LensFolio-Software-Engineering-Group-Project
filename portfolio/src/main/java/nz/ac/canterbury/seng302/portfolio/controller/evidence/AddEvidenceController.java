@@ -5,17 +5,16 @@ import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
-import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.service.user.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,15 +43,18 @@ public class AddEvidenceController {
 
     private static final String TIMEFORMAT = "yyyy-MM-dd";
 
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
+
     /**
      * Display the add evidence page.
      * @param principal Authentication state of client
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The add evidence page.
      */
-    @GetMapping("/addEvidence")
+    @GetMapping("/editEvidence-{evidenceId}")
     public String addEvidence(
             @AuthenticationPrincipal AuthState principal,
+            @PathVariable("evidenceId") String evidenceId,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -66,27 +68,16 @@ public class AddEvidenceController {
         }
         Project project = projectService.getProjectById(projectId);
 
-        Evidence evidence;
-
-        Date evidenceDate;
-        Date currentDate = new Date();
-
-        List<String> categories = new ArrayList<>();
-        categories.add("Qualitative");
-        categories.add("Quantitative");
-        categories.add("Service");
-
-        if(currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
-            evidenceDate = currentDate;
-        } else {
-            evidenceDate = project.getStartDate();
+        try {
+            Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
+            addEvidenceToModel(model, projectId, userId, evidence);
+            model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
+            model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
+            model.addAttribute("evidenceId", Integer.parseInt(evidenceId));
+            return ADD_EVIDENCE;
+        } catch (IllegalArgumentException e) {
+            return PORTFOLIO_REDIRECT;
         }
-
-        evidence = new Evidence(userId, projectId, "", "", evidenceDate);
-        addEvidenceToModel(model, projectId, userId, evidence);
-        model.addAttribute("minEvidenceDate", Project.dateToString(project.getStartDate(), TIMEFORMAT));
-        model.addAttribute("maxEvidenceDate", Project.dateToString(project.getEndDate(), TIMEFORMAT));
-        return ADD_EVIDENCE;
     }
 
     /**
@@ -99,13 +90,14 @@ public class AddEvidenceController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return A redirect to the portfolio page, or staying on the add evidence page
      */
-    @PostMapping("/addEvidence")
+    @PostMapping("/editEvidence-{evidenceId}")
     public String saveEvidence(
             @AuthenticationPrincipal AuthState principal,
+            @PathVariable("evidenceId") String evidenceId,
             @RequestParam(name="evidenceTitle") String title,
             @RequestParam(name="evidenceDescription") String description,
             @RequestParam(name="evidenceDate") String dateString,
-            @RequestParam(name="isQuantitative", required = false)String isQuantitative,
+            @RequestParam(name="isQuantitative", required = false) String isQuantitative,
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
@@ -128,18 +120,24 @@ public class AddEvidenceController {
         }
 
         Set<Categories> categories = new HashSet<>();
-        if(isQuantitative != null) {
+        if (isQuantitative != null) {
             categories.add(Categories.Quantitative);
         }
-        if(isQualitative != null) {
+        if (isQualitative != null) {
             categories.add(Categories.Qualitative);
         }
-        if(isService != null) {
+        if (isService != null) {
             categories.add(Categories.Service);
         }
+
         int userId = userService.getUserId(principal);
-        Evidence evidence = new Evidence(userId, projectId, title, description, date, skills);
+        Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
+        evidence.setTitle(title);
+        evidence.setDescription(description);
+        evidence.setSkills(skills);
+        evidence.setDate(date);
         evidence.setCategories(categories);
+
         try {
             evidenceService.saveEvidence(evidence);
         } catch (IllegalArgumentException exception) {
@@ -161,6 +159,48 @@ public class AddEvidenceController {
     }
 
     /**
+     * Gets a piece of evidence based on an id in string form.
+     * If the id is valid, that evidence is returned. If it is -1, a new piece is returned.
+     * Else, an error is thrown.
+     * @param evidenceId The id of the evidence
+     * @param userId The id of the user who the evidence belongs to
+     * @param projectId The id of the project the evidence belongs to
+     * @return A piece of evidence
+     */
+    private Evidence getEvidenceById(String evidenceId, int userId, int projectId) {
+        try {
+            int id = Integer.parseInt(evidenceId);
+            if (id == -1) {
+                Date evidenceDate;
+                Date currentDate = new Date();
+                Project project = projectService.getProjectById(projectId);
+                if (currentDate.after(project.getStartDate()) && currentDate.before(project.getEndDate())) {
+                    evidenceDate = currentDate;
+                } else {
+                    evidenceDate = project.getStartDate();
+                }
+                return new Evidence(userId, projectId, "", "", evidenceDate);
+            } else {
+                Evidence evidence = evidenceService.getEvidenceById(id);
+                if (userId != evidence.getOwnerId()) {
+                    String errorMessage = "User " + userId + " tried to access evidence they did not own";
+                    PORTFOLIO_LOGGER.error(errorMessage);
+                    throw new IllegalArgumentException();
+                }
+                return evidence;
+            }
+        } catch (NumberFormatException e) {
+            String errorMessage = "Not a number id in add evidence get request: " + evidenceId;
+            PORTFOLIO_LOGGER.error(errorMessage);
+            throw new IllegalArgumentException();
+        } catch (NoSuchElementException e) {
+            String errorMessage = "Non-existent id in add evidence get request: " + evidenceId;
+            PORTFOLIO_LOGGER.error(errorMessage);
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
      * Adds helpful evidence related variables to the model.
      * They are a title, description, date, and a list of all skills for the user.
      * @param model The model to add things to
@@ -175,6 +215,18 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+    }
+
+    /**
+     * A method which deletes the evidence based on its id.
+     * @return the portfolio page of the user
+     */
+    @DeleteMapping(value = "/addEvidence-{evidenceId}")
+    public String deleteEvidenceById(
+            @PathVariable(name="evidenceId") String evidenceId) {
+        int id = Integer.parseInt(evidenceId);
+        evidenceService.deleteById(id);
+        return PORTFOLIO_REDIRECT;
     }
 }
 
