@@ -215,6 +215,7 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+        model.addAttribute("users", userService.getAllUsersExcept(userId));
     }
 
     /**
