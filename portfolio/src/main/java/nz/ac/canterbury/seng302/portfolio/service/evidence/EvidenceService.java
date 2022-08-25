@@ -202,6 +202,28 @@ public class EvidenceService {
     }
 
     /**
+     * Updates a web link string to the evidence specified by evidenceId.
+     * @param evidenceId The evidence to have the web link added to.
+     * @param weblink The web link sting to be added to evidence of id=evidenceId.
+     * @param index The index of the weblink list to update
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
+    public void modifyWebLink(int evidenceId, WebLink weblink, int index) throws NoSuchElementException {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            evidence.addWebLinkWithIndex(weblink, index);
+            saveEvidence(evidence);
+            String message = "Evidence weblink" + weblink.getName() + " saved successfully";
+            PORTFOLIO_LOGGER.info(message);
+        } catch (NoSuchElementException e) {
+            String message = "Evidence " + evidenceId + " not found. Weblink not saved";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException("Evidence not found: web link not saved");
+        }
+    }
+
+    /**
      * Checks that a weblink is in the correct format
      * @param weblink The string representation of the weblink being validated
      * @throws IllegalArgumentException If the weblink is in the wrong format IllegalArgumentException is thrown

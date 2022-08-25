@@ -24,6 +24,7 @@ async function saveWebLink(id) {
     url = new URL (`${CONTEXT}/addWebLink-${id}`);
     url.searchParams.append("webLinkName", document.getElementById(`weblink-modal__name-field_${id}`).value)
     url.searchParams.append("webLink", document.getElementById(`weblink-modal__link-field_${id}`).value)
+    url.searchParams.append("webLinkIndex", index);
 
     // Send a post request to update the group repository
     // Receives the updated element HTML content as a response
@@ -38,19 +39,24 @@ async function saveWebLink(id) {
     return false;
 }
 
+function clearModel(id) {
+    console.log(id);
+    document.getElementById(`weblink-modal__name-field_${id}`).value = "";
+    document.getElementById(`weblink-modal__link-field_${id}`).value = "";
+}
+
 function setIndex(i) {
     index = i;
 }
 
 function editWebLink(name, link, safe, id) {
     let isTrueSet = (safe === 'true');
-    console.log(name+link+safe+id)
     if (name) {
         document.getElementById(`weblink-modal__name-field_${id}`).value = name;
     }
     if (isTrueSet) {
-        document.getElementById(`weblink-modal__link-field_${id}`).value = "https://" + link
+        document.getElementById(`weblink-modal__link-field_${id}`).value = "https://" + link;
     } else {
-        document.getElementById(`weblink-modal__link-field_${id}`).value = "http://" + link
+        document.getElementById(`weblink-modal__link-field_${id}`).value = "http://" + link;
     }
 }

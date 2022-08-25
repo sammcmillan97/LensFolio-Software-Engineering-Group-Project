@@ -98,6 +98,10 @@ public class Evidence {
         this.webLinks.add(webLink);
     }
 
+    public void addWebLinkWithIndex(WebLink webLink, int index) {
+        this.webLinks.set(index, webLink);
+    }
+
     public List<String> getSkills() {return skills;}
 
     public void addSkill (String skill) {this.skills.add(skill);}

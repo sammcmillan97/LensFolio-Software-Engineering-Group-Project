@@ -116,9 +116,11 @@ public class PortfolioController {
             @PathVariable(name="evidenceId") String evidenceId,
             @RequestParam(name="webLink") String webLink,
             @RequestParam(name="webLinkName") String webLinkName,
+            @RequestParam(name="webLinkIndex") String webLinkIndex,
             Model model
     ) {
         int id = Integer.parseInt(evidenceId);
+        int index = Integer.parseInt(webLinkIndex);
         Evidence evidence = evidenceService.getEvidenceById(id);
         if (evidence.getNumberWeblinks() >= MAX_WEBLINKS_PER_EVIDENCE) {
             model.addAttribute("saveError", "Cannot add more than " + MAX_WEBLINKS_PER_EVIDENCE + " weblinks");
@@ -131,7 +133,12 @@ public class PortfolioController {
                 } else {
                     webLink1 = new WebLink(webLink, webLinkName);
                 }
-                evidenceService.saveWebLink(id, webLink1);
+                if (index > -1) {
+                    evidenceService.modifyWebLink(id, webLink1, index);
+                } else {
+                    evidenceService.saveWebLink(id, webLink1);
+                }
+
             } catch (Exception e) {
                 model.addAttribute("urlError", "Weblink is invalid");
             }
