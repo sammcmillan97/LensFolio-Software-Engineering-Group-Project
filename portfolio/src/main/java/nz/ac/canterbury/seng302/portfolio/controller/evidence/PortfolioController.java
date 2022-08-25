@@ -109,7 +109,6 @@ public class PortfolioController {
      * @param evidenceId id of the evidence to add the link to
      * @param webLink The link string to be added to evidence of id=evidenceId
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
-     * @return Redirect to portfolio page.
      */
     @PostMapping("/addWebLink-{evidenceId}")
     public String addWebLink(
@@ -136,7 +135,7 @@ public class PortfolioController {
                 model.addAttribute("urlError", "Weblink is invalid");
             }
         }
-        return PORTFOLIO_REDIRECT;
+        return "fragments/evidence";
     }
 }
 

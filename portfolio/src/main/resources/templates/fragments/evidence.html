@@ -60,11 +60,11 @@
                         <button type="button" class="btn-close close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="weblink-modal__wrapper">
-                        <form id="weblink__modal" class="flex-column" th:action="@{addWebLink-{evidence}(evidence=${evidence.getId})}" th:method="post">
-                            <label> Name </label>
-                            <input type="text" id="weblink-modal__name-field" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
+                        <form id="weblink__modal" class="flex-column" th:data-evidenceId="${evidence.getId}" onsubmit="saveWebLink(this.getAttribute('data-evidenceId')); return false;" th:method="post">
+                          <label> Name </label>
+                            <input type="text" th:id="weblink-modal__name-field_ + ${evidence.getId}" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
                             <label> Link *</label>
-                            <input type="url" id="weblink-modal__link-field" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
+                            <input type="url" th:id="weblink-modal__link-field_ + ${evidence.getId}" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
@@ -77,3 +77,4 @@
         </div>
     </div>
 </div>
+
