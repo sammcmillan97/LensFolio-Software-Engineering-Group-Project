@@ -7,6 +7,7 @@ import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
 import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
+import org.hibernate.annotations.GeneratorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -118,8 +119,8 @@ public class PortfolioController {
             Model model
     ) {
         int id = Integer.parseInt(evidenceId);
-
-        if (evidenceService.getEvidenceById(id).getNumberWeblinks() >= MAX_WEBLINKS_PER_EVIDENCE) {
+        Evidence evidence = evidenceService.getEvidenceById(id);
+        if (evidence.getNumberWeblinks() >= MAX_WEBLINKS_PER_EVIDENCE) {
             model.addAttribute("saveError", "Cannot add more than " + MAX_WEBLINKS_PER_EVIDENCE + " weblinks");
         } else {
             try {
@@ -135,7 +136,20 @@ public class PortfolioController {
                 model.addAttribute("urlError", "Weblink is invalid");
             }
         }
-        return "fragments/evidence";
+        model.addAttribute("webLinks", evidence.getWebLinks());
+        return "elements/webLink";
     }
+
+    @GetMapping("/getWebLinks-{evidenceId}")
+    public String getWebLinks(
+            @PathVariable(name="evidenceId") String evidenceId,
+            Model model
+    ) {
+        int id = Integer.parseInt(evidenceId);
+        Evidence evidence = evidenceService.getEvidenceById(id);
+        model.addAttribute("webLinks", evidence.getWebLinks());
+        return "elements/webLink";
+    }
+
 }
 

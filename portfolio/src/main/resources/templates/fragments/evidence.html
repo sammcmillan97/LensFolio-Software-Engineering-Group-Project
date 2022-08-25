@@ -3,7 +3,12 @@
 <!-- List of Evidence -->
 <div id="evidence__form-wrapper flex-column">
     <div class="evidence__collapsed" th:each="evidence: ${evidenceList}">
-        <div class="evidence-title__child" type="button" data-bs-toggle="collapse"
+      <script th:inline="javascript">
+        middle_id = [[ ${evidence.getId} ]];
+        EVIDENCE_IDS.push(middle_id);
+      </script>
+
+      <div class="evidence-title__child" type="button" data-bs-toggle="collapse"
              th:aria-controls="evidence_ + ${evidence.getId}" aria-expanded="false"
              th:data-bs-target="'#evidence_' + ${evidence.getId}">
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
@@ -27,26 +32,21 @@
                     <a th:each="skill: ${evidence.getSkills}"  class="skill__link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                 </div>
                 <div class="web-link__container">
-                    <div class="web-link__header-wrapper">
-                        <div th:if="${evidence.getNumberWeblinks() >  0}">
-                            <h4 class="web-link-title">Web Links</h4>
-                        </div>
-                        <div class="evidence__button-wrapper flex-row">
-                            <div th:if="${evidence.getNumberWeblinks() <  maxWeblinks}">
-                                <button id="weblink-button" type="button" class="btn-fill-primary" data-bs-toggle="modal" th:data-bs-target="'#addingWeblink_' + ${evidence.getId}">
-                                    Add Weblink
-                                </button>
-                            </div>
-                        </div>
+                  <div class="web-link__header-wrapper">
+                    <div th:if="${evidence.getNumberWeblinks() >  0}">
+                      <h4 class="web-link-title">Web Links</h4>
                     </div>
-                    <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
-                      <p class="web-link__name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
-                      <em th:if="${web.isSafe()}" class="bi bi-lock"></em>
-                      <em th:if="${!web.isSafe()}" class="bi bi-unlock"></em>
-                      <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
-                         th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
+                    <div class="evidence__button-wrapper flex-row">
+                      <div th:if="${evidence.getNumberWeblinks() <  maxWeblinks}">
+                        <button id="weblink-button" type="button" class="btn-fill-primary" data-bs-toggle="modal" th:data-bs-target="'#addingWeblink_' + ${evidence.getId}">
+                          Add Weblink
+                        </button>
+                      </div>
                     </div>
-                    <br/>
+                  </div>
+                    <div th:id="web-link__wrapper_ + ${evidence.getId}">
+                    </div>
+                  <br/>
                 </div>
             </div>
         </div>
@@ -77,4 +77,3 @@
         </div>
     </div>
 </div>
-

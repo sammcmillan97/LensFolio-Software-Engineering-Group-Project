@@ -15,6 +15,8 @@
     <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
     <script th:inline="javascript">
       const CONTEXT = [[${@environment.getProperty('PORTFOLIO_CONTEXT')}]];
+      let EVIDENCE_IDS = [];
+      let middle_id;
     </script>
     <script rel="script" th:src="@{scripts/evidence/saveWeblinks.js}"></script>
     <title>Portfolio</title>
@@ -62,4 +64,9 @@
     </div>
 </div>
 </body>
+<script th:inline="javascript">
+  for (let i = 0; i < EVIDENCE_IDS.length; i++) {
+    getWebLinks(EVIDENCE_IDS[i])
+  }
+</script>
 </html>

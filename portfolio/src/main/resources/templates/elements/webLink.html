@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+
+<div class="web-links" th:each="web: ${webLinks}">
+  <p class="web-link__name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
+  <em th:if="${web.isSafe()}" class="bi bi-lock"></em>
+  <em th:if="${!web.isSafe()}" class="bi bi-unlock"></em>
+  <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
+     th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
+</div>
