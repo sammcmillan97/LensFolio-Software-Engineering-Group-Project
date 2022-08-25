@@ -137,6 +137,7 @@ public class PortfolioController {
             }
         }
         model.addAttribute("webLinks", evidence.getWebLinks());
+        model.addAttribute("evidenceId", evidence.getId());
         return "elements/webLink";
     }
 
@@ -148,6 +149,7 @@ public class PortfolioController {
         int id = Integer.parseInt(evidenceId);
         Evidence evidence = evidenceService.getEvidenceById(id);
         model.addAttribute("webLinks", evidence.getWebLinks());
+        model.addAttribute("evidenceId", evidence.getId());
         return "elements/webLink";
     }
 

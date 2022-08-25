@@ -1,3 +1,5 @@
+let index;
+
 async function getWebLinks(id) {
     let url
     url = new URL (`${CONTEXT}/getWebLinks-${id}`);
@@ -34,4 +36,21 @@ async function saveWebLink(id) {
     const evidenceWrapper = document.getElementById(`web-link__wrapper_${id}`)
     evidenceWrapper.innerHTML = updatedEvidence
     return false;
+}
+
+function setIndex(i) {
+    index = i;
+}
+
+function editWebLink(name, link, safe, id) {
+    let isTrueSet = (safe === 'true');
+    console.log(name+link+safe+id)
+    if (name) {
+        document.getElementById(`weblink-modal__name-field_${id}`).value = name;
+    }
+    if (isTrueSet) {
+        document.getElementById(`weblink-modal__link-field_${id}`).value = "https://" + link
+    } else {
+        document.getElementById(`weblink-modal__link-field_${id}`).value = "http://" + link
+    }
 }
