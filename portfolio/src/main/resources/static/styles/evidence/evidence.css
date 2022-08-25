@@ -68,13 +68,12 @@ html {
 
  /** Evidence trash and settings buttons */
 
-.evidence-title-div__buttons {
-    display: inline;
+.evidence-title__buttons {
     float: right;
     font-size: 15px;
     width: 100px;
-    padding: 25px 10px 25px 10px;
-    margin: 0 -20px 0 0;
+    padding-top: 10px;
+    padding-left: 50px;
 }
 
 .evidence-title--icon_container {
@@ -84,7 +83,11 @@ html {
     padding: 20px 20px 10px 20px;
     border: 1px solid var(--color-accent);
     border-radius: 5px;
-    cursor: pointer;
+    background-color: transparent;
+}
+
+.evidence-title--icon_container:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
 
 .evidence-title--icon {
