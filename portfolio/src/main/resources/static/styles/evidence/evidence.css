@@ -66,26 +66,45 @@ html {
     margin: auto;
 }
 
- /** Evidence trash and settings buttons */
+/** Evidence delete and edit buttons */
 
-.evidence-title__buttons {
+.evidence-title-div__buttons {
     float: right;
+    display: inline;
+    padding: 25px 10px 25px 10px;
+    margin: 0 -20px 0 0;
     font-size: 15px;
     width: 100px;
-    padding-top: 10px;
-    padding-left: 50px;
+}
+
+.evidence-title--form {
+    padding: 0;
+    width: 90%;
+    height: 100%;
+    margin: 0;
 }
 
 .evidence-title--icon_container {
     width: 100%;
     color: black;
-    padding: 10px;
+    padding: 20px 20px 10px 20px;
     border: 1px solid var(--color-accent);
     border-radius: 5px;
     background-color: transparent;
 }
 
+.evidence-title--icon_container-delete {
+    width: 100%;
+    color: black;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background-color: transparent;
+    margin: -8px 0 0 0;
+    padding: 5px 0 4px 0;
+}
+
 .evidence-title--icon_container:hover {
+    color: black;
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
 }
 

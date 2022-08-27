@@ -102,6 +102,7 @@ public class AddEvidenceController {
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
             @RequestParam(name="skillsToChange") String skillsToChange,
+            @RequestParam(name="evidenceUsers") String users,
             Model model
     ) {
         User user = userService.getUserAccountByPrincipal(principal);
@@ -216,6 +217,7 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+        model.addAttribute("users", userService.getAllUsersExcept(userId));
     }
 
     /**

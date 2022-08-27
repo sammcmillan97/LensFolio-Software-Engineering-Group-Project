@@ -12,7 +12,20 @@
     <title>Add Evidence</title>
     <script th:inline="javascript">
         const ALL_SKILLS = [[${skillsList}]];
+        let ALL_USERS = [];
     </script>
+
+    <script type="text/javascript" th:inline="javascript" th:each="user, iterInfo: ${users}">
+        user = {
+            id: [[${user.id}]],
+            fullName: [[${user.fullName}]],
+            username: [[${user.username}]],
+            profilePicture: [[${user.profileImagePath}]]
+        }
+        user.id = user.id.toString();
+        ALL_USERS.push(user);
+    </script>
+
 </head>
 <body>
 <!-- Import the application's header bar. -->
@@ -76,7 +89,7 @@
                     </label>
                 </div>
             </div>
-            <!-- Submit form !-->
+            <!-- Skills !-->
             <label>Skills
                 <span data-toggle="tooltip"
                       data-placement="top" data-html=true class="bi bi-question-circle-fill"
@@ -85,7 +98,7 @@
             </label>
             <div id="skill-input-container">
                 <div id="skill-container">
-                  <div id="input-container">
+                  <div class="input-container">
                     <input type="text" id="skills-input" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
                        placeholder="Add Skills"/>
                   </div>
@@ -95,6 +108,25 @@
             <p class="evidence-form__error-message" th:text="${skillsError}" />
             <input type="hidden" id="evidence-form__hidden--change-skills-field" name="skillsToChange"/>
 
+            <!-- Users !-->
+            <label>Users
+                <span data-toggle="tooltip"
+                      data-placement="top" data-html=true class="bi bi-question-circle-fill"
+                      title="Search for users by name. Click on a user in the drop-down menu to add them to the evidence">
+                </span>
+            </label>
+            <div id="user-input-container">
+                <div id="user-container">
+                    <div class="input-container">
+                        <input type="text" id="users-input" th:value="${evidenceUsers}" contenteditable="true" autocomplete="off"
+                               placeholder="Add Skills"/>
+                    </div>
+                </div>
+            </div>
+            <p class="evidence-form__error-message" th:text="${usersError}" />
+            <input type="hidden" id="evidence-form__hidden-users-field" name="evidenceUsers"/>
+
+            <!-- Submit form !-->
             <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
             <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
             <p class="evidence-form__error-message" th:text="${generalError}" />
