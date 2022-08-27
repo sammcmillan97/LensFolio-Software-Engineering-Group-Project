@@ -101,6 +101,7 @@ public class AddEvidenceController {
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
+            @RequestParam(name="skillsToChange") String skillsToChange,
             @RequestParam(name="evidenceUsers") String users,
             Model model
     ) {
@@ -130,7 +131,8 @@ public class AddEvidenceController {
             categories.add(Categories.Service);
         }
 
-        int userId = userService.getUserId(principal);
+        int userId = user.getId();
+        evidenceService.updateEvidenceSkills(userId, projectId, skillsToChange);
         Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
         evidence.setTitle(title);
         evidence.setDescription(description);
