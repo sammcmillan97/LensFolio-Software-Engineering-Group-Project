@@ -105,11 +105,12 @@ public class PortfolioController {
     }
 
     /**
-     * Save one web link. Redirects to portfolio page with no message if evidence does not exist.
-     * If correctly saved, redirects to project page.
+     * Save or edit one web link. Redirects to portfolio page with no message if evidence does not exist.
+     * If correctly saved, sends web link html element to update on page.
      * @param evidenceId id of the evidence to add the link to
      * @param webLink The link string to be added to evidence of id=evidenceId
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return web link html element.
      */
     @PostMapping("/addWebLink-{evidenceId}")
     public String addWebLink(
@@ -148,6 +149,12 @@ public class PortfolioController {
         return "elements/webLink";
     }
 
+    /**
+     * Gets the web links of evidence with evidenceId in html element.
+     * @param evidenceId Id of evidence to find weblinks for.
+     * @param model Parameters sent to thymeleaf template to be rendered into HTML
+     * @return web link html element.
+     */
     @GetMapping("/getWebLinks-{evidenceId}")
     public String getWebLinks(
             @PathVariable(name="evidenceId") String evidenceId,

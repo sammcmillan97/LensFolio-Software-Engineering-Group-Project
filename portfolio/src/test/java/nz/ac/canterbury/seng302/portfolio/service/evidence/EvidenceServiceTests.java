@@ -996,4 +996,39 @@ class EvidenceServiceTests {
         assertEquals(1, evidenceService.getSkillsFromEvidence(allUsersEvidenceList).size());
     }
 
+    ////////////////////////////////////////////////
+    //////////////Modify Weblinks///////////////////
+    ////////////////////////////////////////////////
+
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithOneWebLink_testModifyWeblink() {
+        int testUser0 = 0;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
+        WebLink webLink = new WebLink("http://localhost:9000/planner", "Changed");
+        evidenceService.modifyWebLink(evidence1.getId(), webLink, 0);
+        Evidence evidence = evidenceService.getEvidenceById(evidence1.getId());
+        assertEquals(webLink.getLink(), evidence.getWebLinks().get(0).getLink());
+        assertEquals(webLink.getName(), evidence.getWebLinks().get(0).getName());
+    }
+
+    @Test
+    @Transactional
+    void whenEvidenceExistsWithMultipleWebLink_testModifyWeblink() {
+        int testUser0 = 0;
+        Evidence evidence1 = new Evidence(testUser0, projects.get(1).getId(), "Three", TEST_DESCRIPTION, Date.valueOf("2022-05-14"));
+        evidenceService.saveEvidence(evidence1);
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/portfolio", "My web link"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/planner", "My web link1"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/profile", "My web link2"));
+        evidenceService.saveWebLink(evidence1.getId(), new WebLink("http://localhost:9000/projects", "My web link3"));
+        WebLink webLink = new WebLink("http://localhost:9000/planner", "Changed");
+        evidenceService.modifyWebLink(evidence1.getId(), webLink, 2);
+        Evidence evidence = evidenceService.getEvidenceById(evidence1.getId());
+        assertEquals(webLink.getLink(), evidence.getWebLinks().get(2).getLink());
+        assertEquals(webLink.getName(), evidence.getWebLinks().get(2).getName());
+    }
+
 }

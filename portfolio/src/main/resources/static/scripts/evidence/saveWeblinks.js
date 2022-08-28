@@ -1,5 +1,10 @@
 let index;
 
+/**
+ * Gets web links from backend and updates DOM
+ * @param id
+ * @returns {Promise<void>}
+ */
 async function getWebLinks(id) {
     let url
     url = new URL (`${CONTEXT}/getWebLinks-${id}`);
@@ -14,8 +19,8 @@ async function getWebLinks(id) {
 }
 
 /**
- * Uses the Javascript fetch API to send the updated repository information from the
- * edit modal. Then updates the repository information on the page with the updated information.
+ * Uses the Javascript fetch API to send the updated web link from the
+ * edit modal. Then updates the web link on the page with the updated information.
  */
 async function saveWebLink(id) {
     bootstrap.Modal.getInstance(document.getElementById(`addingWeblink_${id}`)).hide()
@@ -26,7 +31,7 @@ async function saveWebLink(id) {
     url.searchParams.append("webLink", document.getElementById(`weblink-modal__link-field_${id}`).value)
     url.searchParams.append("webLinkIndex", index);
 
-    // Send a post request to update the group repository
+    // Send a post request to update the web link
     // Receives the updated element HTML content as a response
     const updatedEvidence = await fetch(url, {
         method: "POST"
@@ -39,16 +44,19 @@ async function saveWebLink(id) {
     return false;
 }
 
+// Clears the edit modal
 function clearModel(id) {
     console.log(id);
     document.getElementById(`weblink-modal__name-field_${id}`).value = "";
     document.getElementById(`weblink-modal__link-field_${id}`).value = "";
 }
 
+// Sets index that of the web link in the modal. The index is that from the evidence web links array.
 function setIndex(i) {
     index = i;
 }
 
+// Sets the modal to have details from the web link to edit.
 function editWebLink(name, link, safe, id) {
     let isTrueSet = (safe === 'true');
     if (name) {
