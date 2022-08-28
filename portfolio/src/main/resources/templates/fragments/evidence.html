@@ -14,12 +14,17 @@
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
             <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
         </div>
-        <div th:if="${owner}" class="evidence-title__buttons">
-            <form action="#" th:action="@{addEvidence-{evidenceId}(evidenceId=${evidence.getId})}" onSubmit="return confirm('Are you sure you want to delete this piece of evidence?\nThis action cannot be undone.')" th:method="delete" >
-                <button type="submit" class="evidence-title--icon_container">
+        <div th:if="${owner}" class="evidence-title-div__buttons ">
+            <form action="#" class="evidence-title--form" th:action="@{addEvidence-{evidenceId}(evidenceId=${evidence.getId})}" onSubmit="return confirm('Are you sure you want to delete this piece of evidence?\nThis action cannot be undone.')" th:method="delete" >
+                <button type="submit" class="evidence-title--icon_container-delete">
                     <i class="bi bi-trash evidence-title--icon"></i>
                 </button>
             </form>
+        </div>
+        <div th:if="${owner}" class="evidence-title-div__buttons">
+            <a class="evidence-title--icon_container">
+                <em class="bi bi-pencil-square evidence-title--icon"></em>
+            </a>
         </div>
 
 

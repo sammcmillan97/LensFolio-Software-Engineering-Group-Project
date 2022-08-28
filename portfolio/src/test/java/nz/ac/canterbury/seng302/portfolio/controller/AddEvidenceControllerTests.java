@@ -116,7 +116,10 @@ class AddEvidenceControllerTests {
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
-                        .param("evidenceSkills", ""))
+                        .param("evidenceSkills", "")
+                        .param("evidenceUsers", "")
+                        .param("evidenceSkills", "")
+                        .param("skillsToChange", ""))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/portfolio"));
     }
@@ -137,7 +140,10 @@ class AddEvidenceControllerTests {
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "2002-02-16")
-                        .param("evidenceSkills", ""))
+                        .param("evidenceSkills", "")
+                        .param("skillsToChange", "")
+                        .param("evidenceSkills", "")
+                        .param("evidenceUsers", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }
@@ -156,7 +162,10 @@ class AddEvidenceControllerTests {
                         .param("evidenceTitle", "test title")
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "bad date")
-                        .param("evidenceSkills", ""))
+                        .param("evidenceSkills", "")
+                        .param("evidenceUsers", "")
+                        .param("evidenceSkills", "")
+                        .param("skillsToChange", ""))
                 .andExpect(status().isOk())
                 .andExpect(redirectedUrl(null));
     }

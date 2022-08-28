@@ -101,9 +101,10 @@ public class AddEvidenceController {
             @RequestParam(name="isQualitative", required = false) String isQualitative,
             @RequestParam(name="isService", required = false) String isService,
             @RequestParam(name="evidenceSkills") String skills,
+            @RequestParam(name="skillsToChange") String skillsToChange,
+            @RequestParam(name="evidenceUsers") String users,
             Model model
     ) {
-
         User user = userService.getUserAccountByPrincipal(principal);
         int projectId = portfolioUserService.getUserById(user.getId()).getCurrentProject();
         Project project = projectService.getProjectById(projectId);
@@ -130,7 +131,8 @@ public class AddEvidenceController {
             categories.add(Categories.Service);
         }
 
-        int userId = userService.getUserId(principal);
+        int userId = user.getId();
+        evidenceService.updateEvidenceSkills(userId, projectId, skillsToChange);
         Evidence evidence = getEvidenceById(evidenceId, userId, projectId);
         evidence.setTitle(title);
         evidence.setDescription(description);
@@ -215,6 +217,7 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDescription", evidence.getDescription());
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
+        model.addAttribute("users", userService.getAllUsersExcept(userId));
     }
 
     /**

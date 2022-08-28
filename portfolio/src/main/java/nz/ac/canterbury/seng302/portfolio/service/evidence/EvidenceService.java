@@ -27,6 +27,41 @@ public class EvidenceService {
     private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /**
+     * Updates a user's evidence with new skills.
+     * Skills are space separated in order, i.e. old new old2 new2 old3 new3 ...
+     *
+     * @param userId The user of this portfolio
+     * @param projectId The project for this portfolio
+     * @param skillsToChange A string in form 'old new old2 new2 old3 new3' stating skills to change
+     */
+    public void updateEvidenceSkills(int userId, int projectId, String skillsToChange) {
+        if (Objects.equals(skillsToChange, "")) {
+            return; // No need to update skills if there are none to change.
+        }
+        List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(userId, projectId);
+        List<String> skills = getSkillsFromEvidence(evidenceList);
+        for (int i = 0; i < skills.size(); i += 1) {
+            skills.set(i, skills.get(i).toLowerCase());
+        }
+        List<String> skillsList = new ArrayList<>(Arrays.asList(skillsToChange.split("\\s+")));
+        List<List<String>> skillChanges = new ArrayList<>();
+        for (int i = 1; i < skillsList.size(); i += 2) {
+            String old = skillsList.get(i - 1);
+            String changed = skillsList.get(i);
+            // Either a skill is having its capitalization changed, or the changed skill should not already be a skill
+            if (old.equalsIgnoreCase(changed) || !skills.contains(changed.toLowerCase())) {
+                List<String> skillPair = new ArrayList<>();
+                skillPair.add(old);
+                skillPair.add(changed);
+                skillChanges.add(skillPair);
+            }
+        }
+        for (Evidence evidence : evidenceList) {
+            evidence.changeSkills(skillChanges);
+        }
+    }
+
+    /**
      * Get list of all pieces of evidence for a specific portfolio.
      * Portfolios can be identified by a user and project.
      * @param userId The user of this portfolio
@@ -154,8 +189,8 @@ public class EvidenceService {
      * @param evidenceList A list of evidence to retrieve skills from.
      * @return All the skills for that list of evidence.
      */
-    public Collection<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
-        Collection<String> skills = new HashSet<>();
+    public List<String> getSkillsFromEvidence(List<Evidence> evidenceList) {
+        Set<String> skills = new HashSet<>();
         for (Evidence userEvidence : evidenceList) {
             skills.addAll(userEvidence.getSkills());
         }
@@ -179,6 +214,7 @@ public class EvidenceService {
             throw new IllegalArgumentException(message);
         }
     }
+
 
     /**
      * Saves a web link string to the evidence specified by evidenceId.

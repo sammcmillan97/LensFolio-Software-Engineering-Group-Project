@@ -134,7 +134,32 @@ public class Evidence {
                 newSkills.add(skill);
             }
         }
-        skills = newSkills;
+        // Remove duplicate skills
+        skills = newSkills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Changes skills to conform to a list of skill changes
+     * Each change is a tuple of two strings, old then new.
+     * Any skill matching the old string is changed to the new one.
+     * @param skillChanges A list of master skills to compare against.
+     */
+    public void changeSkills(List<List<String>> skillChanges) {
+        List<String> newSkills = new ArrayList<>();
+        for (String skill : skills) {
+            boolean inChanges = false;
+            for (List<String> skillChange : skillChanges) {
+                if (!inChanges && skillChange.get(0).equalsIgnoreCase(skill)) {
+                    newSkills.add(skillChange.get(1));
+                    inChanges = true;
+                }
+            }
+            if (!inChanges) {
+                newSkills.add(skill);
+            }
+        }
+        // Remove duplicate skills
+        skills = newSkills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     public int getNumberWeblinks() { return webLinks.size(); }
