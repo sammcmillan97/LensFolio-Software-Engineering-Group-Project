@@ -2,9 +2,12 @@ package nz.ac.canterbury.seng302.portfolio.controller.evidence;
 
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
+import nz.ac.canterbury.seng302.portfolio.model.group.Group;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupRepositorySettingsService;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.user.*;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
@@ -34,6 +37,12 @@ public class AddEvidenceController {
 
     @Autowired
     private UserAccountClientService userService;
+
+    @Autowired
+    private GroupRepositorySettingsService groupRepositorySettingsService;
+
+    @Autowired
+    private GroupsClientService groupsService;
 
     @Autowired
     private PortfolioUserService portfolioUserService;
@@ -218,6 +227,17 @@ public class AddEvidenceController {
         model.addAttribute("evidenceDate", Project.dateToString(evidence.getDate(), TIMEFORMAT));
         model.addAttribute("evidenceSkills", String.join(" ", evidence.getSkills()) + " ");
         model.addAttribute("users", userService.getAllUsersExcept(userId));
+        List<Group> groups = groupsService.getAllGroups().getGroups();
+        List<Group> userGroups = new ArrayList<>();
+        for (Group group : groups) {
+            for (User user : group.getMembers()) {
+                if (user.getId() == userId) {
+                    userGroups.add(group);
+                }
+            }
+        }
+        model.addAttribute("groups", userGroups);
+        model.addAttribute("displayCommits", !userGroups.isEmpty());
     }
 
     /**
