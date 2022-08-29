@@ -122,13 +122,13 @@ public class AddEvidenceController {
 
         Set<Categories> categories = new HashSet<>();
         if (isQuantitative != null) {
-            categories.add(Categories.Quantitative);
+            categories.add(Categories.QUANTITATIVE);
         }
         if (isQualitative != null) {
-            categories.add(Categories.Qualitative);
+            categories.add(Categories.QUALITATIVE);
         }
         if (isService != null) {
-            categories.add(Categories.Service);
+            categories.add(Categories.SERVICE);
         }
 
         int userId = user.getId();
