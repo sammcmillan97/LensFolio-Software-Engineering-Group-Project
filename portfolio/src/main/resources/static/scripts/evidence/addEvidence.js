@@ -10,12 +10,6 @@ function checkEmpty() {
 let skillList = []
 let userList = []
 
-window.onload = (event) => {
-    checkEmpty();
-}
-
-
-
 // Adds a skill to the list of skills. Makes sure it is not already present,
 // and if the user has already entered that skill on another piece of evidence, make sure the capitalization is correct.
 function addToSkills(skill) {
