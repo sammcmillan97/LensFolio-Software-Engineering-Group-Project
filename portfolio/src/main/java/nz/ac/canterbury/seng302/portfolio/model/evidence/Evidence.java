@@ -54,6 +54,7 @@ public class Evidence {
         this.description = description;
         this.date = date;
         webLinks = new ArrayList<>();
+        commits = new ArrayList<>();
         this.skills = new ArrayList<>(Arrays.asList(skills.split("\\s+")));
         // If the entered string is "" or has leading spaces, the regex adds an empty element at the start of the skill list
         // which should not happen.

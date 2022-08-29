@@ -165,8 +165,12 @@ public class EvidenceService {
                 Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
                 copiedEvidence.addSkill(skillList);
                 copiedEvidence.setCategories(categoriesSet);
+                //TODO Currently these will only be used in the case of editing evidence then adding a user wait for response from Moffat to see if should be removed
                 for (WebLink webLink : evidence.getWebLinks()) {
                     copiedEvidence.addWebLink(webLink);
+                }
+                for (Commit commit : evidence.getCommits()) {
+                    copiedEvidence.addCommit(commit);
                 }
                 for (Integer user: evidence.getUsers()) {
                     copiedEvidence.addUser(user);
@@ -238,13 +242,24 @@ public class EvidenceService {
             }
     }
 
+    /**
+     * Saves a commit to the evidence specified by evidenceId.
+     * @param evidenceId The ID of the evidence to have the commit added to.
+     * @param commit The commit object added to the evidence
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
     public void saveCommit(int evidenceId, Commit commit) throws NoSuchElementException {
         try {
             Evidence evidence = getEvidenceById(evidenceId);
             evidence.addCommit(commit);
             saveEvidence(evidence);
-            String message = "Evidence weblink" + commit.getName() + " saved successfully";
+            String message = "Evidence commit saved successfully";
             PORTFOLIO_LOGGER.info(message);
+        } catch (NoSuchElementException e) {
+            String message = "Evidence " + evidenceId + " not found. Commit not saved";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException("Evidence not found: commit not saved");
         }
     }
 
