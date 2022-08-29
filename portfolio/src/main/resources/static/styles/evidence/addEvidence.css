@@ -36,7 +36,7 @@
 }
 
 /* Set a style for the button */
-#evidence-form__form button, #evidence-form__form a {
+.evidence-form__control-button {
     padding: 0;
     margin-bottom: 1rem;
     overflow: hidden;
@@ -53,12 +53,12 @@
 }
 
 /*Add some hover effects to buttons */
-#evidence-form__form button:hover, #evidence-form__form a:hover {
+.evidence-form__control-button:hover {
     background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
     cursor: pointer;
 }
 
-#evidence-form__form button:disabled {
+.evidence-form__control-button:disabled {
     background-color: gray;
     cursor: default;
 }
@@ -71,6 +71,9 @@
     margin-bottom: 10px;
 }
 
+.evidence-form__add-commits-button {
+    margin-bottom: 15px;
+}
 
 /* skill and user input */
 

@@ -128,13 +128,12 @@
 
             <!-- Commits !-->
             <div th:if="${displayCommits}">
-                <label>Commits</label>
-                <button  type="button" class="btn btn-primary">Add Commits</button>
+                <button type="button" class="btn btn-primary evidence-form__add-commits-button">Add Commits</button>
             </div>
 
             <!-- Submit form !-->
-            <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
-            <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
+            <button type="submit" class="evidence-form__control-button" id="evidence-form__save" disabled>Save Changes</button>
+            <a class="evidence-form__control-button" id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
             <p class="evidence-form__error-message" th:text="${generalError}" />
         </form>
     </div>
