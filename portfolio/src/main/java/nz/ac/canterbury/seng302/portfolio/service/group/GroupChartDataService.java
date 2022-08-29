@@ -1,10 +1,12 @@
 package nz.ac.canterbury.seng302.portfolio.service.group;
 
+import com.google.common.annotations.VisibleForTesting;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.group.Group;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
+import nz.ac.canterbury.seng302.shared.identityprovider.GroupsServiceGrpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,12 @@ public class GroupChartDataService {
      */
     public Map<String, Integer> getGroupCategoryInfo(Group group) {
         int parentProjectId = group.getParentProject();
+
+        // Initialise the hashmap to have a count of 0 for every category
         Map<String, Integer> categoryCounts = new HashMap<>();
+        categoryCounts.put("Service", 0);
+        categoryCounts.put("Quantitative", 0);
+        categoryCounts.put("Qualitative", 0);
 
         // Iterate through every user in the group
         for (User user : group.getMembers()) {
@@ -46,5 +53,24 @@ public class GroupChartDataService {
             }
         }
         return categoryCounts;
+    }
+
+    /**
+     * Only for mocking purposes
+     * Updates the current EvidenceService with a new one
+     * @param newEvidenceService the new (mocked) EvidenceService
+     */
+    @VisibleForTesting
+    protected void setEvidenceService(EvidenceService newEvidenceService) {
+        evidenceService = newEvidenceService;
+    }
+
+    /**
+     * Only for mocking purposes
+     * @return the current evidence service
+     */
+    @VisibleForTesting
+    protected EvidenceService getEvidenceService() {
+        return evidenceService;
     }
 }
