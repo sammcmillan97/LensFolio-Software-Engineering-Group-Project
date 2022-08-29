@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service.evidence;
 
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.Commit;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.WebLink;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
@@ -235,6 +236,16 @@ public class EvidenceService {
                 PORTFOLIO_LOGGER.error(message);
                 throw new NoSuchElementException("Evidence not found: web link not saved");
             }
+    }
+
+    public void saveCommit(int evidenceId, Commit commit) throws NoSuchElementException {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            evidence.addCommit(commit);
+            saveEvidence(evidence);
+            String message = "Evidence weblink" + commit.getName() + " saved successfully";
+            PORTFOLIO_LOGGER.info(message);
+        }
     }
 
     /**

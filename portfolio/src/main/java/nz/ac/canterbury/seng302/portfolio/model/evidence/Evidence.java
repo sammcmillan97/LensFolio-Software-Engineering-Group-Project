@@ -33,6 +33,8 @@ public class Evidence {
     private List<WebLink> webLinks;
     @ElementCollection
     private List<String> skills; //skills related to this piece of evidence
+    @ElementCollection
+    private List<Commit> commits;
     @Transient
     private Set<Integer> users = new HashSet<>(Set.of(ownerId));
 
@@ -98,6 +100,10 @@ public class Evidence {
         this.webLinks.add(webLink);
     }
 
+    public List<Commit> getCommits() {return commits; }
+
+    public void addCommit(Commit commit) {this.commits.add(commit); }
+
     public List<String> getSkills() {return skills;}
 
     public void addSkill (String skill) {this.skills.add(skill);}
@@ -157,6 +163,8 @@ public class Evidence {
         // Remove duplicate skills
         skills = newSkills.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
     }
+
+    public int getNumberCommits() {return commits.size();}
 
     public int getNumberWeblinks() { return webLinks.size(); }
 
