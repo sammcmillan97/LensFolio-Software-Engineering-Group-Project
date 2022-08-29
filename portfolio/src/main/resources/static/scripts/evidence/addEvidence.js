@@ -10,6 +10,10 @@ function checkEmpty() {
 let skillList = []
 let userList = []
 
+window.onload = (event) => {
+    checkEmpty();
+}
+
 
 
 // Adds a skill to the list of skills. Makes sure it is not already present,

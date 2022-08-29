@@ -212,6 +212,7 @@ public class AddEvidenceController {
      */
     private void addEvidenceToModel(Model model, int projectId, int userId, Evidence evidence) {
         List<Evidence> evidenceList = evidenceService.getEvidenceForPortfolio(userId, projectId);
+        model.addAttribute("categories", evidence.getCategories());
         model.addAttribute("skillsList", evidenceService.getSkillsFromEvidence(evidenceList));
         model.addAttribute("evidenceTitle", evidence.getTitle());
         model.addAttribute("evidenceDescription", evidence.getDescription());
@@ -224,7 +225,7 @@ public class AddEvidenceController {
      * A method which deletes the evidence based on its id.
      * @return the portfolio page of the user
      */
-    @DeleteMapping(value = "/addEvidence-{evidenceId}")
+    @DeleteMapping(value = "/deleteEvidence-{evidenceId}")
     public String deleteEvidenceById(
             @PathVariable(name="evidenceId") String evidenceId) {
         int id = Integer.parseInt(evidenceId);
