@@ -1,10 +1,27 @@
 // If the evidence title/description are not valid, set the save button to disabled.
-function checkEmpty() {
-    document.getElementById('evidence-form__save').disabled =
-        document.getElementById("evidence-form__title-field").value.length < 2
-        || document.getElementById("evidence-form__title-field").value.length > 64
-        || document.getElementById("evidence-form__description-field").value.length < 50
-        || document.getElementById("evidence-form__description-field").value.length > 1024;
+function checkValid() {
+    if (evidenceId === -1) {
+        document.getElementById('evidence-form__save').disabled =
+            document.getElementById("evidence-form__title-field").value.length < 2
+            || document.getElementById("evidence-form__title-field").value.length > 64
+            || document.getElementById("evidence-form__description-field").value.length < 50
+            || document.getElementById("evidence-form__description-field").value.length > 1024;
+    } else {
+        console.log(arraysMatch(originalEvidenceSkills, skillList));
+        document.getElementById('evidence-form__save').disabled =
+            document.getElementById("evidence-form__title-field").value.length < 2
+            || document.getElementById("evidence-form__title-field").value.length > 64
+            || document.getElementById("evidence-form__description-field").value.length < 50
+            || document.getElementById("evidence-form__description-field").value.length > 1024
+            || (document.getElementById("evidence-form__title-field").value===originalEvidenceTitle
+                &&document.getElementById("evidence-form__description-field").value===originalEvidenceDescription
+                &&document.getElementById("evidence-form__date-field").value===originalEvidenceDate
+                &&document.getElementById("flex-check--quantitative").checked===(originalCategories.includes("Quantitative"))
+                &&document.getElementById("flex-check--qualitative").checked===(originalCategories.includes("Qualitative"))
+                &&document.getElementById("flex-check--service").checked===(originalCategories.includes("Service"))
+                &&arraysMatch(originalEvidenceSkills, skillList)
+                &&arraysMatch(originalEvidenceUsers, userList));
+    }
 }
 
 let skillList = []
@@ -25,19 +42,23 @@ function addToSkills(skill) {
         }
     }
     skillList.push(skill.replaceAll("_", " "));
+    checkValid();
 }
 
 function removeLastSkill() {
     skillList.pop();
+    checkValid();
 }
 
 function removeSkill(skill) {
     skillList.splice(skillList.indexOf(skill), 1);
+    checkValid();
 }
 
 // Adds a user to the list of users. Makes sure it is not already present.
 // Users must be in the form of ids.
 function addToUsers(user) {
+    checkValid();
     for (const testUser of userList) {
         if (testUser === user) {
             return;
@@ -391,4 +412,28 @@ document.getElementById("users-input").dispatchEvent(new Event('input', {
     bubbles: true,
     cancelable: true,
 }))
+
+function arraysMatch(original,newList) {
+    //split the original string into a list
+    let originalList = original.split(" ");
+    //clone the list so that order is not affected
+    let cloneNewList = newList;
+    //remove additional null off the end of list
+    originalList.pop();
+    return (arraysEqual(originalList, cloneNewList))
+}
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+
+    a.sort();
+    b.sort();
+
+    for (let i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
 
