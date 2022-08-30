@@ -22,14 +22,20 @@ public class GroupsClientService {
     private GroupsServiceGrpc.GroupsServiceStub groupsNonBlockingStub;
 
     @Autowired
-    GroupRepositorySettingsService groupRepositorySettingsService;
+    private GroupRepositorySettingsService groupRepositorySettingsService;
+    @Autowired
+    private PortfolioGroupService portfolioGroupService;
 
-    public CreateGroupResponse createGroup(final String shortName, final String longName) {
+    public CreateGroupResponse createGroup(final String shortName, final String longName, final int parentProjectId) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
                 .setShortName(shortName)
                 .setLongName(longName)
                 .build();
-        return groupsStub.createGroup(createGroupRequest);
+        CreateGroupResponse response = groupsStub.createGroup(createGroupRequest);
+        if (response.getIsSuccess()) {
+            portfolioGroupService.createPortfolioGroup(response.getNewGroupId(), parentProjectId);
+        }
+        return response;
     }
 
     public ModifyGroupDetailsResponse modifyGroupDetails(final int groupId, final String shortName, final String longName) {
@@ -67,6 +73,7 @@ public class GroupsClientService {
         // If the group was deleted in the identity provider then delete it in the portfolio
         if (response.getIsSuccess()) {
             groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
+            portfolioGroupService.deletePortfolioGroupByGroupId(groupId);
         }
         return response;
     }

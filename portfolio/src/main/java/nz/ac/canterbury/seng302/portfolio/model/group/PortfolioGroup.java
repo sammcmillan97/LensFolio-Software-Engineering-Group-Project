@@ -10,11 +10,11 @@ public class PortfolioGroup {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
     private int groupId;
-    private int parentProject;
+    private int parentProjectId;
 
     public PortfolioGroup(int groupId, int projectId){
         this.groupId = groupId;
-        this.parentProject = projectId;
+        this.parentProjectId = projectId;
     }
 
     //Empty constructor needed for JPA
@@ -30,11 +30,11 @@ public class PortfolioGroup {
 
     public void setGroupId(int groupId) {this.groupId = groupId;}
 
-    public int getParentProject() {
-        return parentProject;
+    public int getParentProjectId() {
+        return parentProjectId;
     }
 
-    public void setParentProject(int parentProject) {
-        this.parentProject = parentProject;
+    public void setParentProjectId(int parentProject) {
+        this.parentProjectId = parentProject;
     }
 }
