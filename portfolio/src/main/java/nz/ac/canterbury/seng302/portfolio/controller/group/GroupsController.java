@@ -2,9 +2,11 @@ package nz.ac.canterbury.seng302.portfolio.controller.group;
 
 import nz.ac.canterbury.seng302.portfolio.model.group.Group;
 import nz.ac.canterbury.seng302.portfolio.model.group.GroupListResponse;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.model.user.UserListResponse;
 import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
@@ -23,7 +25,8 @@ public class GroupsController {
 
     @Autowired
     private UserAccountClientService userAccountClientService;
-
+    @Autowired
+    private ProjectService projectService;
     @Autowired
     private GroupsClientService groupsClientService;
     @Autowired
@@ -46,6 +49,7 @@ public class GroupsController {
 
     private static final String USER_IS_TEACHER = "userIsTeacher";
     private static final String USER_IS_ADMIN = "userIsAdmin";
+    private static final int DEFAULT_PROJECT_ID = -1;
 
 
 
@@ -62,6 +66,18 @@ public class GroupsController {
         boolean userIsTeacher = userAccountClientService.isTeacher(principal);
         boolean userIsAdmin = userAccountClientService.isAdmin(principal);
         int projectId = portfolioUserService.getUserById(userId).getCurrentProject();
+
+        // If the user doesn't have a project selected, select the first one in the list of projects
+        // If no projects exist, create one and select it.
+        if (projectId == DEFAULT_PROJECT_ID) {
+            List<Project> projects = projectService.getAllProjects();
+            if (projects.isEmpty()) {
+                Project defaultProject = new Project();
+                projectService.saveProject(defaultProject);
+                projects = projectService.getAllProjects();
+            }
+            portfolioUserService.setProject(userId, projects.get(0).getId());
+        }
 
 
         List<Group> groups = groupsClientService.getAllGroupsInProject(projectId);
