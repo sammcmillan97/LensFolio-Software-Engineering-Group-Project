@@ -326,4 +326,6 @@ public class EvidenceService {
     public List<Evidence> retrieveEvidenceWithNoCategory(int userId, int projectId) {
         return repository.findByOwnerIdAndProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(userId, projectId);
     }
+
+
 }

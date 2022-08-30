@@ -76,6 +76,14 @@ public class Group {
         this.longName = longName;
     }
 
+    public int getParentProject() {
+        return parentProject;
+    }
+
+    public void setParentProject(int parentProject) {
+        this.parentProject = parentProject;
+    }
+
     public List<User> getMembers() {
         Comparator<User> userComparator = Comparator.comparingInt(User::getId);
         members.sort(userComparator);

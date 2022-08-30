@@ -22,7 +22,7 @@ public class GroupsClientService {
     private GroupsServiceGrpc.GroupsServiceStub groupsNonBlockingStub;
 
     @Autowired
-    GroupRepositorySettingsService groupRepositorySettingsService;
+    private GroupRepositorySettingsService groupRepositorySettingsService;
 
     public CreateGroupResponse createGroup(final String shortName, final String longName) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
@@ -64,7 +64,7 @@ public class GroupsClientService {
                 .build();
         DeleteGroupResponse response = groupsStub.deleteGroup(deleteGroupRequest);
 
-        // If the group was deleted in the identity provider then delete it in the portfolio
+        // If the group was deleted in the identity provider then delete it and its repository settings in the portfolio
         if (response.getIsSuccess()) {
             groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
         }
