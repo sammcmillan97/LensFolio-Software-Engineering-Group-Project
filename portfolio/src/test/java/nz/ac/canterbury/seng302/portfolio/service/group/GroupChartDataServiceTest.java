@@ -202,4 +202,34 @@ class GroupChartDataServiceTest {
         assertEquals(2, result.get("Quantitative"));
         assertEquals(2, result.get("Qualitative"));
     }
+
+    @Test
+    void whenTwoUsersWithEvidenceWithAllCategoriesInDifferentGroups_testGetGroupCategoryDataForEachGroup() {
+        List<User> testUserList1 = new ArrayList<>(Arrays.asList(testUser1));
+        List<User> testUserList2 = new ArrayList<>(Arrays.asList(testUser1));
+        Group testGroup1 = new Group(testGroupId, "Short Name", "Long Name", testParentProjectId, testUserList1);
+        Group testGroup2 = new Group(testGroupId + 1, "Short Name 2", "Long Name 2", testParentProjectId, testUserList2);
+
+        Set<Categories> testCategoriesSet = new HashSet<>(Arrays.asList(Categories.QUANTITATIVE, Categories.QUALITATIVE, Categories.SERVICE));
+        Evidence testEvidence1 = new Evidence();
+        Evidence testEvidence2 = new Evidence();
+        testEvidence1.setCategories(testCategoriesSet);
+        testEvidence2.setCategories(testCategoriesSet);
+
+
+
+        EvidenceService mockedEvidenceService = Mockito.mock(EvidenceService.class);
+        Mockito.doReturn(List.of(testEvidence1), List.of(testEvidence2)).when(mockedEvidenceService).getEvidenceForPortfolio(any(int.class), any(int.class));
+        groupChartDataService.setEvidenceService(mockedEvidenceService);
+
+        Map<String, Integer> result = groupChartDataService.getGroupCategoryInfo(testGroup1);
+        assertEquals(1, result.get("Service"));
+        assertEquals(1, result.get("Quantitative"));
+        assertEquals(1, result.get("Qualitative"));
+
+        Map<String, Integer> result2 = groupChartDataService.getGroupCategoryInfo(testGroup2);
+        assertEquals(1, result2.get("Service"));
+        assertEquals(1, result2.get("Quantitative"));
+        assertEquals(1, result2.get("Qualitative"));
+    }
 }

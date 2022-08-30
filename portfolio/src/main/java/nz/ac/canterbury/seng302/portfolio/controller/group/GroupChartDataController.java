@@ -19,6 +19,11 @@ public class GroupChartDataController {
     @Autowired
     private GroupChartDataService groupChartDataService;
 
+    /**
+     * Used by the front end to fetch the number of commits for each category
+     * @param groupId The id of the group that data is requested for
+     * @return A map of category names to the number of times they're used
+     */
     @GetMapping("/group-{groupId}-categoriesData")
     public @ResponseBody Map<String, Integer> getCategoriesData(@PathVariable int groupId) {
         Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
