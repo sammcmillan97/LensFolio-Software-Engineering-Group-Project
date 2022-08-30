@@ -5,12 +5,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PortfolioGroupRepository extends CrudRepository<PortfolioGroup, Integer> {
 
     void deleteByGroupId(int groupId);
-    PortfolioGroup findByGroupId(int groupId);
+    Optional<PortfolioGroup> findByGroupId(int groupId);
 
     List<PortfolioGroup> findByParentProjectId(int parentProjectId);
+
+    boolean existsByGroupId(int groupId);
 }

@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.service.project;
 
+import nz.ac.canterbury.seng302.portfolio.model.group.PortfolioGroup;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.repository.project.ProjectRepository;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
+import nz.ac.canterbury.seng302.portfolio.service.group.PortfolioGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

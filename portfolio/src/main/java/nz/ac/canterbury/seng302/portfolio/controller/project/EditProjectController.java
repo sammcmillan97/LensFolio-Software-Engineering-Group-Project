@@ -1,9 +1,14 @@
 package nz.ac.canterbury.seng302.portfolio.controller.project;
 
+import nz.ac.canterbury.seng302.portfolio.model.group.PortfolioGroup;
 import nz.ac.canterbury.seng302.portfolio.model.project.DateRestrictions;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
+import nz.ac.canterbury.seng302.portfolio.service.group.PortfolioGroupService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectDateService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +36,11 @@ public class EditProjectController {
 
     @Autowired
     UserAccountClientService userAccountClientService;
+    @Autowired
+    private PortfolioGroupService portfolioGroupService;
+    @Autowired
+    private GroupsClientService groupsClientService;
+    private static final Logger PORTFOLIO_LOGGER = LoggerFactory.getLogger("com.portfolio");
 
     /* Create default project.*/
     Project defaultProject = new Project("Project 2022", "", "04/Mar/2022",
@@ -228,6 +238,12 @@ public class EditProjectController {
             int id = Integer.parseInt(projectId);
             try {
                 projectService.deleteProjectById(id);
+                String message;
+                for (PortfolioGroup g : portfolioGroupService.findPortfolioGroupsByParentProjectId(id)) {
+                    groupsClientService.deleteGroupById(g.getGroupId());
+                    message = "Group " + g.getGroupId() + " deleted successfully";
+                    PORTFOLIO_LOGGER.info(message);
+                }
             } catch (Exception ignored) {
                 // Don't do anything if delete fails
             }

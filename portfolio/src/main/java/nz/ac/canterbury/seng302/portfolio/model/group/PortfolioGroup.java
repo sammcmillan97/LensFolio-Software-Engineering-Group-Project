@@ -9,6 +9,7 @@ public class PortfolioGroup {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
+    @Column(unique = true)
     private int groupId;
     private int parentProjectId;
 
