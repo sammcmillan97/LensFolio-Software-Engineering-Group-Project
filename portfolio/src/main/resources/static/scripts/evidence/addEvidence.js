@@ -20,7 +20,8 @@ function checkValid() {
                 &&document.getElementById("flex-check--qualitative").checked===(originalCategories.includes("Qualitative"))
                 &&document.getElementById("flex-check--service").checked===(originalCategories.includes("Service"))
                 &&arraysMatch(originalEvidenceSkills, skillList)
-                &&arraysMatch(originalEvidenceUsers, userList));
+                //&&arraysMatch(originalEvidenceUsers, userList)
+            );
     }
 }
 
