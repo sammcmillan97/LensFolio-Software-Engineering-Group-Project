@@ -126,9 +126,14 @@
             <p class="evidence-form__error-message" th:text="${usersError}" />
             <input type="hidden" id="evidence-form__hidden-users-field" name="evidenceUsers"/>
 
+            <!-- Commits !-->
+            <div th:if="${displayCommits}">
+                <button type="button" class="btn btn-primary evidence-form__add-commits-button">Add Commits</button>
+            </div>
+
             <!-- Submit form !-->
-            <button type="submit" id="evidence-form__save" disabled>Save Changes</button>
-            <a id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
+            <button type="submit" class="evidence-form__control-button" id="evidence-form__save" disabled>Save Changes</button>
+            <a class="evidence-form__control-button" id="evidence-form__discard" th:href="@{portfolio}">Discard</a>
             <p class="evidence-form__error-message" th:text="${generalError}" />
         </form>
     </div>

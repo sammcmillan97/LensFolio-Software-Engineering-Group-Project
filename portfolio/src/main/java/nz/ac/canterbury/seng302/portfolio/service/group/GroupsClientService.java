@@ -139,10 +139,16 @@ public class GroupsClientService {
         return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
     }
 
+    /**
+     * Checks if the given user is in the given group
+     * @param groupId Group id of the group to check
+     * @param userId User id of the user to check
+     * @return A boolean, true if the user is in the group, false otherwise
+     */
     public boolean userInGroup(int groupId, int userId) {
         Group group = new Group(getGroupDetailsById(groupId));
-        for (User u : group.getMembers()) {
-            if (u.getId() == userId) {
+        for (User user : group.getMembers()) {
+            if (user.getId() == userId) {
                 return true;
             }
         }
