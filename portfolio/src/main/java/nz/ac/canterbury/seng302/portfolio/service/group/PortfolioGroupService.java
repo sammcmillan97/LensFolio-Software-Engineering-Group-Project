@@ -60,7 +60,8 @@ public class PortfolioGroupService {
      */
     public void deletePortfolioGroupByGroupId(int groupId) {
         if (portfolioGroupRepository.existsByGroupId(groupId)) {
-            portfolioGroupRepository.deleteByGroupId(groupId);
+            PortfolioGroup g = getPortfolioGroupByGroupId(groupId);
+            portfolioGroupRepository.delete(g);
             String message = "Group " + groupId + " portfolio group deleted successfully";
             PORTFOLIO_LOGGER.info(message);
         } else {
@@ -77,5 +78,14 @@ public class PortfolioGroupService {
      */
     public List<PortfolioGroup> findPortfolioGroupsByParentProjectId(int parentProjectId) {
         return portfolioGroupRepository.findByParentProjectId(parentProjectId);
+    }
+
+    /**
+     * Fetches the parent project id of the given group
+     * @param groupId Group id from the idp
+     * @return The id of the groups parent project
+     */
+    public int findParentProjectIdByGroupId(int groupId) {
+        return getPortfolioGroupByGroupId(groupId).getParentProjectId();
     }
 }

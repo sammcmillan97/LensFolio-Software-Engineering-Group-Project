@@ -20,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -239,7 +240,8 @@ public class EditProjectController {
             try {
                 projectService.deleteProjectById(id);
                 String message;
-                for (PortfolioGroup g : portfolioGroupService.findPortfolioGroupsByParentProjectId(id)) {
+                List<PortfolioGroup> groupsToDelete = portfolioGroupService.findPortfolioGroupsByParentProjectId(id);
+                for (PortfolioGroup g : groupsToDelete) {
                     groupsClientService.deleteGroupById(g.getGroupId());
                     message = "Group " + g.getGroupId() + " deleted successfully";
                     PORTFOLIO_LOGGER.info(message);

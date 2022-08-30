@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +30,8 @@ class GroupServiceTest {
     @Spy
     @Autowired
     GroupRepositorySettingsService groupRepositorySettingsService;
+    @Autowired
+    PortfolioGroupService portfolioGroupService;
 
     // Test that a user is in a group when they are in it
     @Test
@@ -78,6 +81,7 @@ class GroupServiceTest {
     }
 
     @Test
+    @Transactional
     void whenGroupDeleted_testGroupRepositorySettingsDeleted() {
         List<UserResponse> users = new ArrayList<>();
         GroupDetailsResponse groupResponse = GroupDetailsResponse.newBuilder()
@@ -89,6 +93,7 @@ class GroupServiceTest {
 
         // Ensure the group repository settings have been created
         groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(testGroup.getGroupId());
+        portfolioGroupService.createPortfolioGroup(testGroup.getGroupId(), 1);
         assertTrue(groupRepositorySettingsService.existsByGroupId(testGroup.getGroupId()));
 
         // Mock the groups stub and the DeleteGroupResponse

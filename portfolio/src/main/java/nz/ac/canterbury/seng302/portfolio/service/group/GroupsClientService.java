@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -130,6 +131,22 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
+    }
+
+    /**
+     * Gets all groups in a list of group responses. Uses the getPaginatedGroups method twice, first to get the number of
+     * groups in the database, then to get all groups
+     * @return A list of group responses, ordered by short name, in ascending order
+     */
+    public List<Group> getAllGroupsInProject(int projectId) {
+        GroupListResponse response = getAllGroups();
+        List<Group> groups = new ArrayList<>();
+        for (Group g : response.getGroups()) {
+            if (portfolioGroupService.findParentProjectIdByGroupId(g.getGroupId()) == projectId) {
+                groups.add(g);
+            }
+        }
+        return groups;
     }
 
     /**
