@@ -13,6 +13,13 @@
     <script th:inline="javascript">
         const ALL_SKILLS = [[${skillsList}]];
         let ALL_USERS = [];
+        let evidenceId = [[${evidenceId}]];
+        let originalEvidenceTitle = [[${evidenceTitle}]];
+        let originalEvidenceDescription = [[${evidenceDescription}]];
+        let originalEvidenceDate = [[${evidenceDate}]];
+        let originalCategories = [[${categories}]];
+        let originalEvidenceSkills = [[${evidenceSkills}]];
+        let originalEvidenceUsers = [[${evidenceUsers}]];
     </script>
 
     <script type="text/javascript" th:inline="javascript" th:each="user, iterInfo: ${users}">
@@ -39,19 +46,25 @@
     <div id="evidence-form__wrapper">
         <!-- Heading -->
         <header class="evidence-form__header flex-column">
-            <h1 id="evidence__name" th:text="'Add Evidence'"></h1>
+            <div th:if="${evidenceId == -1}">
+                <h1 id="evidence__name" th:text="'Add Evidence'"></h1>
+            </div>
+            <div th:if="${evidenceId != -1}">
+                <h1 th:text="'Editing: ' + ${evidenceTitle}"></h1>
+            </div>
+
         </header>
 
         <!-- Add Evidence Form -->
         <form id="evidence-form__form" class="flex-column" th:action="@{editEvidence-{evidenceId}(evidenceId=${evidenceId})}" th:method="post">
             <!-- Evidence Name !-->
             <label>Title *</label>
-            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" onkeyup="checkEmpty()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" th:pattern="${titlePattern}" title="Evidence Name must not be blank and cannot contain special characters" required>
+            <input minlength="2" maxlength="64" type="text" id="evidence-form__title-field" onkeyup="checkValid()" name="evidenceTitle" placeholder="Evidence Title" th:value="${evidenceTitle}" th:pattern="${titlePattern}" title="Evidence Name must not be blank and cannot contain special characters" required>
             <p class="evidence-form__error-message" th:text="${titleError}" />
             <!-- Evidence Description !-->
             <label>Description *</label>
             <span id="evidence-form__helper">Minimum 50 characters</span>
-            <textarea minlength="50" maxlength="1024" type="text" id="evidence-form__description-field" onkeyup="checkEmpty()" name="evidenceDescription" placeholder="Evidence Description" th:value="${evidenceDescription}" required></textarea>
+            <textarea minlength="50" maxlength="1024" type="text" id="evidence-form__description-field" onkeyup="checkValid()" name="evidenceDescription" placeholder="Evidence Description" th:text="${evidenceDescription}" required></textarea>
             <p class="evidence-form__error-message" th:text="${descriptionError}" />
             <!-- Evidence Date !-->
             <label>Date *
@@ -60,7 +73,7 @@
                       title="The date the evidence occurred (Cannot be outside project dates)">
                 </span>
             </label>
-            <input type="date" id="evidence-form__date-field" name="evidenceDate" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
+            <input type="date" id="evidence-form__date-field" name="evidenceDate" onchange="checkValid()" th:placeholder="${evidenceDate}" th:value="${evidenceDate}" th:min="${minEvidenceDate}" th:max="${maxEvidenceDate}" required>
             <p class="evidence-form__error-message" th:text="${dateError}" />
             <!-- Evidence Categories !-->
             <!-- (Can add th:checked values in the future for editing evidence, so the pre existing categories are pre-ticked) !-->
@@ -69,21 +82,21 @@
             </label>
             <div class="flex-row" id="evidence-form__categories-check">
                 <div class="form-check edit-input">
-                    <input type="checkbox" value="" id="flex-check--quantitative" name="isQuantitative">
+                    <input type="checkbox" value="" id="flex-check--quantitative" name="isQuantitative" onclick="checkValid()" th:checked="${#strings.contains(categories,  'Quantitative')?true:false}">
                     <label class="form-check-label" for="flex-check--quantitative">
                         Quantitative
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input type="checkbox" value="" id="flex-check--qualitative" name="isQualitative">
+                    <input type="checkbox" value="" id="flex-check--qualitative" name="isQualitative" onclick="checkValid()" th:checked="${#strings.contains(categories,  'Qualitative')?true:false}">
                     <label class="form-check-label" for="flex-check--qualitative">
                         Qualitative
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input type="checkbox" value="" id="flex-check--service" name="isService">
+                    <input type="checkbox" value="" id="flex-check--service" name="isService" onclick="checkValid()" th:checked="${#strings.contains(categories,  'Service')?true:false}">
                     <label class="form-check-label" for="flex-check--service">
                         Service
                     </label>
@@ -99,7 +112,7 @@
             <div id="skill-input-container">
                 <div id="skill-container">
                   <div class="input-container">
-                    <input type="text" id="skills-input" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
+                    <input type="text" id="skills-input" onkeyup="checkValid()" th:value="${evidenceSkills}" contenteditable="true" autocomplete="off"
                        placeholder="Add Skills"/>
                   </div>
                 </div>
@@ -118,7 +131,7 @@
             <div id="user-input-container">
                 <div id="user-container">
                     <div class="input-container">
-                        <input type="text" id="users-input" th:value="${evidenceUsers}" contenteditable="true" autocomplete="off"
+                        <input type="text" id="users-input" th:value="${evidenceUsers}" onkeyup="checkValid()" contenteditable="true" autocomplete="off"
                                placeholder="Add Skills"/>
                     </div>
                 </div>
