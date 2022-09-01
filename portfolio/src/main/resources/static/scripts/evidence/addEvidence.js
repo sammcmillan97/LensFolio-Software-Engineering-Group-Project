@@ -7,7 +7,6 @@ function checkValid() {
             || document.getElementById("evidence-form__description-field").value.length < 50
             || document.getElementById("evidence-form__description-field").value.length > 1024;
     } else {
-        console.log(arraysMatch(originalEvidenceSkills, skillList));
         document.getElementById('evidence-form__save').disabled =
             document.getElementById("evidence-form__title-field").value.length < 2
             || document.getElementById("evidence-form__title-field").value.length > 64
