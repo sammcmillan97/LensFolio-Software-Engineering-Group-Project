@@ -37,7 +37,7 @@
     </div>
     <div class="member-container">
       <div class="member-block" th:each="member: ${group.getMembers()}">
-        <div th:replace="fragments/groupMember"></div>
+        <div th:replace="fragmentsGroup/groupMember"></div>
       </div>
     </div>
   </div>
