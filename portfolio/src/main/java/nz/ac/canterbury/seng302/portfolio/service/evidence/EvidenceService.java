@@ -228,7 +228,7 @@ public class EvidenceService {
                 Evidence evidence = getEvidenceById(evidenceId);
                 evidence.addWebLink(weblink);
                 saveEvidence(evidence);
-                String message = "Evidence weblink" + weblink.getName() + " saved successfully";
+                String message = "Evidence web link " + weblink.getName() + " saved successfully";
                 PORTFOLIO_LOGGER.info(message);
             } catch (NoSuchElementException e) {
                 String message = "Evidence " + evidenceId + " not found. Weblink not saved";
