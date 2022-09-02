@@ -23,7 +23,7 @@ async function getWebLinks(id) {
  * edit modal. Then updates the web link on the page with the updated information.
  */
 async function saveWebLink(id) {
-    bootstrap.Modal.getInstance(document.getElementById(`addingWeblink_${id}`)).hide()
+
     // Build the url with the repository information as parameters
     let url
     url = new URL (`${CONTEXT}/addWebLink-${id}`);
@@ -33,15 +33,24 @@ async function saveWebLink(id) {
 
     // Send a post request to update the web link
     // Receives the updated element HTML content as a response
-    const updatedEvidence = await fetch(url, {
+    let updatedEvidence = await fetch(url, {
         method: "POST"
     }).then(res => {
-        return res.text()
+        if (res.status === 400) {
+            return false
+        } else {
+            return res.text();
+        }
     })
     // Update the page with the new HTML content
-    const evidenceWrapper = document.getElementById(`web-link__wrapper_${id}`)
-    evidenceWrapper.innerHTML = updatedEvidence
-    return false;
+    if (updatedEvidence) {
+        const evidenceWrapper = document.getElementById(`web-link__wrapper_${id}`);
+        evidenceWrapper.innerHTML = updatedEvidence;
+        bootstrap.Modal.getInstance(document.getElementById(`addingWeblink_${id}`)).hide();
+        return false;
+    } else {
+        document.getElementById("weblink-incorrect").hidden = false;
+    }
 }
 
 // Clears the edit modal
@@ -49,6 +58,7 @@ function clearModel(id) {
     console.log(id);
     document.getElementById(`weblink-modal__name-field_${id}`).value = "";
     document.getElementById(`weblink-modal__link-field_${id}`).value = "";
+    document.getElementById("weblink-incorrect").hidden = true;
 }
 
 // Sets index that of the web link in the modal. The index is that from the evidence web links array.
@@ -59,6 +69,7 @@ function setIndex(i) {
 // Sets the modal to have details from the web link to edit.
 function editWebLink(name, link, safe, id) {
     let isTrueSet = (safe === 'true');
+    document.getElementById("weblink-incorrect").hidden = true;
     if (name) {
         document.getElementById(`weblink-modal__name-field_${id}`).value = name;
     }

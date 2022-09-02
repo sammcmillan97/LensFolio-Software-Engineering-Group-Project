@@ -63,7 +63,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header weblink-modal__header">
-                        <h5 class="modal-title" id="modalTitle">Add Weblink</h5>
+                        <h5 class="modal-title" id="modalTitle">Save Weblink</h5>
                         <button type="button" class="btn-close close-button" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="weblink-modal__wrapper">
@@ -72,7 +72,7 @@
                             <input type="text" th:id="weblink-modal__name-field_ + ${evidence.getId}" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
                             <label> Link *</label>
                             <input type="url" th:id="weblink-modal__link-field_ + ${evidence.getId}" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
-
+                            <p id="weblink-incorrect" hidden>Incorrect Web Link Format. Example: 'http://example.com'</p>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
                                 <button type="submit" class="btn btn-primary">Save</button>
