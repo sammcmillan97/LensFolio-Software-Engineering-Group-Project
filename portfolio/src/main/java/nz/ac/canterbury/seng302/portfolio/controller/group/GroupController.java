@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 public class GroupController {
     private static final String GROUP_PAGE = "templatesGroup/group";
-    private static final String GROUP_REPOSITORY = "fragmentsGroup/groupRepository";
+    private static final String GROUP_REPOSITORY = "fragmentsGroup/groupRepositorySettings";
 
     @Autowired
     private UserAccountClientService userAccountClientService;

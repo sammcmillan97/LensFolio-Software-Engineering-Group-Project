@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<div class="group-home">
+    <h1> Group Members </h1>
+    <div class="group-members">
+        <div class="member-container">
+            <div class="member-block" th:each="member: ${group.getMembers()}">
+                <div th:replace="fragmentsGroup/groupMember"></div>
+            </div>
+        </div>
+    </div>
+</div>
