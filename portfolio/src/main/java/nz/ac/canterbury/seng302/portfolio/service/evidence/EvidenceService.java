@@ -165,7 +165,7 @@ public class EvidenceService {
                 Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
                 copiedEvidence.addSkill(skillList);
                 copiedEvidence.setCategories(categoriesSet);
-                //TODO Currently these will only be used in the case of editing evidence then adding a user wait for response from Moffat to see if should be removed
+
                 for (WebLink webLink : evidence.getWebLinks()) {
                     copiedEvidence.addWebLink(webLink);
                 }
@@ -175,6 +175,7 @@ public class EvidenceService {
                 for (Integer user: evidence.getUsers()) {
                     copiedEvidence.addUser(user);
                 }
+
                 // This is to make sure that there are no duplicate skills in the other user's portfolio
                 List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
                 copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
