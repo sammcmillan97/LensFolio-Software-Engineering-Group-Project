@@ -1,11 +1,32 @@
 <!DOCTYPE html>
+
+
 <div class="group-home">
-    <h1> Group Members </h1>
-    <div class="group-members">
-        <div class="member-container">
-            <div class="member-block" th:each="member: ${group.getMembers()}">
-                <div th:replace="fragmentsGroup/groupMember"></div>
-            </div>
+    <div class="row">
+
+        <div class="col-lg-8">
+            <h2>Group Feed</h2>
         </div>
+
+        <div class="col-lg">
+                <div class="group-members">
+                    <h2>Group Members</h2>
+                    <div class="group-members_container">
+                        <div class="member-block" th:each="member: ${group.getMembers()}">
+                            <div class="group-member">
+                                <img class="member-image" th:src="${member.getProfileImagePath()}" alt="Profile Photo">
+                                <div class="member-details__container">
+                                    <div class="member-name__container">
+                                        <h2 class="member-name" th:text="${member.getFirstName()}"></h2>
+                                        <h2 class="member-name" th:text="${member.getLastName()}"></h2>
+                                    </div>
+                                    <p class="member-name" th:text="${member.getNickname()}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
     </div>
 </div>
