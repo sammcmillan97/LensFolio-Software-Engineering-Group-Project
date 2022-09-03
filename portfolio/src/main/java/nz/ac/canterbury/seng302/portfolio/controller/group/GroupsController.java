@@ -151,22 +151,6 @@ public class GroupsController {
     }
 
     /**
-     * Checks if the given user is in the given group
-     * @param userId User id of the user to check
-     * @param groupId Group id of the group to check
-     * @return A boolean, true if the user is in the group, false otherwise
-     */
-    protected boolean userInGroup(int userId, int groupId) {
-        Group group = new Group(groupsClientService.getGroupDetailsById(groupId));
-        for (User member : group.getMembers()) {
-            if (member.getId() == userId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Takes a group id and a list of members, adds those members to the group,
      * then returns an updated group table as HTML
      * @param principal Authentication principal storing current user information
@@ -212,7 +196,7 @@ public class GroupsController {
             // Remove each user from all their groups
             for (int memberId : members) {
                 for (Group tempGroup : groupsClientService.getAllGroups().getGroups()) {
-                    if (userInGroup(memberId, tempGroup.getGroupId())) {
+                    if (groupsClientService.userInGroup(tempGroup.getGroupId(), memberId)) {
                         groupsClientService.removeGroupMembers(tempGroup.getGroupId(), List.of(memberId));
                     }
                 }
@@ -227,7 +211,7 @@ public class GroupsController {
             List<Integer> usersToAdd = new ArrayList<>();
             for (int userId : members) {
                 // Only add the user if they aren't already in the group
-                if (!userInGroup(userId, groupId)) {
+                if (!groupsClientService.userInGroup(groupId, userId)) {
                     usersToAdd.add(userId);
                 }
             }
@@ -280,7 +264,7 @@ public class GroupsController {
         model.addAttribute("user", user);
         model.addAttribute(USER_IS_TEACHER, userIsTeacher);
         model.addAttribute(USER_IS_ADMIN, userIsAdmin);
-        model.addAttribute(USER_IS_MEMBER, userInGroup(userId, groupId));
+        model.addAttribute(USER_IS_MEMBER, groupsClientService.userInGroup(groupId, userId));
         model.addAttribute(GROUPLESS_GROUP_ID_STRING, GROUPLESS_GROUP_ID);
         model.addAttribute(TEACHER_GROUP_ID_STRING, TEACHER_GROUP_ID);
         return GROUPS_TABLE;
@@ -331,7 +315,7 @@ public class GroupsController {
             List<Integer> usersToRemove = new ArrayList<>();
             for (int userId : members) {
                 // Only remove the user if they are in the group
-                if (userInGroup(userId, groupId)) {
+                if (groupsClientService.userInGroup(groupId, userId)) {
                     usersToRemove.add(userId);
                 }
             }
