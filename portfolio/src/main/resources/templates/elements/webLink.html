@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<div class="web-links" th:each="web: ${webLinks}">
+  <p class="web-link__name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
+  <em th:if="${web.isSafe()}" class="bi bi-lock"></em>
+  <em th:if="${!web.isSafe()}" class="bi bi-unlock"></em>
+  <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
+     th:href="${web.isSafe() ? 'https://' +web.getLink() : 'http://' +web.getLink()}"></a>
+  <i th:id="${webLinks.indexOf(web)}" class="bi bi-pencil-fill" data-bs-toggle="modal"
+     th:data-bs-target="'#addingWeblink_' + ${evidenceId}" style="margin-left: auto"
+     th:data-web-link-name="${web.getName}"
+     th:data-web-link-link="${web.getLink}"
+     th:data-web-link-safe="${web.isSafe}"
+     th:data-web-link-evidenceId="${evidenceId}"
+     th:data-web-link-index="${webLinks.indexOf(web)}"
+     onclick="setIndex(this.getAttribute('data-web-link-index'));
+     editWebLink(this.getAttribute('data-web-link-name'),
+     this.getAttribute('data-web-link-link'),
+     this.getAttribute('data-web-link-safe'),
+     this.getAttribute('data-web-link-evidenceId'))"
+  ></i>
+</div>

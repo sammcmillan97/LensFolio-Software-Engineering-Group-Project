@@ -10,11 +10,15 @@
     <link rel="stylesheet" th:href="@{styles/evidence/categories.css}">
     <link rel="stylesheet" th:href="@{styles/evidence/skills.css}">
 
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
     <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
-
+    <script th:inline="javascript">
+      const CONTEXT = [[${@environment.getProperty('PORTFOLIO_CONTEXT')}]];
+      let EVIDENCE_IDS = [];
+      let middle_id;
+    </script>
+    <script rel="script" th:src="@{scripts/evidence/saveWeblinks.js}"></script>
     <title>Portfolio</title>
 </head>
 
@@ -60,4 +64,9 @@
     </div>
 </div>
 </body>
+<script th:inline="javascript">
+  for (let i = 0; i < EVIDENCE_IDS.length; i++) {
+    getWebLinks(EVIDENCE_IDS[i])
+  }
+</script>
 </html>

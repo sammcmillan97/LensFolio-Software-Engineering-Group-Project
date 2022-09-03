@@ -101,6 +101,10 @@ public class Evidence {
         this.webLinks.add(webLink);
     }
 
+    public void addWebLinkWithIndex(WebLink webLink, int index) {
+        this.webLinks.set(index, webLink);
+    }
+
     public List<Commit> getCommits() {return commits; }
 
     public void addCommit(Commit commit) {this.commits.add(commit); }
