@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-public class GroupSettingsController {
-    private static final String SETTINGS_PAGE = "templatesGroup/groupSettings";
-    private static final String GROUP_REPOSITORY = "elements/groupRepository";
+public class GroupController {
+    private static final String GROUP_PAGE = "templatesGroup/group";
+    private static final String GROUP_REPOSITORY = "fragmentsGroup/groupRepositorySettings";
 
     @Autowired
     private UserAccountClientService userAccountClientService;
@@ -44,7 +44,7 @@ public class GroupSettingsController {
      * @param model Parameters sent to thymeleaf template to be rendered into HTML
      * @return The  group settings html page
      */
-    @GetMapping("/groupSettings-{id}")
+    @GetMapping("/group-{id}")
     public String groups(@AuthenticationPrincipal AuthState principal, Model model, @PathVariable String id){
         int userId = userAccountClientService.getUserId(principal);
         User user = userAccountClientService.getUserAccountById(userId);
@@ -57,7 +57,7 @@ public class GroupSettingsController {
         model.addAttribute("group", group);
         model.addAttribute("userInGroup", groupsClientService.userInGroup(group.getGroupId(), userId));
         model.addAttribute("user", user);
-        return SETTINGS_PAGE;
+        return GROUP_PAGE;
     }
 
     /**
@@ -66,7 +66,7 @@ public class GroupSettingsController {
      * @param id The group id
      * @return A html fragment that contains the updated repository information
      */
-    @GetMapping("/groupSettings-{id}-repository")
+    @GetMapping("/group-{id}-repository")
     public String groupRepository(Model model, @PathVariable String id, @RequestParam("firstLoad") boolean firstLoad) {
         GroupRepositorySettings groupRepositorySettings = groupRepositorySettingsService.getGroupRepositorySettingsByGroupId(Integer.parseInt(id));
 
@@ -94,7 +94,7 @@ public class GroupSettingsController {
      * @param id The group id
      * @return A html fragment that contains the updated repository information
      */
-    @PostMapping("/groupSettings-{id}-repository")
+    @PostMapping("/group-{id}-repository")
     public String updateGroupRepository(@AuthenticationPrincipal AuthState principal,
                                         Model model,
                                         @RequestParam("repositoryName") String repositoryName,

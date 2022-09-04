@@ -31,7 +31,7 @@ public class GroupsController {
     private static final String GROUP_STRING = "group";
     private static final String GROUPS_STRING = "groups";
 
-    private static final String GROUPS_TABLE = "elements/groupTable";
+    private static final String GROUPS_TABLE = "fragmentsGroup/groupTable";
 
     private static final String USER_IS_MEMBER = "userIsMember";
 

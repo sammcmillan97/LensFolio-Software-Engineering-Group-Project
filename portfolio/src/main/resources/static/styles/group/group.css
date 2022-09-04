@@ -24,7 +24,7 @@ html {
     display: none !important;
 }
 
-/******************** Project Details ********************/
+/* Group Header */
 
 #group {
     position: relative;
@@ -32,14 +32,14 @@ html {
     padding-top: 0;
     padding-bottom: 0;
     border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    border-radius: 10px;
     background-color: var(--color-complement);
 
     overflow: hidden;
 }
 
 #group header {
-    padding: 3rem 2rem 3rem 2rem;
+    padding: 15px 15px 15px 15px;
     border-bottom: 1px solid var(--color-accent);
 
     background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
@@ -53,56 +53,110 @@ html {
     word-wrap: break-word;
 }
 
-.member-container {
+/* Tab Buttons */
+
+.carousel-buttons {
+    justify-content: space-between;
+    /*width: 100%;*/
+    margin-top: 1rem;
+    gap: 15px;
+}
+
+.btn-fill-tertiary {
+    color: white;
+    border-color: var(--color-accent);
+    background-color: #e06c41;
+    border-radius: 3px;
+    height: 3rem;
+    box-shadow: none !important;
     width: 100%;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 10px 10px 10px 10px;
+    font-size: 1.5rem;
 }
 
-.group-member {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5em;
-    border: 1px solid var(--color-accent);
-    background-color: rgba(251, 196, 144, 0.3);
-    border-radius: 10px;
-    padding: 5px 5px 5px 5px;
-    align-items: center;
-
+.btn-fill-tertiary:hover {
+    color: #f78e55;
+    border-color: #f78e55;
+    background-color: #f4ebe6;
+    height: 3rem;
+    box-shadow: none !important;
+    width: 100%;
+    font-size: 1.5rem;
 }
 
-.member-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
+/* Group Home */
+
+.group-home {
+    padding-top: 20px;
 }
 
-.member-details__container {
+.group-members {
+    background-color: var(--color-secondary);
     display: flex;
     flex-direction: column;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
 }
 
-.member-name__container {
+
+.group-members__container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    column-gap: 5px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding-top: 10px;
+    max-height: 22rem;
+    overflow-y: auto;
+    border-top: 1px solid var(--color-accent);
 }
 
-.member-name {
-    margin: 0;
-    padding: 0;
+.group-member__container {
 }
+
+.group-member__link {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-direction: row;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+.group-member__link:hover {
+    color: var(--color-tertiary);
+}
+
+.group-member__image {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50px;
+}
+
+.group-member__name-container {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 20px;
+    padding-left: 20px;
+}
+
+.group-member__nickname {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 20px;
+    margin-left: auto;
+}
+
+/* Group Repository */
 
 #group-repository-form__wrapper {
     display: block;
     background-color: var(--color-complement);
     border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    border-radius: 10px;
     overflow: hidden;
 }
 
@@ -138,7 +192,7 @@ html {
     margin-bottom: 1rem;
     background-color: var(--color-complement);
     border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    border-radius: 10px;
     overflow: hidden;
 
     height: 3rem;
@@ -164,7 +218,7 @@ html {
     margin: 1rem 0 1rem 0;
     visibility: visible;
     border: 1px solid var(--color-accent);
-    border-radius: 1.5rem;
+    border-radius: 10px;
     background-color: var(--color-complement);
 }
 
@@ -182,3 +236,5 @@ html {
 #group-repository-information {
     margin: 1rem;
 }
+
+
