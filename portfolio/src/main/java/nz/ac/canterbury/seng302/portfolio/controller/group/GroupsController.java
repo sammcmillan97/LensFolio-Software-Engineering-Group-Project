@@ -215,7 +215,7 @@ public class GroupsController {
             // Remove each user from all their groups
             for (int memberId : members) {
                 for (Group tempGroup : groupsClientService.getAllGroupsInProject(projectId)) {
-                    if (userInGroup(memberId, tempGroup.getGroupId())) {
+                    if (groupsClientService.userInGroup(memberId, tempGroup.getGroupId())) {
                         groupsClientService.removeGroupMembers(tempGroup.getGroupId(), List.of(memberId));
                     }
                 }
