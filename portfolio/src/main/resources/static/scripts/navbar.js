@@ -1,3 +1,5 @@
+let toggle = 0;
+
 function expandNav() {
     document.getElementById("site-navigation").classList.remove("collapsed");
     document.getElementById("site-navigation").classList.add("expanded");
@@ -25,3 +27,48 @@ function toggleNavbarVisibility() {
         collapseNav();
     }
 }
+
+/**
+ * Function to handle dropdown when arrow clicked.
+ */
+function dropDown() {
+    let dropdown = document.getElementById("js-dropdown__list");
+    if (toggle === 0) {
+        dropdown.style.display = 'block';
+        toggle = 1;
+    } else {
+        dropdown.style.display = 'none';
+        toggle = 0;
+    }
+}
+
+/**
+ * Event listeners and function for checking when clicked off dropdown to close it.
+ */
+document.addEventListener("touchend", eventHandle)
+document.addEventListener("click", eventHandle)
+function eventHandle(e) {
+    let dropdown = document.getElementById("js-dropdown__list");
+    let classList = e.target.classList;
+    if (!(classList.contains("dropdown") || classList.contains("clear-decoration") || classList.contains("navigation_icon")
+        || classList.contains("dropdown__container") || classList.contains("dropdown-content")
+        || classList.contains("site-navigation__sublabel") || classList.contains("site-navigation__sublink"))) {
+        dropdown.style.display = 'none';
+        toggle = 0;
+    }
+}
+
+/**
+ * Function handles hovering over dropdown open and close.
+ */
+document.addEventListener("mouseover", (e) => {
+    let dropdown = document.getElementById("js-dropdown__list");
+    let classList = e.target.classList;
+    if (classList.contains("dropdown") || classList.contains("clear-decoration") || classList.contains("navigation_icon")
+        || classList.contains("dropdown__container") || classList.contains("dropdown-content")
+        || classList.contains("site-navigation__sublabel") || classList.contains("site-navigation__sublink")) {
+        dropdown.style.display = 'block';
+    } else if (toggle === 0) {
+        dropdown.style.display = 'none';
+    }
+})

@@ -3,22 +3,35 @@
 <!-- List of Evidence -->
 <div id="evidence__form-wrapper flex-column">
     <div class="evidence__collapsed" th:each="evidence: ${evidenceList}">
-        <div class="evidence_title_child" type="button" data-bs-toggle="collapse"
+        <div class="evidence-title__child" type="button" data-bs-toggle="collapse"
              th:aria-controls="evidence_ + ${evidence.getId}" aria-expanded="false"
              th:data-bs-target="'#evidence_' + ${evidence.getId}">
             <h2 class="evidence__title" th:text="${evidence.getTitle} + ' - '"></h2>
             <h3 class="evidence__date" th:text="${evidence.getDateString} "></h3>
         </div>
+        <div th:if="${owner}" class="evidence-title-div__buttons ">
+            <form action="#" class="evidence-title--form" th:action="@{deleteEvidence-{evidenceId}(evidenceId=${evidence.getId})}" onSubmit="return confirm('Are you sure you want to delete this piece of evidence?\nThis action cannot be undone.')" th:method="delete" >
+                <button type="submit" class="evidence-title--icon_container-delete">
+                    <i class="bi bi-trash evidence-title--icon"></i>
+                </button>
+            </form>
+        </div>
+        <div th:if="${owner}" class="evidence-title-div__buttons">
+            <a class="evidence-title--icon_container" th:href="@{editEvidence-{evidenceId}(evidenceId=${evidence.getId})}">
+                <em class="bi bi-pencil-square evidence-title--icon"></em>
+            </a>
+        </div>
+
 
         <!-- Evidence Details -->
         <div class="evidence__details collapse" th:id="evidence_ + ${evidence.getId}">
-            <div class="evidence__details_expanded flex-column" >
+            <div class="evidence__details--expanded flex-column" >
                 <h4 class="evidence__description" th:text="${evidence.getDescription} "></h4>
                 <div class="evidence__skills">
-                    <a th:each="category: ${evidence.getCategories}" class="category-link" th:text="${category}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
-                    <a th:each="skill: ${evidence.getSkills}"  class="skill-link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
+                    <a th:each="category: ${evidence.getCategories}" class="category__link" th:text="${category}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-categories?category=' + ${category}"></a>
+                    <a th:each="skill: ${evidence.getSkills}"  class="skill__link" th:text="${skill.replaceAll('_', ' ')}" th:href="@{${owner} ? 'portfolio' : 'portfolio-' + ${pageUser.id}} + '-skill?skill=' + ${skill}"></a>
                 </div>
-                <div class="web-link-container">
+                <div class="web-link__container">
                     <div class="web-link__header-wrapper">
                         <div th:if="${evidence.getNumberWeblinks() >  0}">
                             <h4 class="web-link-title">Web Links</h4>
@@ -32,7 +45,7 @@
                         </div>
                     </div>
                     <div class="web-links" th:each="web: ${evidence.getWebLinks()}">
-                      <p class="web-link-name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
+                      <p class="web-link__name" th:if="${web.getName() != null}" th:text="${web.getName()} + ' - '"></p>
                       <em th:if="${web.isSafe()}" class="bi bi-lock"></em>
                       <em th:if="${!web.isSafe()}" class="bi bi-unlock"></em>
                       <a target="_blank" th:text="${#strings.abbreviate(web.getLink(),80)}"
@@ -54,9 +67,9 @@
                     <div class="weblink-modal__wrapper">
                         <form id="weblink__modal" class="flex-column" th:action="@{addWebLink-{evidence}(evidence=${evidence.getId})}" th:method="post">
                             <label> Name </label>
-                            <input type="text" id="weblink-modal__name-field" class="edit-input" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
+                            <input type="text" id="weblink-modal__name-field" name="webLinkName" maxlength="64" placeholder="WebLink Name" th:value="${webLinkName}">
                             <label> Link *</label>
-                            <input type="url" id="weblink-modal__link-field" class="edit-input" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
+                            <input type="url" id="weblink-modal__link-field" name="webLink" placeholder="WebLink" th:value="${webLink}" required>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>

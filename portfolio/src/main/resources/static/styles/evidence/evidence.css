@@ -1,0 +1,224 @@
+:root {
+    /* CSS variables */
+    --color-primary: #FBAA60;
+    --color-secondary: #FADFC6FF;
+    --color-tertiary: #F67B50;
+    --color-complement: #F4EAE6;
+    --color-accent: #A82810;
+}
+
+
+/* Hide scrollbar */
+html::-webkit-scrollbar {
+    /* Chrome, Safari, Opera */
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Simple class for hiding components */
+.hidden {
+    display: none !important;
+}
+
+/******************** Evidence Cards ********************/
+
+.evidence__form-wrapper {
+    visibility: hidden !important;
+}
+
+.evidence__button-wrapper {
+    padding-bottom: 10px;
+    padding-top: 7px;
+    margin-left: auto;
+    float: right;
+}
+
+.evidence__button-wrapper button {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background-color: var(--color-complement);
+}
+
+.web-link-title {
+    float: left;
+}
+
+.evidence__collapsed {
+    display: block;
+    position: relative;
+
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background-color: var(--color-complement);
+    padding: 0 2rem 0 2rem;
+    margin-top: 1rem;
+}
+
+.evidence-title__child {
+    display: inline-block;
+    vertical-align: middle;
+    margin: auto;
+}
+
+/** Evidence delete and edit buttons */
+
+.evidence-title-div__buttons {
+    float: right;
+    display: inline;
+    padding: 25px 10px 25px 10px;
+    margin: 0 -20px 0 0;
+    font-size: 15px;
+    width: 100px;
+}
+
+.evidence-title--form {
+    padding: 0;
+    width: 90%;
+    height: 100%;
+    margin: 0;
+}
+
+.evidence-title--icon_container {
+    width: 100%;
+    color: black;
+    padding: 20px 20px 10px 20px;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.evidence-title--icon_container-delete {
+    width: 100%;
+    color: black;
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    background-color: transparent;
+    margin: -8px 0 0 0;
+    padding: 5px 0 4px 0;
+}
+
+.evidence-title--icon_container:hover {
+    color: black;
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+}
+
+.evidence-title--icon {
+    font-size: 25px;
+}
+
+
+.evidence__title, .evidence__date {
+    margin: 0 1rem 0 0;
+    padding: 0;
+    float: left;
+    height: 5rem;
+    line-height: 5rem;
+
+    cursor: pointer;
+}
+
+.evidence-title__child:hover, .evidence__title--icon_container:hover {
+    color: var(--color-accent);
+}
+
+.evidence__details {
+    border-top: 1px solid var(--color-accent);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    visibility: visible;
+}
+
+.evidence__details--expanded {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.evidence__description {
+    overflow-wrap: anywhere;
+    margin: 0 0 1rem;
+}
+
+.weblink-modal__header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-accent);
+
+    background-image: linear-gradient(180deg, var(--color-primary), var(--color-tertiary) 90%);
+    color: var(--color-complement);
+}
+
+.modal-title {
+    float: left;
+}
+
+#weblink-modal__wrapper {
+    display: block;
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#weblink__modal label {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+#weblink__modal input {
+    margin: 1rem;
+    border: none;
+    border-bottom: 2px solid lightgray;
+}
+
+/* Set a style for the button */
+#weblink__modal button {
+    background-color: var(--color-complement);
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
+
+    text-align: center;
+    color: black;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+/*Add some hover effects to buttons */
+#weblink__modal button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+    cursor: pointer;
+}
+
+.form-error-message {
+    margin-left: 10px;
+    color: red;
+    font-size: small;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+#weblink-button {
+    font-size: medium;
+    padding: 3px 5px 3px 5px;
+}
+
+#weblink-button:hover {
+    background-color: rgba(168, 40, 16, 0.3); /* Accent Colour */
+}
+
+#close-button{
+    float: right;
+}
+
+
+
+.evidence__skills {
+    display: flex;
+    flex-wrap: wrap;
+}

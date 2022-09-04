@@ -4,6 +4,8 @@ import nz.ac.canterbury.seng302.identityprovider.entity.User;
 import nz.ac.canterbury.seng302.identityprovider.repository.GroupRepository;
 import nz.ac.canterbury.seng302.identityprovider.repository.UserRepository;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,8 @@ public class DevTools {
     private static final String DEFAULT_PRONOUNS = "she/her";
     private static final String ADMIN_PASSWORD = "password400";
 
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
+
 
     /**
      * Adds some example users.
@@ -32,6 +36,7 @@ public class DevTools {
     @GetMapping("/addExampleUsers")
     @ResponseBody
     protected String addExampleUsers(){
+
         try {
             userRepository.save(new User("bauerjac","Jack", "Brown", "Bauer","Jack-Jack", "howdy", "he/him", "jack@gmail.com", DEFAULT_PASSWORD));
             userRepository.save(new User("obrianchl","Chloe", "Pearl", "OBrian", "Coco", "hello", DEFAULT_PRONOUNS, "coco@gmail.com", DEFAULT_PASSWORD));
@@ -50,9 +55,11 @@ public class DevTools {
             onlyAdmin.addRole(UserRole.COURSE_ADMINISTRATOR);
             onlyAdmin.removeRole(UserRole.STUDENT);
             userRepository.save(onlyAdmin);
+            IDENTITY_LOGGER.info("Example users added");
             return "<html><head><style>td{vertical-align:top;border:solid 1px #A82810;}</style>"
                     + "</head><body><h2>Identity Provider - Users Added</h2></body></html>";
         } catch (Exception e) {
+            IDENTITY_LOGGER.error("Unable to add users");
             throw new IllegalStateException("Unable to add users");
         }
     }
@@ -81,9 +88,11 @@ public class DevTools {
                 testUser = userRepository.findByUsername(username);
                 userRepository.deleteById(testUser.getUserId());
             }
+            IDENTITY_LOGGER.info("Example users removed");
             return "<html><head><style>td{vertical-align:top;border:solid 1px #A82810;}</style>"
                     + "</head><body><h2>Identity Provider - Users Deleted</h2></body></html>";
         } catch (Exception e) {
+            IDENTITY_LOGGER.error("Unable to remove users");
             throw new IllegalStateException("Unable to remove users");
         }
     }

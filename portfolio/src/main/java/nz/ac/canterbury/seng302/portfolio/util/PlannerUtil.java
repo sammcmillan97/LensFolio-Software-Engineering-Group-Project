@@ -1,9 +1,9 @@
 package nz.ac.canterbury.seng302.portfolio.util;
 
-import nz.ac.canterbury.seng302.portfolio.model.Deadline;
-import nz.ac.canterbury.seng302.portfolio.model.Event;
-import nz.ac.canterbury.seng302.portfolio.model.Milestone;
-import nz.ac.canterbury.seng302.portfolio.model.PlannerDailyEvent;
+import nz.ac.canterbury.seng302.portfolio.model.project.Deadline;
+import nz.ac.canterbury.seng302.portfolio.model.project.Event;
+import nz.ac.canterbury.seng302.portfolio.model.project.Milestone;
+import nz.ac.canterbury.seng302.portfolio.model.project.PlannerDailyEvent;
 
 import java.time.Instant;
 import java.time.LocalDate;

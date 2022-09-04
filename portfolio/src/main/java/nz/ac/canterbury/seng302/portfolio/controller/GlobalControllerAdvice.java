@@ -1,10 +1,10 @@
 package nz.ac.canterbury.seng302.portfolio.controller;
 
-import nz.ac.canterbury.seng302.portfolio.model.PortfolioUser;
-import nz.ac.canterbury.seng302.portfolio.model.Project;
-import nz.ac.canterbury.seng302.portfolio.service.PortfolioUserService;
-import nz.ac.canterbury.seng302.portfolio.service.ProjectService;
-import nz.ac.canterbury.seng302.portfolio.service.UserAccountClientService;
+import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
+import nz.ac.canterbury.seng302.portfolio.model.project.Project;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
+import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
+import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +80,15 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         }
     }
 
+    @ModelAttribute("authUserIsPrivileged")
+    public boolean userIsPrivileged(@AuthenticationPrincipal AuthState principal) {
+        try {
+            return userIsAdmin(principal) || userIsTeacher(principal);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * This regex will reject blanks, and emojis,
      * but still allow specific characters and numbers
@@ -88,5 +97,15 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     @ModelAttribute("titlePattern")
     public String getTitlePattern(){
         return "(" + REGEX_WITH_SPACE + "*)(" + REGEX_WITHOUT_SPACE + ")("  + REGEX_WITH_SPACE + "*)";
+    }
+
+    /**
+     * This attribute will be used in th:pattern to ensure that fields are not blank
+     * Then additional validation to be carried out in the service
+     * @return regex that will reject blank strings.
+     */
+    @ModelAttribute("isNotBlankPattern")
+    public String getIsNotBlankPattern(){
+        return "(.|\\s)*\\S(.|\\s)*";
     }
 }

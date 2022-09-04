@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+  <title th:text="${group.getShortName()}"></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link th:rel="stylesheet" th:href="@{webjars/bootstrap/5.1.3/css/bootstrap.min.css} "/>
+  <script th:src="@{webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+  <link rel="stylesheet" th:href="@{styles/stylesheet.css}">
+  <link rel="stylesheet" th:href="@{styles/group/group.css}">
+  <link rel="stylesheet" th:href="@{styles/group/groups.css}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
+  <script th:src="@{scripts/group/groupSettings.js}"></script>
+  <script th:inline="javascript">
+    const CONTEXT = [[${@environment.getProperty('PORTFOLIO_CONTEXT')}]];
+    const GROUP_ID = [[${group.getGroupId}]];
+    const userInGroup = [[${userInGroup}]];
+    const authUserIsTeacher = [[${authUserIsTeacher}]];
+  </script>
+</head>
+
+<body>
+<!-- Import the application's header bar. -->
+<header th:replace="fragments/header :: header"></header>
+<!-- Import the application's navigation bar. -->
+<nav th:replace="fragments/navbar :: navbar"></nav>
+
+<!-- Page content -->
+<div id="page-content" class="constrict">
+  <div id="group">
+    <header class="group_header flex-column">
+      <h1 class="group-short_name" th:text="${group.getShortName()}"></h1>
+      <h2 class="group-long_name" th:text="${group.getLongName()}"></h2>
+    </header>
+  </div>
+
+  <div class="carousel-buttons flex-row">
+    <button type="button" class="btn btn-fill-tertiary group-tab-button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0">
+      <span>Home</span>
+    </button>
+    <button type="button" class="btn btn-fill-tertiary group-tab-button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1">
+      <span>Statistics</span>
+    </button>
+    <button type="button" class="btn btn-fill-tertiary group-tab-button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2">
+      <span>Repository</span>
+    </button>
+  </div>
+
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="true">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div th:replace="fragmentsGroup/groupHome"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragmentsGroup/groupStatistics"></div>
+      </div>
+      <div class="carousel-item">
+        <div th:replace="fragmentsGroup/groupRepository"></div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</body>
+<script>
+  updateGroupRepositoryElement(true)
+</script>
+
+</html>

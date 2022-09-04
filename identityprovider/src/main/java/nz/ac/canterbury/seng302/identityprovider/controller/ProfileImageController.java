@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng302.identityprovider.controller;
 
 import nz.ac.canterbury.seng302.identityprovider.service.UserAccountsServerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ public class ProfileImageController {
 
     @Autowired
     private UserAccountsServerService userAccountsServerService;
+    private static final Logger IDENTITY_LOGGER = LoggerFactory.getLogger("com.identity");
 
     /**
      * Finds the request profile picture if it exists and returns a byte array
@@ -26,11 +29,13 @@ public class ProfileImageController {
     ) {
         try {
             byte[] bytes = userAccountsServerService.getProfilePicture(filename);
+            IDENTITY_LOGGER.info("Profile picture found.");
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(bytes);
         } catch (Exception e) {
+            IDENTITY_LOGGER.info("Profile picture file not found.");
             return ResponseEntity
                     .badRequest()
                     .body(null);
