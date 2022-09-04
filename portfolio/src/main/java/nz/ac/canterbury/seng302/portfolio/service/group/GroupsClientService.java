@@ -9,6 +9,7 @@ import nz.ac.canterbury.seng302.shared.identityprovider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,13 +24,19 @@ public class GroupsClientService {
 
     @Autowired
     private GroupRepositorySettingsService groupRepositorySettingsService;
+    @Autowired
+    private PortfolioGroupService portfolioGroupService;
 
-    public CreateGroupResponse createGroup(final String shortName, final String longName) {
+    public CreateGroupResponse createGroup(final String shortName, final String longName, final int parentProjectId) {
         CreateGroupRequest createGroupRequest = CreateGroupRequest.newBuilder()
                 .setShortName(shortName)
                 .setLongName(longName)
                 .build();
-        return groupsStub.createGroup(createGroupRequest);
+        CreateGroupResponse response = groupsStub.createGroup(createGroupRequest);
+        if (response.getIsSuccess()) {
+            portfolioGroupService.createPortfolioGroup(response.getNewGroupId(), parentProjectId);
+        }
+        return response;
     }
 
     public ModifyGroupDetailsResponse modifyGroupDetails(final int groupId, final String shortName, final String longName) {
@@ -67,6 +74,7 @@ public class GroupsClientService {
         // If the group was deleted in the identity provider then delete it and its repository settings in the portfolio
         if (response.getIsSuccess()) {
             groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
+            portfolioGroupService.deletePortfolioGroupByGroupId(groupId);
         }
         return response;
     }
@@ -123,6 +131,22 @@ public class GroupsClientService {
         int numGroupsInDb = response.getResultSetSize();
         return getPaginatedGroups(0, numGroupsInDb, "short", true);
 
+    }
+
+    /**
+     * Gets all groups in a list of group responses. Uses the getPaginatedGroups method twice, first to get the number of
+     * groups in the database, then to get all groups
+     * @return A list of group responses, ordered by short name, in ascending order
+     */
+    public List<Group> getAllGroupsInProject(int projectId) {
+        GroupListResponse response = getAllGroups();
+        List<Group> groups = new ArrayList<>();
+        for (Group g : response.getGroups()) {
+            if (portfolioGroupService.findParentProjectIdByGroupId(g.getGroupId()) == projectId) {
+                groups.add(g);
+            }
+        }
+        return groups;
     }
 
     /**

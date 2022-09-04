@@ -3,6 +3,8 @@ package nz.ac.canterbury.seng302.portfolio.controller.group;
 import nz.ac.canterbury.seng302.portfolio.model.group.Group;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
+import nz.ac.canterbury.seng302.portfolio.service.group.PortfolioGroupService;
+import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.CreateGroupResponse;
@@ -27,6 +29,8 @@ public class EditGroupController {
 
     @Autowired
     private GroupsController groupsController;
+    @Autowired
+    private PortfolioUserService portfolioUserService;
 
     private static final String GROUPS_REDIRECT = "redirect:/groups";
 
@@ -93,6 +97,7 @@ public class EditGroupController {
         }
 
         User user = userAccountClientService.getUserAccountById(userId);
+        int parentProjectId = portfolioUserService.getUserById(userId).getCurrentProject();
 
         int groupId;
 
@@ -106,7 +111,7 @@ public class EditGroupController {
         boolean responseSuccess;
 
         if (groupId == -1) {
-            CreateGroupResponse response = groupsClientService.createGroup(groupShortName, groupLongName);
+            CreateGroupResponse response = groupsClientService.createGroup(groupShortName, groupLongName, parentProjectId);
             responseSuccess = response.getIsSuccess();
             validationErrorList = response.getValidationErrorsList();
         } else {
