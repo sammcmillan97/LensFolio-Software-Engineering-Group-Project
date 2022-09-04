@@ -48,7 +48,7 @@ public class EditGroupController {
 
         int userId = userAccountClientService.getUserId(principal);
         //Check User is a teacher otherwise return to project page
-        if (!userAccountClientService.isTeacher(principal) && !groupsController.userInGroup(userId, Integer.parseInt(groupId))) {
+        if (!userAccountClientService.isTeacher(principal) && !groupsClientService.userInGroup(Integer.parseInt(groupId), userId)) {
             return GROUPS_REDIRECT;
         }
 
@@ -92,7 +92,7 @@ public class EditGroupController {
 
         int userId = userAccountClientService.getUserId(principal);
         //Check if it is a teacher making the request
-        if (!userAccountClientService.isTeacher(principal)&& !groupsController.userInGroup(userId, Integer.parseInt(groupIdString))) {
+        if (!userAccountClientService.isTeacher(principal)&& !groupsClientService.userInGroup(Integer.parseInt(groupIdString), userId)) {
             return GROUPS_REDIRECT;
         }
 

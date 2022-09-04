@@ -2,16 +2,21 @@ package nz.ac.canterbury.seng302.portfolio.controller;
 
 import nz.ac.canterbury.seng302.portfolio.controller.evidence.AddEvidenceController;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
+import nz.ac.canterbury.seng302.portfolio.model.group.GroupListResponse;
 import nz.ac.canterbury.seng302.portfolio.model.user.PortfolioUser;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
 import nz.ac.canterbury.seng302.portfolio.model.user.User;
 import nz.ac.canterbury.seng302.portfolio.service.evidence.EvidenceService;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupRepositorySettingsService;
+import nz.ac.canterbury.seng302.portfolio.service.group.GroupsClientService;
 import nz.ac.canterbury.seng302.portfolio.service.user.PortfolioUserService;
 import nz.ac.canterbury.seng302.portfolio.service.project.ProjectService;
 import nz.ac.canterbury.seng302.portfolio.service.user.UserAccountClientService;
 import nz.ac.canterbury.seng302.shared.identityprovider.AuthState;
 import nz.ac.canterbury.seng302.shared.identityprovider.ClaimDTO;
+import nz.ac.canterbury.seng302.shared.identityprovider.PaginatedGroupsResponse;
 import nz.ac.canterbury.seng302.shared.identityprovider.UserResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,6 +57,12 @@ class AddEvidenceControllerTests {
 
     @MockBean
     EvidenceService evidenceService;
+
+    @MockBean
+    GroupRepositorySettingsService groupRepositorySettingsService;
+
+    @MockBean
+    GroupsClientService groupClientService;
 
     @MockBean
     GlobalControllerAdvice globalControllerAdvice;
@@ -82,6 +94,12 @@ class AddEvidenceControllerTests {
         Mockito.when(mockedSecurityContext.getAuthentication()).thenReturn(new PreAuthenticatedAuthenticationToken(validAuthState,""));
         SecurityContextHolder.setContext(mockedSecurityContext);
         return validAuthState;
+    }
+
+    // Makes it so no groups exist so that they do not interfere with the tests
+    @BeforeEach
+    void setupGroups() {
+        Mockito.when(groupClientService.getAllGroups()).thenReturn(new GroupListResponse(PaginatedGroupsResponse.newBuilder().build()));
     }
 
     // Check that the portfolio endpoint works with a valid user
@@ -163,7 +181,10 @@ class AddEvidenceControllerTests {
                         .param("evidenceDescription", "test description")
                         .param("evidenceDate", "bad date")
                         .param("evidenceSkills", "")
-                        .param("evidenceUsers", "")
+                        .param("isQuantitative", "")
+                        .param("isQualitative", "")
+                        .param("isQuantitative", "")
+                        .param("isService", "")
                         .param("evidenceSkills", "")
                         .param("skillsToChange", ""))
                 .andExpect(status().isOk())

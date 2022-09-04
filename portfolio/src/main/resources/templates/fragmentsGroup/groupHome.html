@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+
+<div class="group-home">
+    <div class="row">
+
+        <div class="col-12 col-lg">
+            <h2>Recent Activity</h2>
+        </div>
+
+        <div class="col-12 col-lg-5">
+                <div class="group-members">
+                        <h2>Group Members</h2>
+
+                    <div class="group-members__container">
+
+                        <div class="group-member__container" th:each="member: ${group.getMembers()}">
+                            <a class="group-member__link" th:href="@{profile-{id}(id=${member.id})}">
+                                <img class="group-member__image" th:src="${member.getProfileImagePath()}" alt="Profile Photo">
+                                <div class="group-member__name-container" th:text="${member.getFirstLast()}"></div>
+                                <div class="group-member__nickname" th:text="${member.getNickname()}"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+    </div>
+</div>

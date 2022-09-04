@@ -71,7 +71,7 @@ public class GroupsClientService {
                 .build();
         DeleteGroupResponse response = groupsStub.deleteGroup(deleteGroupRequest);
 
-        // If the group was deleted in the identity provider then delete it in the portfolio
+        // If the group was deleted in the identity provider then delete it and its repository settings in the portfolio
         if (response.getIsSuccess()) {
             groupRepositorySettingsService.deleteGroupRepositoryByGroupId(groupId);
             portfolioGroupService.deletePortfolioGroupByGroupId(groupId);
@@ -163,10 +163,16 @@ public class GroupsClientService {
         return groupsStub.modifyGroupDetails(modifyGroupDetailsRequest);
     }
 
+    /**
+     * Checks if the given user is in the given group
+     * @param groupId Group id of the group to check
+     * @param userId User id of the user to check
+     * @return A boolean, true if the user is in the group, false otherwise
+     */
     public boolean userInGroup(int groupId, int userId) {
         Group group = new Group(getGroupDetailsById(groupId));
-        for (User u : group.getMembers()) {
-            if (u.getId() == userId) {
+        for (User user : group.getMembers()) {
+            if (user.getId() == userId) {
                 return true;
             }
         }

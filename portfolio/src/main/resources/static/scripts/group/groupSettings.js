@@ -5,7 +5,7 @@
 async function updateGroupRepositoryElement(firstLoad) {
     // Build the url
     let url
-    url = new URL (`${CONTEXT}/groupSettings-${GROUP_ID}-repository`)
+    url = new URL (`${CONTEXT}/group-${GROUP_ID}-repository`)
     url.searchParams.append("firstLoad", firstLoad)
 
     // Send a get request to fetch the updated group repository
@@ -16,9 +16,15 @@ async function updateGroupRepositoryElement(firstLoad) {
         return res.text()
     })
 
+
     // Update the page with the new HTML content
     const groupRepositoryWrapper = document.getElementById("repository_container")
     groupRepositoryWrapper.innerHTML = updatedRepositoryInformation
+
+    if(!userInGroup && !authUserIsTeacher) {
+        document.getElementById("open-modal__button").hidden = true;
+    }
+
 }
 
 /**
@@ -29,7 +35,7 @@ async function saveGroupRepositorySettings() {
     bootstrap.Modal.getInstance(document.getElementById("group-repository-settings__modal")).hide()
     // Build the url with the repository information as parameters
     let url
-    url = new URL (`${CONTEXT}/groupSettings-${GROUP_ID}-repository`)
+    url = new URL (`${CONTEXT}/group-${GROUP_ID}-repository`)
     url.searchParams.append("repositoryName", document.getElementById("group-repository__name").value)
     url.searchParams.append("gitlabAccessToken", document.getElementById("group-repository__api-key").value)
     url.searchParams.append("gitlabProjectId", document.getElementById("group-repository__id").value)

@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng302.portfolio.service.evidence;
 
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Categories;
+import nz.ac.canterbury.seng302.portfolio.model.evidence.Commit;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.Evidence;
 import nz.ac.canterbury.seng302.portfolio.model.evidence.WebLink;
 import nz.ac.canterbury.seng302.portfolio.model.project.Project;
@@ -164,12 +165,17 @@ public class EvidenceService {
                 Evidence copiedEvidence = new Evidence(userId, evidence.getProjectId(), evidence.getTitle(), evidence.getDescription(), evidence.getDate());
                 copiedEvidence.addSkill(skillList);
                 copiedEvidence.setCategories(categoriesSet);
+
                 for (WebLink webLink : evidence.getWebLinks()) {
                     copiedEvidence.addWebLink(webLink);
+                }
+                for (Commit commit : evidence.getCommits()) {
+                    copiedEvidence.addCommit(commit);
                 }
                 for (Integer user: evidence.getUsers()) {
                     copiedEvidence.addUser(user);
                 }
+
                 // This is to make sure that there are no duplicate skills in the other user's portfolio
                 List<Evidence> evidenceList = repository.findByOwnerIdAndProjectIdOrderByDateDescIdDesc(copiedEvidence.getOwnerId(), copiedEvidence.getProjectId());
                 copiedEvidence.conformSkills(getSkillsFromEvidence(evidenceList));
@@ -228,13 +234,56 @@ public class EvidenceService {
                 Evidence evidence = getEvidenceById(evidenceId);
                 evidence.addWebLink(weblink);
                 saveEvidence(evidence);
-                String message = "Evidence weblink" + weblink.getName() + " saved successfully";
+                String message = "Evidence web link " + weblink.getName() + " saved successfully";
                 PORTFOLIO_LOGGER.info(message);
             } catch (NoSuchElementException e) {
                 String message = "Evidence " + evidenceId + " not found. Weblink not saved";
                 PORTFOLIO_LOGGER.error(message);
                 throw new NoSuchElementException("Evidence not found: web link not saved");
             }
+    }
+
+    /**
+     * Updates a web link string to the evidence specified by evidenceId.
+     * @param evidenceId The evidence to have the web link added to.
+     * @param weblink The web link sting to be added to evidence of id=evidenceId.
+     * @param index The index of the weblink list to update
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
+    public void modifyWebLink(int evidenceId, WebLink weblink, int index) throws NoSuchElementException {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            evidence.addWebLinkWithIndex(weblink, index);
+            saveEvidence(evidence);
+            String message = "Evidence weblink" + weblink.getName() + " saved successfully";
+            PORTFOLIO_LOGGER.info(message);
+        } catch (NoSuchElementException e) {
+            String message = "Evidence " + evidenceId + " not found. Weblink not saved";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException("Evidence not found: web link not saved");
+        }
+    }
+
+    /**
+     * Saves a commit to the evidence specified by evidenceId.
+     * @param evidenceId The ID of the evidence to have the commit added to.
+     * @param commit The commit object added to the evidence
+     * @throws NoSuchElementException If evidence specified by evidenceId does not exist NoSuchElementException
+     * is thrown.
+     */
+    public void saveCommit(int evidenceId, Commit commit) throws NoSuchElementException {
+        try {
+            Evidence evidence = getEvidenceById(evidenceId);
+            evidence.addCommit(commit);
+            saveEvidence(evidence);
+            String message = "Evidence commit saved successfully";
+            PORTFOLIO_LOGGER.info(message);
+        } catch (NoSuchElementException e) {
+            String message = "Evidence " + evidenceId + " not found. Commit not saved";
+            PORTFOLIO_LOGGER.error(message);
+            throw new NoSuchElementException("Evidence not found: commit not saved");
+        }
     }
 
     /**
@@ -326,4 +375,6 @@ public class EvidenceService {
     public List<Evidence> retrieveEvidenceWithNoCategory(int userId, int projectId) {
         return repository.findByOwnerIdAndProjectIdAndCategoriesIsNullOrderByDateDescIdDesc(userId, projectId);
     }
+
+
 }

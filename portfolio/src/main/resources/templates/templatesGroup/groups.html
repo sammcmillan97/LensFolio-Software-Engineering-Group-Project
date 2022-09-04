@@ -70,8 +70,8 @@
                     </div>
                     <!-- Edit and Delete Group Buttons - Only show if user is a teacher-->
                     <div class="group__button-wrapper flex-row">
-                        <form th:action="@{groupSettings-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
-                            <button type="submit">Settings</button>
+                        <form th:action="@{group-{id}(id=${group.getGroupId})}" th:method="get" th:if="${group.getGroupId} >= 0")>
+                            <button type="submit">View</button>
                         </form>
                         <div class="flex-row" th:if="${authUserIsTeacher || #lists.contains(group.getMembers, user)}">
                             <button onclick="removeSelectedUsers(this)" hidden="hidden" th:class="'group_' + ${group.getGroupId} + '_remove_users_button'">Remove Selection</button>
