@@ -14,6 +14,8 @@
   <script th:inline="javascript">
     const CONTEXT = [[${@environment.getProperty('PORTFOLIO_CONTEXT')}]];
     const GROUP_ID = [[${group.getGroupId}]];
+    const userInGroup = [[${userInGroup}]];
+    const authUserIsTeacher = [[${authUserIsTeacher}]];
   </script>
 </head>
 

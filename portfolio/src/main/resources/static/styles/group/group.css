@@ -89,25 +89,65 @@ html {
     padding-top: 20px;
 }
 
-group-members {
+.group-members {
     background-color: var(--color-secondary);
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
     margin: 5px;
     padding: 10px;
-    border-radius: 5px;
 }
 
-group-members_container {
-    padding-top: 10px;
+
+.group-members__container {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding-top: 10px;
+    max-height: 22rem;
+    overflow-y: auto;
     border-top: 1px solid var(--color-accent);
-    height: 100%;
-    overflow: auto;
 }
 
-member-image {
-    width: 50px;
-    height: 50px;
+.group-member__container {
+}
+
+.group-member__link {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-direction: row;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+.group-member__link:hover {
+    color: var(--color-tertiary);
+}
+
+.group-member__image {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 50px;
+}
+
+.group-member__name-container {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 20px;
+    padding-left: 20px;
+}
+
+.group-member__nickname {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 20px;
+    margin-left: auto;
 }
 
 /* Group Repository */

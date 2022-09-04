@@ -16,9 +16,15 @@ async function updateGroupRepositoryElement(firstLoad) {
         return res.text()
     })
 
+
     // Update the page with the new HTML content
     const groupRepositoryWrapper = document.getElementById("repository_container")
     groupRepositoryWrapper.innerHTML = updatedRepositoryInformation
+
+    if(!userInGroup && !authUserIsTeacher) {
+        document.getElementById("open-modal__button").hidden = true;
+    }
+
 }
 
 /**
